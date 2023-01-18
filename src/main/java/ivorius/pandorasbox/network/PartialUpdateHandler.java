@@ -1,6 +1,6 @@
 package ivorius.pandorasbox.network;
 
-import io.netty.buffer.ByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 /**
  * A interface for some object types that need extra information to be communicated
@@ -16,7 +16,7 @@ public interface PartialUpdateHandler
      *
      * @param buffer The packet data stream
      */
-    public void writeUpdateData(ByteBuf buffer, String context);
+    public void writeUpdateData(PacketBuffer buffer, String context);
 
     /**
      * Called by the client when it receives an update packet.
@@ -24,5 +24,5 @@ public interface PartialUpdateHandler
      *
      * @param buffer The packet data stream
      */
-    public void readUpdateData(ByteBuf buffer, String context);
+    public void readUpdateData(PacketBuffer buffer, String context);
 }

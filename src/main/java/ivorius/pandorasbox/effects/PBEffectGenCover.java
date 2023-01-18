@@ -8,7 +8,7 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -21,10 +21,6 @@ public class PBEffectGenCover extends PBEffectGenerateByFlag
 {
     public boolean overSurface;
     public Block[] blocks;
-
-    public PBEffectGenCover()
-    {
-    }
 
     public PBEffectGenCover(int time, double range, int unifiedSeed, boolean overSurface, Block[] blocks)
     {
@@ -43,24 +39,21 @@ public class PBEffectGenCover extends PBEffectGenerateByFlag
                 return false;
             }
 
-            return world.isBlockNormalCube(pos.west(), false) || world.isBlockNormalCube(pos.east(), false)
-                    || world.isBlockNormalCube(pos.down(), false) || world.isBlockNormalCube(pos.up(), false)
-                    || world.isBlockNormalCube(pos.north(), false) || world.isBlockNormalCube(pos.south(), false);
+            return world.loadedAndEntityCanStandOn(pos.west(), entity) || world.loadedAndEntityCanStandOn(pos.east(), entity)
+                    || world.loadedAndEntityCanStandOn(pos.below(), entity) || world.loadedAndEntityCanStandOn(pos.above(), entity)
+                    || world.loadedAndEntityCanStandOn(pos.north(), entity) || world.loadedAndEntityCanStandOn(pos.south(), entity);
         }
         else
         {
-//            if (!world.isBlockNormalCubeDefault(pos, false))
-//                return false;
-//
             return isReplacable(world, pos.west()) || isReplacable(world, pos.east())
-                    || isReplacable(world, pos.down()) || isReplacable(world, pos.up())
+                    || isReplacable(world, pos.below()) || isReplacable(world, pos.above())
                     || isReplacable(world, pos.north()) || isReplacable(world, pos.south());
         }
     }
 
     private boolean isReplacable(World world, BlockPos pos)
     {
-        return world.getBlockState(pos).getBlock().isReplaceable(world, pos);
+        return world.getBlockState(pos).canSurvive(world, pos);
     }
 
     @Override
@@ -69,21 +62,21 @@ public class PBEffectGenCover extends PBEffectGenerateByFlag
         if (flag)
         {
             Block newBlock = blocks[random.nextInt(blocks.length)];
-            world.setBlockState(pos, newBlock.getDefaultState());
+            world.setBlockAndUpdate(pos, newBlock.defaultBlockState());
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setBoolean("overSurface", overSurface);
+        compound.putBoolean("overSurface", overSurface);
         PBNBTHelper.writeNBTBlocks("blocks", blocks, compound);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 

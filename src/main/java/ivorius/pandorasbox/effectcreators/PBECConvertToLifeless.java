@@ -32,8 +32,7 @@ public class PBECConvertToLifeless implements PBEffectCreator
         double range = this.range.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        PBEffectGenConvertToLifeless effect = new PBEffectGenConvertToLifeless(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
-        return effect;
+        return new PBEffectGenConvertToLifeless(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
     }
 
     @Override

@@ -5,45 +5,66 @@
 
 package ivorius.pandorasbox.worldgen;
 
+import com.mojang.serialization.Codec;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenAbstractTree;
+import net.minecraft.world.gen.IWorldGenerationReader;
+import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
+import net.minecraft.world.gen.feature.TreeFeature;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Created by lukas on 14.02.14.
  */
-public class WorldGenRainbow extends WorldGenAbstractTree
+public class WorldGenRainbow extends TreeFeature implements AccessibleTreeFeature
 {
-    public final Block block;
     public final int addition;
-    public final Block soil;
+    public Block soil;
 
-    public WorldGenRainbow(boolean notify, Block block, int addition, Block soil)
+    public WorldGenRainbow(Codec<BaseTreeFeatureConfig> configIn, int addition)
     {
-        super(notify);
+        super(configIn);
 
-        this.block = block;
         this.addition = addition;
-        this.soil = soil;
     }
 
     @Override
-    public boolean generate(World world, Random var2, BlockPos pos)
-    {
-        int par3 = pos.getX();
-        int par4 = pos.getY();
-        int par5 = pos.getZ();
+    public void setMetas(int[] newMetas) {
 
-        if (world.getBlockState(pos).getBlock() == soil && world.getBlockState(pos.up()).getBlock() == Blocks.AIR)
+    }
+
+    @Override
+    public void setSoil(Block newSoil) {
+        soil = newSoil;
+    }
+
+    @Override
+    public boolean place(IWorldGenerationReader worldIn, Random rand, BlockPos position) {
+        World world = worldIn instanceof World ? (World) worldIn : null;
+        int par3 = position.getX();
+        int par4 = position.getY();
+        int par5 = position.getZ();
+        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
+        for(Block block1 : ForgeRegistries.BLOCKS) {
+            if (BlockTags.WOOL.contains(block1)) {
+                blocks.add(block1);
+            }
+        }
+
+        if(world == null) return false;
+        if (world.getBlockState(position).getBlock() == soil && world.getBlockState(position.above()).isAir(world, position))
         {
-            boolean rotated = var2.nextBoolean();
-            int l = var2.nextInt(addition) + 5;
+            boolean rotated = rand.nextBoolean();
+            int l = rand.nextInt(addition) + 5;
 
             for (int shift = -1; shift <= 1; shift++)
             {
@@ -60,10 +81,10 @@ public class WorldGenRainbow extends WorldGenAbstractTree
                             int rY = y + par4;
 
                             BlockPos placePos = new BlockPos(x, rY, z);
-                            IBlockState block1State = world.getBlockState(placePos);
+                            BlockState block1State = world.getBlockState(placePos);
                             Block block1 = block1State.getBlock();
 
-                            if (block1.isAir(block1State, world, placePos) || block1.isLeaves(block1State, world, placePos))
+                            if (block1.isAir(block1State, world, placePos) || block1.is(BlockTags.LEAVES))
                             {
                                 int meta = distance;
                                 if (meta < 0)
@@ -75,7 +96,7 @@ public class WorldGenRainbow extends WorldGenAbstractTree
                                     meta = 15;
                                 }
 
-                                this.setBlockAndNotifyAdequately(world, placePos, block.getStateFromMeta(meta));
+                                this.setBlock(world, placePos, blocks.get(meta).defaultBlockState());
                             }
                         }
                     }

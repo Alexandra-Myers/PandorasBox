@@ -5,7 +5,11 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import ivorius.pandorasbox.effects.PBEffect;
+import ivorius.pandorasbox.PandorasBoxHelper;
+import ivorius.pandorasbox.effects.*;
+import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import net.minecraft.block.Block;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -15,7 +19,11 @@ import java.util.Random;
  */
 public interface PBEffectCreator
 {
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random);
+    default PBEffect constructEffect(World world, double x, double y, double z, Random random) {
 
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random);
+        return new PBEffectDuplicateBox(0);
+    }
+
+    float chanceForMoreEffects(World world, double x, double y, double z, Random random);
+
 }

@@ -2,9 +2,10 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.Vec3d;
+import ivorius.pandorasbox.init.Registry;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -19,17 +20,11 @@ public class PBEffectDuplicateBox extends PBEffectNormal
 
     public static int timeNeededForSpawnMode(int mode)
     {
-        switch (mode)
-        {
-            case MODE_BOX_IN_BOX:
-                return 60;
+        if (mode == MODE_BOX_IN_BOX) {
+            return 60;
         }
 
         return 0;
-    }
-
-    public PBEffectDuplicateBox()
-    {
     }
 
     public PBEffectDuplicateBox(int spawnMode)
@@ -41,20 +36,21 @@ public class PBEffectDuplicateBox extends PBEffectNormal
     @Override
     public void setUpEffect(World world, EntityPandorasBox box, Vec3d effectCenter, Random random)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
-            PBEffect effect = PBECRegistry.createRandomEffect(world, random, box.posX, box.posY, box.posZ, true);
-            EntityPandorasBox newBox = new EntityPandorasBox(world, effect);
+            PBEffect effect = PBECRegistry.createRandomEffect(world, random, box.getX(), box.getY(), box.getZ(), true);
+            EntityPandorasBox newBox = Registry.Box.get().create(world);
 
-            newBox.setLocationAndAngles(box.posX, box.posY, box.posZ, box.rotationYaw, box.rotationPitch);
+            assert newBox != null;
 
-            switch (spawnMode)
-            {
-                case MODE_BOX_IN_BOX:
-                    newBox.beginFloatingUp();
-                    newBox.beginScalingIn();
-                    world.spawnEntity(newBox);
-                    break;
+            newBox.setBoxEffect(effect);
+            newBox.setTimeBoxWaiting(40);
+            newBox.moveTo(box.getX(), box.getY(), box.getZ(), box.yRot, box.xRot);
+
+            if (spawnMode == MODE_BOX_IN_BOX) {
+                newBox.beginFloatingUp();
+                newBox.beginScalingIn();
+                world.addFreshEntity(newBox);
             }
         }
     }
@@ -66,18 +62,18 @@ public class PBEffectDuplicateBox extends PBEffectNormal
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setInteger("spawnMode", spawnMode);
+        compound.putInt("spawnMode", spawnMode);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
-        spawnMode = compound.getInteger("spawnMode");
+        spawnMode = compound.getInt("spawnMode");
     }
 }

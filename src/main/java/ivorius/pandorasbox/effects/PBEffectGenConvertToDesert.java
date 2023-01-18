@@ -6,12 +6,14 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
@@ -20,9 +22,6 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToDesert extends PBEffectGenerate
 {
-    public PBEffectGenConvertToDesert()
-    {
-    }
 
     public PBEffectGenConvertToDesert(int time, double range, int unifiedSeed)
     {
@@ -36,21 +35,33 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate
 
         if (pass == 0)
         {
-            if (isBlockAnyOf(block, Blocks.ICE, Blocks.FLOWING_WATER, Blocks.WATER, Blocks.SNOW, Blocks.SNOW_LAYER, Blocks.LOG, Blocks.LOG2, Blocks.LEAVES, Blocks.LEAVES2, Blocks.RED_FLOWER, Blocks.YELLOW_FLOWER, Blocks.VINE, Blocks.TALLGRASS, Blocks.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM, Blocks.RED_MUSHROOM_BLOCK))
+            ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
+            blocks.addAll(Blocks.ICE, Blocks.WATER, Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM, Blocks.RED_MUSHROOM_BLOCK);
+            ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
+            misc.addAll(Blocks.SOUL_SAND, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.MYCELIUM);
+            for(Block block1 : ForgeRegistries.BLOCKS) {
+                if(BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
+                    blocks.add(block1);
+                }
+                if(block1.getRegistryName().getPath().endsWith("terracotta")) {
+                    misc.add(block1);
+                }
+            }
+            if (isBlockAnyOf(block, blocks))
             {
                 setBlockToAirSafe(world, pos);
             }
-            else if (isBlockAnyOf(block, Blocks.SOUL_SAND, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.GRASS, Blocks.DIRT, Blocks.MYCELIUM, Blocks.HARDENED_CLAY, Blocks.STAINED_HARDENED_CLAY))
+            else if (isBlockAnyOf(block, misc))
             {
-                setBlockSafe(world, pos, Blocks.SAND.getDefaultState());
+                setBlockSafe(world, pos, Blocks.SAND.defaultBlockState());
 
-                if (world.getBlockState(pos.up()).getMaterial() == Material.AIR)
+                if (world.getBlockState(pos.above()).isAir(world, pos.above()))
                 {
-                    if (!world.isRemote && random.nextInt(20 * 20) == 0)
+                    if (world instanceof ServerWorld && random.nextInt(20 * 20) == 0)
                     {
-                        setBlockSafe(world, pos.up(1), Blocks.CACTUS.getDefaultState());
-                        setBlockSafe(world, pos.up(2), Blocks.CACTUS.getDefaultState());
-                        setBlockSafe(world, pos.up(3), Blocks.CACTUS.getDefaultState());
+                        setBlockSafe(world, pos.above(1), Blocks.CACTUS.defaultBlockState());
+                        setBlockSafe(world, pos.above(2), Blocks.CACTUS.defaultBlockState());
+                        setBlockSafe(world, pos.above(3), Blocks.CACTUS.defaultBlockState());
                     }
                 }
             }

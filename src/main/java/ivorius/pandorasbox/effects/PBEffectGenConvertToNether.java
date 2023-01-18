@@ -6,12 +6,16 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
@@ -20,9 +24,6 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToNether extends PBEffectGenerate
 {
-    public PBEffectGenConvertToNether()
-    {
-    }
 
     public PBEffectGenConvertToNether(int time, double range, int unifiedSeed)
     {
@@ -32,54 +33,69 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     @Override
     public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
-        IBlockState blockState = world.getBlockState(pos);
+        BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
+        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
+        ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
+        blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.END_STONE, Blocks.MYCELIUM);
+        for(Block block1 : ForgeRegistries.BLOCKS) {
+            if(BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
+                blocks.add(block1);
+            }
+            if(block1.getRegistryName().getPath().endsWith("terracotta")) {
+                misc.add(block1);
+            }
+        }
 
         if (pass == 0)
         {
-            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.FLOWING_WATER, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN))
+            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN))
             {
-                setBlockSafe(world, pos, Blocks.LAVA.getDefaultState());
+                setBlockSafe(world, pos, Blocks.LAVA.defaultBlockState());
             }
-            else if (isBlockAnyOf(block, Blocks.SNOW, Blocks.SNOW_LAYER, Blocks.RED_FLOWER, Blocks.YELLOW_FLOWER, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.TALLGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM, Blocks.LOG, Blocks.LOG2, Blocks.LEAVES, Blocks.LEAVES2))
+            else if (isBlockAnyOf(block, blocks))
             {
                 setBlockToAirSafe(world, pos);
             }
             else if (isBlockAnyOf(block, Blocks.SAND))
             {
-                setBlockSafe(world, pos, Blocks.SOUL_SAND.getDefaultState());
+                setBlockSafe(world, pos, Blocks.SOUL_SAND.defaultBlockState());
             }
-            else if (isBlockAnyOf(block, Blocks.GRASS, Blocks.DIRT, Blocks.STONE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.HARDENED_CLAY, Blocks.STAINED_HARDENED_CLAY))
+            else if (isBlockAnyOf(block, misc))
             {
-                setBlockSafe(world, pos, Blocks.NETHERRACK.getDefaultState());
+                setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
             }
-            else if (world.getBlockState(pos).getBlock() == Blocks.AIR && Blocks.FIRE.canPlaceBlockAt(world, pos))
+            else if (world.getBlockState(pos).isAir(world, pos))
             {
-                if (!world.isRemote && random.nextInt(15) == 0)
+                if (world instanceof ServerWorld && random.nextInt(15) == 0)
                 {
-                    if (world.rand.nextFloat() < 0.9f)
+                    if (world.random.nextFloat() < 0.9f)
                     {
-                        setBlockSafe(world, pos, Blocks.FIRE.getDefaultState());
+                        setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     }
                     else
                     {
-                        setBlockSafe(world, pos, Blocks.GLOWSTONE.getDefaultState());
+                        setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
                 }
             }
         }
         else
         {
-            if (canSpawnEntity(world, blockState, pos))
-            {
-                lazilySpawnEntity(world, entity, random, "PigZombie", 1.0f / (15 * 15), pos);
-                lazilySpawnEntity(world, entity, random, "LavaSlime", 1.0f / (15 * 15), pos);
+            ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+            entities.addAll(
+                    lazilySpawnEntity(world, entity, random, "sombie_pigman", 1.0f / (15 * 15), pos),
+            lazilySpawnEntity(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos));
+
+            for(Entity entity1 : entities) {
+                canSpawnEntity(world, blockState, pos, entity1);
             }
 
             if (canSpawnFlyingEntity(world, blockState, pos))
             {
-                lazilySpawnEntity(world, entity, random, "Ghast", 1.0f / (50 * 50 * 50), pos);
-                lazilySpawnEntity(world, entity, random, "Blaze", 1.0f / (50 * 50 * 50), pos);
+                lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
     }

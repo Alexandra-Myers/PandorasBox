@@ -6,9 +6,13 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -17,9 +21,6 @@ import java.util.Random;
  */
 public class PBEffectRandomLightnings extends PBEffectPositionBased
 {
-    protected PBEffectRandomLightnings()
-    {
-    }
 
     public PBEffectRandomLightnings(int time, int number, double range)
     {
@@ -29,10 +30,13 @@ public class PBEffectRandomLightnings extends PBEffectPositionBased
     @Override
     public void doEffect(World world, EntityPandorasBox entity, Random random, float newRatio, float prevRatio, double x, double y, double z)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
-            EntityLightningBolt lightningBolt = new EntityLightningBolt(world, x, world.getHeight(new BlockPos(x, 0.0, z)).getY(), z, false);
-            world.addWeatherEffect(lightningBolt);
+            ServerWorld serverWorld = (ServerWorld) world;
+            LightningBoltEntity lightningBolt = EntityType.LIGHTNING_BOLT.create(world);
+            if(lightningBolt == null) return;
+            lightningBolt.moveTo(Vector3d.atBottomCenterOf(new BlockPos(x, y, z)));
+            serverWorld.addFreshEntity(lightningBolt);
         }
     }
 }

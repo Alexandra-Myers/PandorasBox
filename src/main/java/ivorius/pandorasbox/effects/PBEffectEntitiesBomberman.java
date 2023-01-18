@@ -6,11 +6,12 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.TNTEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -21,10 +22,6 @@ public class PBEffectEntitiesBomberman extends PBEffectEntityBased
 {
     public int bombs;
 
-    public PBEffectEntitiesBomberman()
-    {
-    }
-
     public PBEffectEntitiesBomberman(int maxTicksAlive, double range, int bombs)
     {
         super(maxTicksAlive, range);
@@ -32,9 +29,9 @@ public class PBEffectEntitiesBomberman extends PBEffectEntityBased
     }
 
     @Override
-    public void affectEntity(World world, EntityPandorasBox box, Random random, EntityLivingBase entity, double newRatio, double prevRatio, double strength)
+    public void affectEntity(World world, EntityPandorasBox box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
             int prevBombs = MathHelper.floor(prevRatio * bombs);
             int newBombs = MathHelper.floor(newRatio * bombs);
@@ -42,27 +39,27 @@ public class PBEffectEntitiesBomberman extends PBEffectEntityBased
 
             for (int i = 0; i < bombs; i++)
             {
-                EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(world, entity.posX, entity.posY, entity.posZ, null);
+                TNTEntity entitytntprimed = new TNTEntity(world, entity.getX(), entity.getY(), entity.getZ(), null);
                 entitytntprimed.setFuse(45 + random.nextInt(20));
 
-                world.spawnEntity(entitytntprimed);
+                world.addFreshEntity(entitytntprimed);
             }
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setInteger("bombs", bombs);
+        compound.putInt("bombs", bombs);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
-        bombs = compound.getInteger("bombs");
+        bombs = compound.getInt("bombs");
     }
 }

@@ -94,7 +94,7 @@ public class PBECSpawnBlocks implements PBEffectCreator
 
     public static Block[] constructBlocks(Random random, Block[] blocks, int number, boolean mixUp)
     {
-        ArrayList<Block> list = new ArrayList<Block>();
+        ArrayList<Block> list = new ArrayList<>();
 
         for (int i = 0; i < number; i++)
         {

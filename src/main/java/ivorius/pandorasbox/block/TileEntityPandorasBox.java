@@ -8,12 +8,17 @@ package ivorius.pandorasbox.block;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.nbt.NBTTagCompound;
+import ivorius.pandorasbox.init.Registry;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 
@@ -24,7 +29,11 @@ public class TileEntityPandorasBox extends TileEntity
 {
     private float partialRotationYaw;
 
-    public static float rotationFromFacing(EnumFacing facing)
+    public TileEntityPandorasBox() {
+        super(Registry.TEPB.get());
+    }
+
+    public static float rotationFromFacing(Direction facing)
     {
         switch (facing)
         {
@@ -53,67 +62,37 @@ public class TileEntityPandorasBox extends TileEntity
 
     public float getBaseRotationYaw()
     {
-        return rotationFromFacing(this.world.getBlockState(this.pos).getValue(BlockPandorasBox.FACING_PROP));
+        return rotationFromFacing(this.level.getBlockState(this.worldPosition).getValue(BlockPandorasBox.DIRECTION));
     }
 
     public float getRotationYaw()
     {
-        return getBaseRotationYaw()/* + partialRotationYaw*/; // TODO Block model doesn't support gradual rotation yet
-    }
-
-    public EntityPandorasBox spawnPandorasBox()
-    {
-        if (!world.isRemote)
-        {
-            PBEffect effect = PBECRegistry.createRandomEffect(world, world.rand, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, true);
-
-            if (effect != null)
-            {
-                EntityPandorasBox entityPandorasBox = new EntityPandorasBox(world, effect);
-
-                entityPandorasBox.setLocationAndAngles(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, getRotationYaw(), 0.0f);
-
-                entityPandorasBox.beginFloatingUp();
-
-                world.spawnEntity(entityPandorasBox);
-
-                return entityPandorasBox;
-            }
-        }
-
-        return null;
+        return getBaseRotationYaw() + getPartialRotationYaw(); // TODO Block model doesn't support gradual rotation yet
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound)
-    {
-        super.writeToNBT(nbtTagCompound);
-
-        nbtTagCompound.setFloat("boxRotationYaw", partialRotationYaw);
-
-        return nbtTagCompound;
+    public CompoundNBT save(CompoundNBT compoundNBT) {
+        compoundNBT.putFloat("boxRotationYaw", partialRotationYaw);
+        return super.save(compoundNBT);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound)
-    {
-        super.readFromNBT(nbtTagCompound);
-
-        partialRotationYaw = nbtTagCompound.getFloat("boxRotationYaw");
+    public void load(BlockState state, CompoundNBT compoundNBT) {
+        partialRotationYaw = compoundNBT.getFloat("boxRotationYaw");
+        super.load(state, compoundNBT);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
-    {
-        readFromNBT(pkt.getNbtCompound());
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        load(level.getBlockState(pkt.getPos()), pkt.getTag());
     }
 
     @Nullable
     @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
+    public SUpdateTileEntityPacket getUpdatePacket()
     {
-        NBTTagCompound compound = new NBTTagCompound();
-        writeToNBT(compound);
-        return new SPacketUpdateTileEntity(pos, 1, compound);
+        CompoundNBT compound = new CompoundNBT();
+        save(compound);
+        return new SUpdateTileEntityPacket(worldPosition, 1, compound);
     }
 }

@@ -6,10 +6,9 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -20,10 +19,6 @@ import java.util.Random;
 public abstract class PBEffectGenerate extends PBEffectRangeBased
 {
     public int unifiedSeed;
-
-    public PBEffectGenerate()
-    {
-    }
 
     public PBEffectGenerate(int time, double range, int passes, int unifiedSeed)
     {
@@ -64,18 +59,16 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     public abstract void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range);
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
-
-        compound.setInteger("unifiedSeed", unifiedSeed);
+        compound.putInt("unifiedSeed", unifiedSeed);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
-
-        unifiedSeed = compound.getInteger("unifiedSeed");
+        unifiedSeed = compound.getInt("unifiedSeed");
     }
 }

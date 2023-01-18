@@ -6,14 +6,13 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.List;
 import java.util.Random;
@@ -31,10 +30,6 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
 
     public int blockSize;
 
-    public PBEffectGenHeightNoise()
-    {
-    }
-
     public PBEffectGenHeightNoise(int time, double range, int unifiedSeed, int minShift, int maxShift, int minTowerSize, int maxTowerSize, int blockSize)
     {
         super(time, range, 1, unifiedSeed);
@@ -51,7 +46,7 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
     @Override
     public void generateOnSurface(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, BlockPos pos, double range, int pass)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
             int randomX = pos.getX() - (pos.getX() % blockSize);
             int randomZ = pos.getZ() - (pos.getZ() % blockSize);
@@ -64,42 +59,42 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
             int minEffectY = towerMinY + Math.min(0, shift);
             int maxEffectY = towerMinY + towerSize + Math.max(0, shift);
 
-            List<EntityPlayer> entityList = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos.getX() - 2.0, minEffectY - 4, pos.getZ() - 3.0, pos.getX() + 4.0, maxEffectY + 4, pos.getZ() + 4.0));
+            List<PlayerEntity> entityList = world.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(pos.getX() - 2.0, minEffectY - 4, pos.getZ() - 3.0, pos.getX() + 4.0, maxEffectY + 4, pos.getZ() + 4.0));
 
             if (entityList.size() == 0)
             {
-                IBlockState[] states = new IBlockState[towerSize];
+                BlockState[] states = new BlockState[towerSize];
 
                 for (int y = 0; y < towerSize; y++)
-                    states[y] = world.getBlockState(pos.up(towerMinY));
+                    states[y] = world.getBlockState(pos.above(towerMinY));
 
                 for (int y = 0; y < towerSize; y++)
-                    setBlockSafe(world, pos.up(towerMinY), states[y]);
+                    setBlockSafe(world, pos.above(towerMinY), states[y]);
             }
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setInteger("minShift", minShift);
-        compound.setInteger("maxShift", maxShift);
-        compound.setInteger("minTowerSize", minTowerSize);
-        compound.setInteger("maxTowerSize", maxTowerSize);
-        compound.setInteger("blockSize", blockSize);
+        compound.putInt("minShift", minShift);
+        compound.putInt("maxShift", maxShift);
+        compound.putInt("minTowerSize", minTowerSize);
+        compound.putInt("maxTowerSize", maxTowerSize);
+        compound.putInt("blockSize", blockSize);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
-        minShift = compound.getInteger("minShift");
-        maxShift = compound.getInteger("maxShift");
-        minTowerSize = compound.getInteger("minTowerSize");
-        maxTowerSize = compound.getInteger("maxTowerSize");
-        blockSize = compound.getInteger("blockSize");
+        minShift = compound.getInt("minShift");
+        maxShift = compound.getInt("maxShift");
+        minTowerSize = compound.getInt("minTowerSize");
+        maxTowerSize = compound.getInt("maxTowerSize");
+        blockSize = compound.getInt("blockSize");
     }
 }

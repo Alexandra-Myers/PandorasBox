@@ -1,9 +1,10 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -14,10 +15,6 @@ public class PBEffectExplode extends PBEffectNormal
 {
     public float explosionRadius;
     public boolean burning;
-
-    public PBEffectExplode()
-    {
-    }
 
     public PBEffectExplode(int maxTicksAlive, float explosionRadius, boolean burning)
     {
@@ -37,12 +34,12 @@ public class PBEffectExplode extends PBEffectNormal
     {
         super.finalizeEffect(world, entity, effectCenter, random);
 
-        if (!world.isRemote)
-            world.createExplosion(entity, entity.posX, entity.posY, entity.posZ, explosionRadius, burning);
+        if (world instanceof ServerWorld)
+            world.explode(entity, entity.getX(), entity.getY(), entity.getZ(), explosionRadius, burning, Explosion.Mode.BREAK);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
@@ -51,11 +48,11 @@ public class PBEffectExplode extends PBEffectNormal
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setFloat("explosionRadius", explosionRadius);
-        compound.setBoolean("burning", burning);
+        compound.putFloat("explosionRadius", explosionRadius);
+        compound.putBoolean("burning", burning);
     }
 }

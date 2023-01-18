@@ -36,8 +36,7 @@ public class PBECBombentities implements PBEffectCreator
         int time = this.time.getValue(random);
         double range = this.range.getValue(random);
 
-        PBEffectEntitiesBomberman effect = new PBEffectEntitiesBomberman(time, range, number);
-        return effect;
+        return new PBEffectEntitiesBomberman(time, range, number);
     }
 
     @Override

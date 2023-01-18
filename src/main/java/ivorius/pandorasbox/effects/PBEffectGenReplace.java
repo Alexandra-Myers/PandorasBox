@@ -8,10 +8,10 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -22,10 +22,6 @@ public class PBEffectGenReplace extends PBEffectGenerate
 {
     public Block[] blocks;
     public Block[] blocksToReplace;
-
-    public PBEffectGenReplace()
-    {
-    }
 
     public PBEffectGenReplace(int time, double range, int unifiedSeed, Block[] blocks, Block[] blocksToReplace)
     {
@@ -38,7 +34,7 @@ public class PBEffectGenReplace extends PBEffectGenerate
     @Override
     public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
             Block newBlock = blocks[random.nextInt(blocks.length)];
             Block prevBlock = world.getBlockState(pos).getBlock();
@@ -59,7 +55,7 @@ public class PBEffectGenReplace extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
@@ -68,7 +64,7 @@ public class PBEffectGenReplace extends PBEffectGenerate
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 

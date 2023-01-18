@@ -4,91 +4,92 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.nbt.StringNBT;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Created by lukas on 03.02.15.
  */
 public class PBNBTHelper
 {
-    public static byte readByte(NBTTagCompound compound, String key, byte defaultValue)
+    public static byte readByte(CompoundNBT compound, String key, byte defaultValue)
     {
-        return compound != null && compound.hasKey(key, Constants.NBT.TAG_BYTE)
+        return compound != null && compound.contains(key, Constants.NBT.TAG_BYTE)
                 ? compound.getByte(key)
                 : defaultValue;
     }
 
-    public static byte[] readByteArray(NBTTagCompound compound, String key, byte[] defaultValue)
+    public static byte[] readByteArray(CompoundNBT compound, String key, byte[] defaultValue)
     {
-        return compound != null && compound.hasKey(key, Constants.NBT.TAG_BYTE_ARRAY)
+        return compound != null && compound.contains(key, Constants.NBT.TAG_BYTE_ARRAY)
                 ? compound.getByteArray(key)
                 : defaultValue;
     }
 
-    public static double readDouble(NBTTagCompound compound, String key, double defaultValue)
+    public static double readDouble(CompoundNBT compound, String key, double defaultValue)
     {
-        return compound != null && compound.hasKey(key, Constants.NBT.TAG_DOUBLE)
+        return compound != null && compound.contains(key, Constants.NBT.TAG_DOUBLE)
                 ? compound.getDouble(key)
                 : defaultValue;
     }
 
-    public static float readFloat(NBTTagCompound compound, String key, float defaultValue)
+    public static float readFloat(CompoundNBT compound, String key, float defaultValue)
     {
-        return compound != null && compound.hasKey(key, Constants.NBT.TAG_FLOAT)
+        return compound != null && compound.contains(key, Constants.NBT.TAG_FLOAT)
                 ? compound.getFloat(key)
                 : defaultValue;
     }
 
-    public static int readInt(NBTTagCompound compound, String key, int defaultValue)
+    public static int readInt(CompoundNBT compound, String key, int defaultValue)
     {
-        return compound != null && compound.hasKey(key, Constants.NBT.TAG_INT)
-                ? compound.getInteger(key)
+        return compound != null && compound.contains(key, Constants.NBT.TAG_INT)
+                ? compound.getInt(key)
                 : defaultValue;
     }
 
-    public static int[] readIntArray(NBTTagCompound compound, String key, int[] defaultValue)
+    public static int[] readIntArray(CompoundNBT compound, String key, int[] defaultValue)
     {
-        return compound != null && compound.hasKey(key, Constants.NBT.TAG_INT_ARRAY)
+        return compound != null && compound.contains(key, Constants.NBT.TAG_INT_ARRAY)
                 ? compound.getIntArray(key)
                 : defaultValue;
     }
 
-    public static long readLong(NBTTagCompound compound, String key, long defaultValue)
+    public static long readLong(CompoundNBT compound, String key, long defaultValue)
     {
-        return compound != null && compound.hasKey(key, Constants.NBT.TAG_LONG)
+        return compound != null && compound.contains(key, Constants.NBT.TAG_LONG)
                 ? compound.getLong(key)
                 : defaultValue;
     }
 
-    public static short readShort(NBTTagCompound compound, String key, short defaultValue)
+    public static short readShort(CompoundNBT compound, String key, short defaultValue)
     {
-        return compound != null && compound.hasKey(key, Constants.NBT.TAG_SHORT)
+        return compound != null && compound.contains(key, Constants.NBT.TAG_SHORT)
                 ? compound.getShort(key)
                 : defaultValue;
     }
 
-    public static String readString(NBTTagCompound compound, String key, String defaultValue)
+    public static String readString(CompoundNBT compound, String key, String defaultValue)
     {
-        return compound != null && compound.hasKey(key, Constants.NBT.TAG_STRING)
+        return compound != null && compound.contains(key, Constants.NBT.TAG_STRING)
                 ? compound.getString(key)
                 : defaultValue;
     }
 
-    public static double[] readDoubleArray(String key, NBTTagCompound compound)
+    public static double[] readDoubleArray(String key, CompoundNBT compound)
     {
-        if (compound.hasKey(key))
+        if (compound.contains(key))
         {
-            NBTTagList list = compound.getTagList(key, Constants.NBT.TAG_DOUBLE);
-            double[] array = new double[list.tagCount()];
+            ListNBT list = compound.getList(key, Constants.NBT.TAG_DOUBLE);
+            double[] array = new double[list.size()];
 
             for (int i = 0; i < array.length; i++)
-                array[i] = list.getDoubleAt(i);
+                array[i] = list.getDouble(i);
 
             return array;
         }
@@ -96,28 +97,15 @@ public class PBNBTHelper
         return null;
     }
 
-    public static void writeDoubleArray(String key, double[] array, NBTTagCompound compound)
+    public static String[] readNBTStrings(String id, CompoundNBT compound)
     {
-        if (array != null)
+        if (compound.contains(id))
         {
-            NBTTagList list = new NBTTagList();
-
-            for (double d : array)
-                list.appendTag(new NBTTagDouble(d));
-
-            compound.setTag(key, list);
-        }
-    }
-
-    public static String[] readNBTStrings(String id, NBTTagCompound compound)
-    {
-        if (compound.hasKey(id))
-        {
-            NBTTagList nbtTagList = compound.getTagList(id, Constants.NBT.TAG_STRING);
-            String[] strings = new String[nbtTagList.tagCount()];
+            ListNBT nbtTagList = compound.getList(id, Constants.NBT.TAG_STRING);
+            String[] strings = new String[nbtTagList.size()];
 
             for (int i = 0; i < strings.length; i++)
-                strings[i] = nbtTagList.getStringTagAt(i);
+                strings[i] = nbtTagList.getString(i);
 
             return strings;
         }
@@ -125,28 +113,27 @@ public class PBNBTHelper
         return null;
     }
 
-    public static void writeNBTStrings(String id, String[] strings, NBTTagCompound compound)
+    public static void writeNBTStrings(String id, String[] strings, CompoundNBT compound)
     {
         if (strings != null)
         {
-            NBTTagList nbtTagList = new NBTTagList();
+            ListNBT nbtTagList = new ListNBT();
 
             for (String s : strings)
-                nbtTagList.appendTag(new NBTTagString(s));
+                nbtTagList.add(StringNBT.valueOf(s));
 
-            compound.setTag(id, nbtTagList);
+            compound.put(id, nbtTagList);
         }
     }
 
-    public static ItemStack[] readNBTStacks(String id, NBTTagCompound compound)
+    public static ItemStack[] readNBTStacks(String id, CompoundNBT compound)
     {
-        if (compound.hasKey(id))
+        if (compound.contains(id))
         {
-            NBTTagList nbtTagList = compound.getTagList(id, Constants.NBT.TAG_COMPOUND);
-            ItemStack[] itemStacks = new ItemStack[nbtTagList.tagCount()];
-
+            ListNBT nbtTagList = compound.getList(id, Constants.NBT.TAG_COMPOUND);
+            ItemStack[] itemStacks = new ItemStack[nbtTagList.size()];
             for (int i = 0; i < itemStacks.length; i++)
-                itemStacks[i] = new ItemStack(nbtTagList.getCompoundTagAt(i));
+                itemStacks[i] = ItemStack.of(nbtTagList.get(i) instanceof CompoundNBT ? (CompoundNBT) nbtTagList.get(i) : new CompoundNBT());
 
             return itemStacks;
         }
@@ -154,32 +141,32 @@ public class PBNBTHelper
         return null;
     }
 
-    public static void writeNBTStacks(String id, ItemStack[] stacks, NBTTagCompound compound)
+    public static void writeNBTStacks(String id, ItemStack[] stacks, CompoundNBT compound)
     {
         if (stacks != null)
         {
-            NBTTagList nbtTagList = new NBTTagList();
+            ListNBT nbtTagList = new ListNBT();
 
             for (ItemStack stack : stacks)
             {
-                NBTTagCompound tagCompound = new NBTTagCompound();
-                stack.writeToNBT(tagCompound);
-                nbtTagList.appendTag(tagCompound);
+                CompoundNBT tagCompound = new CompoundNBT();
+                stack.save(tagCompound);
+                nbtTagList.add(tagCompound);
             }
 
-            compound.setTag(id, nbtTagList);
+            compound.put(id, nbtTagList);
         }
     }
 
-    public static Block[] readNBTBlocks(String id, NBTTagCompound compound)
+    public static Block[] readNBTBlocks(String id, CompoundNBT compound)
     {
-        if (compound.hasKey(id))
+        if (compound.contains(id))
         {
-            NBTTagList nbtTagList = compound.getTagList(id, Constants.NBT.TAG_STRING);
-            Block[] blocks = new Block[nbtTagList.tagCount()];
+            ListNBT nbtTagList = compound.getList(id, Constants.NBT.TAG_STRING);
+            Block[] blocks = new Block[nbtTagList.size()];
 
             for (int i = 0; i < blocks.length; i++)
-                blocks[i] = Block.getBlockFromName(nbtTagList.getStringTagAt(i));
+                blocks[i] = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbtTagList.getString(i)));
 
             return blocks;
         }
@@ -187,22 +174,22 @@ public class PBNBTHelper
         return null;
     }
 
-    public static void writeNBTBlocks(String id, Block[] blocks, NBTTagCompound compound)
+    public static void writeNBTBlocks(String id, Block[] blocks, CompoundNBT compound)
     {
         if (blocks != null)
         {
-            NBTTagList nbtTagList = new NBTTagList();
+            ListNBT nbtTagList = new ListNBT();
 
             for (Block b : blocks)
-                nbtTagList.appendTag(new NBTTagString(PBNBTHelper.storeBlockString(b)));
+                nbtTagList.add(StringNBT.valueOf(PBNBTHelper.storeBlockString(b)));
 
-            compound.setTag(id, nbtTagList);
+            compound.put(id, nbtTagList);
         }
     }
 
-    public static long[] readNBTLongs(String id, NBTTagCompound compound)
+    public static long[] readNBTLongs(String id, CompoundNBT compound)
     {
-        if (compound.hasKey(id))
+        if (compound.contains(id))
         {
             ByteBuf bytes = Unpooled.copiedBuffer(compound.getByteArray(id));
             long[] longs = new long[bytes.capacity() / 8];
@@ -213,25 +200,25 @@ public class PBNBTHelper
         return null;
     }
 
-    public static void writeNBTLongs(String id, long[] longs, NBTTagCompound compound)
+    public static void writeNBTLongs(String id, long[] longs, CompoundNBT compound)
     {
         if (longs != null)
         {
             ByteBuf bytes = Unpooled.buffer(longs.length * 8);
             for (long aLong : longs) bytes.writeLong(aLong);
-            compound.setByteArray(id, bytes.array());
+            compound.putByteArray(id, bytes.array());
         }
     }
 
-    public static PotionEffect[] readNBTPotions(String id, NBTTagCompound compound)
+    public static EffectInstance[] readNBTPotions(String id, CompoundNBT compound)
     {
-        if (compound.hasKey(id))
+        if (compound.contains(id))
         {
-            NBTTagList nbtTagList = compound.getTagList(id, Constants.NBT.TAG_STRING);
-            PotionEffect[] potions = new PotionEffect[nbtTagList.tagCount()];
+            ListNBT nbtTagList = compound.getList(id, Constants.NBT.TAG_STRING);
+            EffectInstance[] potions = new EffectInstance[nbtTagList.size()];
 
             for (int i = 0; i < potions.length; i++)
-                potions[i] = PotionEffect.readCustomPotionEffectFromNBT(nbtTagList.getCompoundTagAt(i));
+                potions[i] = EffectInstance.load(nbtTagList.getCompound(i));
 
             return potions;
         }
@@ -239,20 +226,20 @@ public class PBNBTHelper
         return null;
     }
 
-    public static void writeNBTPotions(String id, PotionEffect[] potions, NBTTagCompound compound)
+    public static void writeNBTPotions(String id, EffectInstance[] potions, CompoundNBT compound)
     {
         if (potions != null)
         {
-            NBTTagList nbtTagList = new NBTTagList();
+            ListNBT nbtTagList = new ListNBT();
 
-            for (PotionEffect p : potions)
-                nbtTagList.appendTag(p.writeCustomPotionEffectToNBT(new NBTTagCompound()));
+            for (EffectInstance p : potions)
+                nbtTagList.add(p.save(new CompoundNBT()));
 
-            compound.setTag(id, nbtTagList);
+            compound.put(id, nbtTagList);
         }
     }
 
-    public static int[] readIntArrayFixedSize(String id, int length, NBTTagCompound compound)
+    public static int[] readIntArrayFixedSize(String id, int length, CompoundNBT compound)
     {
         int[] array = compound.getIntArray(id);
         return array.length != length ? new int[length] : array;
@@ -261,39 +248,39 @@ public class PBNBTHelper
     // Above, from IvToolkit
     // From Pandora's Box
 
-    public static String[][] readNBTStrings2D(String id, NBTTagCompound compound)
+    public static String[][] readNBTStrings2D(String id, CompoundNBT compound)
     {
-        NBTTagList nbtTagList = compound.getTagList(id, Constants.NBT.TAG_COMPOUND);
-        String[][] strings = new String[nbtTagList.tagCount()][];
+        ListNBT nbtTagList = compound.getList(id, Constants.NBT.TAG_COMPOUND);
+        String[][] strings = new String[nbtTagList.size()][];
 
         for (int i = 0; i < strings.length; i++)
-            strings[i] = readNBTStrings("Strings", nbtTagList.getCompoundTagAt(i));
+            strings[i] = readNBTStrings("Strings", nbtTagList.getCompound(i));
 
         return strings;
     }
 
-    public static void writeNBTStrings2D(String id, String[][] strings, NBTTagCompound compound)
+    public static void writeNBTStrings2D(String id, String[][] strings, CompoundNBT compound)
     {
-        NBTTagList nbtTagList = new NBTTagList();
+        ListNBT nbtTagList = new ListNBT();
 
         for (String[] s : strings)
         {
-            NBTTagCompound compound1 = new NBTTagCompound();
+            CompoundNBT compound1 = new CompoundNBT();
             writeNBTStrings("Strings", s, compound1);
-            nbtTagList.appendTag(compound1);
+            nbtTagList.add(compound1);
         }
 
-        compound.setTag(id, nbtTagList);
+        compound.put(id, nbtTagList);
     }
 
     public static String storeBlockString(Block block)
     {
-        ResourceLocation location = Block.REGISTRY.getNameForObject(block);
+        ResourceLocation location = ForgeRegistries.BLOCKS.getKey(block);
         return location == null ? "minecraft:air" : location.toString();
     }
 
     public static Block getBlock(String string)
     {
-        return Block.getBlockFromName(string);
+        return ForgeRegistries.BLOCKS.getValue(new ResourceLocation(string));
     }
 }

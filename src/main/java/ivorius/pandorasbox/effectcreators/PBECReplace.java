@@ -12,8 +12,8 @@ import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.ZValue;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -58,14 +58,14 @@ public class PBECReplace implements PBEffectCreator
 
         if (takeRandomNearbyBlocks)
         {
-            List<WeightedBlock> nearbyBlocks = new ArrayList<WeightedBlock>();
+            List<WeightedBlock> nearbyBlocks = new ArrayList<>();
             for (int xP = -5; xP <= 5; xP++)
             {
                 for (int yP = -5; yP <= 5; yP++)
                 {
                     for (int zP = -5; zP <= 5; zP++)
                     {
-                        IBlockState block = world.getBlockState(new BlockPos(baseX + xP, baseY + yP, baseZ + zP));
+                        BlockState block = world.getBlockState(new BlockPos(baseX + xP, baseY + yP, baseZ + zP));
 
                         if (block.getMaterial() != Material.AIR)
                             nearbyBlocks.add(new WeightedBlock(100, block.getBlock()));

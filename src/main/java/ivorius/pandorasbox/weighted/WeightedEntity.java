@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.weighted;
 
-import ivorius.ivtoolkit.random.WeightedSelector;
+import ivorius.pandorasbox.WeightedSelector;
 
 /**
  * Created by lukas on 31.03.14.

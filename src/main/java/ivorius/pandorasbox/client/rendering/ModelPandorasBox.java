@@ -12,123 +12,81 @@
 
 package ivorius.pandorasbox.client.rendering;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.SegmentedModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
-public class ModelPandorasBox extends ModelBase
-{
-    //fields
-    ModelRenderer mainBody;
-    ModelRenderer foot1;
-    ModelRenderer foot2;
-    ModelRenderer foot3;
-    ModelRenderer foot4;
-    ModelRenderer backGold;
-    ModelRenderer top;
-    ModelRenderer topGold;
-    ModelRenderer topGoldLeft;
-    ModelRenderer topGoldRight;
+import java.util.Arrays;
 
-    public ModelPandorasBox()
-    {
-        textureWidth = 32;
-        textureHeight = 32;
+public class ModelPandorasBox extends SegmentedModel<EntityPandorasBox> {
+    private final ModelRenderer feet;
+    private final ModelRenderer body;
+    private final ModelRenderer joint;
+    private final ModelRenderer top;
+    private final ModelRenderer[] parts;
 
-        mainBody = new ModelRenderer(this, 0, 0);
-        mainBody.addBox(-4F, -4F, -4F, 8, 6, 8);
-        mainBody.setRotationPoint(0F, 21.5F, 0F);
-        mainBody.setTextureSize(64, 32);
-        mainBody.mirror = true;
-        setRotation(mainBody, 0F, 0F, 0F);
-        foot1 = new ModelRenderer(this, 0, 14);
-        foot1.addBox(0F, 0F, 0F, 1, 1, 1);
-        foot1.setRotationPoint(3.2F, 23F, 3.2F);
-        foot1.setTextureSize(64, 32);
-        foot1.mirror = true;
-        setRotation(foot1, 0F, 0F, 0F);
-        foot2 = new ModelRenderer(this, 0, 16);
-        foot2.addBox(0F, 0F, 0F, 1, 1, 1);
-        foot2.setRotationPoint(3.2F, 23F, -4.2F);
-        foot2.setTextureSize(64, 32);
-        foot2.mirror = true;
-        setRotation(foot2, 0F, 0F, 0F);
-        foot3 = new ModelRenderer(this, 4, 14);
-        foot3.addBox(0F, 0F, 0F, 1, 1, 1);
-        foot3.setRotationPoint(-4.2F, 23F, 3.2F);
-        foot3.setTextureSize(64, 32);
-        foot3.mirror = true;
-        setRotation(foot3, 0F, 0F, 0F);
-        foot4 = new ModelRenderer(this, 4, 16);
-        foot4.addBox(0F, 0F, 0F, 1, 1, 1);
-        foot4.setRotationPoint(-4.2F, 23F, -4.2F);
-        foot4.setTextureSize(64, 32);
-        foot4.mirror = true;
-        setRotation(foot4, 0F, 0F, 0F);
-        backGold = new ModelRenderer(this, 8, 14);
-        backGold.addBox(-3.5F, 0F, 0F, 7, 1, 1);
-        backGold.setRotationPoint(0F, 17.4F, -4.2F);
-        backGold.setTextureSize(64, 32);
-        backGold.mirror = true;
-        setRotation(backGold, 0F, 0F, 0F);
-        top = new ModelRenderer(this, 0, 18);
-        top.addBox(-4F, -1F, 0F, 8, 1, 8);
-        top.setRotationPoint(0F, 17.5F, -4F);
-        top.setTextureSize(64, 32);
-        top.mirror = true;
-        setRotation(top, 2.094395F, 0F, 0F);
-        topGold = new ModelRenderer(this, 0, 27);
-        topGold.addBox(-2F, -1.5F, 2F, 4, 1, 4);
-        topGold.setRotationPoint(0F, 17.5F, -4F);
-        topGold.setTextureSize(64, 32);
-        topGold.mirror = true;
-        setRotation(topGold, 2.094395F, 0F, 0F);
-        topGoldLeft = new ModelRenderer(this, 8, 16);
-        topGoldLeft.addBox(0F, -0.7F, 7.1F, 1, 1, 1);
-        topGoldLeft.setRotationPoint(3.1F, 17.5F, -4F);
-        topGoldLeft.setTextureSize(64, 32);
-        topGoldLeft.mirror = true;
-        setRotation(topGoldLeft, 2.094395F, 0F, 0F);
-        topGoldRight = new ModelRenderer(this, 12, 16);
-        topGoldRight.addBox(0F, -0.7F, 7.1F, 1, 1, 1);
-        topGoldRight.setRotationPoint(-4.1F, 17.5F, -4F);
-        topGoldRight.setTextureSize(64, 32);
-        topGoldRight.mirror = true;
-        setRotation(topGoldRight, 2.094395F, 0F, 0F);
-    }
+    public ModelPandorasBox() {
+        texWidth = 32;
+        texHeight = 32;
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
-    {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        mainBody.render(f5);
-        foot1.render(f5);
-        foot2.render(f5);
-        foot3.render(f5);
-        foot4.render(f5);
-        backGold.render(f5);
-        top.render(f5);
-        topGold.render(f5);
-        topGoldLeft.render(f5);
-        topGoldRight.render(f5);
-    }
+        feet = new ModelRenderer(this);
+        feet.setPos(0.0F, 1.0F, 0.0F);
+        feet.addBox(0, 14, -3.0F, 22.0F, 2.0F, 1, 1, 1, 0.0F);
+        feet.addBox(4, 14, 2.0F, 22.0F, 2.0F, 1, 1, 1, 0.0F);
+        feet.addBox(4, 16, 2.0F, 22.0F, -3.0F, 1, 1, 1, 0.0F);
+        feet.addBox(0, 16, -3.0F, 22.0F, -3.0F, 1, 1, 1, 0.0F);
+        setRotationAngle(feet, 0, 0, 0);
 
+        body = new ModelRenderer(this);
+        body.setPos(0.0F, 24.0F, 0.0F);
+        body.addBox( 0, 0, -4.0F, -7.0F, -4.0F, 8, 6, 8, 0.0F);
+        setRotationAngle(body, 0, 0, 0);
 
-    private void setRotation(ModelRenderer model, float x, float y, float z)
-    {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
+        joint = new ModelRenderer(this);
+        joint.setPos(0.0F, 24.0F, 0.0F);
+        joint.addBox(8, 14, -3.5F, -8.0F, -4.0F, 7, 1, 1, 0.0F);
+        setRotationAngle(joint, 0, 0, 0);
+
+        top = new ModelRenderer(this);
+        top.setPos(0.0F, 24.0F, 0.0F);
+        setRotationAngle(top, -0.0366F, 0.0F, 0.0F);
+        top.addBox(0, 18, -4.0F, -8.0F, -4.0F, 8, 1, 8, 0.0F);
+        top.addBox(0, 27, -2.0F, -9.0F, -2.0F, 4, 1, 4, 0.0F);
+        top.addBox(8, 16, -3.0F, -8.5F, -0.5F, 1, 1, 1, 0.0F);
+        top.addBox(8, 16, 2.0F, -8.5F, -0.5F, 1, 1, 1, 0.0F);
+        top.addBox(8, 16, -0.5F, -8.5F, -3.0F, 1, 1, 1, 0.0F);
+        top.addBox(8, 16, -0.5F, -8.5F, 2.0F, 1, 1, 1, 0.0F);
+        parts = new ModelRenderer[]{feet, body, joint, top};
+        for(ModelRenderer part : parts) {
+            part.setTexSize(32, 32);
+        }
     }
 
     @Override
-    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity par7Entity)
-    {
-        super.setRotationAngles(par1, par2, par3, par4, par5, par6, par7Entity);
+    public void setupAnim(EntityPandorasBox entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        top.xRot = entityIn.xRot;
+    }
 
-        topGold.rotateAngleX = par7Entity.rotationPitch;
-        topGoldLeft.rotateAngleX = par7Entity.rotationPitch;
-        topGoldRight.rotateAngleX = par7Entity.rotationPitch;
-        top.rotateAngleX = par7Entity.rotationPitch;
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.xRot = x;
+        modelRenderer.yRot = y;
+        modelRenderer.zRot = z;
+    }
+
+    @Override
+    public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        feet.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        joint.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        top.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+    }
+
+    @Override
+    public Iterable<ModelRenderer> parts() {
+        return Arrays.asList(parts);
     }
 }

@@ -74,12 +74,12 @@ public class IvMathHelper
 
     public static float clamp(float min, float value, float max)
     {
-        return value < min ? min : value > max ? max : value;
+        return value < min ? min : Math.min(value, max);
     }
 
     public static double clamp(double min, double value, double max)
     {
-        return value < min ? min : value > max ? max : value;
+        return value < min ? min : Math.min(value, max);
     }
 
     public static float nearValue(float value, float dest, float mulSpeed, float plusSpeed)

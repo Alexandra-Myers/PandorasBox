@@ -6,8 +6,10 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -21,10 +23,6 @@ public class PBEffectRandomExplosions extends PBEffectPositionBased
     public boolean isFlaming;
     public boolean isSmoking;
 
-    protected PBEffectRandomExplosions()
-    {
-    }
-
     public PBEffectRandomExplosions(int time, int number, double range, float minExplosionStrength, float maxExplosionStrength, boolean isFlaming, boolean isSmoking)
     {
         super(time, number, range);
@@ -37,26 +35,26 @@ public class PBEffectRandomExplosions extends PBEffectPositionBased
     @Override
     public void doEffect(World world, EntityPandorasBox entity, Random random, float newRatio, float prevRatio, double x, double y, double z)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
-            world.newExplosion(entity, x, y, z, minExplosionStrength + random.nextFloat() * (maxExplosionStrength - minExplosionStrength), isFlaming, isSmoking);
+            world.explode(entity, x, y, z, minExplosionStrength + random.nextFloat() * (maxExplosionStrength - minExplosionStrength), isFlaming, Explosion.Mode.BREAK);
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setFloat("minExplosionStrength", minExplosionStrength);
-        compound.setFloat("maxExplosionStrength", maxExplosionStrength);
+        compound.putFloat("minExplosionStrength", minExplosionStrength);
+        compound.putFloat("maxExplosionStrength", maxExplosionStrength);
 
-        compound.setBoolean("isFlaming", isFlaming);
-        compound.setBoolean("isSmoking", isSmoking);
+        compound.putBoolean("isFlaming", isFlaming);
+        compound.putBoolean("isSmoking", isSmoking);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 

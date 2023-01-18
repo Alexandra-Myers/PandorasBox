@@ -6,15 +6,15 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.block.Block;
+import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenerator;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -28,10 +28,6 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
 
     public int generatorFlags;
 
-    public PBEffectGenerateByGenerator()
-    {
-    }
-
     public PBEffectGenerateByGenerator(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags)
     {
         super(time, range, 1, unifiedSeed);
@@ -44,28 +40,36 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
     @Override
     public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
             if (random.nextDouble() < chancePerBlock)
             {
-                IBlockState blockState = world.getBlockState(pos);
-                BlockPos posBelow = pos.down();
-                IBlockState blockBelowState = world.getBlockState(posBelow);
+                BlockState blockState = world.getBlockState(pos);
+                BlockPos posBelow = pos.below();
+                BlockState blockBelowState = world.getBlockState(posBelow);
 
-                if (blockState.getMaterial() == Material.AIR && (!requiresSolidGround || blockBelowState.isNormalCube()))
+                if (blockState.getMaterial() == Material.AIR && (!requiresSolidGround || blockBelowState.isRedstoneConductor(world, posBelow)))
                 {
-                    setBlockSafe(world, posBelow, Blocks.DIRT.getDefaultState());
+                    setBlockSafe(world, posBelow, Blocks.DIRT.defaultBlockState());
 
-                    WorldGenerator generator = getRandomGenerator(getGenerators(), generatorFlags, random);
-                    generator.generate(world, random, pos);
+                    Object generator = getRandomGenerator(getGenerators(), generatorFlags, random);
+                    if(generator instanceof ConfiguredFeature && world instanceof ServerWorld) {
+                        ConfiguredFeature<?, ?> feature = (ConfiguredFeature<?, ?>) generator;
+                        ServerWorld serverWorld = (ServerWorld) world;
+                        feature.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                    }
+                    if(generator instanceof AccessibleTreeFeature) {
+                        AccessibleTreeFeature feature = (AccessibleTreeFeature) generator;
+                        feature.place(world, random, pos);
+                    }
                 }
             }
         }
     }
 
-    public abstract WorldGenerator[] getGenerators();
+    public abstract Object[] getGenerators();
 
-    public static WorldGenerator getRandomGenerator(WorldGenerator[] generators, int flags, Random random)
+    public static Object getRandomGenerator(Object[] generators, int flags, Random random)
     {
         int totalNumber = 0;
 
@@ -97,22 +101,22 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setBoolean("requiresSolidGround", requiresSolidGround);
-        compound.setDouble("chancePerBlock", chancePerBlock);
-        compound.setInteger("generatorFlags", generatorFlags);
+        compound.putBoolean("requiresSolidGround", requiresSolidGround);
+        compound.putDouble("chancePerBlock", chancePerBlock);
+        compound.putInt("generatorFlags", generatorFlags);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
         requiresSolidGround = compound.getBoolean("requiresSolidGround");
         chancePerBlock = compound.getDouble("chancePerBlock");
-        generatorFlags = compound.getInteger("generatorFlags");
+        generatorFlags = compound.getInt("generatorFlags");
     }
 }

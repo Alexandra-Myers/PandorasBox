@@ -5,16 +5,16 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import ivorius.ivtoolkit.random.WeightedSelector;
+import ivorius.pandorasbox.WeightedSelector;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectSpawnItemStacks;
 import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemEnchantedBook;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class PBECSpawnItems implements PBEffectCreator
 
     public static ItemStack[] getItemStacks(Random random, List<RandomizedItemStack> items, int number, boolean split, boolean mixUp, int enchantLevel, boolean giveNames)
     {
-        ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> list = new ArrayList<>();
         for (int i = 0; i < number; i++)
         {
             RandomizedItemStack wrcc = mixUp ? WeightedSelector.selectItem(random, items) : items.get(i);
@@ -88,11 +88,11 @@ public class PBECSpawnItems implements PBEffectCreator
 
             if (enchantLevel > 0)
             {
-                List enchantments = EnchantmentHelper.buildEnchantmentList(random, stack, enchantLevel, false);
+                List enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, false);
 
                 if (enchantments.size() == 0)
                 {
-                    enchantments = EnchantmentHelper.buildEnchantmentList(random, new ItemStack(Items.IRON_AXE), enchantLevel, false);
+                    enchantments = EnchantmentHelper.selectEnchantment(random, new ItemStack(Items.IRON_AXE), enchantLevel, false);
                 }
 
                 if (enchantments.size() > 0)
@@ -103,11 +103,11 @@ public class PBECSpawnItems implements PBEffectCreator
 
                         if (stack.getItem() == Items.ENCHANTED_BOOK)
                         {
-                            ItemEnchantedBook.addEnchantment(stack, enchantmentdata);
+                            EnchantedBookItem.addEnchantment(stack, enchantmentdata);
                         }
                         else
                         {
-                            stack.addEnchantment(enchantmentdata.enchantment, enchantmentdata.enchantmentLevel);
+                            stack.enchant(enchantmentdata.enchantment, enchantmentdata.level);
                         }
                     }
                 }
@@ -115,14 +115,14 @@ public class PBECSpawnItems implements PBEffectCreator
 
             if (giveNames)
             {
-                stack.setStackDisplayName(PandorasBoxItemNamer.getRandomName(random));
+                stack.setHoverName(PandorasBoxItemNamer.getRandomName(random));
             }
 
             if (split)
             {
                 for (int n = 0; n < stack.getCount(); n++)
                 {
-                    ItemStack splitStack = stack.splitStack(1);
+                    ItemStack splitStack = stack.split(1);
                     list.add(splitStack);
                 }
             }

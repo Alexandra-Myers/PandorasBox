@@ -5,21 +5,32 @@
 
 package ivorius.pandorasbox.effects;
 
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
+import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
 import ivorius.pandorasbox.worldgen.WorldGenColorfulTree;
 import ivorius.pandorasbox.worldgen.WorldGenLollipop;
 import ivorius.pandorasbox.worldgen.WorldGenRainbow;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenerator;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
+import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.foliageplacer.BlobFoliagePlacer;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.compress.archivers.zip.UnsupportedZipFeatureException;
 
 import java.util.Random;
 
@@ -29,10 +40,6 @@ import java.util.Random;
 public class PBEffectGenConvertToHFT extends PBEffectGenerate
 {
     public int[] groundMetas;
-
-    public PBEffectGenConvertToHFT()
-    {
-    }
 
     public PBEffectGenConvertToHFT(int time, double range, int unifiedSeed, int[] groundMetas)
     {
@@ -44,70 +51,89 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
     @Override
     public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
-        IBlockState blockState = world.getBlockState(pos);
+        BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
-        Block placeBlock = Blocks.STAINED_HARDENED_CLAY;
-
+        ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
+        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
+        ArrayListExtensions<Block> iCTWTGASTB = new ArrayListExtensions<>();
+        iCTWTGASTB.add(Blocks.LAVA);
+        for(Block block1 : ForgeRegistries.BLOCKS) {
+            if(BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1)) {
+                iCTWTGASTB.add(block1);
+            }
+            if(BlockTags.WOOL.contains(block1)) {
+                blocks.add(block1);
+            }
+            if(block1.getRegistryName().getPath().endsWith("terracotta")) {
+                misc.add(block1);
+                blocks.add(block1);
+            }
+        }
+        Block placeBlock = misc.get(groundMetas[world.random.nextInt(groundMetas.length)]);
         if (pass == 0)
         {
-            if (isBlockAnyOf(block, Blocks.LOG, Blocks.LOG2, Blocks.LEAVES, Blocks.LEAVES2, Blocks.LAVA, Blocks.FLOWING_LAVA))
+            if (isBlockAnyOf(block, iCTWTGASTB))
             {
                 setBlockToAirSafe(world, pos);
             }
-            else if (block == Blocks.WOOL || block == Blocks.STAINED_HARDENED_CLAY)
+            else if (isBlockAnyOf(block, blocks))
             {
 
             }
-            else if (block.isNormalCube(blockState, world, pos))
+            else if (block.getBlockSupportShape(blockState, world, pos) == Blocks.GRASS_BLOCK.getBlockSupportShape(Blocks.GRASS_BLOCK.defaultBlockState(), world, pos))
             {
-                if (!world.isRemote)
+                if (world instanceof ServerWorld)
                 {
-                    setBlockSafe(world, pos, placeBlock.getStateFromMeta(groundMetas[world.rand.nextInt(groundMetas.length)]));
+                    setBlockSafe(world, pos, placeBlock.defaultBlockState());
                 }
             }
         }
         else if (pass == 1)
         {
-            if (!world.isRemote)
+            if (world instanceof ServerWorld)
             {
-                if (world.rand.nextInt(10 * 10) == 0)
+                if (world.random.nextInt(10 * 10) == 0)
                 {
-                    int[] lolliColors = new int[world.rand.nextInt(4) + 1];
+                    int[] lolliColors = new int[world.random.nextInt(4) + 1];
                     for (int i = 0; i < lolliColors.length; i++)
                     {
-                        lolliColors[i] = world.rand.nextInt(16);
+                        lolliColors[i] = world.random.nextInt(16);
                     }
 
-                    WorldGenerator treeGen;
+                    TreeFeature treeGen;
 
-                    if (world.rand.nextBoolean())
+                    if (world.random.nextBoolean())
                     {
-                        treeGen = new WorldGenLollipop(true, 20, Blocks.WOOL, lolliColors, placeBlock);
+                        treeGen = (TreeFeature) PandorasBox.instance.LOLIPOP;
                     }
-                    else if (world.rand.nextInt(6) > 0)
+                    else if (world.random.nextInt(6) > 0)
                     {
-                        treeGen = new WorldGenColorfulTree(true, 20, Blocks.WOOL, lolliColors, placeBlock);
+                        treeGen = (TreeFeature) PandorasBox.instance.COLOURFUL_TREE;
                     }
                     else
                     {
-                        treeGen = new WorldGenRainbow(true, Blocks.WOOL, 20, placeBlock);
+                        treeGen = (TreeFeature) PandorasBox.instance.RAINBOW;
                     }
-
-                    treeGen.generate(world, world.rand, pos);
+                    if(treeGen instanceof AccessibleTreeFeature) {
+                        AccessibleTreeFeature treeFeature = (AccessibleTreeFeature) treeGen;
+                        treeFeature.setMetas(lolliColors);
+                        treeFeature.setSoil(placeBlock);
+                        treeFeature.place(world, world.random, pos);
+                    }
                 }
-                else if (world.rand.nextInt(5 * 5) == 0)
+                else if (world.random.nextInt(5 * 5) == 0)
                 {
-                    if (world.getBlockState(pos.down()) == placeBlock && world.getBlockState(pos).getBlock() == Blocks.AIR)
+                    if (world.getBlockState(pos.below()).getBlock() == placeBlock && world.getBlockState(pos).isAir(world, pos))
                     {
-                        if (world.rand.nextBoolean())
+                        if (world.random.nextBoolean())
                         {
-                            setBlockSafe(world, pos, Blocks.CAKE.getDefaultState());
+                            setBlockSafe(world, pos, Blocks.CAKE.defaultBlockState());
                         }
                         else
                         {
-                            EntityItem entityItem = new EntityItem(world, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.COOKIE));
-                            entityItem.setPickupDelay(20);
-                            world.spawnEntity(entityItem);
+                            ItemEntity entityItem = new ItemEntity(world, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.COOKIE));
+                            entityItem.setPickUpDelay(20);
+                            world.addFreshEntity(entityItem);
                         }
                     }
                 }
@@ -116,15 +142,15 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setIntArray("groundMetas", groundMetas);
+        compound.putIntArray("groundMetas", groundMetas);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 

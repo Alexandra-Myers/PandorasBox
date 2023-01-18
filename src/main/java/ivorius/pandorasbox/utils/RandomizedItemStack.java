@@ -1,8 +1,9 @@
 package ivorius.pandorasbox.utils;
 
-import ivorius.ivtoolkit.random.WeightedSelector;
+import ivorius.pandorasbox.WeightedSelector;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 
 /**
  * Created by lukas on 05.04.15.
@@ -16,9 +17,9 @@ public class RandomizedItemStack implements WeightedSelector.Item
 
     public double weight;
 
-    public RandomizedItemStack(Item item, int metadata, int min, int max, double weight)
+    public RandomizedItemStack(Item item, int min, int max, double weight)
     {
-        this(new ItemStack(item, 1, metadata), min, max, weight);
+        this(new ItemStack(item, 1, new CompoundNBT()), min, max, weight);
     }
 
     public RandomizedItemStack(ItemStack itemStack, int min, int max, double weight)

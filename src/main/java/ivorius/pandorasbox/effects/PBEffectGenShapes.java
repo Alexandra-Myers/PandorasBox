@@ -10,10 +10,11 @@ import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Collection;
 import java.util.Random;
@@ -23,9 +24,6 @@ import java.util.Random;
  */
 public class PBEffectGenShapes extends PBEffectGenerateByStructure
 {
-    public PBEffectGenShapes()
-    {
-    }
 
     public PBEffectGenShapes(int maxTicksAlive)
     {
@@ -68,7 +66,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
     @Override
     public void generateStructure(World world, EntityPandorasBox entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
             StructureShape structureShape = (StructureShape) structure;
             double prevSize = structureShape.size * prevRatio;
@@ -90,7 +88,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
                             {
                                 if (dist > prevSize)
                                 {
-                                    generateOnBlock(world, entity, random, structureShape, pos.add(structure.x + xPlus, structure.y + yPlus, structure.z + zPlus));
+                                    generateOnBlock(world, entity, random, structureShape, pos.offset(structure.x + xPlus, structure.y + yPlus, structure.z + zPlus));
                                 }
                                 else
                                 {
@@ -119,7 +117,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
                             {
                                 if (xDist > prevSize || yDist > prevSize || zDist > prevSize)
                                 {
-                                    generateOnBlock(world, entity, random, structureShape, pos.add(structure.x + xPlus, structure.y + yPlus, structure.z + zPlus));
+                                    generateOnBlock(world, entity, random, structureShape, pos.offset(structure.x + xPlus, structure.y + yPlus, structure.z + zPlus));
                                 }
                                 else
                                 {
@@ -149,7 +147,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
                             {
                                 for (int zPlus = -levelSize; zPlus <= levelSize; zPlus++)
                                 {
-                                    generateOnBlock(world, entity, random, structureShape, pos.add(structure.x + xPlus, structure.y + yPlus, structure.z + zPlus));
+                                    generateOnBlock(world, entity, random, structureShape, pos.offset(structure.x + xPlus, structure.y + yPlus, structure.z + zPlus));
                                 }
                             }
                         }
@@ -187,24 +185,24 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound compound)
+        public void writeToNBT(CompoundNBT compound)
         {
             super.writeToNBT(compound);
 
             PBNBTHelper.writeNBTBlocks("blocks", blocks, compound);
 
-            compound.setInteger("shapeType", shapeType);
-            compound.setDouble("size", size);
+            compound.putInt("shapeType", shapeType);
+            compound.putDouble("size", size);
         }
 
         @Override
-        public void readFromNBT(NBTTagCompound compound)
+        public void readFromNBT(CompoundNBT compound)
         {
             super.readFromNBT(compound);
 
             blocks = PBNBTHelper.readNBTBlocks("blocks", compound);
 
-            shapeType = compound.getInteger("shapeType");
+            shapeType = compound.getInt("shapeType");
             size = compound.getDouble("size");
         }
     }

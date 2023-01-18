@@ -7,9 +7,10 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.utils.PBNBTHelper;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
@@ -20,13 +21,9 @@ import java.util.Random;
  */
 public class PBEffectEntitiesBuff extends PBEffectEntityBased
 {
-    public PotionEffect[] effects;
+    public EffectInstance[] effects;
 
-    public PBEffectEntitiesBuff()
-    {
-    }
-
-    public PBEffectEntitiesBuff(int maxTicksAlive, double range, PotionEffect[] effects)
+    public PBEffectEntitiesBuff(int maxTicksAlive, double range, EffectInstance[] effects)
     {
         super(maxTicksAlive, range);
 
@@ -34,9 +31,9 @@ public class PBEffectEntitiesBuff extends PBEffectEntityBased
     }
 
     @Override
-    public void affectEntity(World world, EntityPandorasBox box, Random random, EntityLivingBase entity, double newRatio, double prevRatio, double strength)
+    public void affectEntity(World world, EntityPandorasBox box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength)
     {
-        for (PotionEffect effect : effects)
+        for (EffectInstance effect : effects)
         {
             int prevDuration = MathHelper.floor(prevRatio * strength * effect.getDuration());
             int newDuration = MathHelper.floor(newRatio * strength * effect.getDuration());
@@ -44,25 +41,24 @@ public class PBEffectEntitiesBuff extends PBEffectEntityBased
 
             if (duration > 0)
             {
-                PotionEffect curEffect = new PotionEffect(effect.getPotion(), duration, effect.getAmplifier(), effect.getIsAmbient(), effect.doesShowParticles());
+                EffectInstance effectInstance = new EffectInstance(effect.getEffect(), duration, effect.getAmplifier(), effect.isAmbient(), effect.isVisible());
+                Potion curEffect = new Potion(effectInstance);
                 addPotionEffectDuration(entity, curEffect);
             }
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
-
         PBNBTHelper.writeNBTPotions("potions", effects, compound);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
-
         effects = PBNBTHelper.readNBTPotions("potions", compound);
     }
 }

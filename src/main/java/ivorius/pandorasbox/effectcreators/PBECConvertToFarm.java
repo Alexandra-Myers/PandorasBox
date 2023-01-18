@@ -35,8 +35,7 @@ public class PBECConvertToFarm implements PBEffectCreator
         double cropChance = this.cropChance.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        PBEffectGenConvertToFarm effect = new PBEffectGenConvertToFarm(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), cropChance);
-        return effect;
+        return new PBEffectGenConvertToFarm(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), cropChance);
     }
 
     @Override

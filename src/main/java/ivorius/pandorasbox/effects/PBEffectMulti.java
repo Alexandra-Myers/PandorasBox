@@ -6,9 +6,8 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants;
 
 /**
@@ -18,10 +17,6 @@ public class PBEffectMulti extends PBEffect
 {
     public PBEffect[] effects;
     public int[] delays;
-
-    public PBEffectMulti()
-    {
-    }
 
     public PBEffectMulti(PBEffect[] effects, int[] delays)
     {
@@ -55,41 +50,41 @@ public class PBEffectMulti extends PBEffect
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
-        NBTTagList list = new NBTTagList();
+        ListNBT list = new ListNBT();
 
         for (int i = 0; i < effects.length; i++)
         {
-            NBTTagCompound cmp = new NBTTagCompound();
+            CompoundNBT cmp = new CompoundNBT();
 
-            cmp.setInteger("delay", delays[i]);
+            cmp.putInt("delay", delays[i]);
 
-            cmp.setString("pbEffectID", effects[i].getEffectID());
-            NBTTagCompound effectCmp = new NBTTagCompound();
+            cmp.putString("pbEffectID", effects[i].getEffectID());
+            CompoundNBT effectCmp = new CompoundNBT();
             effects[i].writeToNBT(effectCmp);
-            cmp.setTag("pbEffectCompound", effectCmp);
+            cmp.put("pbEffectCompound", effectCmp);
 
-            list.appendTag(cmp);
+            list.add(cmp);
         }
 
-        compound.setTag("effects", list);
+        compound.put("effects", list);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
-        NBTTagList list = compound.getTagList("effects", Constants.NBT.TAG_COMPOUND);
+        ListNBT list = compound.getList("effects", Constants.NBT.TAG_COMPOUND);
 
-        effects = new PBEffect[list.tagCount()];
+        effects = new PBEffect[list.size()];
         delays = new int[effects.length];
 
         for (int i = 0; i < effects.length; i++)
         {
-            NBTTagCompound cmp = list.getCompoundTagAt(i);
+            CompoundNBT cmp = list.getCompound(i);
 
-            delays[i] = cmp.getInteger("delay");
-            effects[i] = PBEffectRegistry.loadEffect(cmp.getString("pbEffectID"), cmp.getCompoundTag("pbEffectCompound"));
+            delays[i] = cmp.getInt("delay");
+            effects[i] = PBEffectRegistry.loadEffect(cmp.getString("pbEffectID"), cmp.getCompound("pbEffectCompound"));
         }
     }
 

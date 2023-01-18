@@ -1,0 +1,8 @@
+{
+    "entity.pandorasbox.pandoras_box": "Caixa de Pandora",
+    "block.pandorasbox.pandoras_box": "Caixa de Pandora",
+    
+    "pandorasbox.configgui.title": "Caixa de Pandora",
+    "pandorasbox.configgui.ctgy.balancing": "Balanceamento",
+    "pandorasbox.configgui.ctgy.balancing.tooltip": "Configurações que afetam o equilíbrio do mod"
+}

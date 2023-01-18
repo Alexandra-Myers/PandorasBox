@@ -5,26 +5,29 @@
 
 package ivorius.pandorasbox.effects;
 
-import net.minecraft.nbt.NBTTagCompound;
+import ivorius.pandorasbox.PandorasBox;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by lukas on 30.03.14.
  */
 public class PBEffectRegistry
 {
-    private static Hashtable<String, Class<? extends PBEffect>> registeredEffects = new Hashtable<String, Class<? extends PBEffect>>();
+    private static Hashtable<String, Class<? extends PBEffect>> registeredEffects = new Hashtable<>();
 
     public static Class<? extends PBEffect> getEffect(String id)
     {
         return registeredEffects.get(id);
     }
+    public static final List<ResourceLocation> resourceLocationList = new ArrayList<>();
 
     public static void register(Class<? extends PBEffect> effect, String id)
     {
+        id = id.toLowerCase();
+        resourceLocationList.add(new ResourceLocation(PandorasBox.MOD_ID, id));
         registeredEffects.put(id, effect);
     }
 
@@ -38,23 +41,23 @@ public class PBEffectRegistry
         return registeredEffects.values();
     }
 
-    public static void writeEffect(PBEffect effect, NBTTagCompound compound)
+    public static void writeEffect(PBEffect effect, CompoundNBT compound)
     {
         if (effect != null)
         {
-            compound.setString("pbEffectID", effect.getEffectID());
-            NBTTagCompound pbEffectCompound = new NBTTagCompound();
+            compound.putString("pbEffectID", effect.getEffectID());
+            CompoundNBT pbEffectCompound = new CompoundNBT();
             effect.writeToNBT(pbEffectCompound);
-            compound.setTag("pbEffectCompound", pbEffectCompound);
+            compound.put("pbEffectCompound", pbEffectCompound);
         }
     }
 
-    public static PBEffect loadEffect(NBTTagCompound compound)
+    public static PBEffect loadEffect(CompoundNBT compound)
     {
-        return loadEffect(compound.getString("pbEffectID"), compound.getCompoundTag("pbEffectCompound"));
+        return loadEffect(compound.getString("pbEffectID"), compound.getCompound("pbEffectCompound"));
     }
 
-    public static PBEffect loadEffect(String id, NBTTagCompound compound)
+    public static PBEffect loadEffect(String id, CompoundNBT compound)
     {
         Class<? extends PBEffect> clazz = getEffect(id);
 
@@ -66,11 +69,7 @@ public class PBEffectRegistry
             {
                 effect = clazz.newInstance();
             }
-            catch (InstantiationException e)
-            {
-                e.printStackTrace();
-            }
-            catch (IllegalAccessException e)
+            catch (InstantiationException | IllegalAccessException e)
             {
                 e.printStackTrace();
             }

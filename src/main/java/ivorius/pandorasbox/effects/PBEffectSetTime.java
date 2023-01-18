@@ -6,10 +6,11 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.ServerWorldInfo;
 
 import java.util.Random;
 
@@ -19,10 +20,6 @@ import java.util.Random;
 public class PBEffectSetTime extends PBEffectNormal
 {
     public int totalPlus;
-
-    public PBEffectSetTime()
-    {
-    }
 
     public PBEffectSetTime(int maxTicksAlive, int totalPlus)
     {
@@ -37,22 +34,24 @@ public class PBEffectSetTime extends PBEffectNormal
         int prevPlus = MathHelper.floor(totalPlus * prevRatio);
         int plus = newPlus - prevPlus;
 
-        world.setWorldTime(world.getWorldTime() + plus);
+        if (world.getLevelData() instanceof ServerWorldInfo) {
+            ((ServerWorldInfo) world.getLevelData()).setGameTime(world.getGameTime() + plus);
+        }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setInteger("totalPlus", totalPlus);
+        compound.putInt("totalPlus", totalPlus);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
-        totalPlus = compound.getInteger("totalPlus");
+        totalPlus = compound.getInt("totalPlus");
     }
 }

@@ -6,14 +6,17 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
+import javax.lang.model.type.ArrayType;
 import java.util.Random;
 
 /**
@@ -22,10 +25,6 @@ import java.util.Random;
 public class PBEffectGenConvertToFarm extends PBEffectGenerate
 {
     private double cropChance;
-
-    public PBEffectGenConvertToFarm()
-    {
-    }
 
     public PBEffectGenConvertToFarm(int time, double range, int unifiedSeed, double cropChance)
     {
@@ -36,84 +35,86 @@ public class PBEffectGenConvertToFarm extends PBEffectGenerate
     @Override
     public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
-            IBlockState blockState = world.getBlockState(pos);
+            BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
 
             if (pass == 0)
             {
-                BlockPos posBelow = pos.down();
-                IBlockState blockBelowState = world.getBlockState(posBelow);
+                BlockPos posBelow = pos.below();
+                BlockState blockBelowState = world.getBlockState(posBelow);
                 Block blockBelow = blockBelowState.getBlock();
 
-                if (blockBelowState.isNormalCube() && Blocks.SNOW_LAYER.canPlaceBlockAt(world, pos) && block != Blocks.WATER)
+                if (blockBelowState.isRedstoneConductor(world, pos) && blockState.isAir(world, pos) && block != Blocks.WATER)
                 {
                     if (random.nextDouble() < cropChance)
                     {
-                        int b = world.rand.nextInt(7);
+                        int b = world.random.nextInt(7);
 
                         if (b == 0)
                         {
-                            setBlockSafe(world, posBelow, Blocks.FARMLAND.getDefaultState());
-                            setBlockSafe(world, pos, Blocks.PUMPKIN_STEM.getStateFromMeta(world.rand.nextInt(4) + 4));
+                            setBlockSafe(world, posBelow, Blocks.FARMLAND.defaultBlockState());
+                            setBlockSafe(world, pos, Blocks.PUMPKIN_STEM.getStateDefinition().getPossibleStates().get(world.random.nextInt(4) + 4));
                         }
                         else if (b == 1)
                         {
-                            setBlockSafe(world, posBelow, Blocks.FARMLAND.getDefaultState());
-                            setBlockSafe(world, pos, Blocks.MELON_STEM.getStateFromMeta(world.rand.nextInt(4) + 4));
+                            setBlockSafe(world, posBelow, Blocks.FARMLAND.defaultBlockState());
+                            setBlockSafe(world, pos, Blocks.MELON_STEM.getStateDefinition().getPossibleStates().get(world.random.nextInt(4) + 4));
                         }
                         else if (b == 2)
                         {
-                            setBlockSafe(world, posBelow, Blocks.FARMLAND.getDefaultState());
-                            setBlockSafe(world, pos, Blocks.WHEAT.getStateFromMeta(world.rand.nextInt(8)));
+                            setBlockSafe(world, posBelow, Blocks.FARMLAND.defaultBlockState());
+                            setBlockSafe(world, pos, Blocks.WHEAT.getStateDefinition().getPossibleStates().get(world.random.nextInt(8)));
                         }
                         else if (b == 3)
                         {
-                            setBlockSafe(world, posBelow, Blocks.FARMLAND.getDefaultState());
-                            setBlockSafe(world, pos, Blocks.CARROTS.getStateFromMeta(world.rand.nextInt(8)));
+                            setBlockSafe(world, posBelow, Blocks.FARMLAND.defaultBlockState());
+                            setBlockSafe(world, pos, Blocks.CARROTS.getStateDefinition().getPossibleStates().get(world.random.nextInt(8)));
                         }
                         else if (b == 4)
                         {
-                            setBlockSafe(world, posBelow, Blocks.FARMLAND.getDefaultState());
-                            setBlockSafe(world, pos, Blocks.POTATOES.getStateFromMeta(world.rand.nextInt(8)));
+                            setBlockSafe(world, posBelow, Blocks.FARMLAND.defaultBlockState());
+                            setBlockSafe(world, pos, Blocks.POTATOES.getStateDefinition().getPossibleStates().get(world.random.nextInt(8)));
                         }
                         else if (b == 5)
                         {
-                            setBlockSafe(world, pos, Blocks.HAY_BLOCK.getDefaultState());
+                            setBlockSafe(world, pos, Blocks.HAY_BLOCK.defaultBlockState());
                         }
                         else if (b == 6)
                         {
-                            setBlockSafe(world, posBelow, Blocks.WATER.getDefaultState());
+                            setBlockSafe(world, posBelow, Blocks.WATER.defaultBlockState());
                         }
                     }
                 }
             }
             else
             {
-                if (canSpawnEntity(world, blockState, pos))
-                {
-                    lazilySpawnEntity(world, entity, random, "EntityHorse", 1.0f / (50 * 50), pos);
-                    lazilySpawnEntity(world, entity, random, "Villager", 1.0f / (50 * 50), pos);
-                    lazilySpawnEntity(world, entity, random, "Sheep", 1.0f / (50 * 50), pos);
-                    lazilySpawnEntity(world, entity, random, "Pig", 1.0f / (50 * 50), pos);
-                    lazilySpawnEntity(world, entity, random, "Cow", 1.0f / (50 * 50), pos);
-                    lazilySpawnEntity(world, entity, random, "Chicken", 1.0f / (50 * 50), pos);
+                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                entities.addAll(
+                        lazilySpawnEntity(world, entity, random, "horse", 1.0f / (50 * 50), pos),
+                lazilySpawnEntity(world, entity, random, "villager", 1.0f / (50 * 50), pos),
+                lazilySpawnEntity(world, entity, random, "sheep", 1.0f / (50 * 50), pos),
+                lazilySpawnEntity(world, entity, random, "pig", 1.0f / (50 * 50), pos),
+                lazilySpawnEntity(world, entity, random, "cow", 1.0f / (50 * 50), pos),
+                lazilySpawnEntity(world, entity, random, "chicken", 1.0f / (50 * 50), pos));
+                for(Entity entity1 : entities) {
+                    canSpawnEntity(world, blockState, pos, entity1);
                 }
             }
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setDouble("cropChance", cropChance);
+        compound.putDouble("cropChance", cropChance);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 

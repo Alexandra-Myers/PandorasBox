@@ -6,10 +6,9 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -22,10 +21,6 @@ public abstract class PBEffectEntityBased extends PBEffectNormal
 {
     public double range;
 
-    public PBEffectEntityBased()
-    {
-    }
-
     public PBEffectEntityBased(int maxTicksAlive, double range)
     {
         super(maxTicksAlive);
@@ -36,11 +31,11 @@ public abstract class PBEffectEntityBased extends PBEffectNormal
     public void doEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
     {
         AxisAlignedBB bb = new AxisAlignedBB(effectCenter.x - range, effectCenter.y - range, effectCenter.z - range, effectCenter.x + range, effectCenter.y + range, effectCenter.z + range);
-        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, bb);
+        List<LivingEntity> entities = world.getEntitiesOfClass(LivingEntity.class, bb);
 
-        for (EntityLivingBase entityLivingBase : entities)
+        for (LivingEntity entityLivingBase : entities)
         {
-            double dist = entityLivingBase.getDistanceToEntity(entity);
+            double dist = entityLivingBase.distanceTo(entity);
             double strength = (range - dist) / range;
 
             if (strength > 0.0)
@@ -50,20 +45,18 @@ public abstract class PBEffectEntityBased extends PBEffectNormal
         }
     }
 
-    public abstract void affectEntity(World world, EntityPandorasBox box, Random random, EntityLivingBase entity, double newRatio, double prevRatio, double strength);
+    public abstract void affectEntity(World world, EntityPandorasBox box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength);
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
-        super.writeToNBT(compound);
 
-        compound.setDouble("range", range);
+        compound.putDouble("range", range);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
-        super.readFromNBT(compound);
 
         range = compound.getDouble("range");
     }

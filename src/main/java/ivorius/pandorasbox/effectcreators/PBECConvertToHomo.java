@@ -32,8 +32,7 @@ public class PBECConvertToHomo implements PBEffectCreator
         double range = this.range.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        PBEffectGenConvertToHomo effect = new PBEffectGenConvertToHomo(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
-        return effect;
+        return new PBEffectGenConvertToHomo(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
     }
 
     @Override

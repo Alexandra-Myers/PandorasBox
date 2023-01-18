@@ -32,8 +32,7 @@ public class PBECConvertToEnd implements PBEffectCreator
         double range = this.range.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        PBEffectGenConvertToEnd effect = new PBEffectGenConvertToEnd(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
-        return effect;
+        return new PBEffectGenConvertToEnd(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
     }
 
     @Override

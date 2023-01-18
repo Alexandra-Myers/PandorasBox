@@ -5,7 +5,8 @@
 
 package ivorius.pandorasbox.weighted;
 
-import ivorius.ivtoolkit.random.WeightedSelector;
+import ivorius.pandorasbox.WeightedSelector;
+import net.minecraft.potion.Effect;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.WeightedRandom;
 
@@ -16,7 +17,7 @@ public class WeightedPotion implements WeightedSelector.Item
 {
     public double weight;
 
-    public Potion potion;
+    public Effect potion;
 
     public int minStrength;
     public int maxStrength;
@@ -24,7 +25,7 @@ public class WeightedPotion implements WeightedSelector.Item
     public int minDuration;
     public int maxDuration;
 
-    public WeightedPotion(double weight, Potion potion, int minStrength, int maxStrength, int minDuration, int maxDuration)
+    public WeightedPotion(double weight, Effect potion, int minStrength, int maxStrength, int minDuration, int maxDuration)
     {
         this.weight = weight;
         this.potion = potion;

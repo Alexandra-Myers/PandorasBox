@@ -32,8 +32,7 @@ public class PBECConvertToIce implements PBEffectCreator
         double range = this.range.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        PBEffectGenConvertToIce effect = new PBEffectGenConvertToIce(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
-        return effect;
+        return new PBEffectGenConvertToIce(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
     }
 
     @Override

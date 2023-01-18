@@ -7,11 +7,11 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -29,10 +29,6 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
     public double throwStrengthSideMax;
     public double throwStrengthYMin;
     public double throwStrengthYMax;
-
-    protected PBEffectSpawnEntities()
-    {
-    }
 
     public PBEffectSpawnEntities(int time, int number)
     {
@@ -60,7 +56,7 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
     @Override
     public void doEffect(World world, EntityPandorasBox box, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
             int prev = getSpawnNumber(prevRatio);
             int toSpawn = getSpawnNumber(newRatio) - prev;
@@ -73,30 +69,30 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
 
                 if (spawnFromBox)
                 {
-                    eX = box.posX;
-                    eY = box.posY;
-                    eZ = box.posZ;
+                    eX = box.getX();
+                    eY = box.getY();
+                    eZ = box.getZ();
                 }
                 else
                 {
-                    eX = box.posX + (random.nextDouble() - random.nextDouble()) * range;
-                    eY = box.posY + (random.nextDouble() - random.nextDouble()) * 3.0 + shiftY;
-                    eZ = box.posZ + (random.nextDouble() - random.nextDouble()) * range;
+                    eX = box.getX() + (random.nextDouble() - random.nextDouble()) * range;
+                    eY = box.getY() + (random.nextDouble() - random.nextDouble()) * 3.0 + shiftY;
+                    eZ = box.getZ() + (random.nextDouble() - random.nextDouble()) * range;
                 }
 
                 Entity newEntity = spawnEntity(world, box, random, prev + i, eX, eY, eZ);
                 if (newEntity != null)
                 {
-                    if (spawnFromBox && !(newEntity instanceof EntityLivingBase))
+                    if (spawnFromBox && !(newEntity instanceof LivingEntity))
                     {
                         // FIXME Disabled because it causes mobs to sink in the ground on clients (async) >.>
                         float dirSide = random.nextFloat() * 2.0f * 3.1415926f;
                         double throwStrengthSide = throwStrengthSideMin + random.nextDouble() * (throwStrengthSideMax - throwStrengthSideMin);
 
-                        newEntity.addVelocity(MathHelper.sin(dirSide) * throwStrengthSide,
+                        newEntity.push(MathHelper.sin(dirSide) * throwStrengthSide,
                                 throwStrengthYMin + random.nextDouble() * (throwStrengthYMax - throwStrengthYMin),
                                 MathHelper.cos(dirSide) * throwStrengthSide);
-                        newEntity.velocityChanged = true;
+                        newEntity.hurtMarked = true;
                     }
                 }
             }
@@ -111,26 +107,26 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
     public abstract Entity spawnEntity(World world, EntityPandorasBox pbEntity, Random random, int number, double x, double y, double z);
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setInteger("number", number);
-        compound.setBoolean("spawnFromBox", spawnFromBox);
-        compound.setDouble("range", range);
-        compound.setDouble("shiftY", shiftY);
-        compound.setDouble("throwStrengthSideMin", throwStrengthSideMin);
-        compound.setDouble("throwStrengthSideMax", throwStrengthSideMax);
-        compound.setDouble("throwStrengthYMin", throwStrengthYMin);
-        compound.setDouble("throwStrengthYMax", throwStrengthYMax);
+        compound.putInt("number", number);
+        compound.putBoolean("spawnFromBox", spawnFromBox);
+        compound.putDouble("range", range);
+        compound.putDouble("shiftY", shiftY);
+        compound.putDouble("throwStrengthSideMin", throwStrengthSideMin);
+        compound.putDouble("throwStrengthSideMax", throwStrengthSideMax);
+        compound.putDouble("throwStrengthYMin", throwStrengthYMin);
+        compound.putDouble("throwStrengthYMax", throwStrengthYMax);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
-        number = compound.getInteger("number");
+        number = compound.getInt("number");
         spawnFromBox = compound.getBoolean("spawnFromBox");
         range = compound.getDouble("range");
         shiftY = compound.getDouble("shiftY");

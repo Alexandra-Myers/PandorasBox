@@ -5,154 +5,112 @@
 
 package ivorius.pandorasbox.client.rendering;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderer;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderingRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.entity.projectile.EntityTippedArrow;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.model.Attributes;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.b3d.B3DLoader;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
+
+import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * Created by lukas on 30.03.14.
  */
-@SideOnly(Side.CLIENT)
-public class RenderPandorasBox extends Render
-{
-    public ModelBase model;
-    public ResourceLocation texture;
+@OnlyIn(Dist.CLIENT)
+public class RenderPandorasBox<T extends EntityPandorasBox> extends EntityRenderer<T> implements IRenderFactory<T> {
+    public ModelPandorasBox model;
+    public ResourceLocation texture = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
 
 //    public ResourceLocation model;
 
-    public RenderPandorasBox(RenderManager renderManager)
+    public RenderPandorasBox(EntityRendererManager renderManager)
     {
         super(renderManager);
 
         model = new ModelPandorasBox();
-        texture = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
+        shadowRadius = 0.4F;
 
 //        model = new ResourceLocation(PandorasBox.MOD_ID, "block/pandoras_box.b3d");
     }
 
-    public static void renderB3DModel(TextureManager textureManager, ResourceLocation modelLoc, IBlockState blockState, int animationCounter)
-    {
-        IModel model = null;
-        try
-        {
-            model = ModelLoaderRegistry.getModel(modelLoc);
-            B3DLoader.B3DState defaultState = (B3DLoader.B3DState) model.getDefaultState();
-            B3DLoader.B3DState newState = new B3DLoader.B3DState(defaultState.getAnimation(), animationCounter);
-            renderBlockModel(textureManager, model, blockState, newState);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public static void renderBlockModel(TextureManager textureManager, IModel model, IBlockState blockState, IModelState state)
-    {
-        if (state == null)
-            state = model.getDefaultState();
-
-        // Temporary fix for some models having alpha=0
-        GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
-
-        final TextureMap textureMapBlocks = Minecraft.getMinecraft().getTextureMapBlocks();
-
-        VertexFormat vFormat = Attributes.DEFAULT_BAKED_FORMAT;
-        IBakedModel bakedModel = model.bake(state, vFormat, input -> input == null ? textureMapBlocks.getMissingSprite() : textureMapBlocks.getAtlasSprite(input.toString()));
-        textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(-0.5f, 0.0f, -0.5f);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder worldRenderer = tessellator.getBuffer();
-        worldRenderer.begin(GL11.GL_QUADS, vFormat);
-//        worldRenderer.markDirty(); // Still required?
-
-        for (BakedQuad quad : bakedModel.getQuads(blockState, null, 4206942))
-            worldRenderer.addVertexData(quad.getVertexData());
-        for (EnumFacing facing : EnumFacing.values())
-            for (BakedQuad quad : bakedModel.getQuads(blockState, facing, 4206942))
-                worldRenderer.addVertexData(quad.getVertexData());
-
-        tessellator.draw();
-
-        GlStateManager.popMatrix();
-
-        GlStateManager.enableAlpha(); // End temporary fix
-    }
-
     @Override
-    public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks)
-    {
-        EntityPandorasBox entityPandorasBox = (EntityPandorasBox) entity;
+    public void render(T entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int packedLightIn) {
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y + MathHelper.sin((entity.ticksExisted + partialTicks) * 0.04f) * 0.05, z);
-        GlStateManager.rotate(-yaw, 0.0F, 1.0F, 0.0F);
+        matrixStack.pushPose();
+        matrixStack.translate(entity.getX(), entity.getY() + MathHelper.sin((entity.tickCount + partialTicks) * 0.04f) * 0.05, entity.getZ());
+        matrixStack.mulPose(new Quaternion(0.0F, 1.0F, 0.0F, -entityYaw));
 
-        PBEffect effect = entityPandorasBox.getBoxEffect();
-        if (!effect.isDone(entityPandorasBox, entityPandorasBox.getEffectTicksExisted()) && entityPandorasBox.getDeathTicks() < 0)
+        PBEffect effect = entity.getBoxEffect();
+        boolean flag = !entity.isInvisible();
+        boolean flag1 = !flag && !entity.isInvisibleTo(Minecraft.getInstance().player);
+        IVertexBuilder builder = renderTypeBuffer.getBuffer(Objects.requireNonNull(getRenderType(entity, flag, flag1)));
+        if (/*effect != null && */!effect.isDone(entity, entity.getEffectTicksExisted()) && entity.getDeathTicks() < 0)
         {
             PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForEffect(effect);
             if (renderer != null)
-                renderer.renderBox(entityPandorasBox, effect, partialTicks);
+                renderer.renderBox(entity, effect, partialTicks, matrixStack, builder);
         }
 
         if (!entity.isInvisible())
         {
-            float boxScale = entityPandorasBox.getCurrentScale();
+            float boxScale = entity.getCurrentScale();
             if (boxScale < 1.0f)
-                GlStateManager.scale(boxScale, boxScale, boxScale);
+                matrixStack.scale(boxScale, boxScale, boxScale);
 
-            GlStateManager.translate(0.0f, 1.5f, 0.0f);
-            GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f);
-            EntityArrow emptyEntity = new EntityTippedArrow(entity.world);
-            emptyEntity.rotationPitch = entityPandorasBox.getRatioBoxOpen(partialTicks) * 120.0f / 180.0f * 3.1415926f;
-            bindEntityTexture(entity);
-            model.render(emptyEntity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
-
-//            int animationCounter = Math.min(89, MathHelper.floor((entityPandorasBox.getRatioBoxOpen(partialTicks) + 0.5f) * 90));
-//            renderB3DModel(renderManager.renderEngine, model, animationCounter);
+            matrixStack.translate(0.0f, 1.5f, 0.0f);
+            matrixStack.mulPose(new Quaternion(0.0f, 0.0f, 1.0f, 180.0f));
+            /*ArrowEntity emptyEntity = new ArrowEntity(entity.level, entity.getX(), entity.getY(), entity.getZ());
+            emptyEntity.xRot = entity.getRatioBoxOpen(partialTicks) * 120.0f / 180.0f * 3.1415926f;*/
+            int i = getPackedOverlay(0);
+            model.renderToBuffer(matrixStack, builder, packedLightIn, i,1,1, 1, flag1 ? 0.15F : 1);
+            model.setupAnim(entity, 0, 0, 0, 0, 0);
         }
 
-        GlStateManager.popMatrix();
+        matrixStack.popPose();
 
-        super.doRender(entity, x, y, z, yaw, partialTicks);
+        super.render(entity, entityYaw, partialTicks, matrixStack, renderTypeBuffer, packedLightIn);
+    }
+    public static int getPackedOverlay(float uIn) {
+        return OverlayTexture.pack(OverlayTexture.u(uIn), OverlayTexture.v(false));
+    }
+    @Nullable
+    protected RenderType getRenderType(T entity, boolean normal, boolean translucent) {
+        ResourceLocation resourcelocation = this.getTextureLocation(entity);
+        if (translucent) {
+            return RenderType.entityTranslucent(resourcelocation);
+        } else if (normal) {
+            return this.model.renderType(resourcelocation);
+        } else {
+            return entity.isGlowing() ? RenderType.outline(resourcelocation) : null;
+        }
+    }
+    @Override
+    public ResourceLocation getTextureLocation(T var1)
+    {
+        return texture;
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity var1)
-    {
-        return texture;
+    public EntityRenderer<? super T> createRenderFor(EntityRendererManager manager) {
+        return null;
     }
 }

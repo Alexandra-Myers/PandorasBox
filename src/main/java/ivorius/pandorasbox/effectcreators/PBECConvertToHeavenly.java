@@ -32,8 +32,7 @@ public class PBECConvertToHeavenly implements PBEffectCreator
         double range = this.range.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        PBEffectGenConvertToHeavenly effect = new PBEffectGenConvertToHeavenly(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
-        return effect;
+        return new PBEffectGenConvertToHeavenly(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
     }
 
     @Override

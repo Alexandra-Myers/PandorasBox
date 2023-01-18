@@ -8,11 +8,11 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -36,10 +36,6 @@ public class PBEffectGenWorldSnake extends PBEffectNormal
     public float dirYawAcc;
     public float dirPitchAcc;
 
-    public PBEffectGenWorldSnake()
-    {
-    }
-
     public PBEffectGenWorldSnake(int maxTicksAlive, Block[] blocks, int unifiedSeed, double currentX, double currentY, double currentZ, double size, double speed, float dirYaw, float dirPitch)
     {
         super(maxTicksAlive);
@@ -57,7 +53,7 @@ public class PBEffectGenWorldSnake extends PBEffectNormal
     @Override
     public void doEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
             int requiredRange = MathHelper.ceil(size);
 
@@ -113,33 +109,33 @@ public class PBEffectGenWorldSnake extends PBEffectNormal
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
         PBNBTHelper.writeNBTBlocks("block", blocks, compound);
-        compound.setInteger("unifiedSeed", unifiedSeed);
+        compound.putInt("unifiedSeed", unifiedSeed);
 
-        compound.setDouble("currentX", currentX);
-        compound.setDouble("currentY", currentY);
-        compound.setDouble("currentZ", currentZ);
+        compound.putDouble("currentX", currentX);
+        compound.putDouble("currentY", currentY);
+        compound.putDouble("currentZ", currentZ);
 
-        compound.setDouble("size", size);
+        compound.putDouble("size", size);
 
-        compound.setDouble("speed", speed);
-        compound.setFloat("dirYaw", dirYaw);
-        compound.setFloat("dirPitch", dirPitch);
-        compound.setFloat("dirYawAcc", dirYawAcc);
-        compound.setFloat("dirPitchAcc", dirPitchAcc);
+        compound.putDouble("speed", speed);
+        compound.putFloat("dirYaw", dirYaw);
+        compound.putFloat("dirPitch", dirPitch);
+        compound.putFloat("dirYawAcc", dirYawAcc);
+        compound.putFloat("dirPitchAcc", dirPitchAcc);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
         blocks = PBNBTHelper.readNBTBlocks("block", compound);
-        unifiedSeed = compound.getInteger("unifiedSeed");
+        unifiedSeed = compound.getInt("unifiedSeed");
 
         currentX = compound.getDouble("currentX");
         currentY = compound.getDouble("currentY");

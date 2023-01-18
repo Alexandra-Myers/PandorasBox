@@ -8,11 +8,20 @@ package ivorius.pandorasbox.effectcreators;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import ivorius.pandorasbox.PBConfig;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectMulti;
+import ivorius.pandorasbox.effects.PBEffectRegistry;
+import ivorius.pandorasbox.effects.Vec3d;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.init.Registry;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
+import ivorius.pandorasbox.utils.StringConverter;
+import ivorius.pandorasbox.utils.WrappedBiMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -29,33 +38,42 @@ public class PBECRegistry
 
     private static final Map<String, Float> fixedChanceCreators = new HashMap<>();
 
-    private static final BiMap<String, PBEffectCreator> effectCreators = HashBiMap.create();
+    private static final WrappedBiMap<ResourceLocation, PBEffectCreator> effectCreators = new WrappedBiMap<>(HashBiMap.create());
 
     public static void register(PBEffectCreator creator, String id, boolean good)
     {
+        id = StringConverter.convertCamelCase(id);
         (good ? goodCreators : badCreators).add(id);
-        effectCreators.put(id, creator);
+
+        PandorasBox.logger.info("Effect Name: " + id);
+        effectCreators.put(new ResourceLocation(PandorasBox.MOD_ID, id), creator);
     }
 
     public static void register(PBEffectCreator creator, String id, float fixedChance)
     {
+        id = StringConverter.convertCamelCase(id);
         fixedChanceCreators.put(id, fixedChance);
-        effectCreators.put(id, creator);
+        effectCreators.put(new ResourceLocation(PandorasBox.MOD_ID, id), creator);
     }
 
     public static String getID(PBEffectCreator creator)
     {
-        return effectCreators.inverse().get(creator);
+        return effectCreators.inverse().get(creator).toString();
     }
 
     public static PBEffectCreator effectCreatorWithName(String name)
     {
-        return effectCreators.get(name);
+        name = StringConverter.convertCamelCase(name);
+        return effectCreators.get(new ResourceLocation(name));
+    }
+    public static BiMap<ResourceLocation, PBEffectCreator> getEffectCreators() {
+        return (BiMap<ResourceLocation, PBEffectCreator>) effectCreators.map();
     }
 
     public static boolean hasEffect(String name)
     {
-        return effectCreators.containsKey(name);
+        name = StringConverter.convertCamelCase(name);
+        return effectCreators.containsKey(new ResourceLocation(name));
     }
 
     public static boolean isEffectGood(String name)
@@ -71,14 +89,12 @@ public class PBECRegistry
     public static PBEffectCreator randomEffectCreatorOfType(Random random, boolean good)
     {
         ArrayList<String> list = good ? goodCreators : badCreators;
-        return effectCreators.get(list.get(random.nextInt(list.size())));
+        return effectCreators.get(new ResourceLocation(PandorasBox.MOD_ID, list.get(random.nextInt(list.size()))));
     }
 
-    public static PBEffect createEffect(World world, Random random, double x, double y, double z, String name)
+    public static PBEffect createEffect(World world, Random random, double x, double y, double z, PBEffectCreator creator)
     {
-        PBEffectCreator creator = effectCreatorWithName(name);
-
-        if (creator != null)
+        if (!isAnyNull(world, random, creator))
             return constructEffectSafe(creator, world, x, y, z, random);
 
         return null;
@@ -107,7 +123,7 @@ public class PBECRegistry
             {
                 if (random.nextFloat() < fixedChanceCreators.get(fixedChanceCreator))
                 {
-                    creator = effectCreators.get(fixedChanceCreator);
+                    creator = effectCreators.get(new ResourceLocation(PandorasBox.MOD_ID, fixedChanceCreator));
                     break;
                 }
             }
@@ -115,6 +131,7 @@ public class PBECRegistry
             if (creator == null)
                 creator = randomEffectCreatorOfType(random, random.nextFloat() < PBConfig.goodEffectChance);
 
+//            if(isAnyNull(creator, world, random)) return null;
             PBEffect effect = constructEffectSafe(creator, world, x, y, z, random);
 
             if (effect != null)
@@ -147,48 +164,43 @@ public class PBECRegistry
 
     public static PBEffect constructEffectSafe(PBEffectCreator creator, World world, double x, double y, double z, Random random)
     {
-        try
-        {
-            return creator.constructEffect(world, x, y, z, random);
-        }
-        catch (Exception ex)
-        {
-            System.out.println("PBEC failed! '" + getID(creator) + "'");
-            ex.printStackTrace();
-        }
-
-        return null;
+//        if(isAnyNull(creator, world, random)) return null;
+        return creator.constructEffect(world, x, y, z, random);
     }
 
     public static EntityPandorasBox spawnPandorasBox(World world, Random random, boolean multi, Entity entity)
     {
-        PBEffect effect = createRandomEffect(world, random, entity.posX, entity.posY + 1.2, entity.posZ, multi);
+        PBEffect effect = createRandomEffect(world, random, entity.getX(), entity.getY() + 1.2, entity.getZ(), multi);
         return spawnPandorasBox(world, effect, entity);
     }
 
-    public static EntityPandorasBox spawnPandorasBox(World world, Random random, String id, Entity entity)
+    public static EntityPandorasBox spawnPandorasBox(World world, Random random, PBEffectCreator creator, Entity entity)
     {
-        PBEffect effect = createEffect(world, random, entity.posX, entity.posY + 1.2, entity.posZ, id);
+        PBEffect effect = createEffect(world, random, entity.getX(), entity.getY() + 1.2, entity.getZ(), creator);
         return spawnPandorasBox(world, effect, entity);
     }
 
     public static EntityPandorasBox spawnPandorasBox(World world, PBEffect effect, Entity entity)
     {
-        if (effect != null)
+        if (effect != null && !world.isClientSide())
         {
-            EntityPandorasBox entityPandorasBox = new EntityPandorasBox(world, effect);
+            EntityPandorasBox entityPandorasBox = Registry.Box.get().create(world);
 
-            Vec3d look = entity.getLookVec();
+            Vector3d look = entity.getLookAngle();
 
-            double spawnX = entity.posX + look.x * 0.5;
-            double spawnY = entity.posY + 0.9 + look.y * 0.5;
-            double spawnZ = entity.posZ + look.z * 0.5;
+            double spawnX = entity.getX() + look.x * 0.5;
+            double spawnY = entity.getY() + 0.9 + look.y * 0.5;
+            double spawnZ = entity.getZ() + look.z * 0.5;
 
-            entityPandorasBox.setLocationAndAngles(spawnX, spawnY, spawnZ, entity.rotationYaw + 180.0f, 0.0f);
+            assert entityPandorasBox != null;
+
+            entityPandorasBox.setBoxEffect(effect);
+            entityPandorasBox.setTimeBoxWaiting(40);
+            entityPandorasBox.moveTo(spawnX, spawnY, spawnZ, entity.yRot + 180.0f, 0.0f);
 
             entityPandorasBox.beginFloatingAway();
 
-            world.spawnEntity(entityPandorasBox);
+            world.addFreshEntity(entityPandorasBox);
 
             return entityPandorasBox;
         }
@@ -198,7 +210,23 @@ public class PBECRegistry
 
     public static Set<String> getAllIDs()
     {
-        return effectCreators.keySet();
+        Set<String> set = new HashSet<>();
+        effectCreators.keySet().forEach((location) -> set.add(location.toString()));
+        return set;
+    }
+    public static ArrayListExtensions<ResourceLocation> getAllIDsAsRL()
+    {
+        Set<ResourceLocation> set = effectCreators.keySet();
+        ArrayListExtensions<ResourceLocation> resourceLocationList = new ArrayListExtensions<>();
+        resourceLocationList.addAll(set);
+        resourceLocationList.addAll(PBEffectRegistry.resourceLocationList);
+        return resourceLocationList;
+    }
+    public static boolean isAnyNull(Object... objects) {
+        for(Object object : objects) {
+            if(object == null) return true;
+        }
+        return false;
     }
 
     public static String[] getIDArray()

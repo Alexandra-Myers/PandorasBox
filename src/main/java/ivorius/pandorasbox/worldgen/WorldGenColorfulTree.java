@@ -6,19 +6,30 @@
 package ivorius.pandorasbox.worldgen;
 
 import com.google.common.collect.Lists;
+import com.mojang.serialization.Codec;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLog;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenAbstractTree;
+import net.minecraft.world.gen.IWorldGenerationReader;
+import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.TreeFeature;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.function.Function;
 
-public class WorldGenColorfulTree extends WorldGenAbstractTree
+public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeFeature
 {
     public Block trunk;
     public int[] metas;
@@ -41,10 +52,10 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
     int leafDistanceLimit;
     List field_175948_j;
 
-    public WorldGenColorfulTree(boolean p_i2008_1_, int height, Block trunk, int[] metas, Block soil)
+    public WorldGenColorfulTree(Codec<BaseTreeFeatureConfig> configIn, int height)
     {
-        super(p_i2008_1_);
-        this.field_175947_m = BlockPos.ORIGIN;
+        super(configIn);
+        this.field_175947_m = BlockPos.ZERO;
         this.heightAttenuation = 0.618D;
         this.field_175944_d = 0.381D;
         this.field_175945_e = 1.0D;
@@ -52,9 +63,6 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
         this.field_175943_g = 1;
         this.field_175950_h = height;
         this.leafDistanceLimit = 4;
-        this.trunk = trunk;
-        this.metas = metas;
-        this.soil = soil;
     }
 
     /**
@@ -79,7 +87,7 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
         int j = this.field_175947_m.getY() + this.height;
         int k = this.heightLimit - this.leafDistanceLimit;
         this.field_175948_j = Lists.newArrayList();
-        this.field_175948_j.add(new FoliageCoordinates(this.field_175947_m.up(k), j));
+        this.field_175948_j.add(new FoliageCoordinates(this.field_175947_m.above(k), j));
 
         for (; k >= 0; --k)
         {
@@ -93,8 +101,8 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
                     double d1 = (double) (this.field_175949_k.nextFloat() * 2.0F) * Math.PI;
                     double d2 = d0 * Math.sin(d1) + 0.5D;
                     double d3 = d0 * Math.cos(d1) + 0.5D;
-                    BlockPos blockpos = this.field_175947_m.add(d2, (double) (k - 1), d3);
-                    BlockPos blockpos1 = blockpos.up(this.leafDistanceLimit);
+                    BlockPos blockpos = this.field_175947_m.offset(d2, (double) (k - 1), d3);
+                    BlockPos blockpos1 = blockpos.above(this.leafDistanceLimit);
 
                     if (this.func_175936_a(blockpos, blockpos1) == -1)
                     {
@@ -114,7 +122,7 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
         }
     }
 
-    void func_180712_a(BlockPos p_180712_1_, float p_180712_2_, IBlockState p_180712_3_)
+    void func_180712_a(BlockPos p_180712_1_, float p_180712_2_, BlockState p_180712_3_)
     {
         int i = (int) ((double) p_180712_2_ + 0.618D);
 
@@ -124,12 +132,12 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
             {
                 if (Math.pow((double) Math.abs(j) + 0.5D, 2.0D) + Math.pow((double) Math.abs(k) + 0.5D, 2.0D) <= (double) (p_180712_2_ * p_180712_2_))
                 {
-                    BlockPos blockpos1 = p_180712_1_.add(j, 0, k);
-                    IBlockState state = this.field_175946_l.getBlockState(blockpos1);
+                    BlockPos blockpos1 = p_180712_1_.offset(j, 0, k);
+                    BlockState state = this.field_175946_l.getBlockState(blockpos1);
 
-                    if (state.getBlock().isAir(state, this.field_175946_l, blockpos1) || state.getBlock().isLeaves(state, this.field_175946_l, blockpos1))
+                    if (state.getBlock().isAir(state, this.field_175946_l, blockpos1) || state.getBlock().is(BlockTags.LEAVES))
                     {
-                        this.setBlockAndNotifyAdequately(this.field_175946_l, blockpos1, p_180712_3_);
+                        this.setBlock(this.field_175946_l, blockpos1, p_180712_3_);
                     }
                 }
             }
@@ -173,13 +181,13 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
     {
         for (int i = 0; i < this.leafDistanceLimit; ++i)
         {
-            this.func_180712_a(p_175940_1_.up(i), this.leafSize(i), trunk.getDefaultState());
+            this.func_180712_a(p_175940_1_.above(i), this.leafSize(i), trunk.defaultBlockState());
         }
     }
 
     void func_175937_a(BlockPos p_175937_1_, BlockPos p_175937_2_, Block p_175937_3_)
     {
-        BlockPos blockpos2 = p_175937_2_.add(-p_175937_1_.getX(), -p_175937_1_.getY(), -p_175937_1_.getZ());
+        BlockPos blockpos2 = p_175937_2_.offset(-p_175937_1_.getX(), -p_175937_1_.getY(), -p_175937_1_.getZ());
         int i = this.func_175935_b(blockpos2);
         float f = (float) blockpos2.getX() / (float) i;
         float f1 = (float) blockpos2.getY() / (float) i;
@@ -187,8 +195,8 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
 
         for (int j = 0; j <= i; ++j)
         {
-            BlockPos blockpos3 = p_175937_1_.add((double) (0.5F + (float) j * f), (double) (0.5F + (float) j * f1), (double) (0.5F + (float) j * f2));
-            this.setBlockAndNotifyAdequately(this.field_175946_l, blockpos3, p_175937_3_.getDefaultState());
+            BlockPos blockpos3 = p_175937_1_.offset((double) (0.5F + (float) j * f), (double) (0.5F + (float) j * f1), (double) (0.5F + (float) j * f2));
+            this.setBlock(this.field_175946_l, blockpos3, p_175937_3_.defaultBlockState());
         }
     }
 
@@ -200,35 +208,11 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
         return k > i && k > j ? k : (j > i ? j : i);
     }
 
-    private BlockLog.EnumAxis func_175938_b(BlockPos p_175938_1_, BlockPos p_175938_2_)
-    {
-        BlockLog.EnumAxis enumaxis = BlockLog.EnumAxis.Y;
-        int i = Math.abs(p_175938_2_.getX() - p_175938_1_.getX());
-        int j = Math.abs(p_175938_2_.getZ() - p_175938_1_.getZ());
-        int k = Math.max(i, j);
-
-        if (k > 0)
-        {
-            if (i == k)
-            {
-                enumaxis = BlockLog.EnumAxis.X;
-            }
-            else if (j == k)
-            {
-                enumaxis = BlockLog.EnumAxis.Z;
-            }
-        }
-
-        return enumaxis;
-    }
-
     void func_175941_b()
     {
-        Iterator iterator = this.field_175948_j.iterator();
 
-        while (iterator.hasNext())
-        {
-            FoliageCoordinates foliagecoordinates = (FoliageCoordinates) iterator.next();
+        for (Object o : this.field_175948_j) {
+            FoliageCoordinates foliagecoordinates = (FoliageCoordinates) o;
             this.func_175940_a(foliagecoordinates);
         }
     }
@@ -244,7 +228,7 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
     void func_175942_c()
     {
         BlockPos blockpos = this.field_175947_m;
-        BlockPos blockpos1 = this.field_175947_m.up(this.height);
+        BlockPos blockpos1 = this.field_175947_m.above(this.height);
         Block block = trunk;
         this.func_175937_a(blockpos, blockpos1, block);
 
@@ -258,16 +242,13 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
 
     void func_175939_d()
     {
-        Iterator iterator = this.field_175948_j.iterator();
 
-        while (iterator.hasNext())
-        {
-            FoliageCoordinates foliagecoordinates = (FoliageCoordinates) iterator.next();
+        for (Object o : this.field_175948_j) {
+            FoliageCoordinates foliagecoordinates = (FoliageCoordinates) o;
             int i = foliagecoordinates.func_177999_q();
             BlockPos blockpos = new BlockPos(this.field_175947_m.getX(), i, this.field_175947_m.getZ());
 
-            if (this.leafNodeNeedsBase(i - this.field_175947_m.getY()))
-            {
+            if (this.leafNodeNeedsBase(i - this.field_175947_m.getY())) {
                 this.func_175937_a(blockpos, foliagecoordinates, trunk);
             }
         }
@@ -275,7 +256,7 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
 
     int func_175936_a(BlockPos p_175936_1_, BlockPos p_175936_2_)
     {
-        BlockPos blockpos2 = p_175936_2_.add(-p_175936_1_.getX(), -p_175936_1_.getY(), -p_175936_1_.getZ());
+        BlockPos blockpos2 = p_175936_2_.offset(-p_175936_1_.getX(), -p_175936_1_.getY(), -p_175936_1_.getZ());
         int i = this.func_175935_b(blockpos2);
         float f = (float) blockpos2.getX() / (float) i;
         float f1 = (float) blockpos2.getY() / (float) i;
@@ -289,12 +270,7 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
         {
             for (int j = 0; j <= i; ++j)
             {
-                BlockPos blockpos3 = p_175936_1_.add((double) (0.5F + (float) j * f), (double) (0.5F + (float) j * f1), (double) (0.5F + (float) j * f2));
-
-                if (!this.isReplaceable(field_175946_l, blockpos3))
-                {
-                    return j;
-                }
+                BlockPos blockpos3 = p_175936_1_.offset((double) (0.5F + (float) j * f), (double) (0.5F + (float) j * f1), (double) (0.5F + (float) j * f2));
             }
 
             return -1;
@@ -306,12 +282,64 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
         this.leafDistanceLimit = 5;
     }
 
-    public boolean generate(World worldIn, Random p_180709_2_, BlockPos p_180709_3_)
+    /**
+     * Returns a boolean indicating whether or not the current location for the tree, spanning basePos to to the height
+     * limit, is valid.
+     */
+    private boolean validTreeLocation()
     {
-        this.field_175946_l = worldIn;
-        this.field_175947_m = p_180709_3_;
-        this.field_175949_k = new Random(p_180709_2_.nextLong());
+        BlockPos down = this.field_175947_m.below();
+        BlockState state = this.field_175946_l.getBlockState(down);
+        boolean isSoil = state.getBlock() == soil;
 
+        if (!isSoil)
+        {
+            return false;
+        }
+        else
+        {
+            int i = this.func_175936_a(this.field_175947_m, this.field_175947_m.above(this.heightLimit - 1));
+
+            if (i == -1)
+            {
+                return true;
+            }
+            else if (i < 6)
+            {
+                return false;
+            }
+            else
+            {
+                this.heightLimit = i;
+                return true;
+            }
+        }
+    }
+
+    @Override
+    public void setMetas(int[] newMetas) {
+        metas = newMetas;
+    }
+
+    @Override
+    public void setSoil(Block newSoil) {
+        soil = newSoil;
+    }
+
+    @Override
+    public boolean place(IWorldGenerationReader worldIn, Random rand, BlockPos position) {
+        this.field_175946_l = worldIn instanceof World ? (World) worldIn : null;
+        this.field_175947_m = position;
+        this.field_175949_k = new Random(rand.nextLong());
+        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
+        for(Block block1 : ForgeRegistries.BLOCKS) {
+            if (BlockTags.WOOL.contains(block1)) {
+                blocks.add(block1);
+            }
+        }
+        trunk = blocks.get(metas[rand.nextInt(metas.length)]);
+
+        if(field_175946_l == null) return false;
         if (this.heightLimit == 0)
         {
             this.heightLimit = 5 + this.field_175949_k.nextInt(this.field_175950_h);
@@ -330,40 +358,6 @@ public class WorldGenColorfulTree extends WorldGenAbstractTree
             this.func_175939_d();
             this.field_175946_l = null; //Fix vanilla Mem leak, holds latest world
             return true;
-        }
-    }
-
-    /**
-     * Returns a boolean indicating whether or not the current location for the tree, spanning basePos to to the height
-     * limit, is valid.
-     */
-    private boolean validTreeLocation()
-    {
-        BlockPos down = this.field_175947_m.down();
-        IBlockState state = this.field_175946_l.getBlockState(down);
-        boolean isSoil = state.getBlock() == soil;
-
-        if (!isSoil)
-        {
-            return false;
-        }
-        else
-        {
-            int i = this.func_175936_a(this.field_175947_m, this.field_175947_m.up(this.heightLimit - 1));
-
-            if (i == -1)
-            {
-                return true;
-            }
-            else if (i < 6)
-            {
-                return false;
-            }
-            else
-            {
-                this.heightLimit = i;
-                return true;
-            }
         }
     }
 

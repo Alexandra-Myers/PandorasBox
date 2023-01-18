@@ -32,8 +32,7 @@ public class PBECConvertToHalloween implements PBEffectCreator
         double range = this.range.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        PBEffectGenConvertToHalloween effect = new PBEffectGenConvertToHalloween(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
-        return effect;
+        return new PBEffectGenConvertToHalloween(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
     }
 
     @Override

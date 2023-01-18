@@ -10,10 +10,11 @@ import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Collection;
 import java.util.Random;
@@ -23,9 +24,6 @@ import java.util.Random;
  */
 public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
 {
-    public PBEffectGenCreativeTowers()
-    {
-    }
 
     public PBEffectGenCreativeTowers(int maxTicksAlive)
     {
@@ -46,11 +44,11 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
     @Override
     public void generateStructure(World world, EntityPandorasBox entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
             StructureCreativeTower structureCreativeTower = (StructureCreativeTower) structure;
 
-            int towerHeight = world.getHeight();
+            int towerHeight = world.getMaxBuildHeight();
             int newY = MathHelper.floor(towerHeight * newRatio);
             int prevY = MathHelper.floor(towerHeight * prevRatio);
 
@@ -78,7 +76,7 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound compound)
+        public void writeToNBT(CompoundNBT compound)
         {
             super.writeToNBT(compound);
 
@@ -86,7 +84,7 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
         }
 
         @Override
-        public void readFromNBT(NBTTagCompound compound)
+        public void readFromNBT(CompoundNBT compound)
         {
             super.readFromNBT(compound);
 

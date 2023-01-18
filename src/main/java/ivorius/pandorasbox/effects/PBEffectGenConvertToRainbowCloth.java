@@ -6,13 +6,14 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
@@ -24,10 +25,6 @@ public class PBEffectGenConvertToRainbowCloth extends PBEffectGenerate
     public int[] woolMetas;
     public double ringSize;
 
-    public PBEffectGenConvertToRainbowCloth()
-    {
-    }
-
     public PBEffectGenConvertToRainbowCloth(int time, double range, int unifiedSeed, int[] woolMetas, double ringSize)
     {
         super(time, range, 1, unifiedSeed);
@@ -38,32 +35,36 @@ public class PBEffectGenConvertToRainbowCloth extends PBEffectGenerate
     @Override
     public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
-        Block block = world.getBlockState(pos).getBlock();
-
+        ArrayListExtensions<Block> wool = new ArrayListExtensions<>();
+        for (Block block : ForgeRegistries.BLOCKS) {
+            if(BlockTags.WOOL.contains(block)) {
+                wool.add(block);
+            }
+        }
         if (pass == 0)
         {
-            if (world.isBlockNormalCube(pos, false))
+            if (world.loadedAndEntityCanStandOn(pos, entity))
             {
-                if (world.getBlockState(pos.up()) == Blocks.AIR)
+                if (world.getBlockState(pos.above()).isAir(world, pos.above()))
                 {
-                    double dist = MathHelper.sqrt(effectCenter.squareDistanceTo(new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5)));
-                    setBlockSafe(world, pos, Blocks.WOOL.getStateFromMeta(woolMetas[MathHelper.floor(dist / ringSize) % woolMetas.length]));
+                    double dist = MathHelper.sqrt(effectCenter.distanceToSqr(new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5)));
+                    setBlockSafe(world, pos, wool.get(woolMetas[MathHelper.floor(dist / ringSize) % woolMetas.length]).defaultBlockState());
                 }
             }
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setIntArray("woolMetas", woolMetas);
-        compound.setDouble("ringSize", ringSize);
+        compound.putIntArray("woolMetas", woolMetas);
+        compound.putDouble("ringSize", ringSize);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 

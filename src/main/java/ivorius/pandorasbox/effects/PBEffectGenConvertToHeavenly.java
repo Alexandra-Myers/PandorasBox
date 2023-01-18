@@ -6,12 +6,16 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
@@ -20,9 +24,6 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToHeavenly extends PBEffectGenerate
 {
-    public PBEffectGenConvertToHeavenly()
-    {
-    }
 
     public PBEffectGenConvertToHeavenly(int time, double range, int unifiedSeed)
     {
@@ -32,70 +33,75 @@ public class PBEffectGenConvertToHeavenly extends PBEffectGenerate
     @Override
     public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
-        IBlockState blockState = world.getBlockState(pos);
+        BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
 
         if (pass == 0)
         {
-            if (isBlockAnyOf(block, Blocks.SNOW, Blocks.SNOW_LAYER, Blocks.FIRE, Blocks.RED_FLOWER, Blocks.YELLOW_FLOWER, Blocks.TALLGRASS))
+            ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
+            blocks.addAll(Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.FIRE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
+            for(Block block1 : ForgeRegistries.BLOCKS) {
+                if(BlockTags.SMALL_FLOWERS.contains(block1)) {
+                    blocks.add(block1);
+                }
+            }
+            if (isBlockAnyOf(block, blocks))
             {
                 setBlockToAirSafe(world, pos);
             }
-            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SAND, Blocks.DIRT, Blocks.GRASS))
+            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SAND, Blocks.DIRT, Blocks.GRASS_BLOCK))
             {
-                if (world.getBlockState(pos.up()).getBlock() == Blocks.AIR)
+                if (world.getBlockState(pos.above()).getBlock() == Blocks.AIR)
                 {
-                    if (!world.isRemote && world.rand.nextInt(6 * 6) == 0)
+                    if (world instanceof ServerWorld && world.random.nextInt(6 * 6) == 0)
                     {
-                        setBlockSafe(world, pos, Blocks.DIRT.getDefaultState());
-                        setBlockSafe(world, pos.up(), Blocks.LOG.getDefaultState());
-                        setBlockSafe(world, pos.up(2), Blocks.LEAVES.getDefaultState());
+                        setBlockSafe(world, pos, Blocks.DIRT.defaultBlockState());
+                        setBlockSafe(world, pos.above(), Blocks.OAK_LOG.defaultBlockState());
+                        setBlockSafe(world, pos.above(2), Blocks.OAK_LEAVES.defaultBlockState());
                     }
-                    else if (!world.isRemote && world.rand.nextInt(6 * 6) == 0)
+                    else if (world instanceof ServerWorld && world.random.nextInt(6 * 6) == 0)
                     {
                         int pHeight = random.nextInt(5) + 3;
                         for (int yp = 0; yp < pHeight; yp++)
-                            setBlockSafe(world, pos.up(yp), Blocks.QUARTZ_BLOCK.getDefaultState());
+                            setBlockSafe(world, pos.above(yp), Blocks.QUARTZ_BLOCK.defaultBlockState());
                     }
-                    else if (!world.isRemote && world.rand.nextInt(2 * 2) == 0)
+                    else if (world instanceof ServerWorld && world.random.nextInt(2 * 2) == 0)
                     {
-                        setBlockSafe(world, pos, Blocks.GLASS.getDefaultState());
+                        setBlockSafe(world, pos, Blocks.GLASS.defaultBlockState());
                     }
-                    else if (!world.isRemote && world.rand.nextInt(8 * 8) == 0)
+                    else if (world instanceof ServerWorld && world.random.nextInt(8 * 8) == 0)
                     {
-                        setBlockSafe(world, pos, Blocks.GLASS.getDefaultState());
-                        setBlockSafe(world, pos.down(), Blocks.REDSTONE_LAMP.getDefaultState());
-                        setBlockSafe(world, pos.down(2), Blocks.REDSTONE_BLOCK.getDefaultState());
+                        setBlockSafe(world, pos, Blocks.GLASS.defaultBlockState());
+                        setBlockSafe(world, pos.below(), Blocks.REDSTONE_LAMP.defaultBlockState());
+                        setBlockSafe(world, pos.below(2), Blocks.REDSTONE_BLOCK.defaultBlockState());
                     }
                     else
-                        setBlockSafe(world, pos, Blocks.STONEBRICK.getDefaultState());
+                        setBlockSafe(world, pos, Blocks.STONE_BRICKS.defaultBlockState());
                 }
                 else
                 {
-                    setBlockSafe(world, pos, Blocks.STONEBRICK.getDefaultState());
+                    setBlockSafe(world, pos, Blocks.STONE_BRICKS.defaultBlockState());
                 }
             }
             else if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.LAVA, Blocks.ICE))
             {
-                setBlockSafe(world, pos, Blocks.FLOWING_WATER.getDefaultState());
+                setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
             }
 
-            if (isBlockAnyOf(block, Blocks.FLOWING_LAVA, Blocks.LAVA))
+            if (isBlockAnyOf(block, Blocks.LAVA))
             {
-                setBlockSafe(world, pos, Blocks.WATER.getDefaultState());
+                setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
             }
 
             if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.ICE))
             {
-                setBlockSafe(world, pos, Blocks.WATER.getDefaultState());
+                setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
             }
         }
         else
         {
-            if (canSpawnEntity(world, blockState, pos))
-            {
-                lazilySpawnEntity(world, entity, random, "Sheep", 1.0f / (20 * 20), pos);
-            }
+            Entity sheep = lazilySpawnEntity(world, entity, random, "sheep", 1.0f / (20 * 20), pos);
+            canSpawnEntity(world, blockState, pos, sheep);
         }
     }
 }

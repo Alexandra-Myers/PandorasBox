@@ -6,15 +6,17 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -23,10 +25,6 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToHalloween extends PBEffectGenerate
 {
-    public PBEffectGenConvertToHalloween()
-    {
-    }
-
     public PBEffectGenConvertToHalloween(int time, double range, int unifiedSeed)
     {
         super(time, range, 2, unifiedSeed);
@@ -35,60 +33,62 @@ public class PBEffectGenConvertToHalloween extends PBEffectGenerate
     @Override
     public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
-            IBlockState blockState = world.getBlockState(pos);
+            BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
 
             if (pass == 0)
             {
-                BlockPos posBelow = pos.down();
-                IBlockState blockBelowState = world.getBlockState(posBelow);
+                BlockPos posBelow = pos.below();
+                BlockState blockBelowState = world.getBlockState(posBelow);
                 Block blockBelow = blockBelowState.getBlock();
 
-                if (blockBelow.isNormalCube(blockBelowState, world, posBelow) && Blocks.SNOW_LAYER.canPlaceBlockAt(world, pos) && block != Blocks.WATER)
+                if (blockBelow.getBlockSupportShape(blockBelowState, world, posBelow) == Blocks.GRASS_BLOCK.getBlockSupportShape(Blocks.GRASS_BLOCK.defaultBlockState(), world, pos) && blockState.isAir(world, pos) && block != Blocks.WATER)
                 {
                     if (random.nextInt(5 * 5) == 0)
                     {
-                        int b = world.rand.nextInt(6);
+                        int b = world.random.nextInt(6);
 
                         if (b == 0)
                         {
-                            setBlockSafe(world, posBelow, Blocks.NETHERRACK.getDefaultState());
-                            setBlockSafe(world, pos, Blocks.FIRE.getDefaultState());
+                            setBlockSafe(world, posBelow, Blocks.NETHERRACK.defaultBlockState());
+                            setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                         }
                         else if (b == 1)
                         {
-                            setBlockSafe(world, pos, Blocks.LIT_PUMPKIN.getDefaultState());
+                            setBlockSafe(world, pos, Blocks.JACK_O_LANTERN.defaultBlockState());
                         }
                         else if (b == 2)
                         {
-                            setBlockSafe(world, pos, Blocks.PUMPKIN.getDefaultState());
+                            setBlockSafe(world, pos, Blocks.PUMPKIN.defaultBlockState());
                         }
                         else if (b == 3)
                         {
-                            setBlockSafe(world, posBelow, Blocks.FARMLAND.getDefaultState());
-                            setBlockSafe(world, pos, Blocks.PUMPKIN_STEM.getStateFromMeta(world.rand.nextInt(4) + 4));
+                            setBlockSafe(world, posBelow, Blocks.FARMLAND.defaultBlockState());
+                            setBlockSafe(world, pos, Blocks.PUMPKIN_STEM.getStateDefinition().getPossibleStates().get(world.random.nextInt(4) + 4));
                         }
                         else if (b == 4)
                         {
-                            setBlockSafe(world, pos, Blocks.CAKE.getDefaultState());
+                            setBlockSafe(world, pos, Blocks.CAKE.defaultBlockState());
                         }
                         else if (b == 5)
                         {
-                            EntityItem entityItem = new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.COOKIE));
-                            entityItem.setPickupDelay(20);
-                            world.spawnEntity(entityItem);
+                            ItemEntity entityItem = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.COOKIE));
+                            entityItem.setPickUpDelay(20);
+                            world.addFreshEntity(entityItem);
                         }
                     }
                 }
             }
             else
             {
-                if (canSpawnEntity(world, blockState, pos))
-                {
-                    lazilySpawnEntity(world, entity, random, "PigZombie", 1.0f / (20 * 20), pos);
-                    lazilySpawnEntity(world, entity, random, "Enderman", 1.0f / (20 * 20), pos);
+                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                entities.addAll(
+                        lazilySpawnEntity(world, entity, random, "zombie_pigman", 1.0f / (20 * 20), pos),
+                lazilySpawnEntity(world, entity, random, "enderman", 1.0f / (20 * 20), pos));
+                for (Entity entity1 : entities) {
+                    canSpawnEntity(world, blockState, pos, entity1);
                 }
             }
         }

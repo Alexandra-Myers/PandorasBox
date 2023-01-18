@@ -32,8 +32,7 @@ public class PBECConvertToChristmas implements PBEffectCreator
         double range = this.range.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        PBEffectGenConvertToChristmas effect = new PBEffectGenConvertToChristmas(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
-        return effect;
+        return new PBEffectGenConvertToChristmas(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
     }
 
     @Override

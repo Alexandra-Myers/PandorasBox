@@ -35,11 +35,10 @@ public class PBECConvertToHFT implements PBEffectCreator
         int[] metaTypes = new int[random.nextInt(3) + 2];
         for (int i = 0; i < metaTypes.length; i++)
         {
-            metaTypes[i] = random.nextInt(16);
+            metaTypes[i] = random.nextInt(32);
         }
 
-        PBEffectGenConvertToHFT effect = new PBEffectGenConvertToHFT(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), metaTypes);
-        return effect;
+        return new PBEffectGenConvertToHFT(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), metaTypes);
     }
 
     @Override

@@ -54,9 +54,8 @@ public class PBECMulti implements PBEffectCreator
     public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
     {
         float min = 999;
-        for (int i = 0; i < effects.length; i++)
-        {
-            min = Math.min(effects[i].chanceForMoreEffects(world, x, y, z, random), min);
+        for (PBEffectCreator effect : effects) {
+            min = Math.min(effect.chanceForMoreEffects(world, x, y, z, random), min);
         }
         return min;
     }

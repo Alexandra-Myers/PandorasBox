@@ -6,8 +6,8 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -20,10 +20,6 @@ public class PBEffectEntitiesCrush extends PBEffectEntityBased
     public int cycles;
     public double speed;
 
-    public PBEffectEntitiesCrush()
-    {
-    }
-
     public PBEffectEntitiesCrush(int maxTicksAlive, double range, int cycles, double speed)
     {
         super(maxTicksAlive, range);
@@ -32,35 +28,43 @@ public class PBEffectEntitiesCrush extends PBEffectEntityBased
     }
 
     @Override
-    public void affectEntity(World world, EntityPandorasBox box, Random random, EntityLivingBase entity, double newRatio, double prevRatio, double strength)
+    public void affectEntity(World world, EntityPandorasBox box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength)
     {
         boolean lift = ((newRatio * cycles) % 1.000001) < 0.7; // We want 1.0 inclusive
 
         if (lift)
         {
-            entity.motionY = entity.motionY * (1.0f - strength) + strength * speed;
+            double x = entity.getDeltaMovement().x;
+            double y = entity.getDeltaMovement().y;
+            double z = entity.getDeltaMovement().z;
+            entity.getDeltaMovement().scale(0);
+            entity.getDeltaMovement().add(x, y * (1.0f - strength) + strength * speed, z);
         }
         else
         {
-            entity.motionY = entity.motionY - strength * speed;
+            double x = entity.getDeltaMovement().x;
+            double y = entity.getDeltaMovement().y;
+            double z = entity.getDeltaMovement().z;
+            entity.getDeltaMovement().scale(0);
+            entity.getDeltaMovement().add(x, y - strength * speed, z);
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setInteger("cycles", cycles);
-        compound.setDouble("speed", speed);
+        compound.putInt("cycles", cycles);
+        compound.putDouble("speed", speed);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
-        cycles = compound.getInteger("cycles");
+        cycles = compound.getInt("cycles");
         speed = compound.getDouble("speed");
     }
 }

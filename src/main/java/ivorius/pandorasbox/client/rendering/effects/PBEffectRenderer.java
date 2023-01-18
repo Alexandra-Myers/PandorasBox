@@ -1,5 +1,7 @@
 package ivorius.pandorasbox.client.rendering.effects;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 
@@ -8,5 +10,5 @@ import ivorius.pandorasbox.entitites.EntityPandorasBox;
  */
 public interface PBEffectRenderer<E extends PBEffect>
 {
-    void renderBox(EntityPandorasBox entity, E effect, float partialTicks);
+    void renderBox(EntityPandorasBox entity, E effect, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder);
 }

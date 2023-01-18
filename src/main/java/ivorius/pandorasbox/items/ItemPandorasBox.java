@@ -8,38 +8,40 @@ package ivorius.pandorasbox.items;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
-public class ItemPandorasBox extends ItemBlock
+public class ItemPandorasBox extends BlockItem
 {
-    public ItemPandorasBox(Block block)
+    public ItemPandorasBox(Block block, Item.Properties properties)
     {
-        super(block);
-
-        setMaxStackSize(1);
+        super(block, properties);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
-    {
-        ItemStack itemStackIn = playerIn.getHeldItem(handIn);
+    public ActionResultType place(BlockItemUseContext context) {
+        ActionResultType result = super.place(context);
+        BlockItemUseContext blockitemusecontext = this.updatePlacementContext(context);
+        if (blockitemusecontext != null) {
+            executeRandomEffect(context.getLevel(), context.getPlayer());
+            context.getLevel().removeBlock(blockitemusecontext.getClickedPos(), false);
+            context.getLevel().removeBlockEntity(blockitemusecontext.getClickedPos());
+        }
 
-        if (!worldIn.isRemote)
-            executeRandomEffect(worldIn, playerIn);
-
-        itemStackIn.shrink(1);
-        return new ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);
+        return result;
     }
 
-    public static EntityPandorasBox executeRandomEffect(World world, EntityLivingBase entity)
+    public static EntityPandorasBox executeRandomEffect(World world, Entity entity)
     {
-        return PBECRegistry.spawnPandorasBox(world, entity.getRNG(), true, entity);
+//        if(PBECRegistry.isAnyNull(world, entity)) return null;
+        if(world.isClientSide()) return null;
+        return PBECRegistry.spawnPandorasBox(world, world.random, true, entity);
     }
 }

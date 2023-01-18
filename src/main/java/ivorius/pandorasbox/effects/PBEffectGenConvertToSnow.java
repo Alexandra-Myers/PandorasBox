@@ -7,11 +7,11 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -21,9 +21,6 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToSnow extends PBEffectGenerate
 {
-    public PBEffectGenConvertToSnow()
-    {
-    }
 
     public PBEffectGenConvertToSnow(int time, double range, int unifiedSeed)
     {
@@ -33,38 +30,36 @@ public class PBEffectGenConvertToSnow extends PBEffectGenerate
     @Override
     public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
-        IBlockState blockState = world.getBlockState(pos);
+        BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
 
         if (pass == 0)
         {
-            if (isBlockAnyOf(block, Blocks.FLOWING_WATER, Blocks.WATER))
+            if (isBlockAnyOf(block, Blocks.WATER))
             {
-                setBlockSafe(world, pos, Blocks.ICE.getDefaultState());
+                setBlockSafe(world, pos, Blocks.ICE.defaultBlockState());
             }
-            else if (blockState.getMaterial() == Material.AIR && Blocks.SNOW_LAYER.canPlaceBlockAt(world, pos))
+            else if (blockState.isAir(world, pos))
             {
-                setBlockSafe(world, pos, Blocks.SNOW_LAYER.getDefaultState());
+                setBlockSafe(world, pos, Blocks.SNOW.defaultBlockState());
             }
             else if (block == Blocks.FIRE)
             {
-                setBlockSafe(world, pos, Blocks.AIR.getDefaultState());
+                setBlockSafe(world, pos, Blocks.AIR.defaultBlockState());
             }
-            else if (block == Blocks.FLOWING_LAVA)
+            else if (block == Blocks.LAVA && !blockState.getValue(FlowingFluidBlock.LEVEL).equals(0))
             {
-                setBlockSafe(world, pos, Blocks.COBBLESTONE.getDefaultState());
+                setBlockSafe(world, pos, Blocks.COBBLESTONE.defaultBlockState());
             }
             else if (block == Blocks.LAVA)
             {
-                setBlockSafe(world, pos, Blocks.OBSIDIAN.getDefaultState());
+                setBlockSafe(world, pos, Blocks.OBSIDIAN.defaultBlockState());
             }
         }
         else
         {
-            if (canSpawnEntity(world, blockState, pos))
-            {
-                lazilySpawnEntity(world, entity, random, "SnowMan", 1.0f / (20 * 20), pos);
-            }
+            Entity entity1 = lazilySpawnEntity(world, entity, random, "snow_golem", 1.0f / (20 * 20), pos);
+            canSpawnEntity(world, blockState, pos, entity1);
         }
     }
 }

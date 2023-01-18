@@ -6,11 +6,12 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -19,9 +20,6 @@ import java.util.Random;
  */
 public class PBEffectEntitiesCreateVoid extends PBEffectEntityBased
 {
-    public PBEffectEntitiesCreateVoid()
-    {
-    }
 
     public PBEffectEntitiesCreateVoid(int maxTicksAlive, double range)
     {
@@ -29,15 +27,15 @@ public class PBEffectEntitiesCreateVoid extends PBEffectEntityBased
     }
 
     @Override
-    public void affectEntity(World world, EntityPandorasBox box, Random random, EntityLivingBase entity, double newRatio, double prevRatio, double strength)
+    public void affectEntity(World world, EntityPandorasBox box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
-            if (entity instanceof EntityPlayer)
+            if (entity instanceof PlayerEntity)
             {
-                int baseY = MathHelper.floor(entity.posY);
-                int baseX = MathHelper.floor(entity.posX);
-                int baseZ = MathHelper.floor(entity.posZ);
+                int baseY = MathHelper.floor(entity.getY());
+                int baseX = MathHelper.floor(entity.getX());
+                int baseZ = MathHelper.floor(entity.getZ());
 
                 for (int x = -1; x <= 1; x++)
                 {

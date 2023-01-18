@@ -5,12 +5,12 @@
 
 package ivorius.pandorasbox.effects;
 
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.utils.PBNBTHelper;
-import ivorius.pandorasbox.worldgen.WorldGenMegaJungleCustom;
+import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPlanks;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.gen.feature.WorldGenerator;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.gen.feature.TreeFeature;
 
 /**
  * Created by lukas on 30.03.14.
@@ -22,12 +22,7 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator
     public Block trunkBlock;
     public Block leafBlock;
 
-    private WorldGenerator[] treeGens;
-
-    public PBEffectGenTreesOdd()
-    {
-
-    }
+    private TreeFeature[] treeGens;
 
     public PBEffectGenTreesOdd(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags, Block trunkBlock, Block leafBlock)
     {
@@ -39,27 +34,29 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator
 
     private void initializeGens()
     {
-        treeGens = new WorldGenerator[1];
-        treeGens[treeJungle] = new WorldGenMegaJungleCustom(true, 10, 20, trunkBlock.getDefaultState().withProperty(BlockPlanks.VARIANT, BlockPlanks.EnumType.JUNGLE), leafBlock.getDefaultState().withProperty(BlockPlanks.VARIANT, BlockPlanks.EnumType.JUNGLE));
+        treeGens = new TreeFeature[1];
+        treeGens[treeJungle] = (TreeFeature) PandorasBox.instance.MEGA_JUNGLE;
+        ((MegaTreeFeature)treeGens[treeJungle]).setLeaves(leafBlock.defaultBlockState());
+        ((MegaTreeFeature)treeGens[treeJungle]).setTrunk(trunkBlock.defaultBlockState());
     }
 
     @Override
-    public WorldGenerator[] getGenerators()
+    public TreeFeature[] getGenerators()
     {
         return treeGens;
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setString("trunkBlock", PBNBTHelper.storeBlockString(trunkBlock));
-        compound.setString("leafBlock", PBNBTHelper.storeBlockString(leafBlock));
+        compound.putString("trunkBlock", PBNBTHelper.storeBlockString(trunkBlock));
+        compound.putString("leafBlock", PBNBTHelper.storeBlockString(leafBlock));
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 

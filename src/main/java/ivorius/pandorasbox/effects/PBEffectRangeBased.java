@@ -7,9 +7,8 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.math.IvMathHelper;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -24,10 +23,6 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
 
     public boolean spreadSquared = true;
     public boolean easeInOut = true;
-
-    public PBEffectRangeBased()
-    {
-    }
 
     public PBEffectRangeBased(int maxTicksAlive, double range, int passes)
     {
@@ -64,23 +59,23 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
     public abstract void generateInRange(World world, EntityPandorasBox entity, Random random, Vec3d effectCenter, double prevRange, double newRange, int pass);
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setDouble("range", range);
-        compound.setInteger("passes", passes);
-        compound.setBoolean("spreadSquared", spreadSquared);
-        compound.setBoolean("easeInOut", easeInOut);
+        compound.putDouble("range", range);
+        compound.putInt("passes", passes);
+        compound.putBoolean("spreadSquared", spreadSquared);
+        compound.putBoolean("easeInOut", easeInOut);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
         range = compound.getDouble("range");
-        passes = compound.getInteger("passes");
+        passes = compound.getInt("passes");
         spreadSquared = compound.getBoolean("spreadSquared");
         easeInOut = compound.getBoolean("easeInOut");
     }

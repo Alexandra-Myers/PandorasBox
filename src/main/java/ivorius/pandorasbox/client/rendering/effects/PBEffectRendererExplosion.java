@@ -1,6 +1,8 @@
 package ivorius.pandorasbox.client.rendering.effects;
 
-import ivorius.ivtoolkit.rendering.IvRenderHelper;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import ivorius.pandorasbox.effects.PBEffectExplode;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import net.minecraft.client.renderer.*;
@@ -11,7 +13,7 @@ import net.minecraft.client.renderer.*;
 public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplode>
 {
     @Override
-    public void renderBox(EntityPandorasBox entity, PBEffectExplode effect, float partialTicks)
+    public void renderBox(EntityPandorasBox entity, PBEffectExplode effect, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
         if (!entity.isInvisible())
         {
@@ -23,11 +25,11 @@ public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplo
 
             float scale = (timePassed * 0.3f) * effect.explosionRadius * 0.3f;
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0f, 0.2f, 0.0f);
-            GlStateManager.scale(scale, scale, scale);
-            IvRenderHelper.renderLights(entity.ticksExisted + partialTicks, lightColor, timePassed, 10);
-            GlStateManager.popMatrix();
+            matrixStack.pushPose();
+            matrixStack.translate(0.0f, 0.2f, 0.0f);
+            matrixStack.scale(scale, scale, scale);
+            IvRenderHelper.renderLights(entity.tickCount + partialTicks, lightColor, timePassed, 10, matrixStack, builder);
+            matrixStack.popPose();
         }
     }
 }

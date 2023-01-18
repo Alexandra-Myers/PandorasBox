@@ -8,21 +8,23 @@ package ivorius.pandorasbox;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import ivorius.pandorasbox.block.PBBlocks;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
-import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedEntity;
 import ivorius.pandorasbox.weighted.WeightedPotion;
 import ivorius.pandorasbox.weighted.WeightedSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
+import net.minecraft.block.*;
+import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
+import net.minecraft.item.Items;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.Effects;
+import net.minecraft.state.Property;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 
@@ -35,7 +37,7 @@ public class PandorasBoxHelper
     public static List<WeightedEntity> tameableCreatures = new ArrayList<>();
 
     public static List<RandomizedItemStack> blocksAndItems = new ArrayList<>();
-    public static Multimap<Block, IProperty> randomizableBlockProperties = HashMultimap.create();
+    public static Multimap<Block, Property<?>> randomizableBlockProperties = HashMultimap.create();
 
     public static List<WeightedBlock> blocks = new ArrayList<>();
 
@@ -65,9 +67,20 @@ public class PandorasBoxHelper
         {
             PandorasBoxHelper.blocks.add(new WeightedBlock(weight, block));
 
-            Item item = Item.getItemFromBlock(block);
+            Item item = block.asItem();
             if (item != null)
-                addItem(new RandomizedItemStack(item, 0, 1, item.getItemStackLimit(new ItemStack(item)), weight));
+                addItem(new RandomizedItemStack(item, 1, item.getItemStackLimit(new ItemStack(item)), weight));
+        }
+    }
+    public static void addBlocks(double weight, List<Block> blocks)
+    {
+        for (Block block : blocks)
+        {
+            PandorasBoxHelper.blocks.add(new WeightedBlock(weight, block));
+
+            Item item = block.asItem();
+            if (item != null)
+                addItem(new RandomizedItemStack(item, 1, item.getItemStackLimit(new ItemStack(item)), weight));
         }
     }
 
@@ -92,7 +105,7 @@ public class PandorasBoxHelper
             if (object instanceof Item)
             {
                 Item item = (Item) object;
-                addItem(new RandomizedItemStack(item, 0, 1, item.getItemStackLimit(new ItemStack(item)), weight));
+                addItem(new RandomizedItemStack(item, 1, item.getItemStackLimit(new ItemStack(item)), weight));
             }
             else if (object instanceof ItemStack)
             {
@@ -109,7 +122,7 @@ public class PandorasBoxHelper
             if (object instanceof Item)
             {
                 Item item = (Item) object;
-                addItem(new RandomizedItemStack(item, 0, min, max, weight));
+                addItem(new RandomizedItemStack(item, min, max, weight));
             }
             else if (object instanceof ItemStack)
             {
@@ -140,11 +153,11 @@ public class PandorasBoxHelper
         equipmentSets.add(new WeightedSet(weight, set));
     }
 
-    public static void addPotions(List<WeightedPotion> list, double weight, int minStrength, int maxStrength, int minDuration, int maxDuration, Potion... potions)
+    public static void addPotions(List<WeightedPotion> list, double weight, int minStrength, int maxStrength, int minDuration, int maxDuration, Effect... potions)
     {
-        for (Potion potion : potions)
+        for (Effect effect : potions)
         {
-            list.add(new WeightedPotion(weight, potion, minStrength, maxStrength, minDuration, maxDuration));
+            list.add(new WeightedPotion(weight, effect, minStrength, maxStrength, minDuration, maxDuration));
         }
     }
 
@@ -155,7 +168,7 @@ public class PandorasBoxHelper
             if (object instanceof Item)
             {
                 Item item = (Item) object;
-                enchantableArmorList.add(new RandomizedItemStack(item, 0, 1, 1, weight));
+                enchantableArmorList.add(new RandomizedItemStack(item, 1, 1, weight));
             }
             else if (object instanceof ItemStack)
             {
@@ -172,7 +185,7 @@ public class PandorasBoxHelper
             if (object instanceof Item)
             {
                 Item item = (Item) object;
-                enchantableToolList.add(new RandomizedItemStack(item, 0, 1, 1, weight));
+                enchantableToolList.add(new RandomizedItemStack(item, 1, 1, weight));
             }
             else if (object instanceof ItemStack)
             {
@@ -185,7 +198,7 @@ public class PandorasBoxHelper
     public static void addEquipmentForLevel(Item base, int level, ItemStack stack)
     {
         if (!equipmentForLevels.containsKey(base))
-            equipmentForLevels.put(base, new Hashtable<Integer, ItemStack>());
+            equipmentForLevels.put(base, new Hashtable<>());
 
         equipmentForLevels.get(base).put(level, stack);
     }
@@ -203,83 +216,131 @@ public class PandorasBoxHelper
         }
     }
 
-    public static void addAllRandomizableBlockProperties(Block... blocks)
+    public static void addAllRandomizableBlockProperties(List<Block> blocks)
     {
         for (Block block : blocks)
-            randomizableBlockProperties.putAll(block, block.getDefaultState().getProperties().keySet());
+            randomizableBlockProperties.putAll(block, block.defaultBlockState().getProperties());
     }
 
-    public static void addRandomizableBlockProperty(Block[] blocks, IProperty... properties)
+    public static void addRandomizableBlockProperty(Block[] blocks, Property... properties)
     {
         for (Block block : blocks)
-            for (IProperty property : properties)
+            for (Property property : properties)
                 randomizableBlockProperties.put(block, property);
     }
 
-    public static void addRandomizableBlockProperty(Block block, IProperty... properties)
+    public static void addRandomizableBlockProperty(Block block, Property... properties)
     {
-        for (IProperty property : properties)
+        for (Property property : properties)
             randomizableBlockProperties.put(block, property);
     }
 
     public static void initialize()
     {
-        addEntities(mobs, 10.0, 3, 10, "Zombie");
-        addEntities(mobs, 10.0, 2, 8, "Spider");
-        addEntities(mobs, 10.0, 2, 5, "Skeleton");
+        addEntities(mobs, 10.0, 3, 10, "zombie", "drowned");
+        addEntities(mobs, 10.0, 2, 8, "spider");
+        addEntities(mobs, 10.0, 2, 5, "skeleton");
         addEntities(mobs, 5.0, 2, 5, "pbspecial_skeletonWither");
-        addEntities(mobs, 10.0, 2, 8, "Creeper");
-        addEntities(mobs, 6.0, 2, 8, "Slime");
-        addEntities(mobs, 4.0, 1, 4, "Ghast");
-        addEntities(mobs, 6.0, 2, 8, "PigZombie");
-        addEntities(mobs, 6.0, 2, 6, "Enderman");
-        addEntities(mobs, 5.0, 2, 4, "CaveSpider");
-        addEntities(mobs, 5.0, 10, 20, "Silverfish");
-        addEntities(mobs, 4.0, 2, 5, "Blaze");
-        addEntities(mobs, 5.0, 2, 6, "LavaSlime");
-        addEntities(mobs, 1.0, 1, 1, "WitherBoss");
-        addEntities(mobs, 4.0, 2, 4, "Witch");
-        addEntities(mobs, 6.0, 10, 20, "Endermite");
+        addEntities(mobs, 10.0, 2, 8, "creeper");
+        addEntities(mobs, 6.0, 2, 8, "slime");
+        addEntities(mobs, 4.0, 1, 4, "ghast");
+        addEntities(mobs, 6.0, 2, 8, "zombie_pigman");
+        addEntities(mobs, 6.0, 2, 6, "enderman");
+        addEntities(mobs, 5.0, 2, 4, "cave_spider");
+        addEntities(mobs, 5.0, 10, 20, "silverfish");
+        addEntities(mobs, 4.0, 2, 5, "blaze");
+        addEntities(mobs, 5.0, 2, 6, "magma_cube");
+        addEntities(mobs, 1.0, 1, 1, "wither");
+        addEntities(mobs, 4.0, 2, 4, "witch");
+        addEntities(mobs, 6.0, 10, 20, "endermite");
         addEntities(mobs, 5.0, 2, 6, "pbspecial_angryWolf");
         addEntities(mobs, 4.0, 2, 5, "pbspecial_superchargedCreeper");
 
-        addEntities(creatures, 10.0, 3, 10, "Pig", "Sheep", "Cow", "Chicken");
-        addEntities(creatures, 6.0, 2, 6, "Wolf");
-        addEntities(creatures, 5.0, 4, 10, "Bat");
-        addEntities(creatures, 7.0, 6, 20, "Rabbit");
-        addEntities(creatures, 4.0, 3, 7, "MushroomCow");
-        addEntities(creatures, 4.0, 3, 7, "SnowMan");
-        addEntities(creatures, 4.0, 2, 5, "EntityHorse");
-        addEntities(creatures, 4.0, 2, 6, "Ozelot");
-        addEntities(creatures, 3.0, 3, 6, "Villager");
-        addEntities(creatures, 3.0, 2, 4, "VillagerGolem");
+        addEntities(creatures, 10.0, 3, 10, "pig", "sheep", "cow", "chicken");
+        addEntities(creatures, 6.0, 2, 6, "wolf");
+        addEntities(creatures, 6.0, 2, 6, "panda");
+        addEntities(creatures, 6.0, 2, 6, "fox");
+        addEntities(creatures, 5.0, 4, 10, "bat");
+        addEntities(creatures, 7.0, 6, 20, "rabbit");
+        addEntities(creatures, 4.0, 3, 7, "mooshroom");
+        addEntities(creatures, 4.0, 3, 7, "snow_golem");
+        addEntities(creatures, 4.0, 2, 5, "horse");
+        addEntities(creatures, 4.0, 2, 6, "ocelot", "cat");
+        addEntities(creatures, 3.0, 3, 6, "villager");
+        addEntities(creatures, 3.0, 2, 4, "iron_golem");
 
-        addEntities(waterCreatures, 6.0, 3, 10, "Squid");
+        addEntities(waterCreatures, 6.0, 3, 10, "squid", "cod", "salmon", "pufferfish", "turtle", "tropical_fish");
 
-        addEntities(waterMobs, 6.0, 3, 10, "Guardian");
+        addEntities(waterMobs, 6.0, 3, 10, "guardian");
         addEntities(waterMobs, 5.0, 1, 1, "pbspecial_elderGuardian");
 
         addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_wolfTamed");
         addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_ocelotTamed");
 
-        addBlocks(40.0, Blocks.STONE, Blocks.SANDSTONE, Blocks.PLANKS, Blocks.SAND, Blocks.LOG, Blocks.LOG2, Blocks.LEAVES, Blocks.LEAVES2, Blocks.WOOL, Blocks.DOUBLE_STONE_SLAB, Blocks.DOUBLE_STONE_SLAB2, Blocks.DOUBLE_WOODEN_SLAB, Blocks.STONEBRICK, Blocks.STAINED_HARDENED_CLAY);
+        ArrayListExtensions<Block> planks = new ArrayListExtensions<>();
+        ArrayListExtensions<Block> glass = new ArrayListExtensions<>();
+        ArrayListExtensions<Block> randomizable = new ArrayListExtensions<>();
+        ArrayListExtensions<Item> misc = new ArrayListExtensions<>();
+        ArrayListExtensions<Item> records = new ArrayListExtensions<>();
+        ArrayListExtensions<Item> dyes = new ArrayListExtensions<>();
+        glass.addAll(Blocks.COAL_ORE, Blocks.LAPIS_ORE, Blocks.REDSTONE_ORE, Blocks.NETHER_QUARTZ_ORE, Blocks.GLASS);
+        planks.addAll(Blocks.STONE, Blocks.SANDSTONE, Blocks.SAND);
+        randomizable.addAll(
+                Blocks.STONE, Blocks.DIRT, Blocks.SAND, Blocks.STONE_BRICK_STAIRS,
+                Blocks.QUARTZ_BLOCK, Blocks.QUARTZ_STAIRS,
+                Blocks.SANDSTONE, Blocks.SANDSTONE_STAIRS,
+                Blocks.RED_SANDSTONE, Blocks.RED_SANDSTONE_STAIRS,
+                Blocks.RAIL,
+                Blocks.FURNACE, Blocks.PUMPKIN, Blocks.JACK_O_LANTERN,
+                Blocks.SNOW, Blocks.SNOW,
+                Blocks.CHEST, Blocks.ENDER_CHEST, Blocks.TRAPPED_CHEST,
+                Blocks.FLOWER_POT,
+                Blocks.SPONGE);
+        for(Block block : ForgeRegistries.BLOCKS) {
+            if (BlockTags.PLANKS.contains(block) || BlockTags.LOGS.contains(block) || block instanceof LeavesBlock || BlockTags.WOOL.contains(block) || BlockTags.SLABS.contains(block) || block.getRegistryName().getPath().endsWith("stone_bricks") || block.getRegistryName().getPath().endsWith("_terracotta")) {
+                planks.add(block);
+                randomizable.add(block);
+            }
+            if (block instanceof StainedGlassBlock) {
+                glass.add(block);
+                randomizable.add(block);
+            }
+            if(block instanceof SaplingBlock) {
+                randomizable.add(block);
+            }
+        }
+        glass.add(Blocks.SOUL_SAND);
+        misc.addAll(Items.LAVA_BUCKET, Items.MILK_BUCKET, Items.WATER_BUCKET, Items.FLINT_AND_STEEL, Items.PAINTING, Items.FLOWER_POT, Items.MINECART, Items.CAULDRON);
+        for(Item item : ForgeRegistries.ITEMS) {
+            if(ItemTags.BOATS.contains(item) || ItemTags.BEDS.contains(item)) {
+                misc.add(item);
+            }
+            if(ItemTags.MUSIC_DISCS.contains(item)) {
+                records.add(item);
+            }
+            if(item instanceof DyeItem) {
+                dyes.add(item);
+            }
+        }
+
+        addBlocks(40.0, planks);
         addBlocks(15.0, Blocks.PRISMARINE, Blocks.QUARTZ_BLOCK);
-        addBlocks(10.0, Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE, Blocks.NETHERRACK, Blocks.NETHER_BRICK, Blocks.BRICK_BLOCK, Blocks.END_STONE, Blocks.HARDENED_CLAY);
+        addBlocks(10.0, Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE, Blocks.NETHERRACK, Blocks.NETHER_BRICKS, Blocks.BRICKS, Blocks.END_STONE, Blocks.TERRACOTTA);
         addBlocks(10.0, Blocks.DIRT, Blocks.GRASS, Blocks.GRAVEL, Blocks.PUMPKIN, Blocks.CLAY, Blocks.MYCELIUM);
-        addBlocks(8.0, Blocks.COAL_ORE, Blocks.LAPIS_ORE, Blocks.REDSTONE_ORE, Blocks.QUARTZ_ORE, Blocks.GLASS, Blocks.STAINED_GLASS, Blocks.SOUL_SAND);
+        addBlocks(8.0, glass);
         addBlocks(0.2, Blocks.DIAMOND_BLOCK, Blocks.EMERALD_BLOCK, Blocks.GOLD_BLOCK);
         addBlocks(0.3, Blocks.IRON_BLOCK);
         addBlocks(0.5, Blocks.DIAMOND_ORE, Blocks.EMERALD_ORE, Blocks.GOLD_ORE);
         addBlocks(1.0, Blocks.IRON_ORE);
         addBlocks(2.0, Blocks.TNT, Blocks.GLOWSTONE, Blocks.COAL_BLOCK, Blocks.LAPIS_BLOCK, Blocks.REDSTONE_BLOCK, Blocks.SLIME_BLOCK, Blocks.SPONGE);
-        addBlocks(5.0, Blocks.MONSTER_EGG, Blocks.REDSTONE_LAMP, Blocks.SEA_LANTERN, Blocks.SNOW, Blocks.BOOKSHELF, Blocks.LIT_PUMPKIN, Blocks.HAY_BLOCK, Blocks.OBSIDIAN, Blocks.MELON_BLOCK);
+        addBlocks(5.0, Blocks.DRAGON_EGG, Blocks.REDSTONE_LAMP, Blocks.SEA_LANTERN, Blocks.SNOW, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.HAY_BLOCK, Blocks.OBSIDIAN, Blocks.MELON);
 
         addItems(10.0, Items.COAL, Items.GUNPOWDER, Items.WHEAT, Items.SADDLE, Items.REDSTONE, Items.BONE, Items.MELON, Items.CLAY_BALL, Items.BOOK, Items.GOLD_NUGGET, Items.POTATO, Items.BUCKET, Items.STICK, Items.STRING, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.WHEAT_SEEDS, Items.SNOWBALL, Items.SUGAR, Items.FISHING_ROD, Items.NETHER_STAR, Items.NETHER_WART, Items.FLINT, Items.EGG, Items.BRICK, Items.PAPER, new ItemStack(Blocks.TORCH));
-        addItems(10.0, Item.getItemFromBlock(PBBlocks.pandorasBox));
-        addItems(10.0, Items.CHICKEN, Items.COOKED_CHICKEN, Items.BEEF, Items.PUMPKIN_PIE, Items.COOKED_BEEF, Items.MUSHROOM_STEW, Items.ROTTEN_FLESH, Items.CARROT, Items.PORKCHOP, Items.COOKED_PORKCHOP, Items.APPLE, Items.CAKE, Items.BREAD, Items.COOKIE, Items.FISH, Items.COOKED_FISH, Items.MUTTON, Items.COOKED_MUTTON, Items.RABBIT, Items.RABBIT_FOOT, Items.RABBIT_HIDE, Items.RABBIT_STEW, Items.COOKED_RABBIT);
-        addItems(8.0, Items.LAVA_BUCKET, Items.MILK_BUCKET, Items.WATER_BUCKET, Items.FLINT_AND_STEEL, Items.PAINTING, Items.FLOWER_POT, Items.BED, Items.BOAT, Items.MINECART, Items.CAULDRON);
+        addItems(10.0, PBBlocks.pandorasBox.asItem());
+        addItems(10.0, Items.CHICKEN, Items.COOKED_CHICKEN, Items.BEEF, Items.PUMPKIN_PIE, Items.COOKED_BEEF, Items.MUSHROOM_STEW, Items.ROTTEN_FLESH, Items.CARROT, Items.PORKCHOP, Items.COOKED_PORKCHOP, Items.APPLE, Items.CAKE, Items.BREAD, Items.COOKIE, Items.COD, Items.COOKED_COD, Items.SALMON, Items.COOKED_SALMON, Items.PUFFERFISH, Items.MUTTON, Items.COOKED_MUTTON, Items.RABBIT, Items.RABBIT_FOOT, Items.RABBIT_HIDE, Items.RABBIT_STEW, Items.COOKED_RABBIT);
+        addItems(8.0,  misc);
         addItems(8.0, Items.NAME_TAG);
-        addItems(6.0, Items.IRON_INGOT, Items.GLOWSTONE_DUST, Items.BLAZE_POWDER, Items.BLAZE_ROD, Items.CLOCK, Items.GHAST_TEAR, Items.ENDER_EYE, Items.SPECKLED_MELON, Items.SPIDER_EYE, Items.FERMENTED_SPIDER_EYE, Items.MAGMA_CREAM, Items.GOLDEN_CARROT);
+        addItems(6.0, Items.IRON_INGOT, Items.GLOWSTONE_DUST, Items.BLAZE_POWDER, Items.BLAZE_ROD, Items.CLOCK, Items.GHAST_TEAR, Items.ENDER_EYE, Items.GLISTERING_MELON_SLICE, Items.SPIDER_EYE, Items.FERMENTED_SPIDER_EYE, Items.MAGMA_CREAM, Items.GOLDEN_CARROT);
         addItems(4.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
         addItems(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE);
         addItems(4.0, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
@@ -289,9 +350,9 @@ public class PandorasBoxHelper
         addItemsMinMax(5.0, 1, 1, new ItemStack(Blocks.CHEST));
         addItems(2.0, Items.DIAMOND, Items.EMERALD, Items.GOLD_INGOT, Items.GOLDEN_APPLE, Items.ENDER_PEARL, Items.PRISMARINE_CRYSTALS, Items.PRISMARINE_SHARD);
         addItems(2.0, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
-        addItems(2.0, Items.RECORD_11, Items.RECORD_13, Items.RECORD_BLOCKS, Items.RECORD_CAT, Items.RECORD_CHIRP, Items.RECORD_FAR, Items.RECORD_MALL, Items.RECORD_MELLOHI, Items.RECORD_STAL, Items.RECORD_STRAD, Items.RECORD_WAIT, Items.RECORD_WARD);
-        for (int i = 0; i < 16; i++)
-            addItems(10.0, new ItemStack(Items.DYE, 1, i));
+        addItems(2.0, records);
+        for (Item dye : dyes)
+            addItems(10.0, new ItemStack(dye, 1));
 
         addEquipmentSet(10.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
@@ -299,9 +360,13 @@ public class PandorasBoxHelper
         addEquipmentSet(2.0, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
         addEquipmentSet(6.0, Items.BOW, new ItemStack(Items.ARROW, 64), Items.IRON_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.IRON_AXE, new ItemStack(Items.APPLE, 8));
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.DIAMOND_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.STONE_SWORD, new ItemStack(Items.BREAD, 8), new ItemStack(Blocks.TORCH, 32));
-        addEquipmentSet(8.0, Items.LEATHER_HELMET, Items.IRON_HOE, new ItemStack(Items.WHEAT_SEEDS, 32), new ItemStack(Items.PUMPKIN_SEEDS, 4), new ItemStack(Items.MELON_SEEDS, 4), new ItemStack(Items.DYE, 8, 15), new ItemStack(Blocks.DIRT, 32), Items.WATER_BUCKET, Items.WATER_BUCKET);
+        addEquipmentSet(8.0, Items.LEATHER_HELMET, Items.IRON_HOE, new ItemStack(Items.WHEAT_SEEDS, 32), new ItemStack(Items.PUMPKIN_SEEDS, 4), new ItemStack(Items.MELON_SEEDS, 4), new ItemStack(Items.BLUE_DYE, 8), new ItemStack(Blocks.DIRT, 32), Items.WATER_BUCKET, Items.WATER_BUCKET);
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.DIAMOND_AXE, new ItemStack(Items.BEEF, 16));
-        addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(Blocks.WOOL, 16, 0), new ItemStack(Blocks.WOOL, 16, 15), new ItemStack(Blocks.WOOL, 16, 1), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
+        for(Block block : ForgeRegistries.BLOCKS) {
+            if(BlockTags.WOOL.contains(block)) {
+                addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
+            }
+        }
 
         addEquipmentLevelsInOrder(Items.WOODEN_SWORD, Items.WOODEN_SWORD, Items.GOLDEN_SWORD, Items.STONE_SWORD, Items.IRON_SWORD, Items.DIAMOND_SWORD);
         addEquipmentLevelsInOrder(Items.WOODEN_AXE, Items.WOODEN_AXE, Items.GOLDEN_AXE, Items.STONE_AXE, Items.IRON_AXE, Items.DIAMOND_AXE);
@@ -309,9 +374,9 @@ public class PandorasBoxHelper
         addEquipmentLevelsInOrder(Items.WOODEN_SHOVEL, Items.WOODEN_SHOVEL, Items.GOLDEN_SHOVEL, Items.STONE_SHOVEL, Items.IRON_SHOVEL, Items.DIAMOND_SHOVEL);
         addEquipmentLevelsInOrder(Items.WOODEN_HOE, Items.WOODEN_HOE, Items.GOLDEN_HOE, Items.STONE_HOE, Items.IRON_HOE, Items.DIAMOND_HOE);
 
-        addPotions(buffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.REGENERATION, MobEffects.SPEED, MobEffects.STRENGTH, MobEffects.JUMP_BOOST, MobEffects.RESISTANCE, MobEffects.WATER_BREATHING, MobEffects.FIRE_RESISTANCE, MobEffects.NIGHT_VISION, MobEffects.INVISIBILITY, MobEffects.ABSORPTION);
-        addPotions(debuffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.BLINDNESS, MobEffects.NAUSEA, MobEffects.MINING_FATIGUE, MobEffects.WEAKNESS, MobEffects.HUNGER);
-        addPotions(debuffs, 10.0, 0, 2, 20 * 30, 20 * 60, MobEffects.WITHER);
+        addPotions(buffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, Effects.REGENERATION, Effects.MOVEMENT_SPEED, Effects.DAMAGE_BOOST, Effects.JUMP, Effects.DAMAGE_RESISTANCE, Effects.WATER_BREATHING, Effects.FIRE_RESISTANCE, Effects.NIGHT_VISION, Effects.INVISIBILITY, Effects.ABSORPTION);
+        addPotions(debuffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, Effects.BLINDNESS, Effects.CONFUSION, Effects.DIG_SLOWDOWN, Effects.WEAKNESS, Effects.HUNGER);
+        addPotions(debuffs, 10.0, 0, 2, 20 * 30, 20 * 60, Effects.WITHER);
 
         addEnchantableArmor(10.0, Items.IRON_HELMET, Items.GOLDEN_HELMET, Items.DIAMOND_HELMET, Items.IRON_CHESTPLATE, Items.GOLDEN_CHESTPLATE, Items.DIAMOND_CHESTPLATE, Items.IRON_LEGGINGS, Items.GOLDEN_LEGGINGS, Items.DIAMOND_LEGGINGS, Items.IRON_BOOTS, Items.GOLDEN_BOOTS, Items.DIAMOND_BOOTS);
 
@@ -320,26 +385,7 @@ public class PandorasBoxHelper
         addBlocks(heavyBlocks, 10.0, Blocks.ANVIL);
 
         addAllRandomizableBlockProperties(
-                Blocks.STONE, Blocks.DIRT, Blocks.SAND,
-                Blocks.WOOL, Blocks.STAINED_HARDENED_CLAY,
-                Blocks.STAINED_GLASS, Blocks.STAINED_GLASS_PANE,
-                Blocks.WOODEN_SLAB, Blocks.DOUBLE_WOODEN_SLAB,
-                Blocks.STONE_SLAB, Blocks.DOUBLE_STONE_SLAB,
-                Blocks.STONE_SLAB2, Blocks.DOUBLE_STONE_SLAB2,
-                Blocks.PLANKS,
-                Blocks.LEAVES, Blocks.LEAVES2,
-                Blocks.LOG, Blocks.LOG2,
-                Blocks.SAPLING,
-                Blocks.STONEBRICK, Blocks.STONE_BRICK_STAIRS,
-                Blocks.QUARTZ_BLOCK, Blocks.QUARTZ_STAIRS,
-                Blocks.SANDSTONE, Blocks.SANDSTONE_STAIRS,
-                Blocks.RED_SANDSTONE, Blocks.RED_SANDSTONE_STAIRS,
-                Blocks.RAIL,
-                Blocks.FURNACE, Blocks.PUMPKIN, Blocks.LIT_PUMPKIN,
-                Blocks.SNOW, Blocks.SNOW_LAYER,
-                Blocks.CHEST, Blocks.ENDER_CHEST, Blocks.TRAPPED_CHEST,
-                Blocks.FLOWER_POT,
-                Blocks.SPONGE
+                randomizable
         );
     }
 
@@ -358,18 +404,18 @@ public class PandorasBoxHelper
         throw new InternalError();
     }
 
-    public static IBlockState getRandomBlockState(Random rand, Block block, int unified)
+    public static BlockState getRandomBlockState(Random rand, Block block, int unified)
     {
-        IBlockState state = block.getDefaultState();
+        BlockState state = block.defaultBlockState();
 
-        Collection<IProperty> randomizableProperties = randomizableBlockProperties.get(block);
+        Collection<Property<?>> randomizableProperties = randomizableBlockProperties.get(block);
         if (randomizableProperties != null)
         {
             if (unified >= 0)
-                rand = new Random(unified ^ Block.REGISTRY.getNameForObject(block).hashCode());
+                rand = new Random(unified ^ rand.nextInt(256));
 
-            for (IProperty property : randomizableProperties)
-                state = state.withProperty(property, PandorasBoxHelper.<Comparable>randomElement(property.getAllowedValues(), rand));
+            for (Property property : randomizableProperties)
+                state = state.setValue(property, PandorasBoxHelper.<Comparable>randomElement(property.getPossibleValues(), rand));
         }
 
         return state;

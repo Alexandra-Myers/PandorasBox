@@ -1,29 +1,36 @@
 {
-    "forge_marker": 1,
-    "defaults": {
-        "textures": {
-          "#pandorasbox:pbTexture.png": "pandorasbox:entity/pandoras_box",
-          "pandorasbox:pbTexture": "pandorasbox:entity/pandoras_box"
-        },
-        "model": "pandorasbox:pandoras_box.b3d"
-    },
     "variants": {
-        "facing=north": { "model": "pandorasbox:pandoras_box.b3d" },
-        "facing=south": { "model": "pandorasbox:pandoras_box.b3d", "y": 180 },
-        "facing=west":  { "model": "pandorasbox:pandoras_box.b3d", "y": 270 },
-        "facing=east":  { "model": "pandorasbox:pandoras_box.b3d", "y": 90 },
-        "inventory": [{
-            "transform": {
-              "firstperson_righthand": {
-                "rotation": [ { "y": 135 } ],
-                "translation": [ 0, 0.1, 0 ]
-              },
-              "gui": {
-                "rotation": [ { "x": 30 }, { "y": 135 } ],
-                "translation": [ 0, 0.2, 0 ]
-              }
-            },
-            "model": "pandorasbox:pandoras_box.b3d"
-        }]
+        "facing=north,waterlogged=false": {
+            "model": "pandorasbox:block/pandoras_box",
+            "y": 180
+        },
+        "facing=north,waterlogged=true": {
+            "model": "pandorasbox:block/pandoras_box",
+            "y": 180
+        },
+        "facing=south,waterlogged=false": {
+            "model": "pandorasbox:block/pandoras_box",
+            "y": 0
+        },
+        "facing=south,waterlogged=true": {
+            "model": "pandorasbox:block/pandoras_box",
+            "y": 0
+        },
+        "facing=east,waterlogged=false": {
+            "model": "pandorasbox:block/pandoras_box",
+            "y": 270
+        },
+        "facing=east,waterlogged=true": {
+            "model": "pandorasbox:block/pandoras_box",
+            "y": 270
+        },
+        "facing=west,waterlogged=false": {
+            "model": "pandorasbox:block/pandoras_box",
+            "y": 90
+        },
+        "facing=west,waterlogged=true": {
+            "model": "pandorasbox:block/pandoras_box",
+            "y": 90
+        }
     }
 }

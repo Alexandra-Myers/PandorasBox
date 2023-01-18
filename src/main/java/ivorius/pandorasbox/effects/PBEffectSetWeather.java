@@ -6,10 +6,10 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldInfo;
+import net.minecraft.world.storage.IWorldInfo;
+import net.minecraft.world.storage.ServerWorldInfo;
 
 import java.util.Random;
 
@@ -21,10 +21,6 @@ public class PBEffectSetWeather extends PBEffectNormal
     public boolean rain;
     public boolean thunder;
     public int rainTime;
-
-    public PBEffectSetWeather()
-    {
-    }
 
     public PBEffectSetWeather(int maxTicksAlive, boolean rain, boolean thunder, int rainTime)
     {
@@ -42,29 +38,31 @@ public class PBEffectSetWeather extends PBEffectNormal
     @Override
     public void finalizeEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random)
     {
-        WorldInfo worldInfo = world.getWorldInfo();
-        worldInfo.setRainTime(rainTime);
-        worldInfo.setThunderTime(rainTime);
-        worldInfo.setRaining(rain);
-        worldInfo.setThundering(rain && thunder);
+        if (world.getLevelData() instanceof ServerWorldInfo) {
+            ServerWorldInfo worldInfo = (ServerWorldInfo) world.getLevelData();
+            worldInfo.setRainTime(rainTime);
+            worldInfo.setThunderTime(rainTime);
+            worldInfo.setRaining(rain);
+            worldInfo.setThundering(rain && thunder);
+        }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setInteger("rainTime", rainTime);
-        compound.setBoolean("rain", rain);
-        compound.setBoolean("thunder", thunder);
+        compound.putInt("rainTime", rainTime);
+        compound.putBoolean("rain", rain);
+        compound.putBoolean("thunder", thunder);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
-        rainTime = compound.getInteger("rainTime");
+        rainTime = compound.getInt("rainTime");
         rain = compound.getBoolean("rain");
         thunder = compound.getBoolean("thunder");
     }

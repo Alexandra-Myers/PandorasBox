@@ -9,8 +9,8 @@ import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -21,10 +21,6 @@ import java.util.Random;
 public class PBEffectSpawnBlocks extends PBEffectSpawnEntities
 {
     public Block[] blocks;
-
-    public PBEffectSpawnBlocks()
-    {
-    }
 
     public PBEffectSpawnBlocks(int time, Block[] blocks)
     {
@@ -45,16 +41,17 @@ public class PBEffectSpawnBlocks extends PBEffectSpawnEntities
     @Override
     public Entity spawnEntity(World world, EntityPandorasBox entity, Random random, int number, double x, double y, double z)
     {
+        if(world.isClientSide()) return null;
         Block block = blocks[number];
-        EntityFallingBlock entityFallingBlock = new EntityFallingBlock(world, x, y, z, block.getDefaultState());
-        entityFallingBlock.fallTime = 1;
-        world.spawnEntity(entityFallingBlock);
+        FallingBlockEntity entityFallingBlock = new FallingBlockEntity(world, x, y, z, block.defaultBlockState());
+        entityFallingBlock.time = 1;
+        world.addFreshEntity(entityFallingBlock);
 
         return entityFallingBlock;
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
@@ -62,7 +59,7 @@ public class PBEffectSpawnBlocks extends PBEffectSpawnEntities
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 

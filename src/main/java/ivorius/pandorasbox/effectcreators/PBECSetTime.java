@@ -38,7 +38,7 @@ public class PBECSetTime implements PBEffectCreator
 
         if (!add)
         {
-            int currentTime = (int) (world.getWorldTime() % 24000);
+            int currentTime = (int) (world.getGameTime() % 24000);
             PBEffectSetTime effect = new PBEffectSetTime(time, worldTime - currentTime);
             return effect;
         }

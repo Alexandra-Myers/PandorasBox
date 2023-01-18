@@ -5,15 +5,14 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.List;
 import java.util.Random;
@@ -27,10 +26,6 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     public Block fillBlock;
     public Block cageBlock;
 
-    public PBEffectGenLavaCages()
-    {
-    }
-
     public PBEffectGenLavaCages(int time, double range, int unifiedSeed, Block lavaBlock, Block cageBlock, Block fillBlock)
     {
         super(time, range, 1, unifiedSeed);
@@ -43,15 +38,15 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     @Override
     public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
-            if (!world.isBlockNormalCube(pos, false))
+            if (!world.loadedAndEntityCanStandOn(pos, entity))
             {
-                List<EntityPlayer> innerList = world.getEntitiesWithinAABB(EntityPlayer.class, BlockPositions.expandToAABB(pos, (double) 2, (double) 2, (double) 2));
+                List<PlayerEntity> innerList = world.getEntitiesOfClass(PlayerEntity.class, BlockPositions.expandToAABB(pos, (double) 2, (double) 2, (double) 2));
 
                 if (innerList.size() == 0)
                 {
-                    List<EntityPlayer> outerList = world.getEntitiesWithinAABB(EntityPlayer.class, BlockPositions.expandToAABB(pos, 3.5, 3.5, 3.5));
+                    List<PlayerEntity> outerList = world.getEntitiesOfClass(PlayerEntity.class, BlockPositions.expandToAABB(pos, 3.5, 3.5, 3.5));
 
                     if (outerList.size() > 0)
                     {
@@ -87,20 +82,20 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
         if (lavaBlock != null)
-            compound.setString("lavaBlock", PBNBTHelper.storeBlockString(lavaBlock));
+            compound.putString("lavaBlock", PBNBTHelper.storeBlockString(lavaBlock));
         if (fillBlock != null)
-            compound.setString("fillBlock", PBNBTHelper.storeBlockString(fillBlock));
+            compound.putString("fillBlock", PBNBTHelper.storeBlockString(fillBlock));
 
-        compound.setString("cageBlock", PBNBTHelper.storeBlockString(cageBlock));
+        compound.putString("cageBlock", PBNBTHelper.storeBlockString(cageBlock));
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 

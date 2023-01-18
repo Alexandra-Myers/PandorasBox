@@ -5,6 +5,9 @@
 
 package ivorius.pandorasbox.random;
 
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+
 import java.util.Random;
 
 public class PandorasBoxEntityNamer
@@ -19,7 +22,7 @@ public class PandorasBoxEntityNamer
     public static String[] casualNamesMale = new String[]{"Peter", "James", "Jim", "Lukas", "Lennart", "Caleb", "Notch", "Hank", "Jerry", "Jill", "Max", "Jude", "Jeb", "Archer", "Bobby", "Nick", "Toby", "Felix", "Tiberius", "Wilbur", "Ahmed", "Albert", "Barry", "Edmund", "Benedict", "Boris", "Desmond", "Clint", "Clive", "Chuck", "Eugene", "George", "Hector", "Igor", "Hubert", "Jamien", "Kenny", "Kyle", "Michael", "Maxwell", "Link", "Linus", "Oli", "Remy", "Alex", "Rider", "Sergio", "Shaun", "Stevie", "Terry", "Truman", "Wallace", "Will", "Zachary"};
     public static String[] casualNamesFemale = new String[]{"Anne", "Amely", "July", "Jade", "Abbey", "Adele", "Amy", "Deeba", "Avery", "Barbie", "Caprice", "Cathy", "Celeste", "Carlotte", "Chrissy", "Corina", "Diamond", "Edith", "Eileen", "Erica", "Florence", "Gloria", "Heidi", "Helen", "Honey", "Izzy", "Julia", "Kate", "Kelsey", "Kitty", "Lana", "Leonie", "Lilith", "Liv", "Lisa", "Lorraine", "Lyra", "Maddison", "Maggie", "Maria", "Lisbeth", "Nancy", "Nicole", "Paris", "Rachelle", "Rosie", "Sabina", "Sally", "Scarlet", "Selene", "Star", "Suzie", "Tess", "Tracie", "Yasmin", "Zoey"};
 
-    public static String getRandomName(Random random)
+    public static TextComponent getRandomName(Random random)
     {
         StringBuilder nameBuilder = new StringBuilder();
 
@@ -43,16 +46,16 @@ public class PandorasBoxEntityNamer
             nameBuilder.append(suffixes[random.nextInt(suffixes.length)]);
         }
 
-        return nameBuilder.toString();
+        return new StringTextComponent(nameBuilder.toString());
     }
 
-    public static String getRandomCasualName(Random random)
+    public static TextComponent getRandomCasualName(Random random)
     {
         if (random.nextBoolean())
         {
-            return casualNamesFemale[random.nextInt(casualNamesFemale.length)];
+            return new StringTextComponent(casualNamesFemale[random.nextInt(casualNamesFemale.length)]);
         }
 
-        return casualNamesMale[random.nextInt(casualNamesMale.length)];
+        return new StringTextComponent(casualNamesMale[random.nextInt(casualNamesMale.length)]);
     }
 }

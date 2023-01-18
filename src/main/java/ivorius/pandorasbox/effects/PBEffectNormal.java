@@ -6,8 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -18,10 +17,6 @@ import java.util.Random;
 public abstract class PBEffectNormal extends PBEffect
 {
     public int maxTicksAlive;
-
-    public PBEffectNormal()
-    {
-    }
 
     public PBEffectNormal(int maxTicksAlive)
     {
@@ -55,13 +50,13 @@ public abstract class PBEffectNormal extends PBEffect
         float newRatio = getRatioDone(ticksAlive + 1);
 
         if (ticksAlive == 0)
-            setUpEffect(entity.world, entity, effectCenter, entity.getRandom());
+            setUpEffect(entity.level, entity, effectCenter, entity.getRandom());
 
         if (prevRatio >= 0.0f && newRatio <= 1.0f && newRatio > prevRatio)
-            doEffect(entity.world, entity, effectCenter, entity.getRandom(), prevRatio, newRatio);
+            doEffect(entity.level, entity, effectCenter, entity.getRandom(), prevRatio, newRatio);
 
         if (ticksAlive == maxTicksAlive - 1)
-            finalizeEffect(entity.world, entity, effectCenter, entity.getRandom());
+            finalizeEffect(entity.level, entity, effectCenter, entity.getRandom());
     }
 
     @Override
@@ -71,15 +66,15 @@ public abstract class PBEffectNormal extends PBEffect
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
-        compound.setInteger("maxTicksAlive", maxTicksAlive);
+        compound.putInt("maxTicksAlive", maxTicksAlive);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
-        maxTicksAlive = compound.getInteger("maxTicksAlive");
+        maxTicksAlive = compound.getInt("maxTicksAlive");
     }
 
     @Override

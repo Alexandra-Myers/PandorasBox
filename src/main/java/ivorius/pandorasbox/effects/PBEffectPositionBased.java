@@ -6,9 +6,8 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -21,10 +20,6 @@ public abstract class PBEffectPositionBased extends PBEffectNormal
     public int number;
 
     public double range;
-
-    protected PBEffectPositionBased()
-    {
-    }
 
     public PBEffectPositionBased(int time, int number, double range)
     {
@@ -58,20 +53,20 @@ public abstract class PBEffectPositionBased extends PBEffectNormal
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setInteger("number", number);
-        compound.setDouble("range", range);
+        compound.putInt("number", number);
+        compound.putDouble("range", range);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
-        number = compound.getInteger("number");
+        number = compound.getInt("number");
         range = compound.getDouble("range");
     }
 }

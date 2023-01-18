@@ -8,10 +8,9 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -23,10 +22,6 @@ public class PBEffectGenDome extends PBEffectGenerate2D
 {
     public Block block;
     public Block fillBlock;
-
-    public PBEffectGenDome()
-    {
-    }
 
     public PBEffectGenDome(int time, double range, int unifiedSeed, Block block, Block fillBlock)
     {
@@ -42,7 +37,7 @@ public class PBEffectGenDome extends PBEffectGenerate2D
 
         for (int y = -domeHeightY; y <= domeHeightY; y++)
         {
-            BlockPos shiftedPos = pos.up(y);
+            BlockPos shiftedPos = pos.above(y);
 
             if (pass == 0)
             {
@@ -50,7 +45,7 @@ public class PBEffectGenDome extends PBEffectGenerate2D
                 {
                     Block block = world.getBlockState(shiftedPos).getBlock();
 
-                    if (block.isReplaceable(world, shiftedPos))
+                    if (world.getBlockState(shiftedPos).canSurvive(world, shiftedPos))
                     {
                         setBlockVarying(world, shiftedPos, this.block, unifiedSeed);
                     }
@@ -62,7 +57,7 @@ public class PBEffectGenDome extends PBEffectGenerate2D
                 {
                     Block block = world.getBlockState(shiftedPos).getBlock();
 
-                    if (block.isReplaceable(world, shiftedPos))
+                    if (world.getBlockState(shiftedPos).canSurvive(world, shiftedPos))
                     {
                         setBlockVarying(world, shiftedPos, this.fillBlock, unifiedSeed);
                     }
@@ -82,18 +77,18 @@ public class PBEffectGenDome extends PBEffectGenerate2D
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        compound.setString("block", PBNBTHelper.storeBlockString(block));
+        compound.putString("block", PBNBTHelper.storeBlockString(block));
 
         if (fillBlock != null)
-            compound.setString("fillBlock", PBNBTHelper.storeBlockString(fillBlock));
+            compound.putString("fillBlock", PBNBTHelper.storeBlockString(fillBlock));
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 

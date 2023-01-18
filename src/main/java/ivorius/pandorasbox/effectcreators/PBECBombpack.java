@@ -33,8 +33,7 @@ public class PBECBombpack implements PBEffectCreator
         int time = this.time.getValue(random);
         double range = this.range.getValue(random);
 
-        PBEffectEntitiesBombpack effect = new PBEffectEntitiesBombpack(time, range);
-        return effect;
+        return new PBEffectEntitiesBombpack(time, range);
     }
 
     @Override

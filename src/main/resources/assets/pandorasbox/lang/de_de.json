@@ -1,0 +1,8 @@
+{
+    "entity.pandorasbox.pandoras_box": "Büchse der Pandora",
+    "block.pandorasbox.pandoras_box": "Büchse der Pandora",
+
+    "pandorasbox.configgui.title": "Pandora's Box",
+    "pandorasbox.configgui.ctgy.balancing": "Balancing",
+    "pandorasbox.configgui.ctgy.balancing.tooltip": "Einstellungen, die die Spielbalance des mods beeinflussen"
+}

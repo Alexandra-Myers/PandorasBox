@@ -6,9 +6,10 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
@@ -17,9 +18,6 @@ import java.util.Random;
  */
 public class PBEffectEntitiesBombpack extends PBEffectEntityBased
 {
-    public PBEffectEntitiesBombpack()
-    {
-    }
 
     public PBEffectEntitiesBombpack(int maxTicksAlive, double range)
     {
@@ -27,18 +25,18 @@ public class PBEffectEntitiesBombpack extends PBEffectEntityBased
     }
 
     @Override
-    public void affectEntity(World world, EntityPandorasBox box, Random random, EntityLivingBase entity, double newRatio, double prevRatio, double strength)
+    public void affectEntity(World world, EntityPandorasBox box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength)
     {
-        if (!world.isRemote)
+        if (world instanceof ServerWorld)
         {
-            Random itemRandom = new Random(entity.getEntityId());
+            Random itemRandom = new Random(entity.getId());
             double expectedBomb = itemRandom.nextDouble();
             if (newRatio >= expectedBomb && prevRatio < expectedBomb)
             {
-                EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(world, entity.posX, entity.posY, entity.posZ, null);
+                TNTEntity entitytntprimed = new TNTEntity(world, entity.getX(), entity.getY(), entity.getZ(), null);
 //                entitytntprimed.fuse = 60 + random.nextInt(160); // Use normal fuse for correct visual effect
 
-                world.spawnEntity(entitytntprimed);
+                world.addFreshEntity(entitytntprimed);
                 entitytntprimed.startRiding(entity, true);
             }
         }

@@ -7,11 +7,10 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -23,10 +22,6 @@ import java.util.Random;
 public abstract class PBEffectGenerateByStructure extends PBEffectNormal
 {
     public Structure[] structures;
-
-    public PBEffectGenerateByStructure()
-    {
-    }
 
     public PBEffectGenerateByStructure(int maxTicksAlive)
     {
@@ -61,36 +56,36 @@ public abstract class PBEffectGenerateByStructure extends PBEffectNormal
     public abstract void generateStructure(World world, EntityPandorasBox entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio);
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
-        NBTTagList structureTagList = new NBTTagList();
+        ListNBT structureTagList = new ListNBT();
         for (Structure structure : structures)
         {
-            NBTTagCompound structureCompound = new NBTTagCompound();
+            CompoundNBT structureCompound = new CompoundNBT();
             structure.writeToNBT(structureCompound);
-            structureTagList.appendTag(structureCompound);
+            structureTagList.add(structureCompound);
         }
-        compound.setTag("structures", structureTagList);
+        compound.put("structures", structureTagList);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
-        NBTTagList structureTagList = compound.getTagList("structures", Constants.NBT.TAG_COMPOUND);
-        structures = new Structure[structureTagList.tagCount()];
+        ListNBT structureTagList = compound.getList("structures", Constants.NBT.TAG_COMPOUND);
+        structures = new Structure[structureTagList.size()];
         for (int i = 0; i < structures.length; i++)
         {
-            structures[i] = createStructure(structureTagList.getCompoundTagAt(i));
+            structures[i] = createStructure(structureTagList.getCompound(i));
         }
     }
 
     public abstract Structure createStructure();
 
-    public Structure createStructure(NBTTagCompound compound)
+    public Structure createStructure(CompoundNBT compound)
     {
         Structure structure = createStructure();
         structure.readFromNBT(compound);
@@ -135,26 +130,26 @@ public abstract class PBEffectGenerateByStructure extends PBEffectNormal
             this.unifiedSeed = unifiedSeed;
         }
 
-        public void writeToNBT(NBTTagCompound compound)
+        public void writeToNBT(CompoundNBT compound)
         {
-            compound.setFloat("structureStart", structureStart);
-            compound.setFloat("structureLength", structureLength);
+            compound.putFloat("structureStart", structureStart);
+            compound.putFloat("structureLength", structureLength);
 
-            compound.setInteger("x", x);
-            compound.setInteger("y", y);
-            compound.setInteger("z", z);
-            compound.setInteger("unifiedSeed", unifiedSeed);
+            compound.putInt("x", x);
+            compound.putInt("y", y);
+            compound.putInt("z", z);
+            compound.putInt("unifiedSeed", unifiedSeed);
         }
 
-        public void readFromNBT(NBTTagCompound compound)
+        public void readFromNBT(CompoundNBT compound)
         {
             structureStart = compound.getFloat("structureStart");
             structureLength = compound.getFloat("structureLength");
 
-            x = compound.getInteger("x");
-            y = compound.getInteger("y");
-            z = compound.getInteger("z");
-            unifiedSeed = compound.getInteger("unifiedSeed");
+            x = compound.getInt("x");
+            y = compound.getInt("y");
+            z = compound.getInt("z");
+            unifiedSeed = compound.getInt("unifiedSeed");
         }
     }
 }

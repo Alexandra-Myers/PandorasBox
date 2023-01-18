@@ -9,31 +9,28 @@ import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.random.PandorasBoxEntityNamer;
 import ivorius.pandorasbox.utils.PBNBTHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.SharedMonsterAttributes;
+import ivorius.pandorasbox.utils.StringConverter;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.entity.item.EntityFireworkRocket;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemDye;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.entity.passive.CatEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.FireworkRocketEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
@@ -47,10 +44,6 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
     public int nameEntities;
     public int equipLevel;
     public int buffLevel;
-
-    public PBEffectSpawnEntityIDList()
-    {
-    }
 
     public PBEffectSpawnEntityIDList(int time, String[] entityIDs, int nameEntities, int equipLevel, int buffLevel)
     {
@@ -85,6 +78,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
     @Override
     public Entity spawnEntity(World world, EntityPandorasBox pbEntity, Random random, int number, double x, double y, double z)
     {
+        if(world.isClientSide()) return null;
         String[] entityTower = entityIDs[number];
         Entity previousEntity = null;
 
@@ -92,14 +86,15 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         {
             Entity newEntity = createEntity(world, pbEntity, random, entityID, x, y, z);
 
-            if (newEntity instanceof EntityLiving)
+            if (newEntity instanceof LivingEntity)
             {
-                randomizeEntity(random, pbEntity.getEntityId(), (EntityLiving) newEntity, nameEntities, equipLevel, buffLevel);
+                randomizeEntity(random, pbEntity.getId(), (LivingEntity) newEntity, nameEntities, equipLevel, buffLevel);
             }
 
             if (previousEntity != null)
             {
-                world.spawnEntity(previousEntity);
+                world.addFreshEntity(previousEntity);
+                assert newEntity != null;
                 previousEntity.startRiding(newEntity, true);
             }
 
@@ -107,25 +102,25 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         }
 
         if (previousEntity != null)
-            world.spawnEntity(previousEntity);
+            world.addFreshEntity(previousEntity);
 
         return previousEntity;
     }
 
-    public static void randomizeEntity(Random random, long namingSeed, EntityLiving entityLiving, int nameEntities, int equipLevel, int buffLevel)
+    public static void randomizeEntity(Random random, long namingSeed, LivingEntity entityLiving, int nameEntities, int equipLevel, int buffLevel)
     {
         if (nameEntities == 1)
         {
-            entityLiving.setCustomNameTag(PandorasBoxEntityNamer.getRandomName(random));
-            entityLiving.setAlwaysRenderNameTag(true);
+            entityLiving.setCustomName(PandorasBoxEntityNamer.getRandomName(random));
+            entityLiving.setCustomNameVisible(true);
         }
         else if (nameEntities == 2)
         {
-            entityLiving.setCustomNameTag(PandorasBoxEntityNamer.getRandomCasualName(random));
+            entityLiving.setCustomName(PandorasBoxEntityNamer.getRandomCasualName(random));
         }
         else if (nameEntities == 3)
         {
-            entityLiving.setCustomNameTag(PandorasBoxEntityNamer.getRandomCasualName(new Random(namingSeed)));
+            entityLiving.setCustomName(PandorasBoxEntityNamer.getRandomCasualName(new Random(namingSeed)));
         }
 
         if (equipLevel > 0)
@@ -146,23 +141,24 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
                     if (i == 0)
                     {
                         ItemStack itemStack = PandorasBoxHelper.getRandomWeaponItemForLevel(random, itemLevel);
+                        if(itemStack == null) itemStack = ItemStack.EMPTY;
 
-                        entityLiving.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, itemStack);
+                        entityLiving.setItemSlot(EquipmentSlotType.MAINHAND, itemStack);
                     }
                     else
                     {
                         if (i == 4 && random.nextFloat() < 0.2f / equipLevel)
                         {
-                            entityLiving.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(random.nextFloat() < 0.1F ? Blocks.LIT_PUMPKIN : Blocks.PUMPKIN));
+                            entityLiving.setItemSlot(EquipmentSlotType.HEAD, new ItemStack(random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.PUMPKIN));
                         }
                         else
                         {
-                            EntityEquipmentSlot slot = i == 1 ? EntityEquipmentSlot.LEGS : i == 2 ? EntityEquipmentSlot.FEET : EntityEquipmentSlot.CHEST;
-                            Item item = EntityLiving.getArmorByChance(slot, Math.min(itemLevel, 4));
+                            EquipmentSlotType slot = i == 1 ? EquipmentSlotType.LEGS : i == 2 ? EquipmentSlotType.FEET : EquipmentSlotType.CHEST;
+                            Item item = MobEntity.getEquipmentForSlot(slot, Math.min(itemLevel, 4));
 
                             if (item != null)
                             {
-                                entityLiving.setItemStackToSlot(slot, new ItemStack(item));
+                                entityLiving.setItemSlot(slot, new ItemStack(item));
                             }
                             else
                             {
@@ -176,32 +172,32 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
         if (buffLevel > 0)
         {
-            IAttributeInstance health = entityLiving.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
+            ModifiableAttributeInstance health = entityLiving.getAttribute(Attributes.MAX_HEALTH);
             if (health != null)
             {
                 double healthMultiplierP = random.nextDouble() * buffLevel * 0.25;
-                health.applyModifier(new AttributeModifier("Zeus's magic", healthMultiplierP, 2));
+                health.addPermanentModifier(new AttributeModifier("Zeus's magic", healthMultiplierP, AttributeModifier.Operation.fromValue(1)));
             }
 
-            IAttributeInstance knockbackResistance = entityLiving.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE);
+            ModifiableAttributeInstance knockbackResistance = entityLiving.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
             if (knockbackResistance != null)
             {
                 double knockbackResistanceP = random.nextDouble() * buffLevel * 0.25;
-                knockbackResistance.applyModifier(new AttributeModifier("Zeus's magic", knockbackResistanceP, 2));
+                knockbackResistance.addPermanentModifier(new AttributeModifier("Zeus's magic", knockbackResistanceP, AttributeModifier.Operation.fromValue(1)));
             }
 
-            IAttributeInstance movementSpeed = entityLiving.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+            ModifiableAttributeInstance movementSpeed = entityLiving.getAttribute(Attributes.MOVEMENT_SPEED);
             if (movementSpeed != null)
             {
                 double movementSpeedP = random.nextDouble() * buffLevel * 0.08;
-                movementSpeed.applyModifier(new AttributeModifier("Zeus's magic", movementSpeedP, 2));
+                movementSpeed.addPermanentModifier(new AttributeModifier("Zeus's magic", movementSpeedP, AttributeModifier.Operation.fromValue(1)));
             }
 
-            IAttributeInstance attackDamage = entityLiving.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
+            ModifiableAttributeInstance attackDamage = entityLiving.getAttribute(Attributes.ATTACK_DAMAGE);
             if (attackDamage != null)
             {
                 double attackDamageP = random.nextDouble() * buffLevel * 0.25;
-                attackDamage.applyModifier(new AttributeModifier("Zeus's magic", attackDamageP, 2));
+                attackDamage.addPermanentModifier(new AttributeModifier("Zeus's magic", attackDamageP, AttributeModifier.Operation.fromValue(1)));
             }
         }
     }
@@ -212,103 +208,122 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         {
             if ("pbspecial_XP".equals(entityID))
             {
-                return new EntityXPOrb(world, x, y, z, 10);
+                ExperienceOrbEntity entity = EntityType.EXPERIENCE_ORB.create(world);
+                assert entity != null;
+                entity.value = 10;
+                return entity;
             }
             else if ("pbspecial_wolfTamed".equals(entityID))
             {
-                EntityPlayer nearest = getPlayer(world, pbEntity);
-                EntityWolf wolf = new EntityWolf(world);
+                PlayerEntity nearest = getPlayer(world, pbEntity);
+                WolfEntity wolf = EntityType.WOLF.create(world);
 
-                wolf.setLocationAndAngles(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                assert wolf != null;
+                wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
                 if (nearest != null)
                 {
-                    wolf.setTamed(true);
-                    wolf.getNavigator().clearPathEntity();
-                    wolf.setAttackTarget(null);
-                    wolf.setOwnerId(nearest.getUniqueID());
-                    wolf.world.setEntityState(wolf, (byte) 7);
+                    wolf.setTame(true);
+                    wolf.getNavigation().stop();
+                    wolf.setTarget(null);
+                    wolf.setOwnerUUID(nearest.getUUID());
+                    wolf.level.broadcastEntityEvent(wolf, (byte) 7);
                 }
 
                 return wolf;
             }
             else if ("pbspecial_ocelotTamed".equals(entityID))
             {
-                EntityPlayer nearest = getPlayer(world, pbEntity);
+                PlayerEntity nearest = getPlayer(world, pbEntity);
 
-                EntityOcelot ocelot = new EntityOcelot(world);
+                CatEntity ocelot = EntityType.CAT.create(world);
 
-                ocelot.setLocationAndAngles(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                assert ocelot != null;
+                ocelot.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
                 if (nearest != null)
                 {
-                    ocelot.setTamed(true);
-                    ocelot.setTameSkin(1 + ocelot.world.rand.nextInt(3));
-                    ocelot.setOwnerId(nearest.getUniqueID());
-                    ocelot.world.setEntityState(ocelot, (byte) 7);
+                    ocelot.setTame(true);
+                    ocelot.setCatType(1 + ocelot.level.random.nextInt(10));
+                    ocelot.setOwnerUUID(nearest.getUUID());
+                    ocelot.level.broadcastEntityEvent(ocelot, (byte) 7);
                 }
 
                 return ocelot;
             }
             else if (entityID.startsWith("pbspecial_tnt"))
             {
-                EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(world, x, y, z, null);
-                entitytntprimed.setFuse(Integer.valueOf(entityID.substring(13)));
+                TNTEntity entitytntprimed = EntityType.TNT.create(world);
+                assert entitytntprimed != null;
+                entitytntprimed.setPos(x, y, z);
+                entitytntprimed.setFuse(Integer.parseInt(entityID.substring(13)));
 
                 return entitytntprimed;
             }
             else if ("pbspecial_invisibleTnt".startsWith(entityID))
             {
-                EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(world, x, y, z, null);
-                entitytntprimed.setFuse(Integer.valueOf(entityID.substring(22)));
-                entitytntprimed.setInvisible(true); // Doesn't work yet :/
+                TNTEntity entitytntprimed = EntityType.TNT.create(world);
+                assert entitytntprimed != null;
+                entitytntprimed.setPos(x, y, z);
+                entitytntprimed.setFuse(Integer.parseInt(entityID.substring(22)));
+                entitytntprimed.setInvisible(true);
 
                 return entitytntprimed;
             }
             else if ("pbspecial_firework".equals(entityID))
             {
-                ItemStack stack = new ItemStack(Items.FIREWORKS);
-                stack.setTagInfo("Fireworks", createRandomFirework(random));
+                ItemStack stack = new ItemStack(Items.FIREWORK_ROCKET);
+                stack.addTagElement("Fireworks", createRandomFirework(random));
 
-                return new EntityFireworkRocket(world, x, y, z, stack);
+                FireworkRocketEntity fireworkRocket = EntityType.FIREWORK_ROCKET.create(world);
+                assert fireworkRocket != null;
+                fireworkRocket.setPos(x, y, z);
+                fireworkRocket.getEntityData().set(fireworkStackParameter(), stack);
+                return fireworkRocket;
             }
             else if ("pbspecial_angryWolf".equals(entityID))
             {
-                EntityWolf wolf = new EntityWolf(world);
-                wolf.setLocationAndAngles(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                wolf.setAttackTarget(world.getClosestPlayer(x, y, z, 40.0, false));
+                WolfEntity wolf = EntityType.WOLF.create(world);
+                assert wolf != null;
+                wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                wolf.setTarget(world.getNearestPlayer(x, y, z, 40.0, false));
 
                 return wolf;
             }
             else if ("pbspecial_superchargedCreeper".equals(entityID))
             {
-                EntityCreeper creeper = new EntityCreeper(world);
-                creeper.setLocationAndAngles(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                creeper.getDataManager().set(creeperPoweredParameter(), true);
+                CreeperEntity creeper = EntityType.CREEPER.create(world);
+                assert creeper != null;
+                creeper.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                creeper.getEntityData().set(creeperPoweredParameter(), true);
                 return creeper;
             }
             else if ("pbspecial_skeletonWither".equals(entityID))
             {
-                EntityWitherSkeleton skeleton = new EntityWitherSkeleton(world);
-                skeleton.setLocationAndAngles(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                WitherSkeletonEntity skeleton = EntityType.WITHER_SKELETON.create(world);
+                assert skeleton != null;
+                skeleton.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
-                skeleton.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
-                skeleton.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D);
+                skeleton.setItemSlot(EquipmentSlotType.MAINHAND, new ItemStack(Items.STONE_SWORD));
+                skeleton.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
 
                 return skeleton;
             }
             else if ("pbspecial_elderGuardian".equals(entityID))
             {
-                EntityElderGuardian entity = new EntityElderGuardian(world);
-                entity.setLocationAndAngles(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                ElderGuardianEntity entity = EntityType.ELDER_GUARDIAN.create(world);
+                assert entity != null;
+                entity.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
                 return entity;
             }
+            entityID = StringConverter.convertCamelCase(entityID);
 
-            Entity entity = EntityList.createEntityByIDFromName(new ResourceLocation(entityID), world);
-            entity.setLocationAndAngles(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+            EntityType<?> entity = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(entityID));
+            Entity entity1 = entity.create(world);
+            entity1.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
-            return entity;
+            return entity1;
         }
         catch (Exception ex)
         {
@@ -320,78 +335,82 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
     private static DataParameter<Boolean> creeperPoweredParameter() throws IllegalAccessException
     {
-        return (DataParameter<Boolean>) ReflectionHelper.findField(EntityCreeper.class, "field_184714_b").get(null);
+        return (DataParameter<Boolean>) ObfuscationReflectionHelper.findField(CreeperEntity.class, "field_184714_b").get(null);
+    }
+    private static DataParameter<ItemStack> fireworkStackParameter() throws IllegalAccessException
+    {
+        return (DataParameter<ItemStack>) ObfuscationReflectionHelper.findField(FireworkRocketEntity.class, "field_184566_a").get(null);
     }
 
-    public static NBTTagCompound createRandomFirework(Random random)
+    public static CompoundNBT createRandomFirework(Random random)
     {
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setTag("Explosions", createRandomFireworkExplosions(random, (random.nextInt(20)) != 0 ? 1 : (1 + random.nextInt(2))));
-        compound.setByte("Flight", (byte) ((random.nextInt(15) != 0) ? 1 : (2 + random.nextInt(2))));
+        CompoundNBT compound = new CompoundNBT();
+        compound.put("Explosions", createRandomFireworkExplosions(random, (random.nextInt(20)) != 0 ? 1 : (1 + random.nextInt(2))));
+        compound.putByte("Flight", (byte) ((random.nextInt(15) != 0) ? 1 : (2 + random.nextInt(2))));
         return compound;
     }
 
-    public static NBTTagList createRandomFireworkExplosions(Random random, int number)
+    public static ListNBT createRandomFireworkExplosions(Random random, int number)
     {
-        NBTTagList list = new NBTTagList();
+        ListNBT list = new ListNBT();
 
         for (int i = 0; i < number; i++)
         {
-            list.appendTag(createRandomFireworkExplosion(random));
+            list.add(createRandomFireworkExplosion(random));
         }
 
         return list;
     }
 
-    public static NBTTagCompound createRandomFireworkExplosion(Random random)
+    public static CompoundNBT createRandomFireworkExplosion(Random random)
     {
-        NBTTagCompound fireworkCompound = new NBTTagCompound();
+        CompoundNBT fireworkCompound = new CompoundNBT();
 
-        fireworkCompound.setBoolean("Flicker", random.nextInt(20) == 0);
-        fireworkCompound.setBoolean("Trail", random.nextInt(30) == 0);
-        fireworkCompound.setByte("Type", (byte) ((random.nextInt(10) != 0) ? 0 : (random.nextInt(4) + 1)));
+        fireworkCompound.putBoolean("Flicker", random.nextInt(20) == 0);
+        fireworkCompound.putBoolean("Trail", random.nextInt(30) == 0);
+        fireworkCompound.putByte("Type", (byte) ((random.nextInt(10) != 0) ? 0 : (random.nextInt(4) + 1)));
 
         int[] colors = new int[(random.nextInt(15) != 0) ? 1 : (random.nextInt(2) + 2)];
         for (int i = 0; i < colors.length; i++)
         {
-            colors[i] = ItemDye.DYE_COLORS[random.nextInt(16)];
+            colors[i] = DyeColor.byId(random.nextInt(16)).ordinal();
         }
-        fireworkCompound.setIntArray("Colors", colors);
+        fireworkCompound.putIntArray("Colors", colors);
 
         if (random.nextInt(25) == 0)
         {
             int[] fadeColors = new int[random.nextInt(2) + 1];
             for (int i = 0; i < fadeColors.length; i++)
             {
-                fadeColors[i] = ItemDye.DYE_COLORS[random.nextInt(16)];
+                fadeColors[i] = DyeColor.byId(random.nextInt(16)).ordinal();
             }
-            fireworkCompound.setIntArray("FadeColors", fadeColors);
+            fireworkCompound.putIntArray("FadeColors", fadeColors);
         }
 
         return fireworkCompound;
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public void writeToNBT(CompoundNBT compound)
     {
         super.writeToNBT(compound);
 
         PBNBTHelper.writeNBTStrings2D("entityIDs", entityIDs, compound);
 
-        compound.setInteger("nameEntities", nameEntities);
-        compound.setInteger("equipLevel", equipLevel);
-        compound.setInteger("buffLevel", buffLevel);
+        compound.putInt("nameEntities", nameEntities);
+        compound.putInt("equipLevel", equipLevel);
+        compound.putInt("buffLevel", buffLevel);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    public void readFromNBT(CompoundNBT compound)
     {
         super.readFromNBT(compound);
 
         entityIDs = PBNBTHelper.readNBTStrings2D("entityIDs", compound);
 
-        nameEntities = compound.getInteger("nameEntities");
-        equipLevel = compound.getInteger("equipLevel");
-        buffLevel = compound.getInteger("buffLevel");
+        nameEntities = compound.getInt("nameEntities");
+        equipLevel = compound.getInt("equipLevel");
+        buffLevel = compound.getInt("buffLevel");
     }
 }

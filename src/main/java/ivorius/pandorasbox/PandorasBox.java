@@ -5,131 +5,104 @@
 
 package ivorius.pandorasbox;
 
-import ivorius.pandorasbox.block.BlockPandorasBox;
 import ivorius.pandorasbox.block.PBBlocks;
 import ivorius.pandorasbox.block.TileEntityPandorasBox;
-import ivorius.pandorasbox.commands.CommandPandorasBox;
+import ivorius.pandorasbox.client.ClientProxy;
+import ivorius.pandorasbox.client.rendering.RenderPandorasBox;
 import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import ivorius.pandorasbox.entitites.PBEntityList;
 import ivorius.pandorasbox.events.PBEventHandler;
-import ivorius.pandorasbox.items.ItemPandorasBox;
-import ivorius.pandorasbox.network.PacketEntityData;
-import ivorius.pandorasbox.network.PacketEntityDataHandler;
-import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.config.Configuration;
+import ivorius.pandorasbox.init.Registry;
+import ivorius.pandorasbox.server.ServerProxy;
+import ivorius.pandorasbox.utils.PBEffectArgument;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.command.arguments.ArgumentSerializer;
+import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.entity.EntityType;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static ivorius.pandorasbox.crafting.OreDictionaryConstants.*;
-
-@Mod(modid = PandorasBox.MOD_ID, version = PandorasBox.VERSION, name = PandorasBox.NAME, guiFactory = "ivorius.pandorasbox.gui.PBConfigGuiFactory",
-        dependencies = "required-after:ivtoolkit")
+@Mod(PandorasBox.MOD_ID)
 public class PandorasBox
 {
     public static final String NAME = "Pandora's Box";
     public static final String MOD_ID = "pandorasbox";
-    public static final String VERSION = "2.1.6.2-1.12";
+    public static final String VERSION = "2.2.0.0-1.19.2";
 
-    @Instance(value = MOD_ID)
     public static PandorasBox instance;
 
-    @SidedProxy(clientSide = "ivorius.pandorasbox.client.ClientProxy", serverSide = "ivorius.pandorasbox.server.ServerProxy")
-    public static PBProxy proxy;
+    public static PBProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     public static String filePathTexturesFull = "pandorasbox:textures/mod/";
     public static String filePathTextures = "textures/mod/";
+    public EntityType<EntityPandorasBox> PANDORAS_BOX;
     public static String basePath = "pandorasbox:";
+    public static Logger logger  = LogManager.getLogger();
 
-    public static Logger logger;
-    public static Configuration config;
-
-    public static SimpleNetworkWrapper network;
+    public final IEventBus EVENT_BUS;
+    public Feature<BaseTreeFeatureConfig> LOLIPOP;
+    public Feature<BaseTreeFeatureConfig> COLOURFUL_TREE;
+    public Feature<BaseTreeFeatureConfig> RAINBOW;
+    public Feature<BaseTreeFeatureConfig> MEGA_JUNGLE;
+    public RegistryObject<TileEntityType<TileEntityPandorasBox>> tileEntityPandorasBox;
 
     public static PBEventHandler fmlEventHandler;
+    public PandorasBox() {
+        // Register the setup method for modloading
+        EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
+        Registry.init(EVENT_BUS);
+        EVENT_BUS.addListener(this::preInit);
+        EVENT_BUS.addListener(this::clientInit);
 
-    public static void register(Block block, String id, ItemBlock item)
-    {
-        block.setRegistryName(id);
-        item.setRegistryName(id);
-
-        ForgeRegistries.BLOCKS.register(block);
-        ForgeRegistries.ITEMS.register(item);
+        // Register ourselves for server and other game events we are interested in
+        MinecraftForge.EVENT_BUS.register(this);
+        instance = this;
     }
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
+    public void preInit(final FMLCommonSetupEvent event)
     {
-        logger = event.getModLog();
-
-        config = new Configuration(event.getSuggestedConfigurationFile());
-        config.load();
-        PBConfig.loadConfig(null);
-        config.save();
+        LOLIPOP = Registry.LOLIPOP.get();
+        COLOURFUL_TREE = Registry.COLOURFUL_TREE.get();
+        RAINBOW = Registry.RAINBOW.get();
+        MEGA_JUNGLE = Registry.MEGA_JUNGLE.get();
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, PBConfig.commonSpec);
+        PBConfig.loadConfig();
 
         fmlEventHandler = new PBEventHandler();
         fmlEventHandler.register();
 
-        PBBlocks.pandorasBox = (BlockPandorasBox) new BlockPandorasBox().setUnlocalizedName("pandorasBox").setHardness(0.5f).setCreativeTab(CreativeTabs.MISC);
-        register(PBBlocks.pandorasBox, "pandorasBox", new ItemPandorasBox(PBBlocks.pandorasBox));
-        GameRegistry.registerTileEntity(TileEntityPandorasBox.class, "pandorasBox");
 
-        EntityRegistry.registerModEntity(new ResourceLocation(PandorasBox.MOD_ID, "pandorasBox"), EntityPandorasBox.class, "pandorasBox", PBEntityList.pandorasBoxEntityID, this, 256, 20, true);
+        PBBlocks.pandorasBox = Registry.PB.get();
+        tileEntityPandorasBox = Registry.TEPB;
+
+
+        PANDORAS_BOX = Registry.Box.get();
+        ArgumentTypes.register("pbeffect", PBEffectArgument.class, new ArgumentSerializer<>(PBEffectArgument::effect));
 
         proxy.preInit();
-        PBEffects.registerEffects();
-    }
-
-    @EventHandler
-    public void load(FMLInitializationEvent event)
-    {
-        network = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
-        PandorasBox.network.registerMessage(PacketEntityDataHandler.class, PacketEntityData.class, 1, Side.CLIENT);
-
-        PBEffects.registerEffectCreators();
-
-        if (PBConfig.allowCrafting)
-        {
-            GameRegistry.addShapedRecipe(new ResourceLocation(PandorasBox.MOD_ID, "pandorasbox"), null, new ItemStack(PBBlocks.pandorasBox),
-                    "GRG",
-                    "ROR",
-                    "#R#",
-                    'G', DC_GOLD_INGOT,
-                    '#', DC_PLANK_WOOD,
-                    'R', DC_REDSTONE_DUST,
-                    'O', Items.ENDER_PEARL);
-        }
 
         proxy.load();
     }
-
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event)
-    {
-
-    }
-
-    @EventHandler
-    public void serverStarting(FMLServerStartingEvent evt)
-    {
-        evt.registerServerCommand(new CommandPandorasBox());
+    public void clientInit(FMLClientSetupEvent event) {
+        RenderingRegistry.registerEntityRenderingHandler(Registry.Box.get(), RenderPandorasBox::new);
     }
 }
