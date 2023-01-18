@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
@@ -34,7 +34,7 @@ public class PBEffectGenPool extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
         if (world instanceof ServerWorld)
         {

@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,7 +31,7 @@ public class PBEffectGenDome extends PBEffectGenerate2D
     }
 
     @Override
-    public void generateOnSurface(World world, EntityPandorasBox box, Vec3d effectCenter, Random random, BlockPos pos, double dist, int pass)
+    public void generateOnSurface(World world, PandorasBoxEntity box, Vec3d effectCenter, Random random, BlockPos pos, double dist, int pass)
     {
         int domeHeightY = MathHelper.ceil(range);
 

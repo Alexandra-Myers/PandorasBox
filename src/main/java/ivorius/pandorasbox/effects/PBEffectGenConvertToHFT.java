@@ -6,12 +6,9 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBox;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
-import ivorius.pandorasbox.worldgen.WorldGenColorfulTree;
-import ivorius.pandorasbox.worldgen.WorldGenLollipop;
-import ivorius.pandorasbox.worldgen.WorldGenRainbow;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -21,16 +18,10 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
 import net.minecraft.world.gen.feature.*;
-import net.minecraft.world.gen.foliageplacer.BlobFoliagePlacer;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.compress.archivers.zip.UnsupportedZipFeatureException;
 
 import java.util.Random;
 
@@ -49,7 +40,7 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();

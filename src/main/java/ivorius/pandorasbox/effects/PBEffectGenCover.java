@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,7 +30,7 @@ public class PBEffectGenCover extends PBEffectGenerateByFlag
     }
 
     @Override
-    public boolean hasFlag(World world, EntityPandorasBox entity, Random random, BlockPos pos)
+    public boolean hasFlag(World world, PandorasBoxEntity entity, Random random, BlockPos pos)
     {
         if (overSurface)
         {
@@ -57,7 +57,7 @@ public class PBEffectGenCover extends PBEffectGenerateByFlag
     }
 
     @Override
-    public void generateOnBlock(World world, EntityPandorasBox entity, Random random, int pass, BlockPos pos, double range, boolean flag)
+    public void generateOnBlock(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos, double range, boolean flag)
     {
         if (flag)
         {

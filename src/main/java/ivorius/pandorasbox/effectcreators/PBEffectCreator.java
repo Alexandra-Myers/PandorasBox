@@ -5,11 +5,7 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.*;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.block.Block;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.Random;

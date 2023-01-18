@@ -6,7 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBoxHelper;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +30,7 @@ public abstract class PBEffectGenerateByStructure extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
     {
         for (Structure structure : structures)
         {
@@ -53,7 +53,7 @@ public abstract class PBEffectGenerateByStructure extends PBEffectNormal
         return MathHelper.clamp((ratio - structure.structureStart) / structure.structureLength, 0.0f, 1.0f);
     }
 
-    public abstract void generateStructure(World world, EntityPandorasBox entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio);
+    public abstract void generateStructure(World world, PandorasBoxEntity entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio);
 
     @Override
     public void writeToNBT(CompoundNBT compound)

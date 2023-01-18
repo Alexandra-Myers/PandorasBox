@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -33,7 +33,7 @@ public class PBEffectRandomExplosions extends PBEffectPositionBased
     }
 
     @Override
-    public void doEffect(World world, EntityPandorasBox entity, Random random, float newRatio, float prevRatio, double x, double y, double z)
+    public void doEffect(World world, PandorasBoxEntity entity, Random random, float newRatio, float prevRatio, double x, double y, double z)
     {
         if (world instanceof ServerWorld)
         {

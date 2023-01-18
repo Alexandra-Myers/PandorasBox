@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -30,7 +30,7 @@ public abstract class PBEffectPositionBased extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
     {
         int prev = getSpawnNumber(prevRatio);
         int toSpawn = getSpawnNumber(newRatio) - prev;
@@ -45,7 +45,7 @@ public abstract class PBEffectPositionBased extends PBEffectNormal
         }
     }
 
-    public abstract void doEffect(World world, EntityPandorasBox entity, Random random, float newRatio, float prevRatio, double x, double y, double z);
+    public abstract void doEffect(World world, PandorasBoxEntity entity, Random random, float newRatio, float prevRatio, double x, double y, double z);
 
     private int getSpawnNumber(float ratio)
     {

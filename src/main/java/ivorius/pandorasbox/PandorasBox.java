@@ -6,17 +6,14 @@
 package ivorius.pandorasbox;
 
 import ivorius.pandorasbox.block.PBBlocks;
-import ivorius.pandorasbox.block.TileEntityPandorasBox;
+import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.client.ClientProxy;
-import ivorius.pandorasbox.client.rendering.RenderPandorasBox;
-import ivorius.pandorasbox.effects.PBEffects;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.events.PBEventHandler;
 import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.server.ServerProxy;
 import ivorius.pandorasbox.utils.PBEffectArgument;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraft.entity.EntityType;
@@ -25,7 +22,6 @@ import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.RegistryObject;
@@ -34,9 +30,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,7 +47,7 @@ public class PandorasBox
 
     public static String filePathTexturesFull = "pandorasbox:textures/mod/";
     public static String filePathTextures = "textures/mod/";
-    public EntityType<EntityPandorasBox> PANDORAS_BOX;
+    public EntityType<PandorasBoxEntity> PANDORAS_BOX;
     public static String basePath = "pandorasbox:";
     public static Logger logger  = LogManager.getLogger();
 
@@ -63,7 +56,7 @@ public class PandorasBox
     public Feature<BaseTreeFeatureConfig> COLOURFUL_TREE;
     public Feature<BaseTreeFeatureConfig> RAINBOW;
     public Feature<BaseTreeFeatureConfig> MEGA_JUNGLE;
-    public RegistryObject<TileEntityType<TileEntityPandorasBox>> tileEntityPandorasBox;
+    public RegistryObject<TileEntityType<PandorasBoxBlockEntity>> tileEntityPandorasBox;
 
     public static PBEventHandler fmlEventHandler;
     public PandorasBox() {
@@ -103,6 +96,6 @@ public class PandorasBox
         proxy.load();
     }
     public void clientInit(FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(Registry.Box.get(), RenderPandorasBox::new);
+        RenderingRegistry.registerEntityRenderingHandler(Registry.Box.get(), PandorasBoxRenderer::new);
     }
 }

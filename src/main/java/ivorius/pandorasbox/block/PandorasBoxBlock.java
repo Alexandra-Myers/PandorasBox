@@ -6,7 +6,6 @@
 package ivorius.pandorasbox.block;
 
 import ivorius.pandorasbox.init.Registry;
-import ivorius.pandorasbox.items.ItemPandorasBox;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -15,23 +14,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.AttachFace;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -42,12 +35,12 @@ import java.util.Objects;
 /**
  * Created by lukas on 15.04.14.
  */
-public class BlockPandorasBox extends Block implements ITileEntityProvider, IWaterLoggable
+public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWaterLoggable
 {
     public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public BlockPandorasBox()
+    public PandorasBoxBlock()
     {
         super(Block.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.5f));
         registerDefaultState(stateDefinition.any().setValue(DIRECTION, Direction.NORTH).setValue(WATERLOGGED, false));
@@ -81,7 +74,7 @@ public class BlockPandorasBox extends Block implements ITileEntityProvider, IWat
 
         TileEntity tileEntity = worldIn.getBlockEntity(pos);
 
-        if (!(tileEntity instanceof TileEntityPandorasBox)) {
+        if (!(tileEntity instanceof PandorasBoxBlockEntity)) {
             worldIn.removeBlockEntity(pos);
             worldIn.addBlockEntity(Objects.requireNonNull(createTileEntity(state, worldIn)));
         }
@@ -98,8 +91,8 @@ public class BlockPandorasBox extends Block implements ITileEntityProvider, IWat
         worldIn.setBlock(pos, this.defaultBlockState().setValue(DIRECTION, livingEntity.getDirection().getOpposite()), 2);
         TileEntity tileEntity = worldIn.getBlockEntity(pos);
 
-        if (tileEntity instanceof TileEntityPandorasBox)
-            ((TileEntityPandorasBox) tileEntity).setPartialRotationYaw(livingEntity.yRot % 90.0f);
+        if (tileEntity instanceof PandorasBoxBlockEntity)
+            ((PandorasBoxBlockEntity) tileEntity).setPartialRotationYaw(livingEntity.yRot % 90.0f);
         super.setPlacedBy(worldIn, pos, state, livingEntity, itemStack);
     }
 

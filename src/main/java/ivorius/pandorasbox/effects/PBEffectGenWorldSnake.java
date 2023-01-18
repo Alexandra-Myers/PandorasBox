@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
@@ -51,7 +51,7 @@ public class PBEffectGenWorldSnake extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
     {
         if (world instanceof ServerWorld)
         {
@@ -103,7 +103,7 @@ public class PBEffectGenWorldSnake extends PBEffectNormal
         }
     }
 
-    public void generateOnBlock(World world, EntityPandorasBox entity, Random random, BlockPos pos)
+    public void generateOnBlock(World world, PandorasBoxEntity entity, Random random, BlockPos pos)
     {
         setBlockVarying(world, pos, blocks[random.nextInt(blocks.length)], unifiedSeed);
     }

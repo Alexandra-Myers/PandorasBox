@@ -7,16 +7,14 @@ package ivorius.pandorasbox.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBEffectArgument;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.Entity;
 
@@ -37,7 +35,7 @@ public class CommandPandorasBox
     public static int createBox(CommandContext<CommandSource> ctx, PBEffectCreator effectCreator, boolean bool) throws CommandSyntaxException {
         Entity player = EntityArgument.getPlayer(ctx, "player");
 
-        EntityPandorasBox box;
+        PandorasBoxEntity box;
 
         if (effectCreator != null)
         {

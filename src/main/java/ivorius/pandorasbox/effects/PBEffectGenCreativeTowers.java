@@ -6,7 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBoxHelper;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.block.Block;
@@ -42,7 +42,7 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
     }
 
     @Override
-    public void generateStructure(World world, EntityPandorasBox entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio)
+    public void generateStructure(World world, PandorasBoxEntity entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio)
     {
         if (world instanceof ServerWorld)
         {

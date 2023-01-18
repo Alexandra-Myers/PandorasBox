@@ -1,6 +1,6 @@
 package ivorius.pandorasbox.utils;
 
-import ivorius.pandorasbox.WeightedSelector;
+import ivorius.pandorasbox.weighted.WeightedSelector;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

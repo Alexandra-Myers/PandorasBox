@@ -14,22 +14,20 @@ package ivorius.pandorasbox.client.rendering;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.client.renderer.entity.model.EntityModel;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.client.renderer.entity.model.SegmentedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 import java.util.Arrays;
 
-public class ModelPandorasBox extends SegmentedModel<EntityPandorasBox> {
+public class PandorasBoxModel extends SegmentedModel<PandorasBoxEntity> {
     private final ModelRenderer feet;
     private final ModelRenderer body;
     private final ModelRenderer joint;
     private final ModelRenderer top;
     private final ModelRenderer[] parts;
 
-    public ModelPandorasBox() {
+    public PandorasBoxModel() {
         texWidth = 32;
         texHeight = 32;
 
@@ -67,7 +65,7 @@ public class ModelPandorasBox extends SegmentedModel<EntityPandorasBox> {
     }
 
     @Override
-    public void setupAnim(EntityPandorasBox entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(PandorasBoxEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         top.xRot = entityIn.xRot;
     }
 
@@ -75,14 +73,6 @@ public class ModelPandorasBox extends SegmentedModel<EntityPandorasBox> {
         modelRenderer.xRot = x;
         modelRenderer.yRot = y;
         modelRenderer.zRot = z;
-    }
-
-    @Override
-    public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        feet.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        joint.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        top.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     @Override

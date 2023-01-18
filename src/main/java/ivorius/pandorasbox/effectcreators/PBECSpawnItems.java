@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import ivorius.pandorasbox.WeightedSelector;
+import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectSpawnItemStacks;
 import ivorius.pandorasbox.random.*;

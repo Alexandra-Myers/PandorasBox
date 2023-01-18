@@ -6,25 +6,20 @@
 package ivorius.pandorasbox.entitites;
 
 import ivorius.pandorasbox.PBConfig;
-import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.effects.Vec3d;
 import ivorius.pandorasbox.network.PartialUpdateHandler;
-import net.minecraft.block.Block;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.*;
-import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -37,11 +32,11 @@ import java.util.Random;
 /**
  * Created by lukas on 30.03.14.
  */
-public class EntityPandorasBox extends Entity implements IEntityAdditionalSpawnData, PartialUpdateHandler
+public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnData, PartialUpdateHandler
 {
     public static final float BOX_UPSCALE_SPEED = 0.02f;
 
-    private static final DataParameter<Integer> BOX_DEATH_TICKS = EntityDataManager.defineId(EntityPandorasBox.class, DataSerializers.INT);
+    private static final DataParameter<Integer> BOX_DEATH_TICKS = EntityDataManager.defineId(PandorasBoxEntity.class, DataSerializers.INT);
 
     protected int timeBoxWaiting;
     protected int effectTicksExisted;
@@ -56,7 +51,7 @@ public class EntityPandorasBox extends Entity implements IEntityAdditionalSpawnD
 
     protected Vec3d effectCenter = new Vec3d(0, 0, 0);
 
-    public EntityPandorasBox(EntityType<? extends EntityPandorasBox> p_i50172_1_, World p_i50172_2_) {
+    public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> p_i50172_1_, World p_i50172_2_) {
         super(p_i50172_1_, p_i50172_2_);
     }
 
@@ -380,7 +375,7 @@ public class EntityPandorasBox extends Entity implements IEntityAdditionalSpawnD
 
     @Override
     public void push(Entity entityIn) {
-        if (entityIn instanceof EntityPandorasBox) {
+        if (entityIn instanceof PandorasBoxEntity) {
             if (entityIn.getBoundingBox().minY < this.getBoundingBox().maxY) {
                 super.push(entityIn);
             }

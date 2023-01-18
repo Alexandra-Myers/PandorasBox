@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -44,7 +44,7 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
     }
 
     @Override
-    public void generateOnSurface(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, BlockPos pos, double range, int pass)
+    public void generateOnSurface(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, BlockPos pos, double range, int pass)
     {
         if (world instanceof ServerWorld)
         {

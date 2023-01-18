@@ -1,4 +1,4 @@
-package ivorius.pandorasbox;
+package ivorius.pandorasbox.weighted;
 
 import com.google.common.collect.Collections2;
 

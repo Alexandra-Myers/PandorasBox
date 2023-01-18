@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants;
@@ -25,7 +25,7 @@ public class PBEffectMulti extends PBEffect
     }
 
     @Override
-    public void doTick(EntityPandorasBox entity, Vec3d effectCenter, int ticksAlive)
+    public void doTick(PandorasBoxEntity entity, Vec3d effectCenter, int ticksAlive)
     {
         for (int i = 0; i < effects.length; i++)
         {
@@ -35,7 +35,7 @@ public class PBEffectMulti extends PBEffect
     }
 
     @Override
-    public boolean isDone(EntityPandorasBox entity, int ticksAlive)
+    public boolean isDone(PandorasBoxEntity entity, int ticksAlive)
     {
         for (int i = 0; i < effects.length; i++)
         {
@@ -89,7 +89,7 @@ public class PBEffectMulti extends PBEffect
     }
 
     @Override
-    public boolean canGenerateMoreEffectsAfterwards(EntityPandorasBox entity)
+    public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity)
     {
         for (PBEffect effect : effects)
         {

@@ -6,7 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBoxHelper;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.random.PandorasBoxEntityNamer;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.utils.StringConverter;
@@ -76,7 +76,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
     }
 
     @Override
-    public Entity spawnEntity(World world, EntityPandorasBox pbEntity, Random random, int number, double x, double y, double z)
+    public Entity spawnEntity(World world, PandorasBoxEntity pbEntity, Random random, int number, double x, double y, double z)
     {
         if(world.isClientSide()) return null;
         String[] entityTower = entityIDs[number];
@@ -202,7 +202,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         }
     }
 
-    public static Entity createEntity(World world, EntityPandorasBox pbEntity, Random random, String entityID, double x, double y, double z)
+    public static Entity createEntity(World world, PandorasBoxEntity pbEntity, Random random, String entityID, double x, double y, double z)
     {
         try
         {

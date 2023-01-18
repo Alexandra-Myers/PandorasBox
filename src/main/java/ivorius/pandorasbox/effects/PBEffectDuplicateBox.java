@@ -1,7 +1,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.Registry;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
@@ -34,12 +34,12 @@ public class PBEffectDuplicateBox extends PBEffectNormal
     }
 
     @Override
-    public void setUpEffect(World world, EntityPandorasBox box, Vec3d effectCenter, Random random)
+    public void setUpEffect(World world, PandorasBoxEntity box, Vec3d effectCenter, Random random)
     {
         if (world instanceof ServerWorld)
         {
             PBEffect effect = PBECRegistry.createRandomEffect(world, random, box.getX(), box.getY(), box.getZ(), true);
-            EntityPandorasBox newBox = Registry.Box.get().create(world);
+            PandorasBoxEntity newBox = Registry.Box.get().create(world);
 
             assert newBox != null;
 
@@ -56,7 +56,7 @@ public class PBEffectDuplicateBox extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
     {
 
     }

@@ -5,9 +5,7 @@
 
 package ivorius.pandorasbox.weighted;
 
-import ivorius.pandorasbox.WeightedSelector;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.WeightedRandom;
 
 /**
  * Created by lukas on 31.03.14.

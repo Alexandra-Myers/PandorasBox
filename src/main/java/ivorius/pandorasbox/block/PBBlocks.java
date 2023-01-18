@@ -5,5 +5,5 @@ package ivorius.pandorasbox.block;
  */
 public class PBBlocks
 {
-    public static BlockPandorasBox pandorasBox;
+    public static PandorasBoxBlock pandorasBox;
 }

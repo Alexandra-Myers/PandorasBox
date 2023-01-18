@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
@@ -33,18 +33,18 @@ public abstract class PBEffectNormal extends PBEffect
         return (float) ticks / (float) maxTicksAlive;
     }
 
-    public abstract void doEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio);
+    public abstract void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio);
 
-    public void setUpEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random)
+    public void setUpEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random)
     {
     }
 
-    public void finalizeEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random)
+    public void finalizeEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random)
     {
     }
 
     @Override
-    public void doTick(EntityPandorasBox entity, Vec3d effectCenter, int ticksAlive)
+    public void doTick(PandorasBoxEntity entity, Vec3d effectCenter, int ticksAlive)
     {
         float prevRatio = getRatioDone(ticksAlive);
         float newRatio = getRatioDone(ticksAlive + 1);
@@ -60,7 +60,7 @@ public abstract class PBEffectNormal extends PBEffect
     }
 
     @Override
-    public boolean isDone(EntityPandorasBox entity, int ticksAlive)
+    public boolean isDone(PandorasBoxEntity entity, int ticksAlive)
     {
         return ticksAlive >= maxTicksAlive;
     }
@@ -78,7 +78,7 @@ public abstract class PBEffectNormal extends PBEffect
     }
 
     @Override
-    public boolean canGenerateMoreEffectsAfterwards(EntityPandorasBox entity)
+    public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity)
     {
         return true;
     }

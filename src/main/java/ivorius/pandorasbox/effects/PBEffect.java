@@ -6,7 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBoxHelper;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -52,12 +52,12 @@ public abstract class PBEffect
         return setBlockSafe(world, pos, PandorasBoxHelper.getRandomBlockState(world.random, block, unified));
     }
 
-    public static PlayerEntity getRandomNearbyPlayer(World world, EntityPandorasBox box)
+    public static PlayerEntity getRandomNearbyPlayer(World world, PandorasBoxEntity box)
     {
         return (PlayerEntity) world.getEntitiesOfClass(PlayerEntity.class, box.getBoundingBox().expandTowards(30.0, 30.0, 30.0));
     }
 
-    public static PlayerEntity getPlayer(World world, EntityPandorasBox box)
+    public static PlayerEntity getPlayer(World world, PandorasBoxEntity box)
     {
         return getRandomNearbyPlayer(world, box); // We don't know the owner :/
     }
@@ -83,7 +83,7 @@ public abstract class PBEffect
         return false;
     }
 
-    public static Entity lazilySpawnEntity(World world, EntityPandorasBox box, Random random, String entityID, float chance, BlockPos pos)
+    public static Entity lazilySpawnEntity(World world, PandorasBoxEntity box, Random random, String entityID, float chance, BlockPos pos)
     {
         if (random.nextFloat() < chance && !world.isClientSide())
         {
@@ -97,7 +97,7 @@ public abstract class PBEffect
 
         return null;
     }
-    public static Entity lazilySpawnFlyingEntity(World world, EntityPandorasBox box, Random random, String entityID, float chance, BlockPos pos) {
+    public static Entity lazilySpawnFlyingEntity(World world, PandorasBoxEntity box, Random random, String entityID, float chance, BlockPos pos) {
         Entity entity =  lazilySpawnEntity(world, box, random, entityID, chance, pos);
         if(entity != null) world.addFreshEntity(entity);
         return entity;
@@ -147,13 +147,13 @@ public abstract class PBEffect
         }
     }
 
-    public abstract void doTick(EntityPandorasBox entity, Vec3d effectCenter, int ticksAlive);
+    public abstract void doTick(PandorasBoxEntity entity, Vec3d effectCenter, int ticksAlive);
 
-    public abstract boolean isDone(EntityPandorasBox entity, int ticksAlive);
+    public abstract boolean isDone(PandorasBoxEntity entity, int ticksAlive);
 
     public abstract void writeToNBT(CompoundNBT compound);
 
     public abstract void readFromNBT(CompoundNBT compound);
 
-    public abstract boolean canGenerateMoreEffectsAfterwards(EntityPandorasBox entity);
+    public abstract boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity);
 }

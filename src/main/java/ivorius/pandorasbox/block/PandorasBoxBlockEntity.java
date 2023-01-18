@@ -5,31 +5,24 @@
 
 package ivorius.pandorasbox.block;
 
-import ivorius.pandorasbox.effectcreators.PBECRegistry;
-import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
 import ivorius.pandorasbox.init.Registry;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 15.04.14.
  */
-public class TileEntityPandorasBox extends TileEntity
+public class PandorasBoxBlockEntity extends TileEntity
 {
     private float partialRotationYaw;
 
-    public TileEntityPandorasBox() {
+    public PandorasBoxBlockEntity() {
         super(Registry.TEPB.get());
     }
 
@@ -62,7 +55,7 @@ public class TileEntityPandorasBox extends TileEntity
 
     public float getBaseRotationYaw()
     {
-        return rotationFromFacing(this.level.getBlockState(this.worldPosition).getValue(BlockPandorasBox.DIRECTION));
+        return rotationFromFacing(this.level.getBlockState(this.worldPosition).getValue(PandorasBoxBlock.DIRECTION));
     }
 
     public float getRotationYaw()

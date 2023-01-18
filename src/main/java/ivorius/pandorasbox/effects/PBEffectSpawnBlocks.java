@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -39,7 +39,7 @@ public class PBEffectSpawnBlocks extends PBEffectSpawnEntities
     }
 
     @Override
-    public Entity spawnEntity(World world, EntityPandorasBox entity, Random random, int number, double x, double y, double z)
+    public Entity spawnEntity(World world, PandorasBoxEntity entity, Random random, int number, double x, double y, double z)
     {
         if(world.isClientSide()) return null;
         Block block = blocks[number];

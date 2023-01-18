@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -54,7 +54,7 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, EntityPandorasBox box, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(World world, PandorasBoxEntity box, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
     {
         if (world instanceof ServerWorld)
         {
@@ -104,7 +104,7 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
         return MathHelper.floor(ratio * number);
     }
 
-    public abstract Entity spawnEntity(World world, EntityPandorasBox pbEntity, Random random, int number, double x, double y, double z);
+    public abstract Entity spawnEntity(World world, PandorasBoxEntity pbEntity, Random random, int number, double x, double y, double z);
 
     @Override
     public void writeToNBT(CompoundNBT compound)

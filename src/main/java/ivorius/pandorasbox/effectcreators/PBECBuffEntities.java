@@ -9,10 +9,9 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectEntitiesBuff;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
-import ivorius.pandorasbox.WeightedSelector;
+import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.pandorasbox.weighted.WeightedPotion;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 
 import java.util.Collection;

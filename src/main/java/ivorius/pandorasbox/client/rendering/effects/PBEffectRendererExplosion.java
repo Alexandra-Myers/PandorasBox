@@ -1,11 +1,9 @@
 package ivorius.pandorasbox.client.rendering.effects;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import ivorius.pandorasbox.effects.PBEffectExplode;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
-import net.minecraft.client.renderer.*;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 
 /**
  * Created by lukas on 05.12.14.
@@ -13,7 +11,7 @@ import net.minecraft.client.renderer.*;
 public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplode>
 {
     @Override
-    public void renderBox(EntityPandorasBox entity, PBEffectExplode effect, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
+    public void renderBox(PandorasBoxEntity entity, PBEffectExplode effect, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
         if (!entity.isInvisible())
         {

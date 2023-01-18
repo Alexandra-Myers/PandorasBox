@@ -12,15 +12,13 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectMulti;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
-import ivorius.pandorasbox.effects.Vec3d;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.StringConverter;
 import ivorius.pandorasbox.utils.WrappedBiMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
@@ -168,23 +166,23 @@ public class PBECRegistry
         return creator.constructEffect(world, x, y, z, random);
     }
 
-    public static EntityPandorasBox spawnPandorasBox(World world, Random random, boolean multi, Entity entity)
+    public static PandorasBoxEntity spawnPandorasBox(World world, Random random, boolean multi, Entity entity)
     {
         PBEffect effect = createRandomEffect(world, random, entity.getX(), entity.getY() + 1.2, entity.getZ(), multi);
         return spawnPandorasBox(world, effect, entity);
     }
 
-    public static EntityPandorasBox spawnPandorasBox(World world, Random random, PBEffectCreator creator, Entity entity)
+    public static PandorasBoxEntity spawnPandorasBox(World world, Random random, PBEffectCreator creator, Entity entity)
     {
         PBEffect effect = createEffect(world, random, entity.getX(), entity.getY() + 1.2, entity.getZ(), creator);
         return spawnPandorasBox(world, effect, entity);
     }
 
-    public static EntityPandorasBox spawnPandorasBox(World world, PBEffect effect, Entity entity)
+    public static PandorasBoxEntity spawnPandorasBox(World world, PBEffect effect, Entity entity)
     {
         if (effect != null && !world.isClientSide())
         {
-            EntityPandorasBox entityPandorasBox = Registry.Box.get().create(world);
+            PandorasBoxEntity entityPandorasBox = Registry.Box.get().create(world);
 
             Vector3d look = entity.getLookAngle();
 

@@ -6,7 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBox;
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
 import net.minecraft.block.Block;
@@ -35,7 +35,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();

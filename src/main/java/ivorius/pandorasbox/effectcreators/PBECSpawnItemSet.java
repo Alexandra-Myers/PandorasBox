@@ -5,14 +5,13 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import ivorius.pandorasbox.WeightedSelector;
+import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ValueSpawn;
 import ivorius.pandorasbox.random.ValueThrow;
 import ivorius.pandorasbox.weighted.WeightedSet;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 
 import java.util.List;

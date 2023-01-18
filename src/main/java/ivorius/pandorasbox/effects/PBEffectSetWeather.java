@@ -5,10 +5,9 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.entitites.EntityPandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.IWorldInfo;
 import net.minecraft.world.storage.ServerWorldInfo;
 
 import java.util.Random;
@@ -31,12 +30,12 @@ public class PBEffectSetWeather extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
     {
     }
 
     @Override
-    public void finalizeEffect(World world, EntityPandorasBox entity, Vec3d effectCenter, Random random)
+    public void finalizeEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random)
     {
         if (world.getLevelData() instanceof ServerWorldInfo) {
             ServerWorldInfo worldInfo = (ServerWorldInfo) world.getLevelData();
