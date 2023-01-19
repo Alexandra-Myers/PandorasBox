@@ -56,13 +56,11 @@ public class IvRenderHelper {
                 renderer.color(r, g, b, 0);
                 renderer.vertex(-width * (double) var9, var8, (-0.5F * var9)).endVertex();
                 renderer.vertex(width * (double) var9, var8, (-0.5F * var9)).endVertex();
-                renderer.vertex(0.0D, var8, (1.0F * var9)).endVertex();
+                renderer.vertex(0.0D, var8, (var9)).endVertex();
                 renderer.vertex(-width * (double) var9, var8, (-0.5F * var9)).endVertex();
                 Tessellator.getInstance().end();
             }
         }
-
-        matrixStack.popPose();
         RenderSystem.depthMask(true);
         RenderSystem.disableCull();
         RenderSystem.disableBlend();
