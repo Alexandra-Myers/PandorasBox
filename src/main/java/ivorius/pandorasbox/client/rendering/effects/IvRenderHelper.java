@@ -36,9 +36,7 @@ public class IvRenderHelper {
                 xLogFunc = 20.0f - xLogFunc;
             }
 
-            float yLogFunc = 1.0f / (1.0f + (float) Math.pow(2.71828f, -0.8f * xLogFunc) * ((1.0f / 0.01f) - 1.0f));
-
-            float lightAlpha = yLogFunc;
+            float lightAlpha = 1.0f / (1.0f + (float) Math.pow(2.71828f, -0.8f * xLogFunc) * ((1.0f / 0.01f) - 1.0f));
 
             if (lightAlpha > 0.01f)
             {

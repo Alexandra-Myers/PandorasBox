@@ -140,10 +140,6 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     public void tick()
     {
         super.tick();
-        doThings();
-    }
-    public void doThings() {
-
         if (timeBoxWaiting == 0 && getDeathTicks() < 0)
         {
             PBEffect effect = getBoxEffect();
@@ -198,14 +194,13 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
         if (floatAwayProgress >= 0.0f && floatAwayProgress < 1.0f)
         {
+            float speed = MathHelper.square(floatAwayProgress - 0.7f);
             if (floatUp)
             {
-                float speed = (floatAwayProgress - 0.7f) * (floatAwayProgress - 0.7f);
                 getDeltaMovement().add(0, speed * 0.005f, 0);
             }
             else
             {
-                float speed = (floatAwayProgress - 0.7f) * (floatAwayProgress - 0.7f);
                 moveRelative(0.0f, new Vec3d(0.01f, speed * 0.02f, 0.02f));
                 getDeltaMovement().add(0, speed * 0.005f, 0);
             }
@@ -292,7 +287,6 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
             setDeathTicks(getDeathTicks() + 1);
         }
     }
-
     public void startNewEffect()
     {
         effectTicksExisted = 0;

@@ -56,9 +56,8 @@ public class PandorasBoxRenderer<T extends PandorasBoxEntity> extends EntityRend
         matrixStack.mulPose(new Quaternion(0.0F, 1.0F, 0.0F, -entityYaw));
 
         PBEffect effect = entity.getBoxEffect();
-        boolean flag = !entity.isInvisible();
-        boolean flag1 = !flag && !entity.isInvisibleTo(Minecraft.getInstance().player);
-        IVertexBuilder builder = renderTypeBuffer.getBuffer(Objects.requireNonNull(getRenderType(entity, flag, flag1)));
+        boolean visible = !entity.isInvisible();
+        IVertexBuilder builder = renderTypeBuffer.getBuffer(Objects.requireNonNull(model.renderType(getTextureLocation(entity))));
         if (!effect.isDone(entity, entity.getEffectTicksExisted()) && entity.getDeathTicks() < 0)
         {
             PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForEffect(effect);
@@ -66,7 +65,7 @@ public class PandorasBoxRenderer<T extends PandorasBoxEntity> extends EntityRend
                 renderer.renderBox(entity, effect, partialTicks, matrixStack, builder);
         }
 
-        if (!entity.isInvisible())
+        if (visible)
         {
             float boxScale = entity.getCurrentScale();
             if (boxScale < 1.0f)
@@ -78,22 +77,11 @@ public class PandorasBoxRenderer<T extends PandorasBoxEntity> extends EntityRend
             emptyEntity.xRot = entity.getRatioBoxOpen(partialTicks) * 120.0f / 180.0f * 3.1415926f;*/
             int i = OverlayTexture.NO_OVERLAY;
             model.setupAnim(entity, 0, 0, 0, 0, 0);
-            model.renderToBuffer(matrixStack, builder, packedLightIn, i,1,1, 1, flag1 ? 0.15F : 1);
+            model.renderToBuffer(matrixStack, builder, packedLightIn, i,1,1, 1, 1);
         }
 
         matrixStack.popPose();
 
-    }
-    @Nullable
-    protected RenderType getRenderType(T entity, boolean normal, boolean translucent) {
-        ResourceLocation resourcelocation = this.getTextureLocation(entity);
-        if (translucent) {
-            return RenderType.entityTranslucent(resourcelocation);
-        } else if (normal) {
-            return this.model.renderType(resourcelocation);
-        } else {
-            return entity.isGlowing() ? RenderType.outline(resourcelocation) : null;
-        }
     }
     @Override
     public ResourceLocation getTextureLocation(T var1)

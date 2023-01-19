@@ -1,6 +1,6 @@
 package ivorius.pandorasbox.worldgen;
 
-import ivorius.pandorasbox.block.PBBlocks;
+import ivorius.pandorasbox.init.Registry;
 import net.minecraft.loot.ItemLootEntry;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -35,6 +35,6 @@ public class PBLoot
 
     public static void injectIntoLootTable(LootTable table, int weight)
     {
-        table.addPool(LootPool.lootPool().add(ItemLootEntry.lootTableItem(PBBlocks.pandorasBox).setWeight(weight)).build());
+        table.addPool(LootPool.lootPool().add(ItemLootEntry.lootTableItem(Registry.PBI.get()).setWeight(weight)).build());
     }
 }

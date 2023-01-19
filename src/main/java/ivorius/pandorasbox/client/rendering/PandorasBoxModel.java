@@ -12,6 +12,7 @@
 
 package ivorius.pandorasbox.client.rendering;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
@@ -25,7 +26,6 @@ public class PandorasBoxModel extends SegmentedModel<PandorasBoxEntity> {
     private final ModelRenderer body;
     private final ModelRenderer joint;
     private final ModelRenderer top;
-    private final ModelRenderer[] parts;
 
     public PandorasBoxModel() {
         texWidth = 32;
@@ -58,10 +58,6 @@ public class PandorasBoxModel extends SegmentedModel<PandorasBoxEntity> {
         top.addBox(8, 16, 2.0F, -8.5F, -0.5F, 1, 1, 1, 0.0F);
         top.addBox(8, 16, -0.5F, -8.5F, -3.0F, 1, 1, 1, 0.0F);
         top.addBox(8, 16, -0.5F, -8.5F, 2.0F, 1, 1, 1, 0.0F);
-        parts = new ModelRenderer[]{feet, body, joint, top};
-        for(ModelRenderer part : parts) {
-            part.setTexSize(32, 32);
-        }
     }
 
     @Override
@@ -77,6 +73,6 @@ public class PandorasBoxModel extends SegmentedModel<PandorasBoxEntity> {
 
     @Override
     public Iterable<ModelRenderer> parts() {
-        return Arrays.asList(parts);
+        return ImmutableList.of(feet, body, joint, top);
     }
 }

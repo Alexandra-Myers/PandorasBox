@@ -5,7 +5,6 @@
 
 package ivorius.pandorasbox;
 
-import ivorius.pandorasbox.block.PBBlocks;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.client.ClientProxy;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
@@ -83,8 +82,6 @@ public class PandorasBox
         fmlEventHandler = new PBEventHandler();
         fmlEventHandler.register();
 
-
-        PBBlocks.pandorasBox = Registry.PB.get();
         tileEntityPandorasBox = Registry.TEPB;
 
 
