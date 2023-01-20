@@ -22,6 +22,7 @@ import java.util.Random;
 public abstract class PBEffectGenerateByStructure extends PBEffectNormal
 {
     public Structure[] structures;
+    public PBEffectGenerateByStructure() {}
 
     public PBEffectGenerateByStructure(int maxTicksAlive)
     {

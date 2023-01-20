@@ -28,6 +28,7 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToHomo extends PBEffectGenerate
 {
+    public PBEffectGenConvertToHomo() {}
 
     public PBEffectGenConvertToHomo(int time, double range, int unifiedSeed)
     {
@@ -39,6 +40,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
     {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
+        BlockState below = world.getBlockState(pos.below());
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         for(Block block1 : ForgeRegistries.BLOCKS) {
             if(BlockTags.SMALL_FLOWERS.contains(block1)) {
@@ -52,7 +54,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
             {
                 setBlockToAirSafe(world, pos);
             }
-            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SAND, Blocks.MYCELIUM))
+            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SAND, Blocks.MYCELIUM, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM))
             {
                 if (world.getBlockState(pos.above()).isAir(world, pos.above()))
                 {
@@ -63,7 +65,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
                     setBlockSafe(world, pos, Blocks.DIRT.defaultBlockState());
                 }
             }
-            else if (isBlockAnyOf(block, Blocks.FIRE, Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK))
+            else if (isBlockAnyOf(block, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK))
             {
                 setBlockToAirSafe(world, pos);
             }
@@ -99,7 +101,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
                         treeFeature.place(world, world.random, pos);
                     }
                 }
-                else if (blockState.isAir(world, pos))
+                else if (blockState.isAir(world, pos) && Blocks.SNOW.defaultBlockState().canSurvive(world, pos))
                 {
                     if (random.nextInt(3 * 3) == 0)
                     {

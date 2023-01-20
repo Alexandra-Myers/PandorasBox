@@ -21,6 +21,7 @@ import java.util.Random;
 public class PBEffectGenTransform extends PBEffectGenerate
 {
     public Block[] blocks;
+    public PBEffectGenTransform() {}
 
     public PBEffectGenTransform(int time, double range, int unifiedSeed, Block[] blocks)
     {

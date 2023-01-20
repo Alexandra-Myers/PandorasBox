@@ -20,6 +20,7 @@ public class PBEffectSetWeather extends PBEffectNormal
     public boolean rain;
     public boolean thunder;
     public int rainTime;
+    public PBEffectSetWeather() {}
 
     public PBEffectSetWeather(int maxTicksAlive, boolean rain, boolean thunder, int rainTime)
     {

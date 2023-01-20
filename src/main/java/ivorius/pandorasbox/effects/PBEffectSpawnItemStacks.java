@@ -21,6 +21,7 @@ import java.util.Random;
 public class PBEffectSpawnItemStacks extends PBEffectSpawnEntities
 {
     public ItemStack[] stacks;
+    public PBEffectSpawnItemStacks() {}
 
     public PBEffectSpawnItemStacks(int time, ItemStack[] stacks)
     {

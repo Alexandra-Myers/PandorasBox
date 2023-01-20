@@ -20,6 +20,7 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
 {
     public double range;
     public int passes;
+    public PBEffectRangeBased() {}
 
     public boolean spreadSquared = true;
     public boolean easeInOut = true;

@@ -23,6 +23,7 @@ public class PBEffectEntitiesTeleport extends PBEffectEntityBased
 {
     private double teleportRange;
     private int teleports;
+    public PBEffectEntitiesTeleport() {}
 
     public PBEffectEntitiesTeleport(int maxTicksAlive, double range, double teleportRange, int teleports)
     {

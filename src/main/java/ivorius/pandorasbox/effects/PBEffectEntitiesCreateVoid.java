@@ -20,6 +20,7 @@ import java.util.Random;
  */
 public class PBEffectEntitiesCreateVoid extends PBEffectEntityBased
 {
+    public PBEffectEntitiesCreateVoid() {}
 
     public PBEffectEntitiesCreateVoid(int maxTicksAlive, double range)
     {

@@ -17,6 +17,9 @@ public class PBEffectDuplicateBox extends PBEffectNormal
     public static final int MODE_BOX_IN_BOX = 0;
 
     public int spawnMode;
+    public PBEffectDuplicateBox() {
+
+    }
 
     public static int timeNeededForSpawnMode(int mode)
     {

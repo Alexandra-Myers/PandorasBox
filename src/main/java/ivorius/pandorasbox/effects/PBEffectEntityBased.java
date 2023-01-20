@@ -20,6 +20,7 @@ import java.util.Random;
 public abstract class PBEffectEntityBased extends PBEffectNormal
 {
     public double range;
+    public PBEffectEntityBased() {}
 
     public PBEffectEntityBased(int maxTicksAlive, double range)
     {

@@ -18,6 +18,7 @@ import net.minecraft.world.gen.feature.TreeFeature;
 public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator
 {
     public static final int treeJungle = 0;
+    public PBEffectGenTreesOdd() {}
 
     public Block trunkBlock;
     public Block leafBlock;

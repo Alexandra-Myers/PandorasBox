@@ -26,6 +26,7 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToMushroom extends PBEffectGenerate
 {
+    public PBEffectGenConvertToMushroom() {}
 
     public PBEffectGenConvertToMushroom(int time, double range, int unifiedSeed)
     {
@@ -44,7 +45,7 @@ public class PBEffectGenConvertToMushroom extends PBEffectGenerate
             }
         }
 
-        blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.FIRE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
+        blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
 
         if (pass == 0)
         {
@@ -52,7 +53,7 @@ public class PBEffectGenConvertToMushroom extends PBEffectGenerate
             {
                 setBlockToAirSafe(world, pos);
             }
-            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SAND, Blocks.DIRT, Blocks.GRASS_BLOCK))
+            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SOUL_SAND, Blocks.SAND, Blocks.DIRT, Blocks.GRASS_BLOCK))
             {
                 BlockPos posUp = pos.above();
 

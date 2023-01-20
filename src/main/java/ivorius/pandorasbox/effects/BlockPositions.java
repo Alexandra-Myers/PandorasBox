@@ -149,7 +149,6 @@ public final class BlockPositions
         return new BlockPos(pos.getX() - sub.getX(), pos.getY() - sub.getY(), pos.getZ() - sub.getZ());
     }
 
-    @Deprecated
     public static AxisAlignedBB expandToAABB(BlockPos pos, double x, double y, double z)
     {
         return new AxisAlignedBB(pos).expandTowards(x, y, z);

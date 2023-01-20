@@ -241,7 +241,10 @@ public class PandorasBoxHelper
         addEntities(mobs, 10.0, 2, 8, "creeper");
         addEntities(mobs, 6.0, 2, 8, "slime");
         addEntities(mobs, 4.0, 1, 4, "ghast");
-        addEntities(mobs, 6.0, 2, 8, "zombie_pigman");
+        addEntities(mobs, 4.0, 1, 4, "phantom");
+        addEntities(mobs, 6.0, 2, 8, "zombified_piglin");
+        addEntities(mobs, 6.0, 2, 8, "hoglin");
+        addEntities(mobs, 6.0, 2, 8, "zoglin");
         addEntities(mobs, 6.0, 2, 6, "enderman");
         addEntities(mobs, 5.0, 2, 4, "cave_spider");
         addEntities(mobs, 5.0, 10, 20, "silverfish");
@@ -264,6 +267,7 @@ public class PandorasBoxHelper
         addEntities(creatures, 4.0, 2, 5, "horse");
         addEntities(creatures, 4.0, 2, 6, "ocelot", "cat");
         addEntities(creatures, 3.0, 3, 6, "villager");
+        addEntities(creatures, 3.0, 3, 6, "piglin");
         addEntities(creatures, 3.0, 2, 4, "iron_golem");
 
         addEntities(waterCreatures, 6.0, 3, 10, "squid", "cod", "salmon", "pufferfish", "turtle", "tropical_fish");
@@ -285,16 +289,16 @@ public class PandorasBoxHelper
         randomizable.addAll(
                 Blocks.STONE, Blocks.DIRT, Blocks.SAND, Blocks.STONE_BRICK_STAIRS,
                 Blocks.QUARTZ_BLOCK, Blocks.QUARTZ_STAIRS,
+                Blocks.SMOOTH_QUARTZ, Blocks.SMOOTH_QUARTZ_STAIRS,
                 Blocks.SANDSTONE, Blocks.SANDSTONE_STAIRS,
                 Blocks.RED_SANDSTONE, Blocks.RED_SANDSTONE_STAIRS,
                 Blocks.RAIL,
                 Blocks.FURNACE, Blocks.PUMPKIN, Blocks.JACK_O_LANTERN,
-                Blocks.SNOW, Blocks.SNOW,
+                Blocks.SNOW, Blocks.SNOW_BLOCK,
                 Blocks.CHEST, Blocks.ENDER_CHEST, Blocks.TRAPPED_CHEST,
-                Blocks.FLOWER_POT,
                 Blocks.SPONGE);
         for(Block block : ForgeRegistries.BLOCKS) {
-            if (BlockTags.PLANKS.contains(block) || BlockTags.LOGS.contains(block) || block instanceof LeavesBlock || BlockTags.WOOL.contains(block) || BlockTags.SLABS.contains(block) || block.getRegistryName().getPath().endsWith("stone_bricks") || block.getRegistryName().getPath().endsWith("_terracotta")) {
+            if (BlockTags.PLANKS.contains(block) || BlockTags.LOGS.contains(block) || BlockTags.LEAVES.contains(block) || BlockTags.WOOL.contains(block) || BlockTags.SLABS.contains(block) || block.getRegistryName().getPath().endsWith("stone_bricks") || block.getRegistryName().getPath().endsWith("_terracotta")) {
                 planks.add(block);
                 randomizable.add(block);
             }
@@ -302,11 +306,11 @@ public class PandorasBoxHelper
                 glass.add(block);
                 randomizable.add(block);
             }
-            if(block instanceof SaplingBlock) {
+            if(block instanceof SaplingBlock || BlockTags.FLOWER_POTS.contains(block)) {
                 randomizable.add(block);
             }
         }
-        glass.add(Blocks.SOUL_SAND);
+        glass.addAll(Blocks.SOUL_SAND, Blocks.SOUL_SOIL);
         misc.addAll(Items.LAVA_BUCKET, Items.MILK_BUCKET, Items.WATER_BUCKET, Items.FLINT_AND_STEEL, Items.PAINTING, Items.FLOWER_POT, Items.MINECART, Items.CAULDRON);
         for(Item item : ForgeRegistries.ITEMS) {
             if(ItemTags.BOATS.contains(item) || ItemTags.BEDS.contains(item)) {
@@ -322,7 +326,7 @@ public class PandorasBoxHelper
 
         addBlocks(40.0, planks);
         addBlocks(15.0, Blocks.PRISMARINE, Blocks.QUARTZ_BLOCK);
-        addBlocks(10.0, Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE, Blocks.NETHERRACK, Blocks.NETHER_BRICKS, Blocks.BRICKS, Blocks.END_STONE, Blocks.TERRACOTTA);
+        addBlocks(10.0, Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE, Blocks.NETHERRACK, Blocks.NETHER_BRICKS, Blocks.BRICKS, Blocks.END_STONE, Blocks.END_STONE_BRICKS, Blocks.TERRACOTTA);
         addBlocks(10.0, Blocks.DIRT, Blocks.GRASS, Blocks.GRAVEL, Blocks.PUMPKIN, Blocks.CLAY, Blocks.MYCELIUM);
         addBlocks(8.0, glass);
         addBlocks(0.2, Blocks.DIAMOND_BLOCK, Blocks.EMERALD_BLOCK, Blocks.GOLD_BLOCK);
@@ -332,7 +336,7 @@ public class PandorasBoxHelper
         addBlocks(2.0, Blocks.TNT, Blocks.GLOWSTONE, Blocks.COAL_BLOCK, Blocks.LAPIS_BLOCK, Blocks.REDSTONE_BLOCK, Blocks.SLIME_BLOCK, Blocks.SPONGE);
         addBlocks(5.0, Blocks.DRAGON_EGG, Blocks.REDSTONE_LAMP, Blocks.SEA_LANTERN, Blocks.SNOW, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.HAY_BLOCK, Blocks.OBSIDIAN, Blocks.MELON);
 
-        addItems(10.0, Items.COAL, Items.GUNPOWDER, Items.WHEAT, Items.SADDLE, Items.REDSTONE, Items.BONE, Items.MELON, Items.CLAY_BALL, Items.BOOK, Items.GOLD_NUGGET, Items.POTATO, Items.BUCKET, Items.STICK, Items.STRING, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.WHEAT_SEEDS, Items.SNOWBALL, Items.SUGAR, Items.FISHING_ROD, Items.NETHER_STAR, Items.NETHER_WART, Items.FLINT, Items.EGG, Items.BRICK, Items.PAPER, new ItemStack(Blocks.TORCH));
+        addItems(10.0, Items.COAL, Items.GUNPOWDER, Items.WHEAT, Items.SADDLE, Items.REDSTONE, Items.BONE, Items.MELON, Items.CLAY_BALL, Items.BOOK, Items.GOLD_NUGGET, Items.POTATO, Items.BUCKET, Items.STICK, Items.STRING, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.WHEAT_SEEDS, Items.SNOWBALL, Items.SUGAR, Items.FISHING_ROD, Items.NETHER_STAR, Items.NETHER_WART, Items.FLINT, Items.EGG, Items.BRICK, Items.PAPER, Items.TORCH);
         addItems(10.0, Registry.PBI.get());
         addItems(10.0, Items.CHICKEN, Items.COOKED_CHICKEN, Items.BEEF, Items.PUMPKIN_PIE, Items.COOKED_BEEF, Items.MUSHROOM_STEW, Items.ROTTEN_FLESH, Items.CARROT, Items.PORKCHOP, Items.COOKED_PORKCHOP, Items.APPLE, Items.CAKE, Items.BREAD, Items.COOKIE, Items.COD, Items.COOKED_COD, Items.SALMON, Items.COOKED_SALMON, Items.PUFFERFISH, Items.MUTTON, Items.COOKED_MUTTON, Items.RABBIT, Items.RABBIT_FOOT, Items.RABBIT_HIDE, Items.RABBIT_STEW, Items.COOKED_RABBIT);
         addItems(8.0,  misc);
@@ -343,8 +347,8 @@ public class PandorasBoxHelper
         addItems(4.0, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
         addItems(3.0, Items.IRON_HORSE_ARMOR, Items.GOLDEN_HORSE_ARMOR);
         addItems(2.0, Items.DIAMOND_HORSE_ARMOR);
-        addItemsMinMax(2.0, 1, 1, new ItemStack(Blocks.BEACON), new ItemStack(Blocks.ANVIL), new ItemStack(Blocks.BREWING_STAND), new ItemStack(Blocks.DISPENSER), new ItemStack(Blocks.ENDER_CHEST), new ItemStack(Blocks.JUKEBOX), new ItemStack(Blocks.ENCHANTING_TABLE));
-        addItemsMinMax(5.0, 1, 1, new ItemStack(Blocks.CHEST));
+        addItemsMinMax(2.0, 1, 1, Items.BEACON, Items.ANVIL, Items.BREWING_STAND, Items.DISPENSER, Items.ENDER_CHEST, Items.JUKEBOX, Items.ENCHANTING_TABLE);
+        addItemsMinMax(5.0, 1, 1, Items.CHEST, Items.BARREL);
         addItems(2.0, Items.DIAMOND, Items.EMERALD, Items.GOLD_INGOT, Items.GOLDEN_APPLE, Items.ENDER_PEARL, Items.PRISMARINE_CRYSTALS, Items.PRISMARINE_SHARD);
         addItems(2.0, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
         addItems(2.0, records);
@@ -356,11 +360,11 @@ public class PandorasBoxHelper
         addEquipmentSet(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE);
         addEquipmentSet(2.0, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
         addEquipmentSet(6.0, Items.BOW, new ItemStack(Items.ARROW, 64), Items.IRON_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.IRON_AXE, new ItemStack(Items.APPLE, 8));
-        addEquipmentSet(6.0, Items.IRON_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.DIAMOND_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.STONE_SWORD, new ItemStack(Items.BREAD, 8), new ItemStack(Blocks.TORCH, 32));
-        addEquipmentSet(8.0, Items.LEATHER_HELMET, Items.IRON_HOE, new ItemStack(Items.WHEAT_SEEDS, 32), new ItemStack(Items.PUMPKIN_SEEDS, 4), new ItemStack(Items.MELON_SEEDS, 4), new ItemStack(Items.BLUE_DYE, 8), new ItemStack(Blocks.DIRT, 32), Items.WATER_BUCKET, Items.WATER_BUCKET);
+        addEquipmentSet(6.0, Items.IRON_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.DIAMOND_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.STONE_SWORD, new ItemStack(Items.BREAD, 8), new ItemStack(Items.TORCH, 32));
+        addEquipmentSet(8.0, Items.LEATHER_HELMET, Items.IRON_HOE, new ItemStack(Items.WHEAT_SEEDS, 32), new ItemStack(Items.PUMPKIN_SEEDS, 4), new ItemStack(Items.MELON_SEEDS, 4), new ItemStack(Items.BLUE_DYE, 8), new ItemStack(Items.DIRT, 32), Items.WATER_BUCKET, Items.WATER_BUCKET);
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.DIAMOND_AXE, new ItemStack(Items.BEEF, 16));
         for(Block block : ForgeRegistries.BLOCKS) {
-            if(BlockTags.WOOL.contains(block)) {
+            if(BlockTags.WOOL.contains(block) && new Random().nextDouble() > 0.8) {
                 addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
             }
         }

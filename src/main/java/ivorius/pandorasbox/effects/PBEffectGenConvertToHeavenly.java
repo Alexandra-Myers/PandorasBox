@@ -24,6 +24,7 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToHeavenly extends PBEffectGenerate
 {
+    public PBEffectGenConvertToHeavenly() {}
 
     public PBEffectGenConvertToHeavenly(int time, double range, int unifiedSeed)
     {
@@ -39,7 +40,7 @@ public class PBEffectGenConvertToHeavenly extends PBEffectGenerate
         if (pass == 0)
         {
             ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-            blocks.addAll(Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.FIRE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
+            blocks.addAll(Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
             for(Block block1 : ForgeRegistries.BLOCKS) {
                 if(BlockTags.SMALL_FLOWERS.contains(block1)) {
                     blocks.add(block1);
@@ -49,7 +50,7 @@ public class PBEffectGenConvertToHeavenly extends PBEffectGenerate
             {
                 setBlockToAirSafe(world, pos);
             }
-            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SAND, Blocks.DIRT, Blocks.GRASS_BLOCK))
+            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.DIRT, Blocks.GRASS_BLOCK))
             {
                 if (world.getBlockState(pos.above()).getBlock() == Blocks.AIR)
                 {

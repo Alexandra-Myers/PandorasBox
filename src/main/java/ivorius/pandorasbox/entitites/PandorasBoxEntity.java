@@ -185,11 +185,11 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
         if (timeBoxWaiting == 0)
         {
-            this.getDeltaMovement().scale(0.5);
+            setDeltaMovement(getDeltaMovement().scale(0.5));
         }
         else
         {
-            getDeltaMovement().scale(0.95);
+            setDeltaMovement(getDeltaMovement().scale(0.95));
         }
 
         if (floatAwayProgress >= 0.0f && floatAwayProgress < 1.0f)
@@ -197,12 +197,12 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
             float speed = MathHelper.square(floatAwayProgress - 0.7f);
             if (floatUp)
             {
-                getDeltaMovement().add(0, speed * 0.005f, 0);
+                setDeltaMovement(getDeltaMovement().add(0, speed * 0.025f, 0));
             }
             else
             {
                 moveRelative(0.0f, new Vec3d(0.01f, speed * 0.02f, 0.02f));
-                getDeltaMovement().add(0, speed * 0.005f, 0);
+                setDeltaMovement(getDeltaMovement().add(0, speed * 0.025f, 0));
             }
 
             floatAwayProgress += 0.025f;

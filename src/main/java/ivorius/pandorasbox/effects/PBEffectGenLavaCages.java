@@ -25,6 +25,7 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     public Block lavaBlock;
     public Block fillBlock;
     public Block cageBlock;
+    public PBEffectGenLavaCages() {}
 
     public PBEffectGenLavaCages(int time, double range, int unifiedSeed, Block lavaBlock, Block cageBlock, Block fillBlock)
     {

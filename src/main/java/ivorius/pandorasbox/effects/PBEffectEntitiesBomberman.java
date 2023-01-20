@@ -20,6 +20,7 @@ import java.util.Random;
  */
 public class PBEffectEntitiesBomberman extends PBEffectEntityBased
 {
+    public PBEffectEntitiesBomberman() {}
     public int bombs;
 
     public PBEffectEntitiesBomberman(int maxTicksAlive, double range, int bombs)

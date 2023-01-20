@@ -24,6 +24,7 @@ public class PBEffectGenPool extends PBEffectGenerate
 {
     public Block block;
     public Block platformBlock;
+    public PBEffectGenPool() {}
 
     public PBEffectGenPool(int time, double range, int unifiedSeed, Block block, Block platformBlock)
     {

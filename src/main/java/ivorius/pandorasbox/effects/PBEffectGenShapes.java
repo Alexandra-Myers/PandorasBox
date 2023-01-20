@@ -24,6 +24,7 @@ import java.util.Random;
  */
 public class PBEffectGenShapes extends PBEffectGenerateByStructure
 {
+    public PBEffectGenShapes() {}
 
     public PBEffectGenShapes(int maxTicksAlive)
     {

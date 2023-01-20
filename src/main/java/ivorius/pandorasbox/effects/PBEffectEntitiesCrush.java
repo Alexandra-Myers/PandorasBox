@@ -19,6 +19,8 @@ public class PBEffectEntitiesCrush extends PBEffectEntityBased
 {
     public int cycles;
     public double speed;
+    public PBEffectEntitiesCrush() {
+    }
 
     public PBEffectEntitiesCrush(int maxTicksAlive, double range, int cycles, double speed)
     {

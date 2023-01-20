@@ -22,7 +22,7 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToDesert extends PBEffectGenerate
 {
-
+    public PBEffectGenConvertToDesert() {}
     public PBEffectGenConvertToDesert(int time, double range, int unifiedSeed)
     {
         super(time, range, 1, unifiedSeed);
@@ -38,7 +38,7 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate
             ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
             blocks.addAll(Blocks.ICE, Blocks.WATER, Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM, Blocks.RED_MUSHROOM_BLOCK);
             ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
-            misc.addAll(Blocks.SOUL_SAND, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.MYCELIUM);
+            misc.addAll(Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.STONE, Blocks.BLACKSTONE, Blocks.BASALT, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.GRASS_BLOCK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.DIRT, Blocks.MYCELIUM);
             for(Block block1 : ForgeRegistries.BLOCKS) {
                 if(BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
                     blocks.add(block1);

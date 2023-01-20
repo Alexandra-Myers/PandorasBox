@@ -24,6 +24,7 @@ import java.util.Random;
 public class PBEffectGenConvertToFarm extends PBEffectGenerate
 {
     private double cropChance;
+    public PBEffectGenConvertToFarm() {}
 
     public PBEffectGenConvertToFarm(int time, double range, int unifiedSeed, double cropChance)
     {
@@ -43,7 +44,6 @@ public class PBEffectGenConvertToFarm extends PBEffectGenerate
             {
                 BlockPos posBelow = pos.below();
                 BlockState blockBelowState = world.getBlockState(posBelow);
-                Block blockBelow = blockBelowState.getBlock();
 
                 if (blockBelowState.isRedstoneConductor(world, pos) && blockState.isAir(world, pos) && block != Blocks.WATER)
                 {
@@ -80,8 +80,7 @@ public class PBEffectGenConvertToFarm extends PBEffectGenerate
                         {
                             setBlockSafe(world, pos, Blocks.HAY_BLOCK.defaultBlockState());
                         }
-                        else if (b == 6)
-                        {
+                        else {
                             setBlockSafe(world, posBelow, Blocks.WATER.defaultBlockState());
                         }
                     }

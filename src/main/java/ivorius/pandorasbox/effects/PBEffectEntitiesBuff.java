@@ -22,6 +22,7 @@ import java.util.Random;
 public class PBEffectEntitiesBuff extends PBEffectEntityBased
 {
     public EffectInstance[] effects;
+    public PBEffectEntitiesBuff() {}
 
     public PBEffectEntitiesBuff(int maxTicksAlive, double range, EffectInstance[] effects)
     {

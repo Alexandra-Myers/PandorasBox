@@ -19,6 +19,7 @@ import java.util.Random;
 public class PBEffectSetTime extends PBEffectNormal
 {
     public int totalPlus;
+    public PBEffectSetTime() {}
 
     public PBEffectSetTime(int maxTicksAlive, int totalPlus)
     {

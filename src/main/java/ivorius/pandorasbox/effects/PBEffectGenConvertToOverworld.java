@@ -22,6 +22,7 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToOverworld extends PBEffectGenerate
 {
+    public PBEffectGenConvertToOverworld() {}
 
     public PBEffectGenConvertToOverworld(int time, double range, int unifiedSeed)
     {
@@ -43,12 +44,12 @@ public class PBEffectGenConvertToOverworld extends PBEffectGenerate
             {
                 setBlockToAirSafe(world, pos);
             }
-            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SAND, Blocks.MYCELIUM, Blocks.DIRT))
+            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SOUL_SAND, Blocks.SAND, Blocks.MYCELIUM, Blocks.DIRT))
             {
                 BlockPos posUp = pos.above();
                 if (world.getBlockState(posUp).getBlock() == Blocks.AIR)
                 {
-                    setBlockSafe(world, pos, Blocks.GRASS.defaultBlockState());
+                    setBlockSafe(world, pos, Blocks.GRASS_BLOCK.defaultBlockState());
 
                     if (world instanceof ServerWorld)
                     {

@@ -7,13 +7,17 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
+import ivorius.pandorasbox.weighted.WeightedSelector;
+import ivorius.pandorasbox.weighted.WeightedSelector.SimpleItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.Features;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -24,78 +28,425 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToNether extends PBEffectGenerate
 {
+    public PBEffectGenConvertToNether() {}
 
     public PBEffectGenConvertToNether(int time, double range, int unifiedSeed)
     {
         super(time, range, 2, unifiedSeed);
+        biomes.addAll(SimpleItem.of(5, "wastes"), SimpleItem.of(10, "soul_sand_valley"), SimpleItem.of(10, "crimson"), SimpleItem.of(10, "warped"), SimpleItem.of(10, "deltas"));
     }
+    public ArrayListExtensions<SimpleItem<String>> biomes = new ArrayListExtensions<>();
 
     @Override
     public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
+        String biome = WeightedSelector.select(random, biomes);
+        switch (biome) {
+            case "wastes":
+                createWastes(world, entity, random, pass, pos);
+            case "soul_sand_valley":
+                createSoul(world, entity, random, pass, pos);
+            case "crimson":
+                createCrimson(world, entity, random, pass, pos);
+            case "warped":
+                createWarped(world, entity, random, pass, pos);
+            case "deltas":
+                createDeltas(world, entity, random, pass, pos);
+        }
+    }
+    public void createWastes(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
         misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.END_STONE, Blocks.MYCELIUM);
-        for(Block block1 : ForgeRegistries.BLOCKS) {
-            if(BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
+        for (Block block1 : ForgeRegistries.BLOCKS) {
+            if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
                 blocks.add(block1);
             }
-            if(block1.getRegistryName().getPath().endsWith("terracotta")) {
+            if (block1.getRegistryName().getPath().endsWith("terracotta")) {
                 misc.add(block1);
             }
         }
 
-        if (pass == 0)
-        {
-            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN))
-            {
+        if (pass == 0) {
+            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
                 setBlockSafe(world, pos, Blocks.LAVA.defaultBlockState());
-            }
-            else if (isBlockAnyOf(block, blocks))
-            {
+            } else if (isBlockAnyOf(block, blocks)) {
                 setBlockToAirSafe(world, pos);
-            }
-            else if (isBlockAnyOf(block, Blocks.SAND))
-            {
+            } else if (isBlockAnyOf(block, Blocks.CLAY)) {
+                setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.COAL_ORE)) {
+                setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
+                setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.SAND)) {
                 setBlockSafe(world, pos, Blocks.SOUL_SAND.defaultBlockState());
-            }
-            else if (isBlockAnyOf(block, misc))
-            {
+            } else if (isBlockAnyOf(block, misc)) {
                 setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
-            }
-            else if (world.getBlockState(pos).isAir(world, pos))
-            {
-                if (world instanceof ServerWorld && random.nextInt(15) == 0)
-                {
-                    if (world.random.nextFloat() < 0.9f)
-                    {
+            } else if (world.getBlockState(pos).isAir(world, pos)) {
+                if (world instanceof ServerWorld && random.nextInt(15) == 0) {
+                    if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
-                    }
-                    else
-                    {
+                    } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
             entities.addAll(
-                    lazilySpawnEntity(world, entity, random, "sombie_pigman", 1.0f / (15 * 15), pos),
-            lazilySpawnEntity(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos));
+                    lazilySpawnEntity(world, entity, random, "piglin", 1.0f / (30 * 30), pos),
+                    lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos),
+                    lazilySpawnEntity(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos),
+                    lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (10 * 10), pos),
+                    lazilySpawnEntity(world, entity, random, "zoglin", 1.0f / (20 * 20), pos));
 
-            for(Entity entity1 : entities) {
+            for (Entity entity1 : entities) {
                 canSpawnEntity(world, blockState, pos, entity1);
             }
 
-            if (canSpawnFlyingEntity(world, blockState, pos))
-            {
+            if (canSpawnFlyingEntity(world, blockState, pos)) {
                 lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+            }
+        }
+        if (random.nextDouble() < 0.4)
+        {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            {
+                ServerWorld serverWorld = (ServerWorld) world;
+                Features.BROWN_MUSHROOM_NETHER.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+            }
+        }
+        if(random.nextDouble() < 0.3) {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            {
+                ServerWorld serverWorld = (ServerWorld) world;
+                Features.RED_MUSHROOM_NETHER.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+            }
+        }
+    }
+    public void createSoul(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+        BlockState blockState = world.getBlockState(pos);
+        Block block = blockState.getBlock();
+        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
+        ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
+        blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.END_STONE, Blocks.MYCELIUM);
+        for (Block block1 : ForgeRegistries.BLOCKS) {
+            if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
+                blocks.add(block1);
+            }
+            if (block1.getRegistryName().getPath().endsWith("terracotta")) {
+                misc.add(block1);
+            }
+        }
+
+        if (pass == 0) {
+            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+                setBlockSafe(world, pos, Blocks.LAVA.defaultBlockState());
+            } else if (isBlockAnyOf(block, blocks)) {
+                setBlockToAirSafe(world, pos);
+            } else if (isBlockAnyOf(block, Blocks.SAND, Blocks.CLAY)) {
+                setBlockSafe(world, pos, Blocks.SOUL_SAND.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.COAL_ORE)) {
+                setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
+                setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
+            } else if (isBlockAnyOf(block, misc)) {
+                setBlockSafe(world, pos, Blocks.SOUL_SOIL.defaultBlockState());
+            }  else if (isBlockAnyOf(block, Blocks.STONE)) {
+                setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
+            } else if (world.getBlockState(pos).isAir(world, pos)) {
+                if (world instanceof ServerWorld && random.nextInt(15) == 0) {
+                    if (world.random.nextFloat() < 0.9f) {
+                        setBlockSafe(world, pos, Blocks.SOUL_FIRE.defaultBlockState());
+                    } else {
+                        setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                    }
+                }
+            }
+        } else {
+            ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+            entities.addAll(
+                    lazilySpawnEntity(world, entity, random, "skeleton", 1.0f / (15 * 15), pos),
+                    lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos));
+
+            for (Entity entity1 : entities) {
+                canSpawnEntity(world, blockState, pos, entity1);
+            }
+
+            if (canSpawnFlyingEntity(world, blockState, pos)) {
+                lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+            }
+        }
+        if (random.nextDouble() < 0.2)
+        {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            {
+                ServerWorld serverWorld = (ServerWorld) world;
+                Features.FOSSIL.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+            }
+        }
+    }
+    public void createCrimson(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+        BlockState blockState = world.getBlockState(pos);
+        Block block = blockState.getBlock();
+        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
+        ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
+        ArrayListExtensions<Block> flowers = new ArrayListExtensions<>();
+        blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND);
+        for (Block block1 : ForgeRegistries.BLOCKS) {
+            if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1)) {
+                blocks.add(block1);
+            }
+            if(BlockTags.SMALL_FLOWERS.contains(block1)) {
+                flowers.add(block1);
+            }
+            if (block1.getRegistryName().getPath().endsWith("terracotta")) {
+                misc.add(block1);
+            }
+        }
+
+        if (pass == 0) {
+            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+                setBlockSafe(world, pos, Blocks.LAVA.defaultBlockState());
+            } else if (isBlockAnyOf(block, blocks)) {
+                setBlockToAirSafe(world, pos);
+            } else if (isBlockAnyOf(block, Blocks.CLAY)) {
+                setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.COAL_ORE)) {
+                setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
+                setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
+            } else if (isBlockAnyOf(block, misc)) {
+                if(random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir(world, pos.above()))
+                    setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
+                else
+                    setBlockSafe(world, pos, Blocks.CRIMSON_NYLIUM.defaultBlockState());
+            } else if (isBlockAnyOf(block, flowers)) {
+                if(random.nextDouble() < 0.5)
+                    setBlockSafe(world, pos, Blocks.CRIMSON_ROOTS.defaultBlockState());
+                else
+                    setBlockSafe(world, pos, Blocks.CRIMSON_FUNGUS.defaultBlockState());
+            } else if (world.getBlockState(pos).isAir(world, pos)) {
+                if (world instanceof ServerWorld && random.nextInt(15) == 0) {
+                    if (world.random.nextFloat() < 0.9f) {
+                        setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
+                    } else {
+                        setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                    }
+                }
+            }
+        } else {
+            ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+            entities.addAll(
+                    lazilySpawnEntity(world, entity, random, "piglin", 1.0f / (5 * 5), pos),
+                    lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos),
+                    lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (10 * 10), pos),
+                    lazilySpawnEntity(world, entity, random, "zoglin", 1.0f / (15 * 15), pos));
+
+            for (Entity entity1 : entities) {
+                canSpawnEntity(world, blockState, pos, entity1);
+            }
+
+            if (canSpawnFlyingEntity(world, blockState, pos)) {
+                lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+            }
+        }
+        if (random.nextDouble() < 0.4)
+        {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            {
+                ServerWorld serverWorld = (ServerWorld) world;
+                Features.CRIMSON_FUNGI_PLANTED.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+            }
+        }
+        if (random.nextDouble() < 0.6)
+        {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            {
+                ServerWorld serverWorld = (ServerWorld) world;
+                Features.CRIMSON_FOREST_VEGETATION.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+            }
+        }
+    }
+    public void createWarped(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+        BlockState blockState = world.getBlockState(pos);
+        Block block = blockState.getBlock();
+        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
+        ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
+        ArrayListExtensions<Block> flowers = new ArrayListExtensions<>();
+        blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND);
+        for (Block block1 : ForgeRegistries.BLOCKS) {
+            if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1)) {
+                blocks.add(block1);
+            }
+            if(BlockTags.SMALL_FLOWERS.contains(block1)) {
+                flowers.add(block1);
+            }
+            if (block1.getRegistryName().getPath().endsWith("terracotta")) {
+                misc.add(block1);
+            }
+        }
+
+        if (pass == 0) {
+            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+                setBlockSafe(world, pos, Blocks.LAVA.defaultBlockState());
+            } else if (isBlockAnyOf(block, blocks)) {
+                setBlockToAirSafe(world, pos);
+            } else if (isBlockAnyOf(block, Blocks.CLAY)) {
+                setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.COAL_ORE)) {
+                setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
+                setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
+            } else if (isBlockAnyOf(block, misc)) {
+                if(random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir(world, pos.above()))
+                    setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
+                else
+                    setBlockSafe(world, pos, Blocks.WARPED_NYLIUM.defaultBlockState());
+            } else if (isBlockAnyOf(block, flowers)) {
+                if(random.nextDouble() < 0.5)
+                    setBlockSafe(world, pos, Blocks.WARPED_ROOTS.defaultBlockState());
+                else
+                    setBlockSafe(world, pos, Blocks.WARPED_FUNGUS.defaultBlockState());
+            } else if (world.getBlockState(pos).isAir(world, pos)) {
+                if (world instanceof ServerWorld && random.nextInt(15) == 0) {
+                    if (world.random.nextFloat() < 0.9f) {
+                        setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
+                    } else {
+                        setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                    }
+                }
+            }
+        } else {
+            ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+            entities.addAll(
+                    lazilySpawnEntity(world, entity, random, "enderman", 1.0f / (15 * 15), pos));
+
+            for (Entity entity1 : entities) {
+                canSpawnEntity(world, blockState, pos, entity1);
+            }
+        }
+        if (random.nextDouble() < 0.4)
+        {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            {
+                ServerWorld serverWorld = (ServerWorld) world;
+                Features.WARPED_FUNGI_PLANTED.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+            }
+        }
+        if (random.nextDouble() < 0.6)
+        {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            {
+                ServerWorld serverWorld = (ServerWorld) world;
+                Features.WARPED_FOREST_VEGETATION.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+            }
+        }
+    }
+    public void createDeltas(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+        BlockState blockState = world.getBlockState(pos);
+        Block block = blockState.getBlock();
+        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
+        ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
+        blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.END_STONE, Blocks.MYCELIUM);
+        for (Block block1 : ForgeRegistries.BLOCKS) {
+            if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
+                blocks.add(block1);
+            }
+            if (block1.getRegistryName().getPath().endsWith("terracotta")) {
+                misc.add(block1);
+            }
+        }
+
+        if (pass == 0) {
+            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+                setBlockSafe(world, pos, Blocks.LAVA.defaultBlockState());
+            } else if (isBlockAnyOf(block, blocks)) {
+                setBlockToAirSafe(world, pos);
+            } else if (isBlockAnyOf(block, Blocks.CLAY)) {
+                setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.SAND)) {
+                setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.COAL_ORE)) {
+                setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
+                setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
+            } else if (isBlockAnyOf(block, misc)) {
+                setBlockSafe(world, pos, Blocks.BASALT.defaultBlockState());
+            }  else if (isBlockAnyOf(block, Blocks.STONE)) {
+                setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
+            } else if (world.getBlockState(pos).isAir(world, pos)) {
+                if (world instanceof ServerWorld && random.nextInt(15) == 0) {
+                    if (world.random.nextFloat() < 0.9f) {
+                        setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
+                    } else {
+                        setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                    }
+                }
+            }
+        } else {
+            ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+            entities.addAll(
+                    lazilySpawnEntity(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos));
+
+            for (Entity entity1 : entities) {
+                canSpawnEntity(world, blockState, pos, entity1);
+            }
+
+            if (canSpawnFlyingEntity(world, blockState, pos)) {
+                lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+            }
+        }
+        if (random.nextDouble() < 0.8)
+        {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            {
+                ServerWorld serverWorld = (ServerWorld) world;
+                Features.SMALL_BASALT_COLUMNS.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+            }
+        } else {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            {
+                ServerWorld serverWorld = (ServerWorld) world;
+                Features.LARGE_BASALT_COLUMNS.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
             }
         }
     }

@@ -23,6 +23,7 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToEnd extends PBEffectGenerate
 {
+    public PBEffectGenConvertToEnd() {}
 
     public PBEffectGenConvertToEnd(int time, double range, int unifiedSeed)
     {

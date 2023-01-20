@@ -22,6 +22,7 @@ public class PBEffectGenDome extends PBEffectGenerate2D
 {
     public Block block;
     public Block fillBlock;
+    public PBEffectGenDome() {}
 
     public PBEffectGenDome(int time, double range, int unifiedSeed, Block block, Block fillBlock)
     {
@@ -43,8 +44,6 @@ public class PBEffectGenDome extends PBEffectGenerate2D
             {
                 if (isSpherePart(shiftedPos.getX() + 0.5, shiftedPos.getY() + 0.5, shiftedPos.getZ() + 0.5, effectCenter.x, effectCenter.y, effectCenter.z, range - 1.5, range))
                 {
-                    Block block = world.getBlockState(shiftedPos).getBlock();
-
                     if (world.getBlockState(shiftedPos).canSurvive(world, shiftedPos))
                     {
                         setBlockVarying(world, shiftedPos, this.block, unifiedSeed);
@@ -55,8 +54,6 @@ public class PBEffectGenDome extends PBEffectGenerate2D
             {
                 if (isSpherePart(shiftedPos.getX() + 0.5, shiftedPos.getY() + 0.5, shiftedPos.getZ() + 0.5, effectCenter.x, effectCenter.y, effectCenter.z, 0.0, range - 1.5))
                 {
-                    Block block = world.getBlockState(shiftedPos).getBlock();
-
                     if (world.getBlockState(shiftedPos).canSurvive(world, shiftedPos))
                     {
                         setBlockVarying(world, shiftedPos, this.fillBlock, unifiedSeed);

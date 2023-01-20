@@ -21,6 +21,7 @@ public class PBEffectGenCover extends PBEffectGenerateByFlag
 {
     public boolean overSurface;
     public Block[] blocks;
+    public PBEffectGenCover() {}
 
     public PBEffectGenCover(int time, double range, int unifiedSeed, boolean overSurface, Block[] blocks)
     {

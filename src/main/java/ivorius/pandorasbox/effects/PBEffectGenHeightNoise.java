@@ -29,6 +29,7 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
     public int maxTowerSize;
 
     public int blockSize;
+    public PBEffectGenHeightNoise() {}
 
     public PBEffectGenHeightNoise(int time, double range, int unifiedSeed, int minShift, int maxShift, int minTowerSize, int maxTowerSize, int blockSize)
     {

@@ -30,6 +30,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
     public double range;
     public double targetSize;
     public double entityDensity;
+    public PBEffectGenTargets() {}
 
     public PBEffectGenTargets(int maxTicksAlive, String entityToSpawn, double range, double targetSize, double entityDensity)
     {

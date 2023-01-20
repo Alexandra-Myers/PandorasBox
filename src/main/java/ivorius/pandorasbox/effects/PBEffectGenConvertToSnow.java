@@ -21,6 +21,7 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToSnow extends PBEffectGenerate
 {
+    public PBEffectGenConvertToSnow() {}
 
     public PBEffectGenConvertToSnow(int time, double range, int unifiedSeed)
     {
@@ -32,6 +33,7 @@ public class PBEffectGenConvertToSnow extends PBEffectGenerate
     {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
+        BlockState below = world.getBlockState(pos.below());
 
         if (pass == 0)
         {
@@ -39,15 +41,15 @@ public class PBEffectGenConvertToSnow extends PBEffectGenerate
             {
                 setBlockSafe(world, pos, Blocks.ICE.defaultBlockState());
             }
-            else if (blockState.isAir(world, pos))
+            else if (blockState.isAir(world, pos) && Blocks.SNOW.defaultBlockState().canSurvive(world, pos))
             {
                 setBlockSafe(world, pos, Blocks.SNOW.defaultBlockState());
             }
-            else if (block == Blocks.FIRE)
+            else if (isBlockAnyOf(block, Blocks.FIRE, Blocks.SOUL_FIRE))
             {
                 setBlockSafe(world, pos, Blocks.AIR.defaultBlockState());
             }
-            else if (block == Blocks.LAVA && !blockState.getValue(FlowingFluidBlock.LEVEL).equals(0))
+            else if ((block == Blocks.LAVA && !blockState.getValue(FlowingFluidBlock.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK)
             {
                 setBlockSafe(world, pos, Blocks.COBBLESTONE.defaultBlockState());
             }

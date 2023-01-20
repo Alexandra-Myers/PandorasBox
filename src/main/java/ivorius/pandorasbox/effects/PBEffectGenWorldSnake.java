@@ -35,6 +35,7 @@ public class PBEffectGenWorldSnake extends PBEffectNormal
     public float dirPitch;
     public float dirYawAcc;
     public float dirPitchAcc;
+    public PBEffectGenWorldSnake() {}
 
     public PBEffectGenWorldSnake(int maxTicksAlive, Block[] blocks, int unifiedSeed, double currentX, double currentY, double currentZ, double size, double speed, float dirYaw, float dirPitch)
     {

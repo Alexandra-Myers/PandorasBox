@@ -10,6 +10,7 @@ import com.google.common.collect.HashBiMap;
 import ivorius.pandorasbox.PBConfig;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.effects.PBEffect;
+import ivorius.pandorasbox.effects.PBEffectGenLavaCages;
 import ivorius.pandorasbox.effects.PBEffectMulti;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
@@ -19,6 +20,7 @@ import ivorius.pandorasbox.utils.StringConverter;
 import ivorius.pandorasbox.utils.WrappedBiMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
@@ -166,35 +168,44 @@ public class PBECRegistry
         return creator.constructEffect(world, x, y, z, random);
     }
 
+    public static PandorasBoxEntity spawnPandorasBox(World world, Random random, boolean multi, Entity entity, BlockPos pos)
+    {
+        PBEffect effect = createRandomEffect(world, random, pos.getX(), pos.getY() + 1.2, pos.getZ(), multi);
+        return spawnPandorasBox(world, effect, entity, pos);
+    }
     public static PandorasBoxEntity spawnPandorasBox(World world, Random random, boolean multi, Entity entity)
     {
         PBEffect effect = createRandomEffect(world, random, entity.getX(), entity.getY() + 1.2, entity.getZ(), multi);
-        return spawnPandorasBox(world, effect, entity);
+        return spawnPandorasBox(world, effect, entity, null);
     }
 
     public static PandorasBoxEntity spawnPandorasBox(World world, Random random, PBEffectCreator creator, Entity entity)
     {
         PBEffect effect = createEffect(world, random, entity.getX(), entity.getY() + 1.2, entity.getZ(), creator);
-        return spawnPandorasBox(world, effect, entity);
+        return spawnPandorasBox(world, effect, entity, null);
     }
 
-    public static PandorasBoxEntity spawnPandorasBox(World world, PBEffect effect, Entity entity)
+    public static PandorasBoxEntity spawnPandorasBox(World world, PBEffect effect, Entity entity, BlockPos pos)
     {
         if (effect != null && !world.isClientSide())
         {
             PandorasBoxEntity entityPandorasBox = Registry.Box.get().create(world);
 
-            Vector3d look = entity.getLookAngle();
-
-            double spawnX = entity.getX() + look.x * 0.5;
-            double spawnY = entity.getY() + 0.9 + look.y * 0.5;
-            double spawnZ = entity.getZ() + look.z * 0.5;
+            if(pos == null) {
+                pos = new BlockPos(
+                        entity.getX() + entity.getDirection().getStepX(),
+                        entity.getY() + entity.getDirection().getStepY(),
+                        entity.getZ() + entity.getDirection().getStepZ());
+            }
+            while(!world.getBlockState(pos).isAir(world, pos)) {
+                pos = pos.above();
+            }
 
             assert entityPandorasBox != null;
 
             entityPandorasBox.setBoxEffect(effect);
             entityPandorasBox.setTimeBoxWaiting(40);
-            entityPandorasBox.moveTo(spawnX, spawnY, spawnZ, entity.yRot + 180.0f, 0.0f);
+            entityPandorasBox.moveTo(pos, entity.yRot + 180.0f, 0.0f);
 
             entityPandorasBox.beginFloatingAway();
 
@@ -217,7 +228,6 @@ public class PBECRegistry
         Set<ResourceLocation> set = effectCreators.keySet();
         ArrayListExtensions<ResourceLocation> resourceLocationList = new ArrayListExtensions<>();
         resourceLocationList.addAll(set);
-        resourceLocationList.addAll(PBEffectRegistry.resourceLocationList);
         return resourceLocationList;
     }
     public static boolean isAnyNull(Object... objects) {

@@ -17,6 +17,7 @@ import java.util.Random;
 public abstract class PBEffectNormal extends PBEffect
 {
     public int maxTicksAlive;
+    public PBEffectNormal() {}
 
     public PBEffectNormal(int maxTicksAlive)
     {

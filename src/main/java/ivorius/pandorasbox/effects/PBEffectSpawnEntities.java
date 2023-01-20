@@ -29,6 +29,7 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
     public double throwStrengthSideMax;
     public double throwStrengthYMin;
     public double throwStrengthYMax;
+    public PBEffectSpawnEntities() {}
 
     public PBEffectSpawnEntities(int time, int number)
     {

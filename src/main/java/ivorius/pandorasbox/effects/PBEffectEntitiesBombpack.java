@@ -18,6 +18,7 @@ import java.util.Random;
  */
 public class PBEffectEntitiesBombpack extends PBEffectEntityBased
 {
+    public PBEffectEntitiesBombpack() {}
 
     public PBEffectEntitiesBombpack(int maxTicksAlive, double range)
     {

@@ -20,6 +20,7 @@ public abstract class PBEffectPositionBased extends PBEffectNormal
     public int number;
 
     public double range;
+    public PBEffectPositionBased() {}
 
     public PBEffectPositionBased(int time, int number, double range)
     {

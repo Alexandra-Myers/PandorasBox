@@ -21,6 +21,7 @@ import java.util.Random;
 public class PBEffectSpawnBlocks extends PBEffectSpawnEntities
 {
     public Block[] blocks;
+    public PBEffectSpawnBlocks() {}
 
     public PBEffectSpawnBlocks(int time, Block[] blocks)
     {

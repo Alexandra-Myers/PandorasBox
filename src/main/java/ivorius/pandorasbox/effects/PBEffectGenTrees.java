@@ -12,6 +12,7 @@ import net.minecraft.world.gen.feature.*;
  */
 public class PBEffectGenTrees extends PBEffectGenerateByGenerator
 {
+    public PBEffectGenTrees() {}
 
     public static final int treeSmall = 0;
     public static final int treeNormal = 1;

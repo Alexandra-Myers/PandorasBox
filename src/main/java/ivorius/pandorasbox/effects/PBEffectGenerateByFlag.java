@@ -21,6 +21,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased
     public int unifiedSeed;
 
     public int[] flags;
+    public PBEffectGenerateByFlag() {}
 
     public PBEffectGenerateByFlag(int time, double range, int passes, int unifiedSeed)
     {

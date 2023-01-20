@@ -44,6 +44,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
     public int nameEntities;
     public int equipLevel;
     public int buffLevel;
+    public PBEffectSpawnEntityIDList() {}
 
     public PBEffectSpawnEntityIDList(int time, String[] entityIDs, int nameEntities, int equipLevel, int buffLevel)
     {

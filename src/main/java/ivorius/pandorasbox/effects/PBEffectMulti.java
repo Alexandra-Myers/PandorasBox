@@ -17,6 +17,9 @@ public class PBEffectMulti extends PBEffect
 {
     public PBEffect[] effects;
     public int[] delays;
+    public PBEffectMulti() {
+
+    }
 
     public PBEffectMulti(PBEffect[] effects, int[] delays)
     {

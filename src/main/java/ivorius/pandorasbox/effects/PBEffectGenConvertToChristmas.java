@@ -33,6 +33,7 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToChristmas extends PBEffectGenerate
 {
+    public PBEffectGenConvertToChristmas() {}
     public PBEffectGenConvertToChristmas(int time, double range, int unifiedSeed)
     {
         super(time, range, 2, unifiedSeed);
@@ -45,6 +46,7 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate
         {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
+            BlockState below = world.getBlockState(pos.below());
 
             if (pass == 0)
             {
@@ -95,16 +97,16 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate
                         }
                     }
 
-                    if (setSnow)
+                    if (setSnow && Blocks.SNOW.defaultBlockState().canSurvive(world, pos))
                     {
                         setBlockSafe(world, pos, Blocks.SNOW.defaultBlockState());
                     }
                 }
-                else if (block == Blocks.FIRE)
+                else if (block == Blocks.FIRE || block == Blocks.SOUL_FIRE)
                 {
                     setBlockToAirSafe(world, pos);
                 }
-                else if (block == Blocks.LAVA && !blockState.getValue(FlowingFluidBlock.LEVEL).equals(0))
+                else if ((block == Blocks.LAVA && !blockState.getValue(FlowingFluidBlock.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK)
                 {
                     setBlockSafe(world, pos, Blocks.COBBLESTONE.defaultBlockState());
                 }

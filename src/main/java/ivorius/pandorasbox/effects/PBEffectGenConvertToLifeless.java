@@ -21,6 +21,7 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToLifeless extends PBEffectGenerate
 {
+    public PBEffectGenConvertToLifeless() {}
 
     public PBEffectGenConvertToLifeless(int time, double range, int unifiedSeed)
     {
@@ -38,10 +39,10 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate
             ArrayListExtensions<Block> iCTWTGASTB = new ArrayListExtensions<>();
             ArrayListExtensions<Block> weird = new ArrayListExtensions<>();
             ArrayListExtensions<Block> hmm = new ArrayListExtensions<>();
-            hmm.addAll(Blocks.NETHERRACK, Blocks.END_STONE);
+            hmm.addAll(Blocks.NETHERRACK, Blocks.END_STONE, Blocks.BASALT, Blocks.BLACKSTONE);
             blocks.addAll(Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
-            weird.addAll(Blocks.MYCELIUM, Blocks.GRASS, Blocks.CAKE);
-            iCTWTGASTB.addAll(Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM, Blocks.FIRE);
+            weird.addAll(Blocks.MYCELIUM, Blocks.GRASS_BLOCK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.CAKE);
+            iCTWTGASTB.addAll(Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM, Blocks.FIRE, Blocks.SOUL_FIRE);
             for(Block block1 : ForgeRegistries.BLOCKS) {
                 if(BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1)) {
                     iCTWTGASTB.add(block1);
@@ -76,7 +77,7 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate
             {
                 setBlockSafe(world, pos, Blocks.STONE.defaultBlockState());
             }
-            else if (isBlockAnyOf(block, Blocks.SOUL_SAND))
+            else if (isBlockAnyOf(block, Blocks.SOUL_SAND, Blocks.SOUL_SOIL))
             {
                 setBlockSafe(world, pos, Blocks.SAND.defaultBlockState());
             }

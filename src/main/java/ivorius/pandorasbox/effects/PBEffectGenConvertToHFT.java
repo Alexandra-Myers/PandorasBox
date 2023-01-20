@@ -31,6 +31,7 @@ import java.util.Random;
 public class PBEffectGenConvertToHFT extends PBEffectGenerate
 {
     public int[] groundMetas;
+    public PBEffectGenConvertToHFT() {}
 
     public PBEffectGenConvertToHFT(int time, double range, int unifiedSeed, int[] groundMetas)
     {
@@ -71,7 +72,7 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
             {
 
             }
-            else if (block.getBlockSupportShape(blockState, world, pos) == Blocks.GRASS_BLOCK.getBlockSupportShape(Blocks.GRASS_BLOCK.defaultBlockState(), world, pos))
+            else if (Block.isShapeFullBlock(blockState.getBlockSupportShape(world, pos)))
             {
                 if (world instanceof ServerWorld)
                 {

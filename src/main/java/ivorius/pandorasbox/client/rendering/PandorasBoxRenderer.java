@@ -18,9 +18,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -52,8 +54,9 @@ public class PandorasBoxRenderer<T extends PandorasBoxEntity> extends EntityRend
     public void render(T entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int packedLightIn) {
         super.render(entity, entityYaw, partialTicks, matrixStack, renderTypeBuffer, packedLightIn);
         matrixStack.pushPose();
-        matrixStack.translate(entity.getX(), entity.getY() + MathHelper.sin((entity.tickCount + partialTicks) * 0.04f) * 0.05, entity.getZ());
-        matrixStack.mulPose(new Quaternion(0.0F, 1.0F, 0.0F, -entityYaw));
+        model.PBE = entity;
+//        matrixStack.translate(entity.getX(), entity.getY() + MathHelper.sin((entity.tickCount + partialTicks) * 0.04f) * 0.05, entity.getZ());
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(-entityYaw));
 
         PBEffect effect = entity.getBoxEffect();
         boolean visible = !entity.isInvisible();
@@ -72,11 +75,11 @@ public class PandorasBoxRenderer<T extends PandorasBoxEntity> extends EntityRend
                 matrixStack.scale(boxScale, boxScale, boxScale);
 
             matrixStack.translate(0.0f, 1.5f, 0.0f);
-            matrixStack.mulPose(new Quaternion(0.0f, 0.0f, 1.0f, 180.0f));
-            /*ArrowEntity emptyEntity = new ArrowEntity(entity.level, entity.getX(), entity.getY(), entity.getZ());
-            emptyEntity.xRot = entity.getRatioBoxOpen(partialTicks) * 120.0f / 180.0f * 3.1415926f;*/
+            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0f));
+            ArrowEntity emptyEntity = new ArrowEntity(entity.level, entity.getX(), entity.getY(), entity.getZ());
+            emptyEntity.xRot = entity.getRatioBoxOpen(partialTicks) * 120.0f / 180.0f * 3.1415926f;
             int i = OverlayTexture.NO_OVERLAY;
-            model.setupAnim(entity, 0, 0, 0, 0, 0);
+            model.setupAnim(emptyEntity, 0, 0, partialTicks, 0, 0);
             model.renderToBuffer(matrixStack, builder, packedLightIn, i,1,1, 1, 1);
         }
 

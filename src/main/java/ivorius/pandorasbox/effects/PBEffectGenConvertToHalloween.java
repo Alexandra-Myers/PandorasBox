@@ -25,6 +25,7 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToHalloween extends PBEffectGenerate
 {
+    public PBEffectGenConvertToHalloween() {}
     public PBEffectGenConvertToHalloween(int time, double range, int unifiedSeed)
     {
         super(time, range, 2, unifiedSeed);
@@ -42,13 +43,12 @@ public class PBEffectGenConvertToHalloween extends PBEffectGenerate
             {
                 BlockPos posBelow = pos.below();
                 BlockState blockBelowState = world.getBlockState(posBelow);
-                Block blockBelow = blockBelowState.getBlock();
 
-                if (blockBelow.getBlockSupportShape(blockBelowState, world, posBelow) == Blocks.GRASS_BLOCK.getBlockSupportShape(Blocks.GRASS_BLOCK.defaultBlockState(), world, pos) && blockState.isAir(world, pos) && block != Blocks.WATER)
+                if (Block.isShapeFullBlock(blockBelowState.getBlockSupportShape(world, posBelow)) && blockState.isAir(world, pos) && block != Blocks.WATER)
                 {
                     if (random.nextInt(5 * 5) == 0)
                     {
-                        int b = world.random.nextInt(6);
+                        int b = world.random.nextInt(7);
 
                         if (b == 0)
                         {
@@ -72,11 +72,13 @@ public class PBEffectGenConvertToHalloween extends PBEffectGenerate
                         {
                             setBlockSafe(world, pos, Blocks.CAKE.defaultBlockState());
                         }
-                        else if (b == 5)
-                        {
+                        else if(b == 5) {
                             ItemEntity entityItem = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.COOKIE));
                             entityItem.setPickUpDelay(20);
                             world.addFreshEntity(entityItem);
+                        } else {
+                            setBlockSafe(world, posBelow, Blocks.SOUL_SOIL.defaultBlockState());
+                            setBlockSafe(world, pos, Blocks.SOUL_FIRE.defaultBlockState());
                         }
                     }
                 }
@@ -85,8 +87,9 @@ public class PBEffectGenConvertToHalloween extends PBEffectGenerate
             {
                 ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
                 entities.addAll(
-                        lazilySpawnEntity(world, entity, random, "zombie_pigman", 1.0f / (20 * 20), pos),
-                lazilySpawnEntity(world, entity, random, "enderman", 1.0f / (20 * 20), pos));
+                        lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (20 * 20), pos),
+                        lazilySpawnEntity(world, entity, random, "enderman", 1.0f / (20 * 20), pos),
+                        lazilySpawnEntity(world, entity, random, "phantom", 1.0f / (20 * 20), pos));
                 for (Entity entity1 : entities) {
                     canSpawnEntity(world, blockState, pos, entity1);
                 }

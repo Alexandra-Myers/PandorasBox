@@ -24,6 +24,7 @@ public class PBEffectGenConvertToRainbowCloth extends PBEffectGenerate
 {
     public int[] woolMetas;
     public double ringSize;
+    public PBEffectGenConvertToRainbowCloth() {}
 
     public PBEffectGenConvertToRainbowCloth(int time, double range, int unifiedSeed, int[] woolMetas, double ringSize)
     {

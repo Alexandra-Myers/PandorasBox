@@ -20,6 +20,7 @@ import java.util.Random;
  */
 public class PBEffectRandomLightnings extends PBEffectPositionBased
 {
+    public PBEffectRandomLightnings() {}
 
     public PBEffectRandomLightnings(int time, int number, double range)
     {

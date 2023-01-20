@@ -22,6 +22,9 @@ public class PBEffectRandomExplosions extends PBEffectPositionBased
     public float maxExplosionStrength;
     public boolean isFlaming;
     public boolean isSmoking;
+    public PBEffectRandomExplosions() {
+
+    }
 
     public PBEffectRandomExplosions(int time, int number, double range, float minExplosionStrength, float maxExplosionStrength, boolean isFlaming, boolean isSmoking)
     {

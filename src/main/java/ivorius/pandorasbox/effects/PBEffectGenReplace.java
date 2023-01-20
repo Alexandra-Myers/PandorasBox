@@ -22,6 +22,7 @@ public class PBEffectGenReplace extends PBEffectGenerate
 {
     public Block[] blocks;
     public Block[] blocksToReplace;
+    public PBEffectGenReplace() {}
 
     public PBEffectGenReplace(int time, double range, int unifiedSeed, Block[] blocks, Block[] blocksToReplace)
     {

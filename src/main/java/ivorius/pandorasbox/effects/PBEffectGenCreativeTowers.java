@@ -24,6 +24,7 @@ import java.util.Random;
  */
 public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
 {
+    public PBEffectGenCreativeTowers() {}
 
     public PBEffectGenCreativeTowers(int maxTicksAlive)
     {

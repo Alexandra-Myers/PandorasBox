@@ -25,6 +25,7 @@ public class PBEffectEntitiesThrowItems extends PBEffectEntityBased
 {
     public double chancePerItem;
     public double itemDeletionChance;
+    public PBEffectEntitiesThrowItems() {}
 
     public ItemStack[] smuggledInItems;
 

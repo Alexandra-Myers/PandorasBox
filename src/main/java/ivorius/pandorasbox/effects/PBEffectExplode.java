@@ -15,6 +15,9 @@ public class PBEffectExplode extends PBEffectNormal
 {
     public float explosionRadius;
     public boolean burning;
+    public PBEffectExplode() {
+
+    }
 
     public PBEffectExplode(int maxTicksAlive, float explosionRadius, boolean burning)
     {

@@ -13,19 +13,18 @@
 package ivorius.pandorasbox.client.rendering;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.client.renderer.entity.model.SegmentedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.util.math.vector.Vector3f;
 
-import java.util.Arrays;
-
-public class PandorasBoxModel extends SegmentedModel<PandorasBoxEntity> {
+public class PandorasBoxModel extends SegmentedModel<ArrowEntity> {
     private final ModelRenderer feet;
     private final ModelRenderer body;
     private final ModelRenderer joint;
     private final ModelRenderer top;
+    public PandorasBoxEntity PBE;
 
     public PandorasBoxModel() {
         texWidth = 32;
@@ -33,35 +32,38 @@ public class PandorasBoxModel extends SegmentedModel<PandorasBoxEntity> {
 
         feet = new ModelRenderer(this);
         feet.setPos(0.0F, 1.0F, 0.0F);
-        feet.addBox(0, 14, -3.0F, 22.0F, 2.0F, 1, 1, 1, 0.0F);
-        feet.addBox(4, 14, 2.0F, 22.0F, 2.0F, 1, 1, 1, 0.0F);
-        feet.addBox(4, 16, 2.0F, 22.0F, -3.0F, 1, 1, 1, 0.0F);
-        feet.addBox(0, 16, -3.0F, 22.0F, -3.0F, 1, 1, 1, 0.0F);
-        setRotationAngle(feet, 0, 0, 0);
+        feet.texOffs(0, 14).addBox(-3.0F, 22.0F, 2.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        feet.texOffs(4, 14).addBox(2.0F, 22.0F, 2.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        feet.texOffs(4, 16).addBox(2.0F, 22.0F, -3.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        feet.texOffs(0, 16).addBox(-3.0F, 22.0F, -3.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
 
         body = new ModelRenderer(this);
         body.setPos(0.0F, 24.0F, 0.0F);
-        body.addBox( 0, 0, -4.0F, -7.0F, -4.0F, 8, 6, 8, 0.0F);
-        setRotationAngle(body, 0, 0, 0);
+        body.texOffs(0, 0).addBox(-4.0F, -7.0F, -4.0F, 8.0F, 6.0F, 8.0F, 0.0F, false);
 
         joint = new ModelRenderer(this);
         joint.setPos(0.0F, 24.0F, 0.0F);
-        joint.addBox(8, 14, -3.5F, -8.0F, -4.0F, 7, 1, 1, 0.0F);
-        setRotationAngle(joint, 0, 0, 0);
+
+
+        ModelRenderer cube_r1 = new ModelRenderer(this);
+        cube_r1.setPos(0.0F, -10.0F, -4.0F);
+        joint.addChild(cube_r1);
+        setRotationAngle(cube_r1, -0.3054F, 0.0F, 0.0F);
+        cube_r1.texOffs(8, 14).addBox(-3.5F, 1.75F, 0.5F, 7.0F, 1.0F, 1.0F, 0.0F, false);
 
         top = new ModelRenderer(this);
-        top.setPos(0.0F, 24.0F, 0.0F);
-        setRotationAngle(top, -0.0366F, 0.0F, 0.0F);
-        top.addBox(0, 18, -4.0F, -8.0F, -4.0F, 8, 1, 8, 0.0F);
-        top.addBox(0, 27, -2.0F, -9.0F, -2.0F, 4, 1, 4, 0.0F);
-        top.addBox(8, 16, -3.0F, -8.5F, -0.5F, 1, 1, 1, 0.0F);
-        top.addBox(8, 16, 2.0F, -8.5F, -0.5F, 1, 1, 1, 0.0F);
-        top.addBox(8, 16, -0.5F, -8.5F, -3.0F, 1, 1, 1, 0.0F);
-        top.addBox(8, 16, -0.5F, -8.5F, 2.0F, 1, 1, 1, 0.0F);
+        top.setPos(0.0F, 16.0F, -4.0F);
+        setRotationAngle(top, -0.0802F, 0.0F, 0.0F);
+        top.texOffs(0, 18).addBox(-4.0F, -0.5F, 0.0F, 8.0F, 1.0F, 8.0F, 0.0F, false);
+        top.texOffs(0, 27).addBox(-2.0F, -1.5F, 2.0F, 4.0F, 1.0F, 4.0F, 0.0F, false);
+        top.texOffs(8, 16).addBox(2.0F, -1.0F, 3.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        top.texOffs(8, 16).addBox(-3.0F, -1.0F, 3.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        top.texOffs(8, 16).addBox(-0.5F, -1.0F, 6.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        top.texOffs(8, 16).addBox(-0.5F, -1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
     }
 
     @Override
-    public void setupAnim(PandorasBoxEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(ArrowEntity entityIn, float limbSwing, float limbSwingAmount, float partialTicks, float netHeadYaw, float headPitch) {
         top.xRot = entityIn.xRot;
     }
 

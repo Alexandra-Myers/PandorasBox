@@ -19,6 +19,7 @@ import java.util.Random;
 public abstract class PBEffectGenerate extends PBEffectRangeBased
 {
     public int unifiedSeed;
+    public PBEffectGenerate() {}
 
     public PBEffectGenerate(int time, double range, int passes, int unifiedSeed)
     {

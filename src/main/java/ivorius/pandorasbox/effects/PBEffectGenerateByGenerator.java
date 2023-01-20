@@ -27,6 +27,7 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
     public double chancePerBlock;
 
     public int generatorFlags;
+    public PBEffectGenerateByGenerator() {}
 
     public PBEffectGenerateByGenerator(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags)
     {
@@ -53,7 +54,7 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
                     setBlockSafe(world, posBelow, Blocks.DIRT.defaultBlockState());
 
                     Object generator = getRandomGenerator(getGenerators(), generatorFlags, random);
-                    if(generator instanceof ConfiguredFeature && world instanceof ServerWorld) {
+                    if(generator instanceof ConfiguredFeature) {
                         ConfiguredFeature<?, ?> feature = (ConfiguredFeature<?, ?>) generator;
                         ServerWorld serverWorld = (ServerWorld) world;
                         feature.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
