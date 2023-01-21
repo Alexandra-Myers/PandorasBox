@@ -20,6 +20,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -54,7 +55,8 @@ public abstract class PBEffect
 
     public static PlayerEntity getRandomNearbyPlayer(World world, PandorasBoxEntity box)
     {
-        return (PlayerEntity) world.getEntitiesOfClass(PlayerEntity.class, box.getBoundingBox().expandTowards(30.0, 30.0, 30.0));
+        List<PlayerEntity> players = world.getEntitiesOfClass(PlayerEntity.class, box.getBoundingBox().expandTowards(30.0, 30.0, 30.0));
+        return players.get(box.getRandom().nextInt(players.size()));
     }
 
     public static PlayerEntity getPlayer(World world, PandorasBoxEntity box)

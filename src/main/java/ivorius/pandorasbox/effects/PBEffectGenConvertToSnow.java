@@ -33,7 +33,6 @@ public class PBEffectGenConvertToSnow extends PBEffectGenerate
     {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
-        BlockState below = world.getBlockState(pos.below());
 
         if (pass == 0)
         {

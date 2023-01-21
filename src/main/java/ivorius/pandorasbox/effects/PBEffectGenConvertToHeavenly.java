@@ -50,7 +50,7 @@ public class PBEffectGenConvertToHeavenly extends PBEffectGenerate
             {
                 setBlockToAirSafe(world, pos);
             }
-            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.DIRT, Blocks.GRASS_BLOCK))
+            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.DIRT, Blocks.GRASS_BLOCK))
             {
                 if (world.getBlockState(pos.above()).getBlock() == Blocks.AIR)
                 {

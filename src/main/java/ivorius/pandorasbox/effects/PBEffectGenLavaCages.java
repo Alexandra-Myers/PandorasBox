@@ -43,7 +43,7 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
         {
             if (!world.loadedAndEntityCanStandOn(pos, entity))
             {
-                List<PlayerEntity> innerList = world.getEntitiesOfClass(PlayerEntity.class, BlockPositions.expandToAABB(pos, (double) 2, (double) 2, (double) 2));
+                List<PlayerEntity> innerList = world.getEntitiesOfClass(PlayerEntity.class, BlockPositions.expandToAABB(pos, 2, 2, 2));
 
                 if (innerList.size() == 0)
                 {

@@ -20,10 +20,12 @@ import java.util.Random;
 public class PBECConvertToNether implements PBEffectCreator
 {
     public DValue range;
+    public String biome;
 
-    public PBECConvertToNether(DValue range)
+    public PBECConvertToNether(DValue range, String biome)
     {
         this.range = range;
+        this.biome = biome;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class PBECConvertToNether implements PBEffectCreator
         double range = this.range.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        return new PBEffectGenConvertToNether(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
+        return new PBEffectGenConvertToNether(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), biome);
     }
 
     @Override

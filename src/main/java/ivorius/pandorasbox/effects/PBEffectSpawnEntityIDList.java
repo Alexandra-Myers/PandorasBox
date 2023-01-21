@@ -18,6 +18,7 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.entity.monster.*;
+import net.minecraft.entity.monster.piglin.AbstractPiglinEntity;
 import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -321,8 +322,16 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             entityID = StringConverter.convertCamelCase(entityID);
 
             EntityType<?> entity = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(entityID));
+            assert entity != null;
             Entity entity1 = entity.create(world);
+            assert entity1 != null;
             entity1.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+            if(entity1 instanceof AbstractPiglinEntity) {
+                ((AbstractPiglinEntity)entity1).setImmuneToZombification(true);
+            }
+            if(entity1 instanceof HoglinEntity) {
+                ((HoglinEntity)entity1).setImmuneToZombification(true);
+            }
 
             return entity1;
         }

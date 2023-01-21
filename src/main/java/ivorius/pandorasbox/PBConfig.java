@@ -18,7 +18,6 @@ public class PBConfig
         commonSpec = specPair.getRight();
         COMMON = specPair.getLeft();
     }
-    public static final String CATERGORY_BALANCING = "balancing";
     public static boolean allowLootTableInjection;
 
     public static double boxLongevity;
@@ -67,7 +66,7 @@ public class PBConfig
                     .translation(CONFIG_PREFIX + "goodEffectChance").worldRestart()
                     .defineInRange("goodEffectChance", 0.49, 0, 10);
 
-            builder.pop();
+            builder.build();
         }
     }
 }

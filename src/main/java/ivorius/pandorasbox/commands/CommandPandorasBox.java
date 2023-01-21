@@ -27,14 +27,13 @@ public class CommandPandorasBox
     static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("pandora")
                 .requires(cs->cs.hasPermission(2)) //permission
-                .then(Commands.argument("player", EntityArgument.player()).executes(context -> createBox(context, null, false)).then(Commands.argument("effect", PBEffectArgument.effect()).executes(ctx -> createBox(ctx, PBEffectArgument.getEffect(ctx, "effect"), false)).then(Commands.argument("invisible", BoolArgumentType.bool()))
-                        .executes(ctx -> createBox(ctx, PBEffectArgument.getEffect(ctx, "effect"), BoolArgumentType.getBool(ctx, "invisible"))
-                        ))
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(ctx -> createBox(EntityArgument.getPlayer(ctx, "player"), null, false)).then(Commands.argument("effect", PBEffectArgument.effect())
+                                .executes(ctx -> createBox(EntityArgument.getPlayer(ctx, "player"), PBEffectArgument.getEffect(ctx, "effect"), false)).then(Commands.argument("invisible", BoolArgumentType.bool())
+                                        .executes(ctx -> createBox(EntityArgument.getPlayer(ctx, "player"), PBEffectArgument.getEffect(ctx, "effect"), BoolArgumentType.getBool(ctx, "invisible")))))
                 ));
     }
-    public static int createBox(CommandContext<CommandSource> ctx, PBEffectCreator effectCreator, boolean bool) throws CommandSyntaxException {
-        Entity player = EntityArgument.getPlayer(ctx, "player");
-
+    public static int createBox(Entity player, PBEffectCreator effectCreator, boolean bool) {
         PandorasBoxEntity box;
 
         if (effectCreator != null)

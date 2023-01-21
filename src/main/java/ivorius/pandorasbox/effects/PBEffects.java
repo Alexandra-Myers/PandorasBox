@@ -46,7 +46,11 @@ public class PBEffects
         PBECRegistry.register(new PBECSpawnLightning(new ILinear(40, 200), new ILinear(6, 40), new DLinear(10.0, 40.0)), "lightning", false);
         PBECRegistry.register(new PBECConvertToDesert(new DLinear(10.0, 80.0)), "sandForDessert", false);
         PBECRegistry.register(new PBECConvertToEnd(new DLinear(10.0, 80.0)), "inTheEnd", false);
-        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0)), "hellOnEarth", false);
+        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), "wastes"), "hellOnEarthNetherWastes", false);
+        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), "soul_sand_valley"), "hellOnEarthSoulSandValley", false);
+        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), "deltas"), "hellOnEarthBasaltDeltas", false);
+        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), "warped"), "hellOnEarthWarpedForest", true);
+        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), "crimson"), "hellOnEarthCrimsonForest", false);
         PBECRegistry.register(new PBECConvertToLifeless(new DLinear(20.0, 80.0)), "lifeless", false);
         PBECRegistry.register(new PBECSpawnEntities(new ILinear(20, 100), new ILinear(20, 200), new IConstant(1), new IConstant(0), new IConstant(0), new IConstant(0), Arrays.asList(new WeightedEntity(100, "arrow", 1, 1)), new ValueThrow(new DLinear(0.05, 0.5), new DLinear(0.3, 0.8)), null), "trappedTribe", false);
         PBECRegistry.register(new PBECBuffEntities(new ILinear(60, 20 * 30), new IWeighted(1, 100, 2, 80, 3, 50), new DLinear(8.0, 25.0), 0.2f, PandorasBoxHelper.debuffs), "buffedDown", false);

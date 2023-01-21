@@ -14,10 +14,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Features;
+import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.gen.feature.structure.StructureFeatures;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -28,30 +31,41 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToNether extends PBEffectGenerate
 {
+    private String biome;
+    private int timesFeatureAMade = 0;
+    private int timesFeatureBMade = 0;
     public PBEffectGenConvertToNether() {}
 
-    public PBEffectGenConvertToNether(int time, double range, int unifiedSeed)
+    public PBEffectGenConvertToNether(int time, double range, int unifiedSeed, String biome)
     {
         super(time, range, 2, unifiedSeed);
-        biomes.addAll(SimpleItem.of(5, "wastes"), SimpleItem.of(10, "soul_sand_valley"), SimpleItem.of(10, "crimson"), SimpleItem.of(10, "warped"), SimpleItem.of(10, "deltas"));
+        this.biome = biome;
     }
-    public ArrayListExtensions<SimpleItem<String>> biomes = new ArrayListExtensions<>();
 
     @Override
     public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
     {
-        String biome = WeightedSelector.select(random, biomes);
         switch (biome) {
-            case "wastes":
+            case "wastes": {
                 createWastes(world, entity, random, pass, pos);
-            case "soul_sand_valley":
+                break;
+            }
+            case "soul_sand_valley": {
                 createSoul(world, entity, random, pass, pos);
-            case "crimson":
+                break;
+            }
+            case "crimson": {
                 createCrimson(world, entity, random, pass, pos);
-            case "warped":
+                break;
+            }
+            case "warped": {
                 createWarped(world, entity, random, pass, pos);
-            case "deltas":
+                break;
+            }
+            case "deltas": {
                 createDeltas(world, entity, random, pass, pos);
+                break;
+            }
         }
     }
     public void createWastes(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
@@ -60,7 +74,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
-        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.END_STONE, Blocks.MYCELIUM);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.END_STONE, Blocks.MYCELIUM);
         for (Block block1 : ForgeRegistries.BLOCKS) {
             if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
                 blocks.add(block1);
@@ -85,6 +99,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.SOUL_SAND.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
                 setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
+                setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir(world, pos)) {
                 if (world instanceof ServerWorld && random.nextInt(15) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
@@ -100,8 +116,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     lazilySpawnEntity(world, entity, random, "piglin", 1.0f / (30 * 30), pos),
                     lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos),
                     lazilySpawnEntity(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos),
-                    lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (10 * 10), pos),
-                    lazilySpawnEntity(world, entity, random, "zoglin", 1.0f / (20 * 20), pos));
+                    lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (20 * 20), pos));
 
             for (Entity entity1 : entities) {
                 canSpawnEntity(world, blockState, pos, entity1);
@@ -112,7 +127,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < 0.4)
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 16.0)))
         {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
@@ -120,17 +135,19 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
                 ServerWorld serverWorld = (ServerWorld) world;
-                Features.BROWN_MUSHROOM_NETHER.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                boolean success = Features.BROWN_MUSHROOM_NETHER.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                if(success) timesFeatureAMade++;
             }
         }
-        if(random.nextDouble() < 0.3) {
+        if(random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 16.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
                 ServerWorld serverWorld = (ServerWorld) world;
-                Features.RED_MUSHROOM_NETHER.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                boolean success = Features.RED_MUSHROOM_NETHER.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                if(success) timesFeatureBMade++;
             }
         }
     }
@@ -163,8 +180,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
                 setBlockSafe(world, pos, Blocks.SOUL_SOIL.defaultBlockState());
-            }  else if (isBlockAnyOf(block, Blocks.STONE)) {
+            } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE)) {
                 setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
+                setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir(world, pos)) {
                 if (world instanceof ServerWorld && random.nextInt(15) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
@@ -172,6 +191,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
+                }else if(!world.getBlockState(pos.below()).isAir(world, pos.below()) && random.nextInt(20) == 0) {
+                    setBlockSafe(world, pos, Blocks.BONE_BLOCK.defaultBlockState());
                 }
             }
         } else {
@@ -189,17 +210,6 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < 0.2)
-        {
-            BlockPos posBelow = pos.below();
-            BlockState blockBelowState = world.getBlockState(posBelow);
-
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
-            {
-                ServerWorld serverWorld = (ServerWorld) world;
-                Features.FOSSIL.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
-            }
-        }
     }
     public void createCrimson(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
@@ -208,7 +218,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         ArrayListExtensions<Block> flowers = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
-        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND);
         for (Block block1 : ForgeRegistries.BLOCKS) {
             if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1)) {
                 blocks.add(block1);
@@ -242,6 +252,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     setBlockSafe(world, pos, Blocks.CRIMSON_ROOTS.defaultBlockState());
                 else
                     setBlockSafe(world, pos, Blocks.CRIMSON_FUNGUS.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
+                setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir(world, pos)) {
                 if (world instanceof ServerWorld && random.nextInt(15) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
@@ -254,10 +266,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         } else {
             ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
             entities.addAll(
-                    lazilySpawnEntity(world, entity, random, "piglin", 1.0f / (5 * 5), pos),
-                    lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos),
-                    lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (10 * 10), pos),
-                    lazilySpawnEntity(world, entity, random, "zoglin", 1.0f / (15 * 15), pos));
+                    lazilySpawnEntity(world, entity, random, "piglin", 1.0f / (10 * 10), pos),
+                    lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (25 * 25), pos),
+                    lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (10 * 10), pos));
 
             for (Entity entity1 : entities) {
                 canSpawnEntity(world, blockState, pos, entity1);
@@ -268,26 +279,30 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < 0.4)
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0)))
         {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
+                setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
                 ServerWorld serverWorld = (ServerWorld) world;
-                Features.CRIMSON_FUNGI_PLANTED.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                boolean success = Features.CRIMSON_FUNGI_PLANTED.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                if(success) timesFeatureAMade++;
             }
         }
-        if (random.nextDouble() < 0.6)
+        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 16.0)))
         {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
+                setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
                 ServerWorld serverWorld = (ServerWorld) world;
-                Features.CRIMSON_FOREST_VEGETATION.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                boolean success = Features.CRIMSON_FOREST_VEGETATION.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                if(success) timesFeatureBMade++;
             }
         }
     }
@@ -298,7 +313,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         ArrayListExtensions<Block> flowers = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
-        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.GRANITE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND);
         for (Block block1 : ForgeRegistries.BLOCKS) {
             if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1)) {
                 blocks.add(block1);
@@ -332,6 +347,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     setBlockSafe(world, pos, Blocks.WARPED_ROOTS.defaultBlockState());
                 else
                     setBlockSafe(world, pos, Blocks.WARPED_FUNGUS.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
+                setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir(world, pos)) {
                 if (world instanceof ServerWorld && random.nextInt(15) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
@@ -350,26 +367,30 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 canSpawnEntity(world, blockState, pos, entity1);
             }
         }
-        if (random.nextDouble() < 0.4)
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0)))
         {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
+                setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
                 ServerWorld serverWorld = (ServerWorld) world;
-                Features.WARPED_FUNGI_PLANTED.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                boolean success = Features.WARPED_FUNGI_PLANTED.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                if(success) timesFeatureAMade++;
             }
         }
-        if (random.nextDouble() < 0.6)
+        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 16.0)))
         {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
+                setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
                 ServerWorld serverWorld = (ServerWorld) world;
-                Features.WARPED_FOREST_VEGETATION.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                boolean success = Features.WARPED_FOREST_VEGETATION.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                if(success) timesFeatureBMade++;
             }
         }
     }
@@ -404,8 +425,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
                 setBlockSafe(world, pos, Blocks.BASALT.defaultBlockState());
-            }  else if (isBlockAnyOf(block, Blocks.STONE)) {
+            }  else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE)) {
                 setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
+            } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
+                setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir(world, pos)) {
                 if (world instanceof ServerWorld && random.nextInt(15) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
@@ -429,7 +452,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < 0.8)
+        if (random.nextDouble() < Math.pow(0.8, Math.floor(timesFeatureAMade / 4.0)))
         {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
@@ -437,17 +460,38 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
                 ServerWorld serverWorld = (ServerWorld) world;
-                Features.SMALL_BASALT_COLUMNS.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                boolean success = Features.SMALL_BASALT_COLUMNS.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                if(success) timesFeatureAMade++;
             }
-        } else {
+        }
+        if(random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 8.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
                 ServerWorld serverWorld = (ServerWorld) world;
-                Features.LARGE_BASALT_COLUMNS.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                boolean success = Features.LARGE_BASALT_COLUMNS.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                if(success) timesFeatureBMade++;
             }
         }
+    }
+
+    @Override
+    public void readFromNBT(CompoundNBT compound) {
+        super.readFromNBT(compound);
+        biome = compound.getString("biome");
+        timesFeatureAMade = compound.getInt("featureACount");
+        timesFeatureBMade = compound.getInt("featureBCount");
+    }
+
+    @Override
+    public void writeToNBT(CompoundNBT compound) {
+        super.writeToNBT(compound);
+        if(biome != null) {
+            compound.putString("biome", biome);
+        }
+        compound.putInt("featureACount", timesFeatureAMade);
+        compound.putInt("featureBCount", timesFeatureBMade);
     }
 }
