@@ -23,20 +23,6 @@ public class PandorasBoxItem extends BlockItem
         super(block, properties);
     }
 
-    @Override
-    public ActionResultType place(BlockItemUseContext context) {
-        ActionResultType result = super.place(context);
-        BlockItemUseContext blockitemusecontext = this.updatePlacementContext(context);
-        if (blockitemusecontext != null) {
-            BlockPos pos = blockitemusecontext.getClickedPos();
-            executeRandomEffect(context.getLevel(), context.getPlayer(), pos);
-            context.getLevel().removeBlock(pos, false);
-            context.getLevel().removeBlockEntity(pos);
-        }
-
-        return result;
-    }
-
     public static PandorasBoxEntity executeRandomEffect(World world, Entity entity, BlockPos pos)
     {
 //        if(PBECRegistry.isAnyNull(world, entity)) return null;

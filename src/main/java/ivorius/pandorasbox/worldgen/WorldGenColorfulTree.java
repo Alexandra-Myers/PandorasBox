@@ -7,6 +7,7 @@ package ivorius.pandorasbox.worldgen;
 
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -332,11 +333,7 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
         this.field_175947_m = position;
         this.field_175949_k = new Random(rand.nextLong());
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-        for(Block block1 : ForgeRegistries.BLOCKS) {
-            if (BlockTags.WOOL.contains(block1)) {
-                blocks.add(block1);
-            }
-        }
+        blocks.addAll(PandorasBox.wool);
         trunk = blocks.get(metas[rand.nextInt(metas.length)]);
 
         if(field_175946_l == null) return false;

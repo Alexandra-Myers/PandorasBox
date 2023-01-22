@@ -297,20 +297,10 @@ public class PandorasBoxHelper
                 Blocks.SNOW, Blocks.SNOW_BLOCK,
                 Blocks.CHEST, Blocks.ENDER_CHEST, Blocks.TRAPPED_CHEST,
                 Blocks.SPONGE);
-        for(Block block : ForgeRegistries.BLOCKS) {
-            if (BlockTags.PLANKS.contains(block) || BlockTags.LOGS.contains(block) || BlockTags.LEAVES.contains(block) || BlockTags.WOOL.contains(block) || BlockTags.SLABS.contains(block) || block.getRegistryName().getPath().endsWith("stone_bricks") || block.getRegistryName().getPath().endsWith("_terracotta")) {
-                planks.add(block);
-                randomizable.add(block);
-            }
-            if (block instanceof StainedGlassBlock) {
-                glass.add(block);
-                randomizable.add(block);
-            }
-            if(block instanceof SaplingBlock || BlockTags.FLOWER_POTS.contains(block)) {
-                randomizable.add(block);
-            }
-        }
+        planks.addAll(PandorasBox.planks, PandorasBox.logs, PandorasBox.leaves, PandorasBox.wool, PandorasBox.slabs, PandorasBox.bricks, PandorasBox.stained_terracotta);
+        randomizable.addAll(PandorasBox.planks, PandorasBox.logs, PandorasBox.leaves, PandorasBox.wool, PandorasBox.slabs, PandorasBox.bricks, PandorasBox.stained_terracotta, PandorasBox.stained_glass, PandorasBox.saplings, PandorasBox.pots);
         glass.addAll(Blocks.SOUL_SAND, Blocks.SOUL_SOIL);
+        glass.addAll(PandorasBox.stained_glass);
         misc.addAll(Items.LAVA_BUCKET, Items.MILK_BUCKET, Items.WATER_BUCKET, Items.FLINT_AND_STEEL, Items.PAINTING, Items.FLOWER_POT, Items.MINECART, Items.CAULDRON);
         for(Item item : ForgeRegistries.ITEMS) {
             if(ItemTags.BOATS.contains(item) || ItemTags.BEDS.contains(item)) {
@@ -363,8 +353,8 @@ public class PandorasBoxHelper
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.DIAMOND_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.STONE_SWORD, new ItemStack(Items.BREAD, 8), new ItemStack(Items.TORCH, 32));
         addEquipmentSet(8.0, Items.LEATHER_HELMET, Items.IRON_HOE, new ItemStack(Items.WHEAT_SEEDS, 32), new ItemStack(Items.PUMPKIN_SEEDS, 4), new ItemStack(Items.MELON_SEEDS, 4), new ItemStack(Items.BLUE_DYE, 8), new ItemStack(Items.DIRT, 32), Items.WATER_BUCKET, Items.WATER_BUCKET);
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.DIAMOND_AXE, new ItemStack(Items.BEEF, 16));
-        for(Block block : ForgeRegistries.BLOCKS) {
-            if(BlockTags.WOOL.contains(block) && new Random().nextDouble() > 0.8) {
+        for(Block block : PandorasBox.wool) {
+            if(new Random().nextDouble() > 0.8) {
                 addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
             }
         }

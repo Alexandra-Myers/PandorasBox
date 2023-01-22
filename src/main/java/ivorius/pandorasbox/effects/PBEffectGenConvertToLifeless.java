@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
@@ -43,20 +44,10 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate
             blocks.addAll(Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
             weird.addAll(Blocks.MYCELIUM, Blocks.GRASS_BLOCK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.CAKE);
             iCTWTGASTB.addAll(Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM, Blocks.FIRE, Blocks.SOUL_FIRE);
-            for(Block block1 : ForgeRegistries.BLOCKS) {
-                if(BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1)) {
-                    iCTWTGASTB.add(block1);
-                }
-                if(BlockTags.WOOL.contains(block1)) {
-                    weird.add(block1);
-                }
-                if(BlockTags.SMALL_FLOWERS.contains(block1)) {
-                    blocks.add(block1);
-                }
-                if(block1.getRegistryName().getPath().endsWith("_terracotta")) {
-                    hmm.add(block1);
-                }
-            }
+            iCTWTGASTB.addAll(PandorasBox.logs, PandorasBox.leaves);
+            weird.addAll(PandorasBox.wool);
+            blocks.addAll(PandorasBox.flowers);
+            hmm.addAll(PandorasBox.stained_terracotta);
             if (isBlockAnyOf(block, Blocks.ICE, Blocks.WATER, Blocks.LAVA, Blocks.SNOW, Blocks.SNOW_BLOCK))
             {
                 setBlockToAirSafe(world, pos);

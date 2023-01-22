@@ -40,13 +40,8 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
     {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
-        BlockState below = world.getBlockState(pos.below());
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-        for(Block block1 : ForgeRegistries.BLOCKS) {
-            if(BlockTags.SMALL_FLOWERS.contains(block1)) {
-                blocks.add(block1);
-            }
-        }
+        blocks.addAll(PandorasBox.flowers);
 
         if (pass == 0)
         {

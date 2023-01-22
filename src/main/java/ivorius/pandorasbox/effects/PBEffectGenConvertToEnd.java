@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
@@ -39,14 +40,8 @@ public class PBEffectGenConvertToEnd extends PBEffectGenerate
         blocks.addAll(Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK);
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         misc.addAll(Blocks.ICE, Blocks.WATER, Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.VINE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM);
-        for(Block block1 : ForgeRegistries.BLOCKS) {
-            if(BlockTags.LOGS.contains(block1)) {
-                blocks.add(block1);
-            }
-            if(BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
-                misc.add(block1);
-            }
-        }
+        blocks.addAll(PandorasBox.logs);
+        misc.addAll(PandorasBox.leaves, PandorasBox.flowers);
 
         if (pass == 0)
         {

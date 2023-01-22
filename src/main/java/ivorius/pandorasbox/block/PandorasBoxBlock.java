@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.block;
 
 import ivorius.pandorasbox.init.Registry;
+import ivorius.pandorasbox.items.PandorasBoxItem;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -42,7 +43,7 @@ public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWat
 
     public PandorasBoxBlock()
     {
-        super(Block.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(0.5f));
+        super(Block.Properties.of(Material.WOOD).strength(0.5f));
         registerDefaultState(stateDefinition.any().setValue(DIRECTION, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
@@ -71,13 +72,9 @@ public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWat
 
     @Override
     public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-
-        TileEntity tileEntity = worldIn.getBlockEntity(pos);
-
-        if (!(tileEntity instanceof PandorasBoxBlockEntity)) {
-            worldIn.removeBlockEntity(pos);
-            worldIn.addBlockEntity(Objects.requireNonNull(createTileEntity(state, worldIn)));
-        }
+        PandorasBoxItem.executeRandomEffect(worldIn, player, pos);
+        worldIn.removeBlock(pos, false);
+        worldIn.removeBlockEntity(pos);
 
         return ActionResultType.SUCCESS;
     }

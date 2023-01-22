@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
@@ -41,11 +42,7 @@ public class PBEffectGenConvertToHeavenly extends PBEffectGenerate
         {
             ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
             blocks.addAll(Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
-            for(Block block1 : ForgeRegistries.BLOCKS) {
-                if(BlockTags.SMALL_FLOWERS.contains(block1)) {
-                    blocks.add(block1);
-                }
-            }
+            blocks.addAll(PandorasBox.flowers);
             if (isBlockAnyOf(block, blocks))
             {
                 setBlockToAirSafe(world, pos);

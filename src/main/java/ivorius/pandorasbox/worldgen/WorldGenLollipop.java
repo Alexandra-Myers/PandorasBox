@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.worldgen;
 
 import com.mojang.serialization.Codec;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -51,11 +52,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
     public boolean place(IWorldGenerationReader worldIn, Random rand, BlockPos position) {
         int l = rand.nextInt(addition) + 5;
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-        for(Block block1 : ForgeRegistries.BLOCKS) {
-            if (BlockTags.WOOL.contains(block1)) {
-                blocks.add(block1);
-            }
-        }
+        blocks.addAll(PandorasBox.wool);
         World world = worldIn instanceof World ? (World) worldIn : null;
 
         boolean flag = true;

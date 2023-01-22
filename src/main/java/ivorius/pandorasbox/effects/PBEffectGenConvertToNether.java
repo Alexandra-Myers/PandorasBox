@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.weighted.WeightedSelector;
@@ -75,14 +76,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
         misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.END_STONE, Blocks.MYCELIUM);
-        for (Block block1 : ForgeRegistries.BLOCKS) {
-            if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
-                blocks.add(block1);
-            }
-            if (block1.getRegistryName().getPath().endsWith("terracotta")) {
-                misc.add(block1);
-            }
-        }
+        blocks.addAll(PandorasBox.flowers, PandorasBox.logs, PandorasBox.leaves);
+        misc.addAll(PandorasBox.terracotta);
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
@@ -102,7 +97,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir(world, pos)) {
-                if (world instanceof ServerWorld && random.nextInt(15) == 0) {
+                if (world instanceof ServerWorld && random.nextInt(25) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
@@ -127,7 +122,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 16.0)))
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 10.0)))
         {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
@@ -139,7 +134,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 if(success) timesFeatureAMade++;
             }
         }
-        if(random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 16.0))) {
+        if(random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 10.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
@@ -158,14 +153,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
         misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.END_STONE, Blocks.MYCELIUM);
-        for (Block block1 : ForgeRegistries.BLOCKS) {
-            if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
-                blocks.add(block1);
-            }
-            if (block1.getRegistryName().getPath().endsWith("terracotta")) {
-                misc.add(block1);
-            }
-        }
+        blocks.addAll(PandorasBox.flowers, PandorasBox.logs, PandorasBox.leaves);
+        misc.addAll(PandorasBox.terracotta);
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
@@ -185,7 +174,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir(world, pos)) {
-                if (world instanceof ServerWorld && random.nextInt(15) == 0) {
+                if (world instanceof ServerWorld && random.nextInt(25) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.SOUL_FIRE.defaultBlockState());
                     } else {
@@ -219,17 +208,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> flowers = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
         misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND);
-        for (Block block1 : ForgeRegistries.BLOCKS) {
-            if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1)) {
-                blocks.add(block1);
-            }
-            if(BlockTags.SMALL_FLOWERS.contains(block1)) {
-                flowers.add(block1);
-            }
-            if (block1.getRegistryName().getPath().endsWith("terracotta")) {
-                misc.add(block1);
-            }
-        }
+        blocks.addAll(PandorasBox.logs, PandorasBox.leaves);
+        misc.addAll(PandorasBox.terracotta);
+        flowers.addAll(PandorasBox.flowers);
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
@@ -255,7 +236,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir(world, pos)) {
-                if (world instanceof ServerWorld && random.nextInt(15) == 0) {
+                if (world instanceof ServerWorld && random.nextInt(25) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
@@ -284,7 +265,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
                 setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
                 ServerWorld serverWorld = (ServerWorld) world;
@@ -292,12 +273,12 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 if(success) timesFeatureAMade++;
             }
         }
-        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 16.0)))
+        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0)))
         {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
                 setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
                 ServerWorld serverWorld = (ServerWorld) world;
@@ -314,17 +295,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> flowers = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
         misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.GRANITE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND);
-        for (Block block1 : ForgeRegistries.BLOCKS) {
-            if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1)) {
-                blocks.add(block1);
-            }
-            if(BlockTags.SMALL_FLOWERS.contains(block1)) {
-                flowers.add(block1);
-            }
-            if (block1.getRegistryName().getPath().endsWith("terracotta")) {
-                misc.add(block1);
-            }
-        }
+        blocks.addAll(PandorasBox.logs, PandorasBox.leaves);
+        misc.addAll(PandorasBox.terracotta);
+        flowers.addAll(PandorasBox.flowers);
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
@@ -350,7 +323,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir(world, pos)) {
-                if (world instanceof ServerWorld && random.nextInt(15) == 0) {
+                if (world instanceof ServerWorld && random.nextInt(25) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
@@ -372,7 +345,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
                 setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
                 ServerWorld serverWorld = (ServerWorld) world;
@@ -380,12 +353,12 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 if(success) timesFeatureAMade++;
             }
         }
-        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 16.0)))
+        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0)))
         {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
             {
                 setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
                 ServerWorld serverWorld = (ServerWorld) world;
@@ -401,14 +374,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
         misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.END_STONE, Blocks.MYCELIUM);
-        for (Block block1 : ForgeRegistries.BLOCKS) {
-            if (BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1) || BlockTags.SMALL_FLOWERS.contains(block1)) {
-                blocks.add(block1);
-            }
-            if (block1.getRegistryName().getPath().endsWith("terracotta")) {
-                misc.add(block1);
-            }
-        }
+        blocks.addAll(PandorasBox.flowers, PandorasBox.logs, PandorasBox.leaves);
+        misc.addAll(PandorasBox.terracotta);
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
@@ -430,7 +397,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir(world, pos)) {
-                if (world instanceof ServerWorld && random.nextInt(15) == 0) {
+                if (world instanceof ServerWorld && random.nextInt(25) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
@@ -464,7 +431,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 if(success) timesFeatureAMade++;
             }
         }
-        if(random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 8.0))) {
+        if(random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 4.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 

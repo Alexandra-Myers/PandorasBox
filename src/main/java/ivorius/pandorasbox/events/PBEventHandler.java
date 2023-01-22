@@ -5,10 +5,14 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.commands.CommandPandorasBox;
 import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.worldgen.PBLoot;
+import net.minecraft.block.Block;
+import net.minecraft.block.SaplingBlock;
+import net.minecraft.block.StainedGlassBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -21,6 +25,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import static ivorius.pandorasbox.PandorasBox.*;
 
 /**
  * Created by lukas on 29.07.14.
@@ -53,12 +60,6 @@ public class PBEventHandler
         new CommandPandorasBox(evt.getDispatcher());
     }
     @SubscribeEvent
-    public void onServerStarted(FMLServerStartedEvent event) {
-        PBEffects.registerEffects();
-
-        PBEffects.registerEffectCreators();
-    }
-    @SubscribeEvent
     public void onPlayerInteractAir(PlayerInteractEvent.RightClickEmpty event) {
         ItemStack stack = event.getItemStack();
         Item item = stack.getItem();
@@ -69,6 +70,50 @@ public class PBEventHandler
             ((BlockItem) item).place(new BlockItemUseContext(event.getPlayer(), event.getHand(), stack,
                     new BlockRayTraceResult(new Vector3d(frontPos.getX() + 0.5 + direction.getStepX() * 0.5, frontPos.getY() + 0.5 + direction.getStepY() * 0.5, frontPos.getZ() + 0.5 + direction.getStepZ() * 0.5), direction, frontPos, false)));
         }
+    }
+    @SubscribeEvent
+    public void serverInit(FMLServerStartedEvent event) {
+        for (Block block : ForgeRegistries.BLOCKS) {
+            if (BlockTags.LOGS.contains(block)) {
+                logs.add(block);
+            }
+            if (BlockTags.LEAVES.contains(block)) {
+                leaves.add(block);
+            }
+            if (BlockTags.SMALL_FLOWERS.contains(block)) {
+                flowers.add(block);
+            }
+            if (BlockTags.WOOL.contains(block)) {
+                wool.add(block);
+            }
+            if (BlockTags.SLABS.contains(block)) {
+                slabs.add(block);
+            }
+            if (BlockTags.STONE_BRICKS.contains(block)) {
+                bricks.add(block);
+            }
+            if (block.getRegistryName().getPath().endsWith("terracotta")) {
+                terracotta.add(block);
+            }
+            if (block.getRegistryName().getPath().endsWith("_terracotta")) {
+                stained_terracotta.add(block);
+            }
+            if (BlockTags.PLANKS.contains(block)) {
+                planks.add(block);
+            }
+            if (block instanceof StainedGlassBlock) {
+                stained_glass.add(block);
+            }
+            if (block instanceof SaplingBlock) {
+                saplings.add(block);
+            }
+            if (BlockTags.FLOWER_POTS.contains(block)) {
+                pots.add(block);
+            }
+        }
+        PBEffects.registerEffects();
+
+        PBEffects.registerEffectCreators();
     }
     public BlockPos getPosInFront(BlockPos pos, Direction direction) {
         switch (direction) {

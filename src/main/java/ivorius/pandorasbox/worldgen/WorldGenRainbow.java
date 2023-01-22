@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.worldgen;
 
 import com.mojang.serialization.Codec;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -54,11 +55,7 @@ public class WorldGenRainbow extends TreeFeature implements AccessibleTreeFeatur
         int par4 = position.getY();
         int par5 = position.getZ();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-        for(Block block1 : ForgeRegistries.BLOCKS) {
-            if (BlockTags.WOOL.contains(block1)) {
-                blocks.add(block1);
-            }
-        }
+        blocks.addAll(PandorasBox.wool);
 
         if(world == null) return false;
         if (world.getBlockState(position).getBlock() == soil && world.getBlockState(position.above()).isAir(world, position))

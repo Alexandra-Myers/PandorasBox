@@ -49,18 +49,9 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         ArrayListExtensions<Block> iCTWTGASTB = new ArrayListExtensions<>();
         iCTWTGASTB.add(Blocks.LAVA);
-        for(Block block1 : ForgeRegistries.BLOCKS) {
-            if(BlockTags.LOGS.contains(block1) || BlockTags.LEAVES.contains(block1)) {
-                iCTWTGASTB.add(block1);
-            }
-            if(BlockTags.WOOL.contains(block1)) {
-                blocks.add(block1);
-            }
-            if(block1.getRegistryName().getPath().endsWith("terracotta")) {
-                misc.add(block1);
-                blocks.add(block1);
-            }
-        }
+        iCTWTGASTB.addAll(PandorasBox.logs, PandorasBox.leaves);
+        blocks.addAll(PandorasBox.terracotta, PandorasBox.wool);
+        misc.addAll(PandorasBox.terracotta);
         Block placeBlock = misc.get(groundMetas[world.random.nextInt(groundMetas.length)]);
         if (pass == 0)
         {

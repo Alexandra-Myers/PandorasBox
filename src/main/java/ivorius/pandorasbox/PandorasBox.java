@@ -8,14 +8,20 @@ package ivorius.pandorasbox;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.client.ClientProxy;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
+import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.events.PBEventHandler;
 import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.server.ServerProxy;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.PBEffectArgument;
+import net.minecraft.block.Block;
+import net.minecraft.block.SaplingBlock;
+import net.minecraft.block.StainedGlassBlock;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraft.entity.EntityType;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -29,9 +35,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
 
 @Mod(PandorasBox.MOD_ID)
 public class PandorasBox
@@ -56,6 +66,18 @@ public class PandorasBox
     public Feature<BaseTreeFeatureConfig> RAINBOW;
     public Feature<BaseTreeFeatureConfig> MEGA_JUNGLE;
     public RegistryObject<TileEntityType<PandorasBoxBlockEntity>> tileEntityPandorasBox;
+    public static ArrayListExtensions<Block> logs = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> leaves = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> flowers = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> terracotta = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> stained_terracotta = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> wool = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> slabs = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> bricks = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> planks = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> stained_glass = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> saplings = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> pots = new ArrayListExtensions<>();
 
     public static PBEventHandler fmlEventHandler;
     public PandorasBox() {

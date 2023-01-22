@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
@@ -89,11 +90,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
                         if (dist >= prevRange)
                         {
                             ArrayListExtensions<Block> terracottas = new ArrayListExtensions<>();
-                            for(Block block : ForgeRegistries.BLOCKS) {
-                                if(block.getRegistryName().getPath().endsWith("_terracotta")) {
-                                    terracottas.add(block);
-                                }
-                            }
+                            terracottas.addAll(PandorasBox.stained_terracotta);
                             setBlockSafe(world, new BlockPos(structureTarget.x + xP, structureTarget.y, structureTarget.z + zP), terracottas.get(structureTarget.colors[MathHelper.floor(dist)]).defaultBlockState());
 
                             double nextDist = MathHelper.sqrt((xP * xP + 3 * 3) + (zP * zP + 3 * 3));
