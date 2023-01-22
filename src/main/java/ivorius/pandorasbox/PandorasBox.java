@@ -66,18 +66,18 @@ public class PandorasBox
     public Feature<BaseTreeFeatureConfig> RAINBOW;
     public Feature<BaseTreeFeatureConfig> MEGA_JUNGLE;
     public RegistryObject<TileEntityType<PandorasBoxBlockEntity>> tileEntityPandorasBox;
-    public static ArrayListExtensions<Block> logs = new ArrayListExtensions<>();
-    public static ArrayListExtensions<Block> leaves = new ArrayListExtensions<>();
-    public static ArrayListExtensions<Block> flowers = new ArrayListExtensions<>();
-    public static ArrayListExtensions<Block> terracotta = new ArrayListExtensions<>();
-    public static ArrayListExtensions<Block> stained_terracotta = new ArrayListExtensions<>();
-    public static ArrayListExtensions<Block> wool = new ArrayListExtensions<>();
-    public static ArrayListExtensions<Block> slabs = new ArrayListExtensions<>();
-    public static ArrayListExtensions<Block> bricks = new ArrayListExtensions<>();
-    public static ArrayListExtensions<Block> planks = new ArrayListExtensions<>();
-    public static ArrayListExtensions<Block> stained_glass = new ArrayListExtensions<>();
-    public static ArrayListExtensions<Block> saplings = new ArrayListExtensions<>();
-    public static ArrayListExtensions<Block> pots = new ArrayListExtensions<>();
+    public static ArrayListExtensions<Block> logs;
+    public static ArrayListExtensions<Block> leaves;
+    public static ArrayListExtensions<Block> flowers;
+    public static ArrayListExtensions<Block> terracotta;
+    public static ArrayListExtensions<Block> stained_terracotta;
+    public static ArrayListExtensions<Block> wool;
+    public static ArrayListExtensions<Block> slabs;
+    public static ArrayListExtensions<Block> bricks;
+    public static ArrayListExtensions<Block> planks;
+    public static ArrayListExtensions<Block> stained_glass;
+    public static ArrayListExtensions<Block> saplings;
+    public static ArrayListExtensions<Block> pots;
 
     public static PBEventHandler fmlEventHandler;
     public PandorasBox() {

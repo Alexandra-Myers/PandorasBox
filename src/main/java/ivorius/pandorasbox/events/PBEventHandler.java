@@ -4,6 +4,7 @@ import ivorius.pandorasbox.PBConfig;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.commands.CommandPandorasBox;
 import ivorius.pandorasbox.effects.PBEffects;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.PBLoot;
 import net.minecraft.block.Block;
 import net.minecraft.block.SaplingBlock;
@@ -73,6 +74,18 @@ public class PBEventHandler
     }
     @SubscribeEvent
     public void serverInit(FMLServerStartedEvent event) {
+        logs = new ArrayListExtensions<>();
+        leaves = new ArrayListExtensions<>();
+        flowers = new ArrayListExtensions<>();
+        wool = new ArrayListExtensions<>();
+        slabs = new ArrayListExtensions<>();
+        bricks = new ArrayListExtensions<>();
+        terracotta = new ArrayListExtensions<>();
+        stained_terracotta = new ArrayListExtensions<>();
+        planks = new ArrayListExtensions<>();
+        stained_glass = new ArrayListExtensions<>();
+        saplings = new ArrayListExtensions<>();
+        pots = new ArrayListExtensions<>();
         for (Block block : ForgeRegistries.BLOCKS) {
             if (BlockTags.LOGS.contains(block)) {
                 logs.add(block);
