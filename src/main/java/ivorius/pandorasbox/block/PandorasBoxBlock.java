@@ -80,7 +80,7 @@ public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWat
     }
     @Override
     public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.MODEL;
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWat
         TileEntity tileEntity = worldIn.getBlockEntity(pos);
 
         if (tileEntity instanceof PandorasBoxBlockEntity)
-            ((PandorasBoxBlockEntity) tileEntity).setPartialRotationYaw(livingEntity.yRot % 90.0f);
+            ((PandorasBoxBlockEntity) tileEntity).setRotationYaw(livingEntity.yRot + 180);
         super.setPlacedBy(worldIn, pos, state, livingEntity, itemStack);
     }
 

@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
  */
 public class PandorasBoxBlockEntity extends TileEntity
 {
-    private float partialRotationYaw;
+    private float rotationYaw;
 
     public PandorasBoxBlockEntity() {
         super(Registry.TEPB.get());
@@ -28,29 +28,17 @@ public class PandorasBoxBlockEntity extends TileEntity
 
     public static float rotationFromFacing(Direction facing)
     {
-        switch (facing)
-        {
-            case SOUTH:
-                return 0.0f;
-            case WEST:
-                return 90.0f;
-            case NORTH:
-                return 180.0f;
-            case EAST:
-                return 270.0f;
-        }
-
-        throw new IllegalArgumentException();
+        return facing.toYRot();
     }
 
-    public void setPartialRotationYaw(float partialRotationYaw)
+    public void setRotationYaw(float rotationYaw)
     {
-        this.partialRotationYaw = partialRotationYaw;
+        this.rotationYaw = rotationYaw;
     }
 
-    public float getPartialRotationYaw()
+    public float getRotationYaw()
     {
-        return partialRotationYaw;
+        return rotationYaw;
     }
 
     public float getBaseRotationYaw()
@@ -58,20 +46,21 @@ public class PandorasBoxBlockEntity extends TileEntity
         return rotationFromFacing(this.level.getBlockState(this.worldPosition).getValue(PandorasBoxBlock.DIRECTION));
     }
 
-    public float getRotationYaw()
+    public float getFinalRotationYaw()
     {
-        return getBaseRotationYaw() + getPartialRotationYaw(); // TODO Block model doesn't support gradual rotation yet
+        if(getRotationYaw() - getBaseRotationYaw() > 90) return getBaseRotationYaw();
+        return getRotationYaw(); // TODO Block model doesn't support gradual rotation yet
     }
 
     @Override
     public CompoundNBT save(CompoundNBT compoundNBT) {
-        compoundNBT.putFloat("boxRotationYaw", partialRotationYaw);
+        compoundNBT.putFloat("boxRotationYaw", rotationYaw);
         return super.save(compoundNBT);
     }
 
     @Override
     public void load(BlockState state, CompoundNBT compoundNBT) {
-        partialRotationYaw = compoundNBT.getFloat("boxRotationYaw");
+        rotationYaw = compoundNBT.getFloat("boxRotationYaw");
         super.load(state, compoundNBT);
     }
 

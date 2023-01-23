@@ -7,6 +7,7 @@ package ivorius.pandorasbox;
 
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.client.ClientProxy;
+import ivorius.pandorasbox.client.rendering.PandorasBoxBlockEntityRenderer;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
 import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
@@ -56,7 +57,6 @@ public class PandorasBox
 
     public static String filePathTexturesFull = "pandorasbox:textures/mod/";
     public static String filePathTextures = "textures/mod/";
-    public EntityType<PandorasBoxEntity> PANDORAS_BOX;
     public static String basePath = "pandorasbox:";
     public static Logger logger  = LogManager.getLogger();
 
@@ -65,7 +65,6 @@ public class PandorasBox
     public Feature<BaseTreeFeatureConfig> COLOURFUL_TREE;
     public Feature<BaseTreeFeatureConfig> RAINBOW;
     public Feature<BaseTreeFeatureConfig> MEGA_JUNGLE;
-    public RegistryObject<TileEntityType<PandorasBoxBlockEntity>> tileEntityPandorasBox;
     public static ArrayListExtensions<Block> logs;
     public static ArrayListExtensions<Block> leaves;
     public static ArrayListExtensions<Block> flowers;
@@ -104,10 +103,6 @@ public class PandorasBox
         fmlEventHandler = new PBEventHandler();
         fmlEventHandler.register();
 
-        tileEntityPandorasBox = Registry.TEPB;
-
-
-        PANDORAS_BOX = Registry.Box.get();
         ArgumentTypes.register("pbeffect", PBEffectArgument.class, new ArgumentSerializer<>(PBEffectArgument::effect));
 
         proxy.preInit();
@@ -116,5 +111,6 @@ public class PandorasBox
     }
     public void clientInit(FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(Registry.Box.get(), PandorasBoxRenderer::new);
+        PandorasBoxBlockEntityRenderer.register();
     }
 }
