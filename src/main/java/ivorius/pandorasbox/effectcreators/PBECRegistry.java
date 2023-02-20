@@ -168,24 +168,24 @@ public class PBECRegistry
         return creator.constructEffect(world, x, y, z, random);
     }
 
-    public static PandorasBoxEntity spawnPandorasBox(World world, Random random, boolean multi, Entity entity, BlockPos pos)
+    public static PandorasBoxEntity spawnPandorasBox(World world, Random random, boolean multi, Entity entity, BlockPos pos, boolean floatAway)
     {
         PBEffect effect = createRandomEffect(world, random, pos.getX(), pos.getY() + 1.2, pos.getZ(), multi);
-        return spawnPandorasBox(world, effect, entity, pos);
+        return spawnPandorasBox(world, effect, entity, pos, floatAway);
     }
     public static PandorasBoxEntity spawnPandorasBox(World world, Random random, boolean multi, Entity entity)
     {
         PBEffect effect = createRandomEffect(world, random, entity.getX(), entity.getY() + 1.2, entity.getZ(), multi);
-        return spawnPandorasBox(world, effect, entity, null);
+        return spawnPandorasBox(world, effect, entity, null, true);
     }
 
     public static PandorasBoxEntity spawnPandorasBox(World world, Random random, PBEffectCreator creator, Entity entity)
     {
         PBEffect effect = createEffect(world, random, entity.getX(), entity.getY() + 1.2, entity.getZ(), creator);
-        return spawnPandorasBox(world, effect, entity, null);
+        return spawnPandorasBox(world, effect, entity, null, true);
     }
 
-    public static PandorasBoxEntity spawnPandorasBox(World world, PBEffect effect, Entity entity, BlockPos pos)
+    public static PandorasBoxEntity spawnPandorasBox(World world, PBEffect effect, Entity entity, BlockPos pos, boolean floatAway)
     {
         if (effect != null && !world.isClientSide())
         {
@@ -207,7 +207,11 @@ public class PBECRegistry
             entityPandorasBox.setTimeBoxWaiting(40);
             entityPandorasBox.moveTo(pos, entity.yRot + 180.0f, 0.0f);
 
-            entityPandorasBox.beginFloatingAway();
+            if (floatAway) {
+                entityPandorasBox.beginFloatingAway();
+            } else {
+                entityPandorasBox.beginFloatingUp();
+            }
 
             world.addFreshEntity(entityPandorasBox);
 

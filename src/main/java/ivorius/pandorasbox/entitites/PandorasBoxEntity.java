@@ -59,12 +59,14 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     {
         return timeBoxWaiting;
     }
-    public boolean canCollideWith(Entity entity) {
-        return entity.canBeCollidedWith() || entity.isPushable();
+
+    @Override
+    public boolean canCollideWith(Entity p_241849_1_) {
+        return false;
     }
 
     public boolean canBeCollidedWith() {
-        return true;
+        return false;
     }
 
     public boolean isPushable() {
@@ -201,7 +203,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
             }
             else
             {
-                moveRelative(0.0f, new Vec3d(0.01f, speed * 0.02f, 0.02f));
+                moveRelative(0.4f, new Vec3d(-0.00f, speed * 0.02f, -0.02f));
                 setDeltaMovement(getDeltaMovement().add(0, speed * 0.015f, 0));
             }
 
@@ -369,14 +371,6 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
     @Override
     public void push(Entity entityIn) {
-        if (entityIn instanceof PandorasBoxEntity) {
-            if (entityIn.getBoundingBox().minY < this.getBoundingBox().maxY) {
-                super.push(entityIn);
-            }
-        } else if (entityIn.getBoundingBox().minY <= this.getBoundingBox().minY) {
-            super.push(entityIn);
-        }
-
     }
 
     @Override

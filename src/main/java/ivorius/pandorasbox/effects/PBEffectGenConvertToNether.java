@@ -8,23 +8,19 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import ivorius.pandorasbox.weighted.WeightedSelector;
-import ivorius.pandorasbox.weighted.WeightedSelector.SimpleItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Features;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureFeatures;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -81,7 +77,12 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                setBlockSafe(world, pos, Blocks.LAVA.defaultBlockState());
+                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
+                BlockState blockState2 = Blocks.LAVA.defaultBlockState();
+                if(integer.isPresent()) {
+                    blockState2 = blockState2.setValue(FlowingFluidBlock.LEVEL, integer.get());
+                }
+                setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
                 setBlockToAirSafe(world, pos);
             } else if (isBlockAnyOf(block, Blocks.CLAY)) {
@@ -158,7 +159,12 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                setBlockSafe(world, pos, Blocks.LAVA.defaultBlockState());
+                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
+                BlockState blockState2 = Blocks.LAVA.defaultBlockState();
+                if(integer.isPresent()) {
+                    blockState2 = blockState2.setValue(FlowingFluidBlock.LEVEL, integer.get());
+                }
+                setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
                 setBlockToAirSafe(world, pos);
             } else if (isBlockAnyOf(block, Blocks.SAND, Blocks.CLAY)) {
@@ -174,13 +180,14 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir(world, pos)) {
+                boolean bl = !isBlockAnyOf(world.getBlockState(pos.below()).getBlock(), Blocks.BONE_BLOCK) ? random.nextInt(40) == 0 : random.nextInt(20) == 0;
                 if (world instanceof ServerWorld && random.nextInt(25) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.SOUL_FIRE.defaultBlockState());
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
-                }else if(!world.getBlockState(pos.below()).isAir(world, pos.below()) && random.nextInt(20) == 0) {
+                }else if(!world.getBlockState(pos.below()).isAir(world, pos.below()) && !isBlockAnyOf(world.getBlockState(pos.below()).getBlock(), Blocks.GLOWSTONE) && bl) {
                     setBlockSafe(world, pos, Blocks.BONE_BLOCK.defaultBlockState());
                 }
             }
@@ -214,7 +221,12 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                setBlockSafe(world, pos, Blocks.LAVA.defaultBlockState());
+                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
+                BlockState blockState2 = Blocks.LAVA.defaultBlockState();
+                if(integer.isPresent()) {
+                    blockState2 = blockState2.setValue(FlowingFluidBlock.LEVEL, integer.get());
+                }
+                setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
                 setBlockToAirSafe(world, pos);
             } else if (isBlockAnyOf(block, Blocks.CLAY)) {
@@ -301,7 +313,12 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                setBlockSafe(world, pos, Blocks.LAVA.defaultBlockState());
+                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
+                BlockState blockState2 = Blocks.LAVA.defaultBlockState();
+                if(integer.isPresent()) {
+                    blockState2 = blockState2.setValue(FlowingFluidBlock.LEVEL, integer.get());
+                }
+                setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
                 setBlockToAirSafe(world, pos);
             } else if (isBlockAnyOf(block, Blocks.CLAY)) {
@@ -379,7 +396,12 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                setBlockSafe(world, pos, Blocks.LAVA.defaultBlockState());
+                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
+                BlockState blockState2 = Blocks.LAVA.defaultBlockState();
+                if(integer.isPresent()) {
+                    blockState2 = blockState2.setValue(FlowingFluidBlock.LEVEL, integer.get());
+                }
+                setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
                 setBlockToAirSafe(world, pos);
             } else if (isBlockAnyOf(block, Blocks.CLAY)) {

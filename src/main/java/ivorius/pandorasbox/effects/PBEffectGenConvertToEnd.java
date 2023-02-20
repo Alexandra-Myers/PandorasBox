@@ -11,10 +11,13 @@ import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.Features;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
@@ -24,6 +27,7 @@ import java.util.Random;
  */
 public class PBEffectGenConvertToEnd extends PBEffectGenerate
 {
+    private int timesFeatureAMade = 0;
     public PBEffectGenConvertToEnd() {}
 
     public PBEffectGenConvertToEnd(int time, double range, int unifiedSeed)
@@ -66,6 +70,19 @@ public class PBEffectGenConvertToEnd extends PBEffectGenerate
         {
             Entity enderman = lazilySpawnEntity(world, entity, random, "enderman", 1.0f / (20 * 20), pos);
             canSpawnEntity(world, blockState, pos, enderman);
+        }
+        if (random.nextDouble() < Math.pow(0.2, Math.floor(timesFeatureAMade / 16.0)))
+        {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.getMaterial() == Material.AIR && !isBlockAnyOf(blockBelowState.getBlock(), Blocks.CHORUS_FLOWER, Blocks.CHORUS_PLANT, Blocks.OBSIDIAN) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            {
+                setBlockSafe(world, posBelow, Blocks.END_STONE.defaultBlockState());
+                ServerWorld serverWorld = (ServerWorld) world;
+                boolean success = Features.CHORUS_PLANT.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                if(success) timesFeatureAMade++;
+            }
         }
     }
 }

@@ -72,7 +72,7 @@ public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWat
 
     @Override
     public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        PandorasBoxItem.executeRandomEffect(worldIn, player, pos);
+        PandorasBoxItem.executeRandomEffect(worldIn, player, pos, false);
         worldIn.removeBlock(pos, false);
         worldIn.removeBlockEntity(pos);
 

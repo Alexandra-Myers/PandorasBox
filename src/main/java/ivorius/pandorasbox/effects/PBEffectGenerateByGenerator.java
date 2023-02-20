@@ -7,6 +7,7 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
+import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -59,8 +60,8 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
                         ServerWorld serverWorld = (ServerWorld) world;
                         feature.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
                     }
-                    if(generator instanceof AccessibleTreeFeature) {
-                        AccessibleTreeFeature feature = (AccessibleTreeFeature) generator;
+                    if(generator instanceof MegaTreeFeature) {
+                        MegaTreeFeature feature = (MegaTreeFeature) generator;
                         feature.place(world, random, pos);
                     }
                 }
