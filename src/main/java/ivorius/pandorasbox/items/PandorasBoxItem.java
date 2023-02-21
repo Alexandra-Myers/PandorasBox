@@ -30,7 +30,11 @@ public class PandorasBoxItem extends BlockItem
 
     @Override
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack itemstack = player.getItemInHand(hand);
         executeRandomEffect(world, player, new BlockPos(new Vector3d(player.getX(), player.getEyeY(), player.getZ())), true);
+        if (!player.abilities.instabuild) {
+            itemstack.shrink(1);
+        }
         return super.use(world, player, hand);
     }
 
