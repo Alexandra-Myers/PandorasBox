@@ -57,10 +57,10 @@ public class PBEffectEntitiesThrowItems extends PBEffectEntityBased
                         {
                             if (random.nextDouble() >= itemDeletionChance)
                             {
-                                throwItem(entity, world, stack);
+                                player.drop(stack, false);
                             }
 
-                            player.inventory.setItem(i, null);
+                            player.inventory.setItem(i, ItemStack.EMPTY);
                         }
                     }
                 }
@@ -69,22 +69,10 @@ public class PBEffectEntitiesThrowItems extends PBEffectEntityBased
             for (ItemStack smuggledInItem : smuggledInItems) {
                 double expectedThrow = itemRandom.nextDouble();
                 if (newRatio >= expectedThrow && prevRatio < expectedThrow) {
-                    throwItem(entity, world, smuggledInItem);
+                    player.drop(smuggledInItem, false);
                 }
             }
         }
-    }
-
-    private void throwItem(Entity entity, World world, ItemStack itemStack)
-    {
-        if(world.isClientSide()) return;
-        ItemEntity entityItem = new ItemEntity(world, entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ(), itemStack);
-        entityItem.setPickUpDelay(20);
-        double x = (world.random.nextDouble() - world.random.nextDouble());
-        double z = (world.random.nextDouble() - world.random.nextDouble());
-        double y = world.random.nextDouble();
-        entityItem.setDeltaMovement(x, y, z);
-        world.addFreshEntity(entityItem);
     }
 
     @Override
