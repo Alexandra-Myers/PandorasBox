@@ -49,7 +49,7 @@ public class PBEffectGenConvertToEnd extends PBEffectGenerate
 
         if (pass == 0)
         {
-            if (isBlockAnyOf(block, Blocks.OBSIDIAN))
+            if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.CHORUS_PLANT, Blocks.CHORUS_FLOWER))
             {
 
             }
