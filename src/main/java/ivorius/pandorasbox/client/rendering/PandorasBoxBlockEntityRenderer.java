@@ -53,6 +53,8 @@ public class PandorasBoxBlockEntityRenderer extends TileEntityRenderer<PandorasB
         top.texOffs(8, 16).addBox(-3.0F, -1.0F, 3.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
         top.texOffs(8, 16).addBox(-0.5F, -1.0F, 6.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
         top.texOffs(8, 16).addBox(-0.5F, -1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        top.texOffs(12, 16).addBox(3.25F, -0.75F, 7.25F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        top.texOffs(16, 16).addBox(-4.25F, -0.75F, 7.25F, 1.0F, 1.0F, 1.0F, 0.0F, false);
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

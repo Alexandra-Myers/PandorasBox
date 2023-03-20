@@ -49,13 +49,11 @@ public class IvRenderHelper {
                 renderer.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_COLOR);
                 float var8 = random.nextFloat() * 20.0F + 5.0F;
                 float var9 = random.nextFloat() * 2.0F + 1.0F;
-                renderer.color(r, g, b, alpha * lightAlpha);
-                renderer.vertex(0.0D, 0.0D, 0.0D).endVertex();
-                renderer.color(r, g, b, 0);
-                renderer.vertex(-width * (double) var9, var8, (-0.5F * var9)).endVertex();
-                renderer.vertex(width * (double) var9, var8, (-0.5F * var9)).endVertex();
-                renderer.vertex(0.0D, var8, (var9)).endVertex();
-                renderer.vertex(-width * (double) var9, var8, (-0.5F * var9)).endVertex();
+                renderer.vertex(0.0D, 0.0D, 0.0D).color(r, g, b, alpha * lightAlpha).endVertex();
+                renderer.vertex(-width * (double) var9, var8, (-0.5F * var9)).color(r, g, b, 0).endVertex();
+                renderer.vertex(width * (double) var9, var8, (-0.5F * var9)).color(r, g, b, 0).endVertex();
+                renderer.vertex(0.0D, var8, (var9)).color(r, g, b, 0).endVertex();
+                renderer.vertex(-width * (double) var9, var8, (-0.5F * var9)).color(r, g, b, 0).endVertex();
                 Tessellator.getInstance().end();
             }
         }
