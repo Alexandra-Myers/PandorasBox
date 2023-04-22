@@ -224,7 +224,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         {
             if (getDeathTicks() < 0)
             {
-                if (!isInvisible() && level instanceof ClientWorld)
+                if (!isInvisible() && level.isClientSide())
                 {
                     double yCenter = getY() + this.getBbHeight() * 0.5;
 
