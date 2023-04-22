@@ -10,7 +10,6 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -108,7 +107,7 @@ public abstract class PBEffect
     public static boolean canSpawnEntity(World world, BlockState block, BlockPos pos, Entity entity)
     {
         if(entity == null) return false;
-        if (world instanceof ClientWorld)
+        if (world.isClientSide())
             return false;
 
         if (block.getLightBlock(world, pos) > 0)
@@ -123,7 +122,7 @@ public abstract class PBEffect
 
     public boolean canSpawnFlyingEntity(World world, BlockState block, BlockPos pos)
     {
-        if (world instanceof ClientWorld)
+        if (world.isClientSide())
             return false;
 
         return !(block.getLightBlock(world, pos) > 0 || world.getBlockState(pos.below()).getLightBlock(world, pos.below()) > 0 || world.getBlockState(pos.below(2)).getLightBlock(world, pos.below(2)) > 0);
