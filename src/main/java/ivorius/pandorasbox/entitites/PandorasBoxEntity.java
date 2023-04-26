@@ -6,20 +6,24 @@
 package ivorius.pandorasbox.entitites;
 
 import ivorius.pandorasbox.PBConfig;
+import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.effects.Vec3d;
 import ivorius.pandorasbox.network.PartialUpdateHandler;
 import net.minecraft.entity.*;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
@@ -47,6 +51,23 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     protected float floatAwayProgress = -1.0f;
 
     protected float scaleInProgress = 1.0f;
+    private static final DataParameter<PBEffect> DATA_EFFECT_ID = EntityDataManager.defineId(PandorasBoxEntity.class,  new IDataSerializer<PBEffect>() {
+        public void write(PacketBuffer p_187160_1_, PBEffect p_187160_2_) {
+            CompoundNBT compound = new CompoundNBT();
+            CompoundNBT effectCompound = new CompoundNBT();
+            PBEffectRegistry.writeEffect(p_187160_2_, effectCompound);
+            compound.put("boxEffect", effectCompound);
+            p_187160_1_.writeNbt(compound);
+        }
+
+        public PBEffect read(PacketBuffer p_187159_1_) {
+            return PBEffectRegistry.loadEffect(p_187159_1_.readNbt().getCompound("boxEffect"));
+        }
+
+        public PBEffect copy(PBEffect p_192717_1_) {
+            return p_192717_1_;
+        }
+    });
 
     protected Vec3d effectCenter = new Vec3d(0, 0, 0);
 
@@ -135,6 +156,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     @Override
     protected void defineSynchedData() {
         this.getEntityData().define(BOX_DEATH_TICKS, -1);
+        this.getEntityData().define(DATA_EFFECT_ID, boxEffect);
     }
 
     @Override

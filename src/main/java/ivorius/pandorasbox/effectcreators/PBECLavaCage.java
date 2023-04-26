@@ -27,13 +27,15 @@ public class PBECLavaCage implements PBEffectCreator
     public Block lavaBlock;
     public Block fillBlock;
     public Collection<WeightedBlock> cageBlocks;
+    public Collection<WeightedBlock> floorBlocks;
 
-    public PBECLavaCage(DValue range, Block lavaBlock, Block fillBlock, Collection<WeightedBlock> cageBlocks)
+    public PBECLavaCage(DValue range, Block lavaBlock, Block fillBlock, Collection<WeightedBlock> cageBlocks, Collection<WeightedBlock> floorBlocks)
     {
         this.range = range;
         this.lavaBlock = lavaBlock;
         this.fillBlock = fillBlock;
         this.cageBlocks = cageBlocks;
+        this.floorBlocks = floorBlocks;
     }
 
     @Override
@@ -43,8 +45,9 @@ public class PBECLavaCage implements PBEffectCreator
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
         Block cageBlock = PandorasBoxHelper.getRandomBlock(random, cageBlocks);
+        Block floorBlock = PandorasBoxHelper.getRandomBlock(random, floorBlocks);
 
-        PBEffectGenLavaCages genLavaCages = new PBEffectGenLavaCages(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), lavaBlock, cageBlock, fillBlock);
+        PBEffectGenLavaCages genLavaCages = new PBEffectGenLavaCages(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), lavaBlock, cageBlock, fillBlock, floorBlock);
         return genLavaCages;
     }
 

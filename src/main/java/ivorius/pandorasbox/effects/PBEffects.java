@@ -40,8 +40,8 @@ public class PBEffects
         PBECRegistry.register(new PBECHeightNoise(new DLinear(8.0, 30.0), new ILinear(-16, 16), new ILinear(1, 32), new ILinear(1, 8)), "heightNoise", false);
         PBECRegistry.register(new PBECRandomShapes(new DLinear(40.0, 150.0), new DLinear(2.0, 5.0), new ILinear(3, 10), PandorasBoxHelper.blocks, new ZConstant(true)), "madGeometry", false);
         PBECRegistry.register(new PBECRandomShapes(new DLinear(40.0, 150.0), new DLinear(1.0, 3.0), new ILinear(10, 80), PandorasBoxHelper.blocks, new ZConstant(false)), "madderGeometry", false);
-        PBECRegistry.register(new PBECLavaCage(new DLinear(15.0, 40.0), Blocks.LAVA, null, Arrays.asList(new WeightedBlock(100, Blocks.IRON_BARS))), "lavaCage", false);
-        PBECRegistry.register(new PBECLavaCage(new DLinear(15.0, 40.0), null, Blocks.WATER, Arrays.asList(new WeightedBlock(100, Blocks.GLASS))), "waterCage", false);
+        PBECRegistry.register(new PBECLavaCage(new DLinear(15.0, 40.0), Blocks.LAVA, null, Arrays.asList(new WeightedBlock(100, Blocks.IRON_BARS), new WeightedBlock(50, Blocks.BLACK_STAINED_GLASS_PANE)), Arrays.asList(new WeightedBlock(70, Blocks.OBSIDIAN), new WeightedBlock(10, Blocks.BEDROCK))), "lavaCage", false);
+        PBECRegistry.register(new PBECLavaCage(new DLinear(15.0, 40.0), null, Blocks.WATER, Arrays.asList(new WeightedBlock(100, Blocks.GLASS_PANE), new WeightedBlock(50, Blocks.OAK_FENCE)), Arrays.asList(new WeightedBlock(70, Blocks.OBSIDIAN), new WeightedBlock(10, Blocks.BEDROCK))), "waterCage", false);
         PBECRegistry.register(new PBECCreativeTowers(new DLinear(5.0, 20.0), new ILinear(3, 10), PandorasBoxHelper.blocks), "classic", false);
         PBECRegistry.register(new PBECSpawnLightning(new ILinear(40, 200), new ILinear(6, 40), new DLinear(10.0, 40.0)), "lightning", false);
         PBECRegistry.register(new PBECConvertToDesert(new DLinear(10.0, 80.0)), "sandForDessert", false);
