@@ -36,13 +36,13 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     }
     @Override
     public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio) {
-        BlockPos blockPos = new BlockPos(effectCenter);
+        BlockPos.Mutable blockPos = new BlockPos.Mutable(effectCenter.x, effectCenter.y, effectCenter.z);
         BlockState state = world.getBlockState(blockPos);
         while(state.isAir()) {
-            blockPos = blockPos.below();
+            blockPos.move(0, -1, 0);
             state = world.getBlockState(blockPos);
         }
-        blockPos = blockPos.below(startingYOffset);
+        blockPos.move(0, -startingYOffset, 0);
         if(x == null) x = blockPos.getX() - length;
         if(y == null) y = blockPos.getY();
         if(z == null) z = blockPos.getZ() - width;
