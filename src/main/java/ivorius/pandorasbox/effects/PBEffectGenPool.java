@@ -39,9 +39,9 @@ public class PBEffectGenPool extends PBEffectGenStructure
     @Override
     public void buildStructure(World world, PandorasBoxEntity entity, BlockPos currentPos, Random random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
         if(platformBlock == null) platformBlock = Blocks.QUARTZ_BLOCK;
-        if(currentPos.getY() == originY) {
+        if (currentPos.getY() == originY) {
             setBlockSafe(world, currentPos, platformBlock.defaultBlockState());
-        } else if(IvMathHelper.compareOffsets(currentPos.getX(), originX, length) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width)) {
+        } else if (IvMathHelper.compareOffsets(currentPos.getX(), originX, length) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width)) {
             setBlockSafe(world, currentPos, platformBlock.defaultBlockState());
         } else if (currentPos.getY() < originY + height) {
             setBlockSafe(world, currentPos, block.defaultBlockState());
