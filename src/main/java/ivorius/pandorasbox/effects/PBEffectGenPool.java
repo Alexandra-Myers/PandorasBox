@@ -6,8 +6,10 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.math.IvMathHelper;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -20,48 +22,31 @@ import java.util.Random;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenPool extends PBEffectGenerate
+public class PBEffectGenPool extends PBEffectGenStructure
 {
     public Block block;
     public Block platformBlock;
     public PBEffectGenPool() {}
 
-    public PBEffectGenPool(int time, double range, int unifiedSeed, Block block, Block platformBlock)
+    public PBEffectGenPool(int time, int maxX, int maxZ, int maxY, int startY, int unifiedSeed, Block block, Block platformBlock)
     {
-        super(time, range, 1, unifiedSeed);
+        super(time, maxX, maxZ, maxY, startY, unifiedSeed);
 
         this.block = block;
         this.platformBlock = platformBlock;
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
-    {
-        if (world instanceof ServerWorld)
-        {
-            if (world.loadedAndEntityCanStandOn(pos, entity))
-            {
-                boolean setPlatform = false;
-
-                if (platformBlock != null)
-                {
-                    List<LivingEntity> entityList = world.getEntitiesOfClass(LivingEntity.class, BlockPositions.expandToAABB(pos, 2.5, 2.5, 2.5));
-
-                    if (entityList.size() > 0)
-                    {
-                        setPlatform = true;
-                    }
-                }
-
-                if (setPlatform)
-                {
-                    setBlockVarying(world, pos, platformBlock, unifiedSeed);
-                }
-                else
-                {
-                    setBlockVarying(world, pos, block, unifiedSeed);
-                }
-            }
+    public void buildStructure(World world, PandorasBoxEntity entity, BlockPos currentPos, Random random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
+        if(platformBlock == null) platformBlock = Blocks.QUARTZ_BLOCK;
+        if(currentPos.getY() == originY) {
+            setBlockSafe(world, currentPos, platformBlock.defaultBlockState());
+        } else if(IvMathHelper.compareOffsets(currentPos.getX(), originX, length) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width)) {
+            setBlockSafe(world, currentPos, platformBlock.defaultBlockState());
+        } else if (currentPos.getY() < originY + height) {
+            setBlockSafe(world, currentPos, block.defaultBlockState());
+        } else {
+            setBlockToAirSafe(world, currentPos);
         }
     }
 

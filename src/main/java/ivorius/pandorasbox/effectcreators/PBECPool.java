@@ -9,6 +9,7 @@ import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenPool;
 import ivorius.pandorasbox.random.DValue;
+import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.MathHelper;
@@ -22,14 +23,18 @@ import java.util.Random;
  */
 public class PBECPool implements PBEffectCreator
 {
-    public DValue range;
+    public IValue rangeX;
+    public IValue rangeY;
+    public IValue rangeZ;
 
     public Block block;
     public Collection<WeightedBlock> platformBlocks;
 
-    public PBECPool(DValue range, Block block, Collection<WeightedBlock> platformBlocks)
+    public PBECPool(IValue rangeX, IValue rangeY, IValue rangeZ, Block block, Collection<WeightedBlock> platformBlocks)
     {
-        this.range = range;
+        this.rangeX = rangeX;
+        this.rangeY = rangeY;
+        this.rangeZ = rangeZ;
         this.block = block;
         this.platformBlocks = platformBlocks;
     }
@@ -37,13 +42,14 @@ public class PBECPool implements PBEffectCreator
     @Override
     public PBEffect constructEffect(World world, double x, double y, double z, Random random)
     {
-        double range = this.range.getValue(random);
-        int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
+        int rangeX = this.rangeX.getValue(random);
+        int rangeY = this.rangeX.getValue(random);
+        int rangeZ = this.rangeX.getValue(random);
+        int time = 2 * (rangeX * rangeY * rangeZ) + 10;
 
         Block platformBlock = PandorasBoxHelper.getRandomBlock(random, platformBlocks);
 
-        PBEffectGenPool genPool = new PBEffectGenPool(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), block, platformBlock);
-        return genPool;
+        return new PBEffectGenPool(time, rangeX, rangeY, rangeZ, rangeY, PandorasBoxHelper.getRandomUnifiedSeed(random), block, platformBlock);
     }
 
     @Override

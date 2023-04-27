@@ -35,8 +35,8 @@ public class PBEffects
         PBECRegistry.register(new PBECReplace(new DLinear(40.0, 120.0), new Block[]{Blocks.WATER, Blocks.LAVA}, Arrays.asList(new WeightedBlock(100, Blocks.AIR)), new ZConstant(false)), "dryness", false);
         PBECRegistry.register(new PBECSpawnTNT(new ILinear(20, 100), new ILinear(5, 50), new ILinear(20, 1000), new ValueThrow(new DLinear(0.2, 2.0), new DLinear(0.5, 5.0)), new ValueSpawn(new DLinear(5.0, 50.0), new DConstant(0.0))), "tntSplosion", false);
         PBECRegistry.register(new PBECMulti(new PBECSpawnManySameItems(new ILinear(10, 30), PandorasBoxHelper.blocksAndItems), 0, new PBECSpawnTNT(new ILinear(20, 60), new ILinear(1, 10), new ILinear(20, 60), new ValueThrow(new DLinear(0.2, 0.5), new DLinear(0.3, 0.5)), new ValueSpawn(new DLinear(3.0, 10.0), new DConstant(0.0))), 60), "dirtyTrick", false);
-        PBECRegistry.register(new PBECPool(new DLinear(10.0, 30.0), Blocks.WATER, PandorasBoxHelper.blocks), "waterPool", false);
-        PBECRegistry.register(new PBECPool(new DLinear(10.0, 30.0), Blocks.LAVA, PandorasBoxHelper.blocks), "lavaPool", false);
+        PBECRegistry.register(new PBECPool(new ILinear(5, 15), new ILinear(5, 10), new ILinear(5, 15), Blocks.WATER, PandorasBoxHelper.blocks), "waterPool", true);
+        PBECRegistry.register(new PBECPool(new ILinear(5, 15), new ILinear(5, 10), new ILinear(5, 15), Blocks.LAVA, PandorasBoxHelper.blocks), "lavaPool", false);
         PBECRegistry.register(new PBECHeightNoise(new DLinear(8.0, 30.0), new ILinear(-16, 16), new ILinear(1, 32), new ILinear(1, 8)), "heightNoise", false);
         PBECRegistry.register(new PBECRandomShapes(new DLinear(40.0, 150.0), new DLinear(2.0, 5.0), new ILinear(3, 10), PandorasBoxHelper.blocks, new ZConstant(true)), "madGeometry", false);
         PBECRegistry.register(new PBECRandomShapes(new DLinear(40.0, 150.0), new DLinear(1.0, 3.0), new ILinear(10, 80), PandorasBoxHelper.blocks, new ZConstant(false)), "madderGeometry", false);

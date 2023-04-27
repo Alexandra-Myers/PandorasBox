@@ -24,8 +24,10 @@ import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraft.entity.EntityType;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.structure.VillageConfig;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -97,6 +99,9 @@ public class PandorasBox
         COLOURFUL_TREE = Registry.COLOURFUL_TREE.get();
         RAINBOW = Registry.RAINBOW.get();
         MEGA_JUNGLE = Registry.MEGA_JUNGLE.get();
+//        if(SHRINE == null) {
+//            SHRINE = WorldGenRegistries.register(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE, "shrine", SHRINE_STRUCTURE.get().configured(new VillageConfig(() -> START, 7)));
+//        }
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, PBConfig.commonSpec);
         PBConfig.loadConfig();
 

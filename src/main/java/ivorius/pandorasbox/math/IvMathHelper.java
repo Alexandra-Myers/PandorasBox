@@ -136,4 +136,16 @@ public class IvMathHelper
     {
         return clamp(0.0, (value - min) / (max - min), 1.0);
     }
+
+    public static boolean compareOffsets(int base, int origin, int offset) {
+        return base == origin + offset || base == origin - offset;
+    }
+
+    public static boolean compareOffsets(float base, float origin, float offset) {
+        return base == origin + offset || base == origin - offset;
+    }
+
+    public static boolean compareOffsets(double base, double origin, double offset) {
+        return base == origin + offset || base == origin - offset;
+    }
 }

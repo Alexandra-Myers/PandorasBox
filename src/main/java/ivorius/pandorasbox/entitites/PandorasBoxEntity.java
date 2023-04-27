@@ -49,9 +49,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
     protected boolean floatUp = false;
     protected float floatAwayProgress = -1.0f;
-
-    protected float scaleInProgress = 1.0f;
-    private static final DataParameter<PBEffect> DATA_EFFECT_ID = EntityDataManager.defineId(PandorasBoxEntity.class,  new IDataSerializer<PBEffect>() {
+    public static final IDataSerializer<PBEffect> PBEFFECT_SERIALIZER = new IDataSerializer<PBEffect>() {
         public void write(PacketBuffer p_187160_1_, PBEffect p_187160_2_) {
             CompoundNBT compound = new CompoundNBT();
             CompoundNBT effectCompound = new CompoundNBT();
@@ -67,7 +65,10 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         public PBEffect copy(PBEffect p_192717_1_) {
             return p_192717_1_;
         }
-    });
+    };
+
+    protected float scaleInProgress = 1.0f;
+    private static final DataParameter<PBEffect> DATA_EFFECT_ID = EntityDataManager.defineId(PandorasBoxEntity.class, PBEFFECT_SERIALIZER);
 
     protected Vec3d effectCenter = new Vec3d(0, 0, 0);
 
@@ -156,7 +157,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     @Override
     protected void defineSynchedData() {
         this.getEntityData().define(BOX_DEATH_TICKS, -1);
-        this.getEntityData().define(DATA_EFFECT_ID, boxEffect);
+        this.getEntityData().define(DATA_EFFECT_ID, null);
     }
 
     @Override
@@ -316,6 +317,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         timeBoxWaiting = random.nextInt(40);
 
         boxEffect = ensureNotNull(PBECRegistry.createRandomEffect(level, random, effectCenter.x, effectCenter.y, effectCenter.z, true));
+        entityData.set(DATA_EFFECT_ID, boxEffect);
     }
 
     public void startFadingOut()
@@ -348,12 +350,13 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
     public PBEffect getBoxEffect()
     {
-        return boxEffect;
+        return entityData.get(DATA_EFFECT_ID);
     }
 
     public void setBoxEffect(PBEffect effect)
     {
         boxEffect = ensureNotNull(effect);
+        entityData.set(DATA_EFFECT_ID, boxEffect);
     }
     public PBEffect ensureNotNull(PBEffect input) {
         while(input == null) {
