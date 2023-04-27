@@ -3,6 +3,7 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effectcreators.*;
 import ivorius.pandorasbox.random.*;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedEntity;
@@ -11,7 +12,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.Direction;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -37,6 +40,17 @@ public class PBEffects
         PBECRegistry.register(new PBECMulti(new PBECSpawnManySameItems(new ILinear(10, 30), PandorasBoxHelper.blocksAndItems), 0, new PBECSpawnTNT(new ILinear(20, 60), new ILinear(1, 10), new ILinear(20, 60), new ValueThrow(new DLinear(0.2, 0.5), new DLinear(0.3, 0.5)), new ValueSpawn(new DLinear(3.0, 10.0), new DConstant(0.0))), 60), "dirtyTrick", false);
         PBECRegistry.register(new PBECPool(new ILinear(5, 15), new ILinear(5, 10), new ILinear(5, 15), Blocks.WATER, PandorasBoxHelper.blocks), "waterPool", true);
         PBECRegistry.register(new PBECPool(new ILinear(5, 15), new ILinear(5, 10), new ILinear(5, 15), Blocks.LAVA, PandorasBoxHelper.blocks), "lavaPool", false);
+//        ArrayList<ArrayListExtensions<WeightedBlock>> blockArrayList = new ArrayList<>();
+//        ArrayListExtensions<WeightedBlock> stoneBricks = new ArrayListExtensions<>();
+//        stoneBricks.addAll(new WeightedBlock(100, Blocks.STONE_BRICKS), new WeightedBlock(90, Blocks.CRACKED_STONE_BRICKS), new WeightedBlock(50, Blocks.MOSSY_STONE_BRICKS), new WeightedBlock(10, Blocks.CHISELED_STONE_BRICKS));
+//        ArrayListExtensions<WeightedBlock> blackstoneBricks = new ArrayListExtensions<>();
+//        blackstoneBricks.addAll(new WeightedBlock(100, Blocks.POLISHED_BLACKSTONE_BRICKS), new WeightedBlock(90, Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS), new WeightedBlock(10, Blocks.CHISELED_POLISHED_BLACKSTONE));
+//        blockArrayList.add(blackstoneBricks);
+//        blockArrayList.add(stoneBricks);
+//        ArrayListExtensions<RandomizedItemStack> loot = new ArrayListExtensions<>();
+//        loot.addAll(new RandomizedItemStack(Items.GOLD_NUGGET, 1, 5, 60), new RandomizedItemStack(Items.IRON_NUGGET, 1, 3, 35), new RandomizedItemStack(Items.FLINT, 1, 3, 80), new RandomizedItemStack(Items.FLINT_AND_STEEL, 1, 1, 20), new RandomizedItemStack(Items.OBSIDIAN, 1, 3, 10), new RandomizedItemStack(Items.ENCHANTED_GOLDEN_APPLE, 1, 3, 5), new RandomizedItemStack(Items.GOLDEN_AXE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_SWORD, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_HOE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_PICKAXE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_SHOVEL, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_HELMET, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_CHESTPLATE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_LEGGINGS, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_BOOTS, 1, 1, 20));
+//        PBECRegistry.register(new PBECRuinedPortal(new ILinear(5, 15), new ILinear(5, 10), new ILinear(5, 15), new ILinear(2, 5), blockArrayList, loot, Direction.Axis.X), "gatewayToHellX", false);
+//        PBECRegistry.register(new PBECRuinedPortal(new ILinear(5, 15), new ILinear(5, 10), new ILinear(5, 15), new ILinear(2, 5), blockArrayList, loot, Direction.Axis.Z), "gatewayToHellZ", false);
         PBECRegistry.register(new PBECHeightNoise(new DLinear(8.0, 30.0), new ILinear(-16, 16), new ILinear(1, 32), new ILinear(1, 8)), "heightNoise", false);
         PBECRegistry.register(new PBECRandomShapes(new DLinear(40.0, 150.0), new DLinear(2.0, 5.0), new ILinear(3, 10), PandorasBoxHelper.blocks, new ZConstant(true)), "madGeometry", false);
         PBECRegistry.register(new PBECRandomShapes(new DLinear(40.0, 150.0), new DLinear(1.0, 3.0), new ILinear(10, 80), PandorasBoxHelper.blocks, new ZConstant(false)), "madderGeometry", false);

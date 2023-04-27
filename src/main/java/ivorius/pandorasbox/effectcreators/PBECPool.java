@@ -43,9 +43,9 @@ public class PBECPool implements PBEffectCreator
     public PBEffect constructEffect(World world, double x, double y, double z, Random random)
     {
         int rangeX = this.rangeX.getValue(random);
-        int rangeY = this.rangeX.getValue(random);
-        int rangeZ = this.rangeX.getValue(random);
-        int time = 2 * (rangeX * rangeY * rangeZ) + 10;
+        int rangeY = this.rangeY.getValue(random);
+        int rangeZ = this.rangeZ.getValue(random);
+        int time = 3 * (rangeX * rangeY * rangeZ) + 10;
 
         Block platformBlock = PandorasBoxHelper.getRandomBlock(random, platformBlocks);
 
