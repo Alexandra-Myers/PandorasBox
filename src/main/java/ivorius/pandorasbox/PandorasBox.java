@@ -95,6 +95,7 @@ public class PandorasBox
 
     public void preInit(final FMLCommonSetupEvent event)
     {
+        PBEffects.registerEffects();
         LOLIPOP = Registry.LOLIPOP.get();
         COLOURFUL_TREE = Registry.COLOURFUL_TREE.get();
         RAINBOW = Registry.RAINBOW.get();

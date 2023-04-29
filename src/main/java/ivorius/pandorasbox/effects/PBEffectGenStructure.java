@@ -18,9 +18,11 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     public int height;
     public int startingYOffset;
     public int unifiedSeed;
-    public Integer x = null;
-    public Integer y = null;
-    public Integer z = null;
+    public int x;
+    public int y;
+    public int z;
+    public boolean hasAlreadyStarted = false;
+    public BlockPos.Mutable blockPos = new BlockPos.Mutable();
 
     public PBEffectGenStructure() {
     }
@@ -36,16 +38,19 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     }
     @Override
     public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio) {
-        BlockPos.Mutable blockPos = new BlockPos.Mutable(effectCenter.x, effectCenter.y, effectCenter.z);
+        blockPos.set(effectCenter.x, effectCenter.y, effectCenter.z);
         BlockState state = world.getBlockState(blockPos);
-        while(state.isAir()) {
-            blockPos.move(0, -1, 0);
-            state = world.getBlockState(blockPos);
+        if(!hasAlreadyStarted) {
+            while (state.isAir()) {
+                blockPos.move(0, -1, 0);
+                state = world.getBlockState(blockPos);
+            }
+            blockPos.move(0, -startingYOffset, 0);
+            x = blockPos.getX() - length;
+            y = blockPos.getY();
+            z = blockPos.getZ() - width;
+            hasAlreadyStarted = true;
         }
-        blockPos.move(0, -startingYOffset, 0);
-        if(x == null) x = blockPos.getX() - length;
-        if(y == null) y = blockPos.getY();
-        if(z == null) z = blockPos.getZ() - width;
         if (y <= blockPos.getY() + height) {
             if (x <= blockPos.getX() + length) {
                 if (z <= blockPos.getZ() + width) {
@@ -70,12 +75,14 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
         compound.putInt("length", length);
         compound.putInt("width", width);
         compound.putInt("height", height);
-        if(!PBECRegistry.isAnyNull(x, y, z)) {
-            compound.putInt("x", x);
-            compound.putInt("y", y);
-            compound.putInt("z", z);
-        }
+        compound.putInt("x", x);
+        compound.putInt("y", y);
+        compound.putInt("z", z);
+        compound.putBoolean("alreadyStarted", hasAlreadyStarted);
         compound.putInt("startingYOffset", startingYOffset);
+        compound.putInt("centerX", blockPos.getX());
+        compound.putInt("centerY", blockPos.getY());
+        compound.putInt("centerZ", blockPos.getZ());
     }
 
     @Override
@@ -89,6 +96,11 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
         x = compound.getInt("x");
         y = compound.getInt("y");
         z = compound.getInt("z");
+        blockPos.setX(compound.getInt("centerX"));
+        blockPos.setY(compound.getInt("centerY"));
+        blockPos.setZ(compound.getInt("centerZ"));
+        hasAlreadyStarted = compound.getBoolean("alreadyStarted");
+
         startingYOffset = compound.getInt("startingYOffset");
     }
 }

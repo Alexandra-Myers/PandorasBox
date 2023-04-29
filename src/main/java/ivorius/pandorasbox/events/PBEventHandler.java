@@ -139,8 +139,6 @@ public class PBEventHandler
                 pots.add(block);
             }
         }
-        PBEffects.registerEffects();
-
         PBEffects.registerEffectCreators();
     }
     public BlockPos getPosInFront(BlockPos pos, Direction direction) {

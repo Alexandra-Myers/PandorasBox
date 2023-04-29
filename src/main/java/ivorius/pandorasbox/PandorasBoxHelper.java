@@ -234,6 +234,22 @@ public class PandorasBoxHelper
 
     public static void initialize()
     {
+        mobs = new ArrayList<>();
+        creatures = new ArrayList<>();
+        waterCreatures = new ArrayList<>();
+        waterMobs = new ArrayList<>();
+        tameableCreatures = new ArrayList<>();
+        blocks = new ArrayList<>();
+        randomizableBlockProperties = HashMultimap.create();
+        blocksAndItems = new ArrayList<>();
+        items = new ArrayList<>();
+        equipmentSets = new ArrayList<>();
+        equipmentForLevels = new Hashtable<>();
+        buffs = new ArrayList<>();
+        debuffs = new ArrayList<>();
+        enchantableArmorList = new ArrayList<>();
+        enchantableToolList = new ArrayList<>();
+        heavyBlocks = new ArrayList<>();
         addEntities(mobs, 10.0, 3, 10, "zombie", "drowned");
         addEntities(mobs, 10.0, 2, 8, "spider");
         addEntities(mobs, 10.0, 2, 5, "skeleton");

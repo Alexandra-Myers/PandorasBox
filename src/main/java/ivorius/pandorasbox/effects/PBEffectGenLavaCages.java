@@ -77,7 +77,7 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     public void createFloorOrCeil(World world, int originX, int y, int originZ, int offset) {
         for (int x = originX - offset; x <= originX + offset; x++) {
             for(int z = originZ - offset; z <= originZ + offset; z++) {
-                setBlockVarying(world, new BlockPos(x, y, z), floorBlock, unifiedSeed);
+                setBlockVaryingUnsafeSrc(world, new BlockPos(x, y, z), floorBlock, unifiedSeed);
             }
         }
     }

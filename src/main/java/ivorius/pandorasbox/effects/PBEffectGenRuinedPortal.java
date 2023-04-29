@@ -51,8 +51,8 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
                 && currentPos.getY() < originY + height
                 && axis == Direction.Axis.Z
                 && (IvMathHelper.compareOffsets(currentPos.getZ(), originZ, portalZAxis)
-                || ((currentPos.getY() == originY + startingYOffset || currentPos.getY() == originY + height - 1)
-                && (currentPos.getZ() <= originZ + portalZAxis && currentPos.getZ() >= originZ - portalZAxis)))) {
+                    || ((currentPos.getY() == originY + startingYOffset || currentPos.getY() == originY + height - 1)
+                    && (currentPos.getZ() <= originZ + portalZAxis && currentPos.getZ() >= originZ - portalZAxis)))) {
             if(random.nextDouble() > 0.25) {
                 if(random.nextDouble() > 0.75) {
                     setBlockSafe(world, currentPos, Blocks.CRYING_OBSIDIAN.defaultBlockState());

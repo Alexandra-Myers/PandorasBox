@@ -45,7 +45,7 @@ public class PBECPool implements PBEffectCreator
         int rangeX = this.rangeX.getValue(random);
         int rangeY = this.rangeY.getValue(random);
         int rangeZ = this.rangeZ.getValue(random);
-        int time = 3 * (rangeX * rangeY * rangeZ) + 10;
+        int time = 3 * (rangeX * rangeY * rangeZ) + 50;
 
         Block platformBlock = PandorasBoxHelper.getRandomBlock(random, platformBlocks);
 
