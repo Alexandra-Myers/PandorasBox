@@ -39,7 +39,6 @@ public class PBEffectGenPool extends PBEffectGenStructure
     @Override
     public void buildStructure(World world, PandorasBoxEntity entity, BlockPos currentPos, Random random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
         if(platformBlock == null) platformBlock = Blocks.QUARTZ_BLOCK;
-        if(world.isClientSide()) return;
         ServerWorld serverWorld = (ServerWorld) world;
         if (currentPos.getY() == originY) {
             setBlockSafe(serverWorld, currentPos, platformBlock.defaultBlockState());

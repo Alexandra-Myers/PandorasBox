@@ -202,7 +202,8 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
                     if (effectTicksExisted == 0)
                         setEffectCenter(getX(), getY(), getZ());
 
-                    effect.doTick(this, effectCenter, effectTicksExisted);
+                    if(!level.isClientSide)
+                        effect.doTick(this, effectCenter, effectTicksExisted);
                 }
             }
         }
