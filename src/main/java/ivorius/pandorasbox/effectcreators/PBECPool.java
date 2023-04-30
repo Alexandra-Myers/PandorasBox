@@ -45,11 +45,11 @@ public class PBECPool implements PBEffectCreator
         int rangeX = this.rangeX.getValue(random);
         int rangeY = this.rangeY.getValue(random);
         int rangeZ = this.rangeZ.getValue(random);
-        int time = 3 * (rangeX * rangeY * rangeZ) + 50;
+        int time = 6 * (rangeX * rangeY * rangeZ) + 50;
 
         Block platformBlock = PandorasBoxHelper.getRandomBlock(random, platformBlocks);
 
-        return new PBEffectGenPool(time, rangeX, rangeY, rangeZ, rangeY, PandorasBoxHelper.getRandomUnifiedSeed(random), block, platformBlock);
+        return new PBEffectGenPool(time, rangeX, rangeZ, rangeY, rangeY, PandorasBoxHelper.getRandomUnifiedSeed(random), block, platformBlock);
     }
 
     @Override

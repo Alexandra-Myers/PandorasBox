@@ -30,7 +30,7 @@ public class PBEffectGenPool extends PBEffectGenStructure
 
     public PBEffectGenPool(int time, int maxX, int maxZ, int maxY, int startY, int unifiedSeed, Block block, Block platformBlock)
     {
-        super(time, maxX, maxZ, maxY, startY, unifiedSeed);
+        super(time, maxX, maxZ, maxY, startY, unifiedSeed, false);
 
         this.block = block;
         this.platformBlock = platformBlock;
