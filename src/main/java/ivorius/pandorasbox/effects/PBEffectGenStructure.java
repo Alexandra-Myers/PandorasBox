@@ -22,6 +22,7 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     public int y;
     public int z;
     public boolean hasAlreadyStarted = false;
+    public boolean grounded = true;
     public BlockPos.Mutable blockPos = new BlockPos.Mutable();
 
     public PBEffectGenStructure() {
@@ -29,11 +30,16 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
 
     public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed)
     {
+        this(maxTicksAlive, maxX, maxZ, maxY, startY, unifiedSeed, true);
+    }
+    public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed, boolean grounded)
+    {
         super(maxTicksAlive);
         length = maxX;
         width = maxZ;
         height = maxY;
         startingYOffset = startY;
+        this.grounded = grounded;
         this.unifiedSeed = unifiedSeed;
     }
     @Override
@@ -43,9 +49,11 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
         if(!hasAlreadyStarted) {
             blockPos.set(effectCenter.x, effectCenter.y, effectCenter.z);
             BlockState state = world.getBlockState(blockPos);
-            while (state.isAir()) {
-                blockPos.move(0, -1, 0);
-                state = world.getBlockState(blockPos);
+            if(grounded) {
+                while (state.isAir()) {
+                    blockPos.move(0, -1, 0);
+                    state = world.getBlockState(blockPos);
+                }
             }
             blockPos.move(0, -startingYOffset, 0);
             x = blockPos.getX() - length;
@@ -81,6 +89,7 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
         compound.putInt("y", y);
         compound.putInt("z", z);
         compound.putBoolean("alreadyStarted", hasAlreadyStarted);
+        compound.putBoolean("grounded", grounded);
         compound.putInt("startingYOffset", startingYOffset);
         compound.putInt("centerX", blockPos.getX());
         compound.putInt("centerY", blockPos.getY());
@@ -102,6 +111,7 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
         blockPos.setY(compound.getInt("centerY"));
         blockPos.setZ(compound.getInt("centerZ"));
         hasAlreadyStarted = compound.getBoolean("alreadyStarted");
+        grounded = compound.getBoolean("grounded");
 
         startingYOffset = compound.getInt("startingYOffset");
     }
