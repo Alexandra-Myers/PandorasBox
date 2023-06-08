@@ -6,24 +6,28 @@
 package ivorius.pandorasbox.block;
 
 import ivorius.pandorasbox.init.Registry;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 15.04.14.
  */
-public class PandorasBoxBlockEntity extends TileEntity
+public class PandorasBoxBlockEntity extends BlockEntity
 {
     private float rotationYaw;
 
-    public PandorasBoxBlockEntity() {
-        super(Registry.TEPB.get());
+    public PandorasBoxBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
+        super(Registry.TEPB.get(), p_155229_, p_155230_);
     }
 
     public static float rotationFromFacing(Direction facing)
@@ -53,28 +57,32 @@ public class PandorasBoxBlockEntity extends TileEntity
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compoundNBT) {
-        compoundNBT.putFloat("boxRotationYaw", rotationYaw);
-        return super.save(compoundNBT);
+    protected void saveAdditional(CompoundTag compoundTag) {
+        compoundTag.putFloat("boxRotationYaw", rotationYaw);
+        super.saveAdditional(compoundTag);
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT compoundNBT) {
+    public void load(CompoundTag compoundNBT) {
         rotationYaw = compoundNBT.getFloat("boxRotationYaw");
-        super.load(state, compoundNBT);
+        super.load(compoundNBT);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        load(level.getBlockState(pkt.getPos()), pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        super.onDataPacket(net, pkt);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag compoundTag = super.getUpdateTag();
+        saveAdditional(compoundTag);
+        return compoundTag;
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket()
-    {
-        CompoundNBT compound = new CompoundNBT();
-        save(compound);
-        return new SUpdateTileEntityPacket(worldPosition, 1, compound);
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 }

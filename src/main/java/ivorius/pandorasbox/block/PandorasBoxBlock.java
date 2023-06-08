@@ -7,28 +7,32 @@ package ivorius.pandorasbox.block;
 
 import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.items.PandorasBoxItem;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.advancements.critereon.ItemUsedOnLocationTrigger;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.StateHolder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -36,14 +40,14 @@ import java.util.Objects;
 /**
  * Created by lukas on 15.04.14.
  */
-public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWaterLoggable
+public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterloggedBlock
 {
     public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public PandorasBoxBlock()
     {
-        super(Block.Properties.of(Material.WOOD).strength(0.5f));
+        super(Block.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(0.5f));
         registerDefaultState(stateDefinition.any().setValue(DIRECTION, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
@@ -54,54 +58,49 @@ public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWat
     public BlockState mirror(BlockState p_185471_1_, Mirror p_185471_2_) {
         return p_185471_1_.rotate(p_185471_2_.getRotation(p_185471_1_.getValue(DIRECTION)));
     }
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return Registry.TEPB.get().create();
-    }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Override
-    public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+    public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
         return Block.box(3.2, 0.0, 3.2, 12.8, 9.6, 12.8);
     }
 
     @Override
     public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
         PandorasBoxItem.executeRandomEffect(worldIn, player, pos, false);
         worldIn.removeBlock(pos, false);
         worldIn.removeBlockEntity(pos);
 
-        return ActionResultType.SUCCESS;
-    }
-    @Override
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
+    }
+
+    @Override
+    public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
         worldIn.setBlock(pos, this.defaultBlockState().setValue(DIRECTION, livingEntity.getDirection().getOpposite()), 2);
-        TileEntity tileEntity = worldIn.getBlockEntity(pos);
+        BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
         if (tileEntity instanceof PandorasBoxBlockEntity)
-            ((PandorasBoxBlockEntity) tileEntity).setRotationYaw(livingEntity.yRot + 180);
+            ((PandorasBoxBlockEntity) tileEntity).setRotationYaw(livingEntity.yBodyRot + 180);
         super.setPlacedBy(worldIn, pos, state, livingEntity, itemStack);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(DIRECTION, WATERLOGGED);
     }
 
     public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction[] var2 = context.getNearestLookingDirections();
 
         for (Direction lvt_5_1_ : var2) {
@@ -111,9 +110,9 @@ public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWat
             } else {
                 lvt_6_2_ = this.defaultBlockState().setValue(DIRECTION, lvt_5_1_.getOpposite());
             }
-            IWorld iworld = context.getLevel();
+            Level level = context.getLevel();
             BlockPos blockpos = context.getClickedPos();
-            boolean flag = iworld.getFluidState(blockpos).getType() == Fluids.WATER;
+            boolean flag = level.getFluidState(blockpos).getType() == Fluids.WATER;
             lvt_6_2_ = lvt_6_2_.setValue(WATERLOGGED, flag);
 
             if (lvt_6_2_.canSurvive(context.getLevel(), context.getClickedPos())) {
@@ -124,9 +123,9 @@ public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWat
         return null;
     }
 
-    @Nullable
+    @org.jetbrains.annotations.Nullable
     @Override
-    public TileEntity newBlockEntity(IBlockReader worldIn) {
+    public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
         return Registry.TEPB.get().create();
     }
 }

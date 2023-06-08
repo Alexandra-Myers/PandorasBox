@@ -15,12 +15,15 @@ import ivorius.pandorasbox.network.PartialUpdateHandler;
 import net.minecraft.entity.*;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.datasync.IDataSerializer;
+import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
@@ -49,17 +52,19 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
     protected boolean floatUp = false;
     protected float floatAwayProgress = -1.0f;
-    public static final IDataSerializer<PBEffect> PBEFFECT_SERIALIZER = new IDataSerializer<PBEffect>() {
-        public void write(PacketBuffer p_187160_1_, PBEffect p_187160_2_) {
-            CompoundNBT compound = new CompoundNBT();
-            CompoundNBT effectCompound = new CompoundNBT();
-            PBEffectRegistry.writeEffect(p_187160_2_, effectCompound);
+    public static final EntityDataSerializer<PBEffect> PBEFFECT_SERIALIZER = new EntityDataSerializer<PBEffect>() {
+        @Override
+        public void write(FriendlyByteBuf p_135025_, PBEffect p_135026_) {
+            CompoundTag compound = new CompoundTag();
+            CompoundTag effectCompound = new CompoundTag();
+            PBEffectRegistry.writeEffect(p_135026_, effectCompound);
             compound.put("boxEffect", effectCompound);
-            p_187160_1_.writeNbt(compound);
+            p_135025_.writeNbt(compound);
         }
 
-        public PBEffect read(PacketBuffer p_187159_1_) {
-            return PBEffectRegistry.loadEffect(p_187159_1_.readNbt().getCompound("boxEffect"));
+        @Override
+        public PBEffect read(FriendlyByteBuf p_135024_) {
+            return PBEffectRegistry.loadEffect(p_135024_.readNbt().getCompound("boxEffect"));
         }
 
         public PBEffect copy(PBEffect p_192717_1_) {
@@ -398,16 +403,16 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         readBoxData(compound);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         writeBoxData(compound);
     }
 
-    public void readBoxData(CompoundNBT compound)
+    public void readBoxData(CompoundTag compound)
     {
         setBoxEffect(PBEffectRegistry.loadEffect(compound.getCompound("boxEffect")));
 
@@ -424,9 +429,9 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
             setEffectCenter(getX(), getY(), getZ());
     }
 
-    public void writeBoxData(CompoundNBT compound)
+    public void writeBoxData(CompoundTag compound)
     {
-        CompoundNBT effectCompound = new CompoundNBT();
+        CompoundTag effectCompound = new CompoundTag();
         PBEffectRegistry.writeEffect(getBoxEffect(), effectCompound);
         compound.put("boxEffect", effectCompound);
 
@@ -443,22 +448,22 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    public void writeUpdateData(PacketBuffer buffer, String context)
+    public void writeUpdateData(FriendlyByteBuf buffer, String context)
     {
         if (context.equals("boxEffect"))
         {
-            CompoundNBT compound = new CompoundNBT();
+            CompoundTag compound = new CompoundTag();
             writeBoxData(compound);
             buffer.writeNbt(compound);
         }
     }
 
     @Override
-    public void readUpdateData(PacketBuffer buffer, String context)
+    public void readUpdateData(FriendlyByteBuf buffer, String context)
     {
         if (context.equals("boxEffect"))
         {
-            CompoundNBT compound = buffer.readNbt();
+            CompoundTag compound = buffer.readNbt();
 
             if (compound != null)
             {
@@ -468,15 +473,15 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
-        CompoundNBT compound = new CompoundNBT();
+    public void writeSpawnData(FriendlyByteBuf buffer) {
+        CompoundTag compound = new CompoundTag();
         writeBoxData(compound);
         buffer.writeNbt(compound);
     }
 
     @Override
-    public void readSpawnData(PacketBuffer additionalData) {
-        CompoundNBT compound = additionalData.readNbt();
+    public void readSpawnData(FriendlyByteBuf additionalData) {
+        CompoundTag compound = additionalData.readNbt();
 
         if (compound != null)
             readBoxData(compound);
