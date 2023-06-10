@@ -30,6 +30,7 @@ import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -89,6 +90,14 @@ public class PBEventHandler
     }
     @SubscribeEvent
     public void serverInit(FMLServerStartedEvent event) {
+        initPB();
+    }
+    @SubscribeEvent
+    public void datapackReload(OnDatapackSyncEvent event) {
+        if(event.getPlayer() != null) return;
+        initPB();
+    }
+    public void initPB() {
         logs = new ArrayListExtensions<>();
         leaves = new ArrayListExtensions<>();
         flowers = new ArrayListExtensions<>();

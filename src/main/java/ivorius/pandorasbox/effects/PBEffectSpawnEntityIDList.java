@@ -29,7 +29,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -225,10 +227,10 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
                 if (nearest != null)
                 {
-                    wolf.setTame(true);
+                    wolf.finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(x,y, z)), SpawnReason.NATURAL, null, null);
+                    wolf.tame(nearest);
                     wolf.getNavigation().stop();
                     wolf.setTarget(null);
-                    wolf.setOwnerUUID(nearest.getUUID());
                     wolf.level.broadcastEntityEvent(wolf, (byte) 7);
                 }
 
@@ -245,9 +247,8 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
                 if (nearest != null)
                 {
-                    ocelot.setTame(true);
-                    ocelot.setCatType(1 + ocelot.level.random.nextInt(10));
-                    ocelot.setOwnerUUID(nearest.getUUID());
+                    ocelot.finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(x,y, z)), SpawnReason.NATURAL, null, null);
+                    ocelot.tame(nearest);
                     ocelot.level.broadcastEntityEvent(ocelot, (byte) 7);
                 }
 
@@ -287,6 +288,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             {
                 WolfEntity wolf = EntityType.WOLF.create(world);
                 assert wolf != null;
+                wolf.finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(x,y, z)), SpawnReason.NATURAL, null, null);
                 wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 wolf.setTarget(world.getNearestPlayer(x, y, z, 40.0, false));
 
@@ -296,6 +298,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             {
                 CreeperEntity creeper = EntityType.CREEPER.create(world);
                 assert creeper != null;
+                creeper.finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(x,y, z)), SpawnReason.NATURAL, null, null);
                 creeper.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 creeper.getEntityData().set(creeperPoweredParameter(), true);
                 return creeper;
@@ -304,6 +307,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             {
                 WitherSkeletonEntity skeleton = EntityType.WITHER_SKELETON.create(world);
                 assert skeleton != null;
+                skeleton.finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(x,y, z)), SpawnReason.NATURAL, null, null);
                 skeleton.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
                 skeleton.setItemSlot(EquipmentSlotType.MAINHAND, new ItemStack(Items.STONE_SWORD));
@@ -315,6 +319,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             {
                 ElderGuardianEntity entity = EntityType.ELDER_GUARDIAN.create(world);
                 assert entity != null;
+                entity.finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(x,y, z)), SpawnReason.NATURAL, null, null);
                 entity.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
                 return entity;
@@ -331,6 +336,9 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             }
             if(entity1 instanceof HoglinEntity) {
                 ((HoglinEntity)entity1).setImmuneToZombification(true);
+            }
+            if(entity1 instanceof MobEntity) {
+                ((MobEntity) entity1).finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(x,y, z)), SpawnReason.NATURAL, null, null);
             }
 
             return entity1;
