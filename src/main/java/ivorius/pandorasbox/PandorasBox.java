@@ -47,6 +47,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 
+import static ivorius.pandorasbox.init.Registry.PBEFFECTARGUMENT;
 import static net.minecraft.core.registries.BuiltInRegistries.COMMAND_ARGUMENT_TYPE;
 import static net.minecraftforge.registries.ForgeRegistries.COMMAND_ARGUMENT_TYPES;
 

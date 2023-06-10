@@ -30,12 +30,4 @@ public class PBClientEventHandler {
             event.accept(Registry.PB);
         }
     }
-    @SubscribeEvent
-    public void gatherData(GatherDataEvent event) {
-        DataGenerator gen = event.getGenerator();
-        PackOutput packOutput = gen.getPackOutput();
-
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        gen.addProvider(event.includeClient(), new PBSpriteSourceProvider(packOutput, existingFileHelper));
-    }
 }

@@ -3,6 +3,7 @@ package ivorius.pandorasbox.events;
 import com.mojang.serialization.Codec;
 import ivorius.pandorasbox.PBConfig;
 import ivorius.pandorasbox.PandorasBox;
+import ivorius.pandorasbox.client.PBSpriteSourceProvider;
 import ivorius.pandorasbox.commands.CommandPandorasBox;
 import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.init.Registry;
@@ -11,6 +12,8 @@ import ivorius.pandorasbox.weighted.WeightedSelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.animal.Cat;
@@ -26,6 +29,8 @@ import net.minecraft.world.level.block.StainedGlassBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
@@ -69,6 +74,14 @@ public class PBEventHandler
             ((BlockItem) item).place(new BlockPlaceContext(event.getEntity(), event.getHand(), stack,
                     new BlockHitResult(new Vec3(frontPos.getX() + 0.5 + direction.getStepX() * 0.5, frontPos.getY() + 0.5 + direction.getStepY() * 0.5, frontPos.getZ() + 0.5 + direction.getStepZ() * 0.5), direction, frontPos, false)));
         }
+    }
+    @SubscribeEvent
+    public void gatherData(GatherDataEvent event) {
+        DataGenerator gen = event.getGenerator();
+        PackOutput packOutput = gen.getPackOutput();
+
+        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        gen.addProvider(event.includeClient(), new PBSpriteSourceProvider(packOutput, existingFileHelper));
     }
     @SubscribeEvent
     public void serverInit(ServerStartedEvent event) {
