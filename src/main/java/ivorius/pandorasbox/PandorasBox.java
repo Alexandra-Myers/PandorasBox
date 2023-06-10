@@ -90,7 +90,6 @@ public class PandorasBox
         EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
         Registry.init(EVENT_BUS);
         EVENT_BUS.addListener(this::preInit);
-        EVENT_BUS.addListener(this::gatherData);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -115,12 +114,5 @@ public class PandorasBox
         proxy.preInit();
 
         proxy.load();
-    }
-    public void gatherData(GatherDataEvent event) {
-        DataGenerator gen = event.getGenerator();
-        PackOutput packOutput = gen.getPackOutput();
-
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        gen.addProvider(event.includeClient(), new PBSpriteSourceProvider(packOutput, existingFileHelper));
     }
 }
