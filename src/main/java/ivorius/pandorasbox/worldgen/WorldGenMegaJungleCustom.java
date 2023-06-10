@@ -9,14 +9,13 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
-
-import java.util.Random;
-import java.util.Set;
 
 /**
  * Created by lukas on 14.02.14.
@@ -32,7 +31,7 @@ public class WorldGenMegaJungleCustom extends TreeFeature implements MegaTreeFea
         this.height = height;
     }
 
-    private void func_175932_b(Level worldIn, Random p_175932_2_, BlockPos p_175932_3_, BlockState p_175932_4_)
+    private void func_175932_b(Level worldIn, RandomSource p_175932_2_, BlockPos p_175932_3_, BlockState p_175932_4_)
     {
         if (p_175932_2_.nextInt(3) > 0 && worldIn.isEmptyBlock(p_175932_3_))
         {
@@ -117,7 +116,7 @@ public class WorldGenMegaJungleCustom extends TreeFeature implements MegaTreeFea
     }
 
     @Override
-    public boolean place(Level worldIn, Random rand, BlockPos position) {
+    public boolean place(Level worldIn, RandomSource rand, BlockPos position) {
         int i = (int) Math.round(height + (height * rand.nextDouble()) / 2);
 
         this.func_175930_c(worldIn, position.above(i), 2);

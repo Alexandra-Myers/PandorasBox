@@ -8,21 +8,29 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.Features;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.material.FlowingFluid;
 
 import java.util.Optional;
 import java.util.Random;
+
+import static net.minecraft.data.worldgen.features.NetherFeatures.*;
+import static net.minecraft.data.worldgen.placement.NetherPlacements.WARPED_FOREST_VEGETATION;
+import static net.minecraft.data.worldgen.placement.VegetationPlacements.BROWN_MUSHROOM_NETHER;
+import static net.minecraft.data.worldgen.placement.VegetationPlacements.RED_MUSHROOM_NETHER;
 
 /**
  * Created by lukas on 30.03.14.
@@ -41,32 +49,17 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
         switch (biome) {
-            case "wastes": {
-                createWastes(world, entity, random, pass, pos);
-                break;
-            }
-            case "soul_sand_valley": {
-                createSoul(world, entity, random, pass, pos);
-                break;
-            }
-            case "crimson": {
-                createCrimson(world, entity, random, pass, pos);
-                break;
-            }
-            case "warped": {
-                createWarped(world, entity, random, pass, pos);
-                break;
-            }
-            case "deltas": {
-                createDeltas(world, entity, random, pass, pos);
-                break;
-            }
+            case "wastes" -> createWastes(world, entity, random, pass, pos);
+            case "soul_sand_valley" -> createSoul(world, entity, random, pass, pos);
+            case "crimson" -> createCrimson(world, entity, random, pass, pos);
+            case "warped" -> createWarped(world, entity, random, pass, pos);
+            case "deltas" -> createDeltas(world, entity, random, pass, pos);
         }
     }
-    public void createWastes(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+    public void createWastes(Level world, PandorasBoxEntity entity, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -78,10 +71,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
+                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluid.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
-                    blockState2 = blockState2.setValue(FlowingFluidBlock.LEVEL, integer.get());
+                    blockState2 = blockState2.setValue(FlowingFluid.LEVEL, integer.get());
                 }
                 setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
@@ -98,8 +91,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
             } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
-            } else if (world.getBlockState(pos).isAir(world, pos)) {
-                if (world instanceof ServerWorld && random.nextInt(25) == 0) {
+            } else if (world.getBlockState(pos).isAir()) {
+                if (world instanceof ServerLevel && random.nextInt(25) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
@@ -129,10 +122,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverLevel)
             {
-                ServerWorld serverWorld = (ServerWorld) world;
-                boolean success = Features.BROWN_MUSHROOM_NETHER.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                Registry<PlacedFeature> placedFeatureRegistry = serverLevel.registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
+                boolean success = placedFeatureRegistry.get(BROWN_MUSHROOM_NETHER).place(serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
@@ -140,15 +133,15 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverLevel)
             {
-                ServerWorld serverWorld = (ServerWorld) world;
-                boolean success = Features.RED_MUSHROOM_NETHER.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                Registry<PlacedFeature> placedFeatureRegistry = serverLevel.registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
+                boolean success = placedFeatureRegistry.get(RED_MUSHROOM_NETHER).place(serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
         }
     }
-    public void createSoul(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+    public void createSoul(Level world, PandorasBoxEntity entity, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -160,10 +153,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
+                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluid.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
-                    blockState2 = blockState2.setValue(FlowingFluidBlock.LEVEL, integer.get());
+                    blockState2 = blockState2.setValue(FlowingFluid.LEVEL, integer.get());
                 }
                 setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
@@ -180,15 +173,15 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
             } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
-            } else if (world.getBlockState(pos).isAir(world, pos)) {
+            } else if (world.getBlockState(pos).isAir()) {
                 boolean bl = !isBlockAnyOf(world.getBlockState(pos.below()).getBlock(), Blocks.BONE_BLOCK) ? random.nextInt(40) == 0 : random.nextInt(20) == 0;
-                if (world instanceof ServerWorld && random.nextInt(25) == 0) {
+                if (world instanceof ServerLevel && random.nextInt(25) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.SOUL_FIRE.defaultBlockState());
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
-                }else if(!world.getBlockState(pos.below()).isAir(world, pos.below()) && !isBlockAnyOf(world.getBlockState(pos.below()).getBlock(), Blocks.GLOWSTONE) && bl) {
+                }else if(!world.getBlockState(pos.below()).isAir() && !isBlockAnyOf(world.getBlockState(pos.below()).getBlock(), Blocks.GLOWSTONE) && bl) {
                     setBlockSafe(world, pos, Blocks.BONE_BLOCK.defaultBlockState());
                 }
             }
@@ -208,7 +201,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             }
         }
     }
-    public void createCrimson(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+    public void createCrimson(Level world, PandorasBoxEntity entity, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -222,10 +215,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
+                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluid.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
-                    blockState2 = blockState2.setValue(FlowingFluidBlock.LEVEL, integer.get());
+                    blockState2 = blockState2.setValue(FlowingFluid.LEVEL, integer.get());
                 }
                 setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
@@ -237,7 +230,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
-                if(random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir(world, pos.above()))
+                if(random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir())
                     setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
                 else
                     setBlockSafe(world, pos, Blocks.CRIMSON_NYLIUM.defaultBlockState());
@@ -248,8 +241,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     setBlockSafe(world, pos, Blocks.CRIMSON_FUNGUS.defaultBlockState());
             } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
-            } else if (world.getBlockState(pos).isAir(world, pos)) {
-                if (world instanceof ServerWorld && random.nextInt(25) == 0) {
+            } else if (world.getBlockState(pos).isAir()) {
+                if (world instanceof ServerLevel && random.nextInt(25) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
@@ -273,34 +266,21 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0)))
-        {
-            BlockPos posBelow = pos.below();
-            BlockState blockBelowState = world.getBlockState(posBelow);
-
-            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
-            {
-                setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
-                ServerWorld serverWorld = (ServerWorld) world;
-                boolean success = Features.CRIMSON_FUNGI_PLANTED.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
-                if(success) timesFeatureAMade++;
-            }
-        }
         if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0)))
         {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverLevel)
             {
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = serverLevel.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
-                ServerWorld serverWorld = (ServerWorld) world;
-                boolean success = Features.CRIMSON_FOREST_VEGETATION.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                boolean success = configuredFeatureRegistry.get(CRIMSON_FOREST_VEGETATION).place(serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
         }
     }
-    public void createWarped(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+    public void createWarped(Level world, PandorasBoxEntity entity, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -314,10 +294,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
+                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluid.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
-                    blockState2 = blockState2.setValue(FlowingFluidBlock.LEVEL, integer.get());
+                    blockState2 = blockState2.setValue(FlowingFluid.LEVEL, integer.get());
                 }
                 setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
@@ -329,7 +309,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
-                if(random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir(world, pos.above()))
+                if(random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir())
                     setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
                 else
                     setBlockSafe(world, pos, Blocks.WARPED_NYLIUM.defaultBlockState());
@@ -340,8 +320,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     setBlockSafe(world, pos, Blocks.WARPED_FUNGUS.defaultBlockState());
             } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
-            } else if (world.getBlockState(pos).isAir(world, pos)) {
-                if (world instanceof ServerWorld && random.nextInt(25) == 0) {
+            } else if (world.getBlockState(pos).isAir()) {
+                if (world instanceof ServerLevel && random.nextInt(25) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
@@ -358,34 +338,21 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 canSpawnEntity(world, blockState, pos, entity1);
             }
         }
-        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0)))
-        {
-            BlockPos posBelow = pos.below();
-            BlockState blockBelowState = world.getBlockState(posBelow);
-
-            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
-            {
-                setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
-                ServerWorld serverWorld = (ServerWorld) world;
-                boolean success = Features.WARPED_FUNGI_PLANTED.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
-                if(success) timesFeatureAMade++;
-            }
-        }
         if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0)))
         {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            if (blockState.isAir() && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverLevel)
             {
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = serverLevel.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
-                ServerWorld serverWorld = (ServerWorld) world;
-                boolean success = Features.WARPED_FOREST_VEGETATION.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                boolean success = configuredFeatureRegistry.get(WARPED_FOREST_VEGETION).place(serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
         }
     }
-    public void createDeltas(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+    public void createDeltas(Level world, PandorasBoxEntity entity, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -397,10 +364,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
+                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluid.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
-                    blockState2 = blockState2.setValue(FlowingFluidBlock.LEVEL, integer.get());
+                    blockState2 = blockState2.setValue(FlowingFluid.LEVEL, integer.get());
                 }
                 setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
@@ -419,8 +386,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
             } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
-            } else if (world.getBlockState(pos).isAir(world, pos)) {
-                if (world instanceof ServerWorld && random.nextInt(25) == 0) {
+            } else if (world.getBlockState(pos).isAir()) {
+                if (world instanceof ServerLevel && random.nextInt(25) == 0) {
                     if (world.random.nextFloat() < 0.9f) {
                         setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
@@ -447,10 +414,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverLevel)
             {
-                ServerWorld serverWorld = (ServerWorld) world;
-                boolean success = Features.SMALL_BASALT_COLUMNS.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = serverLevel.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                boolean success = configuredFeatureRegistry.get(SMALL_BASALT_COLUMNS).place(serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
@@ -458,10 +425,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverLevel)
             {
-                ServerWorld serverWorld = (ServerWorld) world;
-                boolean success = Features.LARGE_BASALT_COLUMNS.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = serverLevel.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                boolean success = configuredFeatureRegistry.get(LARGE_BASALT_COLUMNS).place(serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
         }

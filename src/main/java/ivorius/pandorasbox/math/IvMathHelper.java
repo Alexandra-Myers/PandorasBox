@@ -16,7 +16,7 @@
 
 package ivorius.pandorasbox.math;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import java.util.Random;
 
@@ -124,7 +124,7 @@ public class IvMathHelper
 
     public static int randomLinearNumber(Random random, float number)
     {
-        return MathHelper.floor(number) + ((random.nextFloat() < (number % 1.0f)) ? 1 : 0);
+        return Mth.floor(number) + ((random.nextFloat() < (number % 1.0f)) ? 1 : 0);
     }
 
     public static float zeroToOne(float value, float min, float max)

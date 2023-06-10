@@ -6,14 +6,14 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.Random;
 
@@ -34,9 +34,9 @@ public class PBEffectEntitiesTeleport extends PBEffectEntityBased
     }
 
     @Override
-    public void affectEntity(World world, PandorasBoxEntity box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength)
+    public void affectEntity(Level world, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
             Random entityRandom = new Random(entity.getId());
 
@@ -47,14 +47,14 @@ public class PBEffectEntitiesTeleport extends PBEffectEntityBased
                 {
                     double newX = entity.getX() + (random.nextDouble() - random.nextDouble()) * teleportRange;
                     double newZ = entity.getZ() + (random.nextDouble() - random.nextDouble()) * teleportRange;
-                    double newY = world.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, new BlockPos(newX, 0.0, newZ)).getY() + 0.2;
+                    double newY = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, BlockPos.containing(newX, 0.0, newZ)).getY() + 0.2;
                     float newYaw = random.nextFloat() * 360.0f;
 
                     entity.teleportTo(newX, newY, newZ);
 
-                    if (entity instanceof ServerPlayerEntity)
+                    if (entity instanceof ServerPlayer)
                     {
-                        ((ServerPlayerEntity) entity).connection.teleport(newX, newY, newZ, newYaw, entity.xRot);
+                        ((ServerPlayer) entity).connection.teleport(newX, newY, newZ, newYaw, entity.getXRot());
                     }
                 }
             }

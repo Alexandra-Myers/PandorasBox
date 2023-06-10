@@ -7,13 +7,11 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
-import net.minecraft.block.Block;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import java.util.Random;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 /**
  * Created by lukas on 12.04.14.
@@ -32,7 +30,7 @@ public class PBEffectGenCover extends PBEffectGenerateByFlag
     }
 
     @Override
-    public boolean hasFlag(World world, PandorasBoxEntity entity, Random random, BlockPos pos)
+    public boolean hasFlag(Level world, PandorasBoxEntity entity, RandomSource random, BlockPos pos)
     {
         if (overSurface)
         {
@@ -53,13 +51,13 @@ public class PBEffectGenCover extends PBEffectGenerateByFlag
         }
     }
 
-    private boolean isReplacable(World world, BlockPos pos)
+    private boolean isReplacable(Level world, BlockPos pos)
     {
         return world.getBlockState(pos).canSurvive(world, pos);
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos, double range, boolean flag)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, int pass, BlockPos pos, double range, boolean flag)
     {
         if (flag)
         {

@@ -8,19 +8,16 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.Features;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 /**
  * Created by lukas on 30.03.14.
@@ -36,7 +33,7 @@ public class PBEffectGenConvertToEnd extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
@@ -76,11 +73,10 @@ public class PBEffectGenConvertToEnd extends PBEffectGenerate
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && !isBlockAnyOf(blockBelowState.getBlock(), Blocks.CHORUS_FLOWER, Blocks.CHORUS_PLANT, Blocks.OBSIDIAN) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerWorld)
+            if (blockState.isAir() && !isBlockAnyOf(blockBelowState.getBlock(), Blocks.CHORUS_FLOWER, Blocks.CHORUS_PLANT, Blocks.OBSIDIAN) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverWorld)
             {
                 setBlockSafe(world, posBelow, Blocks.END_STONE.defaultBlockState());
-                ServerWorld serverWorld = (ServerWorld) world;
-                boolean success = Features.CHORUS_PLANT.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                boolean success = Feature.CHORUS_PLANT.place(FeatureConfiguration.NONE, serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }

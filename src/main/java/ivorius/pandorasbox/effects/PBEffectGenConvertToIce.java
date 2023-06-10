@@ -6,13 +6,14 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FlowingFluid;
 
 import java.util.Random;
 
@@ -29,7 +30,7 @@ public class PBEffectGenConvertToIce extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
@@ -40,7 +41,7 @@ public class PBEffectGenConvertToIce extends PBEffectGenerate
             {
                 setBlockSafe(world, pos, Blocks.ICE.defaultBlockState());
             }
-            else if (blockState.isAir(world, pos) && Blocks.SNOW.defaultBlockState().canSurvive(world, pos))
+            else if (blockState.isAir() && Blocks.SNOW.defaultBlockState().canSurvive(world, pos))
             {
                 setBlockSafe(world, pos, Blocks.SNOW.defaultBlockState());
             }
@@ -48,7 +49,7 @@ public class PBEffectGenConvertToIce extends PBEffectGenerate
             {
                 setBlockSafe(world, pos, Blocks.AIR.defaultBlockState());
             }
-            else if ((block == Blocks.LAVA && !blockState.getValue(FlowingFluidBlock.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK)
+            else if ((block == Blocks.LAVA && !blockState.getValue(FlowingFluid.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK)
             {
                 setBlockSafe(world, pos, Blocks.ICE.defaultBlockState());
             }

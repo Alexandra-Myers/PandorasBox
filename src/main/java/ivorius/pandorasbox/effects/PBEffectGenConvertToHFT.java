@@ -9,18 +9,18 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.*;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
 
 import java.util.Random;
 
@@ -40,7 +40,7 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
@@ -64,7 +64,7 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
             }
             else if (Block.isShapeFullBlock(blockState.getBlockSupportShape(world, pos)))
             {
-                if (world instanceof ServerWorld)
+                if (world instanceof ServerLevel)
                 {
                     setBlockSafe(world, pos, placeBlock.defaultBlockState());
                 }
@@ -72,7 +72,7 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
         }
         else if (pass == 1)
         {
-            if (world instanceof ServerWorld)
+            if (world instanceof ServerLevel)
             {
                 if (world.random.nextInt(10 * 10) == 0)
                 {
@@ -105,7 +105,7 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
                 }
                 else if (world.random.nextInt(5 * 5) == 0)
                 {
-                    if (world.getBlockState(pos.below()).getBlock() == placeBlock && world.getBlockState(pos).isAir(world, pos))
+                    if (world.getBlockState(pos.below()).getBlock() == placeBlock && world.getBlockState(pos).isAir())
                     {
                         if (world.random.nextBoolean())
                         {

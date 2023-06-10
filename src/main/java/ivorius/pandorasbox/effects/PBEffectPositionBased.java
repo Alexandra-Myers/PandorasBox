@@ -6,14 +6,10 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import net.minecraft.world.level.Level;
-
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -49,11 +45,11 @@ public abstract class PBEffectPositionBased extends PBEffectNormal
         }
     }
 
-    public abstract void doEffect(World world, PandorasBoxEntity entity, Random random, float newRatio, float prevRatio, double x, double y, double z);
+    public abstract void doEffect(Level world, PandorasBoxEntity entity, RandomSource random, float newRatio, float prevRatio, double x, double y, double z);
 
     private int getSpawnNumber(float ratio)
     {
-        return MathHelper.floor(ratio * number);
+        return Mth.floor(ratio * number);
     }
 
     @Override

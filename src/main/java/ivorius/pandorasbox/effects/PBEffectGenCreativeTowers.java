@@ -9,13 +9,13 @@ import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
-import net.minecraft.block.Block;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import java.util.Collection;
 import java.util.Random;
@@ -44,15 +44,15 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
     }
 
     @Override
-    public void generateStructure(World world, PandorasBoxEntity entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio)
+    public void generateStructure(Level world, PandorasBoxEntity entity, RandomSource random, Structure structure, BlockPos pos, float newRatio, float prevRatio)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
             StructureCreativeTower structureCreativeTower = (StructureCreativeTower) structure;
 
             int towerHeight = world.getMaxBuildHeight();
-            int newY = MathHelper.floor(towerHeight * newRatio);
-            int prevY = MathHelper.floor(towerHeight * prevRatio);
+            int newY = Mth.floor(towerHeight * newRatio);
+            int prevY = Mth.floor(towerHeight * prevRatio);
 
             for (int towerY = prevY; towerY < newY; towerY++)
             {
@@ -78,7 +78,7 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
         }
 
         @Override
-        public void writeToNBT(CompoundNBT compound)
+        public void writeToNBT(CompoundTag compound)
         {
             super.writeToNBT(compound);
 
@@ -86,7 +86,7 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
         }
 
         @Override
-        public void readFromNBT(CompoundNBT compound)
+        public void readFromNBT(CompoundTag compound)
         {
             super.readFromNBT(compound);
 

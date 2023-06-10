@@ -6,15 +6,11 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import net.minecraft.world.level.Level;
-
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -35,15 +31,15 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased
     }
 
     @Override
-    public void setUpEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random)
+    public void setUpEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random)
     {
         super.setUpEffect(world, entity, effectCenter, random);
 
-        byte requiredRange = (byte) MathHelper.ceil(range);
+        byte requiredRange = (byte) Mth.ceil(range);
 
-        int baseX = MathHelper.floor(effectCenter.x);
-        int baseY = MathHelper.floor(effectCenter.y);
-        int baseZ = MathHelper.floor(effectCenter.z);
+        int baseX = Mth.floor(effectCenter.x);
+        int baseY = Mth.floor(effectCenter.y);
+        int baseZ = Mth.floor(effectCenter.z);
 
         boolean[] flags = new boolean[31];
 
@@ -53,7 +49,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased
             {
                 for (byte y = (byte) -requiredRange; y <= requiredRange; y++)
                 {
-                    double dist = MathHelper.sqrt(x * x + y * y + z * z);
+                    double dist = Mth.sqrt(x * x + y * y + z * z);
 
                     if (dist <= range)
                         flags[y + 15] = hasFlag(world, entity, random, new BlockPos(baseX + x, baseY + y, baseZ + z));
@@ -64,16 +60,16 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased
         }
     }
 
-    public abstract boolean hasFlag(World world, PandorasBoxEntity entity, Random random, BlockPos pos);
+    public abstract boolean hasFlag(Level world, PandorasBoxEntity entity, RandomSource random, BlockPos pos);
 
     @Override
     public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3d effectCenter, double prevRange, double newRange, int pass)
     {
-        byte requiredRange = (byte) MathHelper.ceil(newRange);
+        byte requiredRange = (byte) Mth.ceil(newRange);
 
-        int baseX = MathHelper.floor(effectCenter.x);
-        int baseY = MathHelper.floor(effectCenter.y);
-        int baseZ = MathHelper.floor(effectCenter.z);
+        int baseX = Mth.floor(effectCenter.x);
+        int baseY = Mth.floor(effectCenter.y);
+        int baseZ = Mth.floor(effectCenter.z);
 
         for (byte x = (byte) -requiredRange; x <= requiredRange; x++)
         {
@@ -81,7 +77,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased
             {
                 for (byte z = (byte) -requiredRange; z <= requiredRange; z++)
                 {
-                    double dist = MathHelper.sqrt(x * x + y * y + z * z);
+                    double dist = Mth.sqrt(x * x + y * y + z * z);
 
                     if (dist <= newRange)
                     {
@@ -99,7 +95,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased
         }
     }
 
-    public abstract void generateOnBlock(World world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos, double dist, boolean flag);
+    public abstract void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, int pass, BlockPos pos, double dist, boolean flag);
 
     public void setAllFlags(byte x, byte z, boolean... flags)
     {

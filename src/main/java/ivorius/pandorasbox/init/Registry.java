@@ -1,19 +1,13 @@
 package ivorius.pandorasbox.init;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.util.Pair;
 import ivorius.pandorasbox.block.PandorasBoxBlock;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.items.PandorasBoxItem;
-import ivorius.pandorasbox.utils.MapExtensions;
 import ivorius.pandorasbox.worldgen.WorldGenColorfulTree;
 import ivorius.pandorasbox.worldgen.WorldGenLollipop;
 import ivorius.pandorasbox.worldgen.WorldGenMegaJungleCustom;
 import ivorius.pandorasbox.worldgen.WorldGenRainbow;
-import ivorius.pandorasbox.worldgen.structure.SurfaceStructure;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -26,11 +20,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Supplier;
 
 import static ivorius.pandorasbox.PandorasBox.MOD_ID;
 

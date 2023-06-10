@@ -8,17 +8,20 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Features;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.features.TreeFeatures;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 
 import java.util.Random;
 
@@ -35,7 +38,7 @@ public class PBEffectGenConvertToMushroom extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
@@ -54,11 +57,11 @@ public class PBEffectGenConvertToMushroom extends PBEffectGenerate
             {
                 BlockPos posUp = pos.above();
 
-                if (world.getBlockState(posUp).isAir(world, posUp))
+                if (world.getBlockState(posUp).isAir())
                 {
                     setBlockSafe(world, pos, Blocks.MYCELIUM.defaultBlockState());
 
-                    if (world instanceof ServerWorld)
+                    if (world instanceof ServerLevel serverWorld)
                     {
                         if (world.random.nextInt(6 * 6) == 0)
                         {
@@ -67,8 +70,9 @@ public class PBEffectGenConvertToMushroom extends PBEffectGenerate
                         else if (world.random.nextInt(8 * 8) == 0)
                         {
                             boolean bl = random.nextBoolean();
-                            ConfiguredFeature<?, ?> mushroomGen = bl ? Features.HUGE_BROWN_MUSHROOM : Features.HUGE_RED_MUSHROOM;
-                            ServerWorld serverWorld = (ServerWorld) world;
+                            Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = serverWorld.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                            ConfiguredFeature<?, ?> mushroomGen = bl ? configuredFeatureRegistry.get(TreeFeatures.HUGE_BROWN_MUSHROOM) : configuredFeatureRegistry.get(TreeFeatures.HUGE_RED_MUSHROOM);
+                            assert mushroomGen != null;
                             mushroomGen.place(serverWorld, serverWorld.getChunkSource().getGenerator(), world.random, posUp);
                         }
                     }

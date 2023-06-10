@@ -6,14 +6,14 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 import java.util.Random;
@@ -46,9 +46,9 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
     }
 
     @Override
-    public void generateOnSurface(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, BlockPos pos, double range, int pass)
+    public void generateOnSurface(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, BlockPos pos, double range, int pass)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
             int randomX = pos.getX() - (pos.getX() % blockSize);
             int randomZ = pos.getZ() - (pos.getZ() % blockSize);
@@ -61,7 +61,7 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
             int minEffectY = towerMinY + Math.min(0, shift);
             int maxEffectY = towerMinY + towerSize + Math.max(0, shift);
 
-            List<PlayerEntity> entityList = world.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(pos.getX() - 2.0, minEffectY - 4, pos.getZ() - 3.0, pos.getX() + 4.0, maxEffectY + 4, pos.getZ() + 4.0));
+            List<Player> entityList = world.getEntitiesOfClass(Player.class, new AABB(pos.getX() - 2.0, minEffectY - 4, pos.getZ() - 3.0, pos.getX() + 4.0, maxEffectY + 4, pos.getZ() + 4.0));
 
             if (entityList.size() == 0)
             {

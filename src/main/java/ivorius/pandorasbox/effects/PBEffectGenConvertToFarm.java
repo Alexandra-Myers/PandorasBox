@@ -7,15 +7,15 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Random;
 
@@ -34,9 +34,9 @@ public class PBEffectGenConvertToFarm extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
@@ -46,7 +46,7 @@ public class PBEffectGenConvertToFarm extends PBEffectGenerate
                 BlockPos posBelow = pos.below();
                 BlockState blockBelowState = world.getBlockState(posBelow);
 
-                if (blockBelowState.isRedstoneConductor(world, pos) && blockState.isAir(world, pos) && block != Blocks.WATER)
+                if (blockBelowState.isRedstoneConductor(world, pos) && blockState.isAir() && block != Blocks.WATER)
                 {
                     if (random.nextDouble() < cropChance)
                     {

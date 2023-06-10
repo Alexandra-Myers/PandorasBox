@@ -10,15 +10,20 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.List;
 import java.util.Random;
@@ -95,7 +100,7 @@ public abstract class PBEffect
         return false;
     }
 
-    public static Entity lazilySpawnEntity(Level world, PandorasBoxEntity box, Random random, String entityID, float chance, BlockPos pos)
+    public static Entity lazilySpawnEntity(Level world, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos)
     {
         if (random.nextFloat() < chance && !world.isClientSide())
         {
@@ -109,9 +114,10 @@ public abstract class PBEffect
 
         return null;
     }
-    public static Entity lazilySpawnFlyingEntity(Level world, PandorasBoxEntity box, Random random, String entityID, float chance, BlockPos pos) {
+    public static Entity lazilySpawnFlyingEntity(Level world, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos) {
         Entity entity =  lazilySpawnEntity(world, box, random, entityID, chance, pos);
-        if(entity != null) world.addFreshEntity(entity);
+        if(entity != null)
+            world.addFreshEntity(entity);
         return entity;
     }
 

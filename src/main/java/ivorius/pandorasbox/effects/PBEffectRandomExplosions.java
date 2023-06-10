@@ -6,13 +6,10 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-
-import java.util.Random;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by lukas on 30.03.14.
@@ -37,11 +34,11 @@ public class PBEffectRandomExplosions extends PBEffectPositionBased
     }
 
     @Override
-    public void doEffect(World world, PandorasBoxEntity entity, Random random, float newRatio, float prevRatio, double x, double y, double z)
+    public void doEffect(Level world, PandorasBoxEntity entity, RandomSource random, float newRatio, float prevRatio, double x, double y, double z)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
-            world.explode(entity, x, y, z, minExplosionStrength + random.nextFloat() * (maxExplosionStrength - minExplosionStrength), isFlaming, Explosion.Mode.BREAK);
+            world.explode(entity, x, y, z, minExplosionStrength + random.nextFloat() * (maxExplosionStrength - minExplosionStrength), isFlaming, Level.ExplosionInteraction.TNT);
         }
     }
 

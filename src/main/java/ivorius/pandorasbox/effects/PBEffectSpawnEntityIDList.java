@@ -12,12 +12,14 @@ import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.utils.StringConverter;
 import ivorius.pandorasbox.weighted.WeightedSelector;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -40,10 +42,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import static ivorius.pandorasbox.PandorasBox.cats;
 
 /**
  * Created by lukas on 30.03.14.
@@ -113,8 +114,9 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             previousEntity = newEntity;
         }
 
-        if (previousEntity != null)
+        if (previousEntity != null) {
             world.addFreshEntity(previousEntity);
+        }
 
         return previousEntity;
     }
@@ -235,10 +237,10 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
                 if (nearest != null)
                 {
-                    wolf.setTame(true);
+                    ForgeEventFactory.onFinalizeSpawn(wolf, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                     wolf.getNavigation().stop();
                     wolf.setTarget(null);
-                    wolf.setOwnerUUID(nearest.getUUID());
+                    wolf.tame(nearest);
                     wolf.level().broadcastEntityEvent(wolf, (byte) 7);
                 }
 
@@ -255,11 +257,9 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
                 if (nearest != null)
                 {
-                    ResourceKey<CatVariant> catVariantResourceKey = cats.get(ocelot.level().getRandom().nextInt(cats.size()));
-                    ocelot.setTame(true);
-                    ocelot.setVariant(BuiltInRegistries.CAT_VARIANT.getOrThrow(catVariantResourceKey));
-                    ocelot.setOwnerUUID(nearest.getUUID());
-                    ocelot.level().broadcastEntityEvent(ocelot, (byte) 7);
+                    ForgeEventFactory.onFinalizeSpawn(ocelot, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
+                    ocelot.tame(nearest);
+                    world.broadcastEntityEvent(ocelot, (byte) 7);
                 }
 
                 return ocelot;
@@ -298,6 +298,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             {
                 Wolf wolf = EntityType.WOLF.create(world);
                 assert wolf != null;
+                ForgeEventFactory.onFinalizeSpawn(wolf, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                 wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 wolf.setTarget(world.getNearestPlayer(x, y, z, 40.0, false));
 
@@ -307,6 +308,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             {
                 Creeper creeper = EntityType.CREEPER.create(world);
                 assert creeper != null;
+                ForgeEventFactory.onFinalizeSpawn(creeper, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                 creeper.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 creeper.getEntityData().set(creeperPoweredParameter(), true);
                 return creeper;
@@ -315,6 +317,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             {
                 WitherSkeleton skeleton = EntityType.WITHER_SKELETON.create(world);
                 assert skeleton != null;
+                ForgeEventFactory.onFinalizeSpawn(skeleton, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                 skeleton.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
                 skeleton.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
@@ -326,6 +329,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             {
                 ElderGuardian entity = EntityType.ELDER_GUARDIAN.create(world);
                 assert entity != null;
+                ForgeEventFactory.onFinalizeSpawn(entity, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                 entity.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
                 return entity;
@@ -337,12 +341,13 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             Entity entity1 = entity.create(world);
             assert entity1 != null;
             entity1.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-            if(entity1 instanceof AbstractPiglin) {
-                ((AbstractPiglin)entity1).setImmuneToZombification(true);
+            if(entity1 instanceof AbstractPiglin piglin) {
+                piglin.setImmuneToZombification(true);
             }
-            if(entity1 instanceof Hoglin) {
-                ((Hoglin)entity1).setImmuneToZombification(true);
-            }
+            if(entity1 instanceof Hoglin hoglin)
+                hoglin.setImmuneToZombification(true);
+            if (entity1 instanceof Mob mob)
+                ForgeEventFactory.onFinalizeSpawn(mob, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
 
             return entity1;
         }

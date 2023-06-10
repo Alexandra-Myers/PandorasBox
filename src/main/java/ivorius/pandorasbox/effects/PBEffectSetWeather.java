@@ -6,12 +6,10 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.World;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.storage.ServerWorldInfo;
+import net.minecraft.world.level.storage.ServerLevelData;
 
 import java.util.Random;
 
@@ -39,10 +37,9 @@ public class PBEffectSetWeather extends PBEffectNormal
     }
 
     @Override
-    public void finalizeEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random)
+    public void finalizeEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random)
     {
-        if (world.getLevelData() instanceof ServerWorldInfo) {
-            ServerWorldInfo worldInfo = (ServerWorldInfo) world.getLevelData();
+        if (world.getLevelData() instanceof ServerLevelData worldInfo) {
             worldInfo.setRainTime(rainTime);
             worldInfo.setThunderTime(rainTime);
             worldInfo.setRaining(rain);

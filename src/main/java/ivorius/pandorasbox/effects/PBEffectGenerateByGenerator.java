@@ -7,17 +7,14 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.server.ServerWorld;
-
-import java.util.Random;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
 /**
  * Created by lukas on 30.03.14.
@@ -40,9 +37,9 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel serverWorld)
         {
             if (random.nextDouble() < chancePerBlock)
             {
@@ -50,14 +47,13 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
                 BlockPos posBelow = pos.below();
                 BlockState blockBelowState = world.getBlockState(posBelow);
 
-                if (blockState.getMaterial() == Material.AIR && (!requiresSolidGround || blockBelowState.isRedstoneConductor(world, posBelow)))
+                if (blockState.isAir() && (!requiresSolidGround || blockBelowState.isRedstoneConductor(world, posBelow)))
                 {
                     setBlockSafe(world, posBelow, Blocks.DIRT.defaultBlockState());
 
                     Object generator = getRandomGenerator(getGenerators(), generatorFlags, random);
                     if(generator instanceof ConfiguredFeature) {
                         ConfiguredFeature<?, ?> feature = (ConfiguredFeature<?, ?>) generator;
-                        ServerWorld serverWorld = (ServerWorld) world;
                         feature.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
                     }
                     if(generator instanceof MegaTreeFeature) {
@@ -71,7 +67,7 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
 
     public abstract Object[] getGenerators();
 
-    public static Object getRandomGenerator(Object[] generators, int flags, Random random)
+    public static Object getRandomGenerator(Object[] generators, int flags, RandomSource random)
     {
         int totalNumber = 0;
 

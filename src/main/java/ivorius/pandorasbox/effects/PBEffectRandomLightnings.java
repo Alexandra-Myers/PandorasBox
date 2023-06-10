@@ -6,14 +6,13 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-
-import java.util.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by lukas on 30.03.14.
@@ -28,14 +27,13 @@ public class PBEffectRandomLightnings extends PBEffectPositionBased
     }
 
     @Override
-    public void doEffect(World world, PandorasBoxEntity entity, Random random, float newRatio, float prevRatio, double x, double y, double z)
+    public void doEffect(Level world, PandorasBoxEntity entity, RandomSource random, float newRatio, float prevRatio, double x, double y, double z)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel serverWorld)
         {
-            ServerWorld serverWorld = (ServerWorld) world;
-            LightningBoltEntity lightningBolt = EntityType.LIGHTNING_BOLT.create(world);
+            LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(world);
             if(lightningBolt == null) return;
-            lightningBolt.moveTo(Vector3d.atBottomCenterOf(new BlockPos(x, y, z)));
+            lightningBolt.moveTo(Vec3.atBottomCenterOf(BlockPos.containing(x, y, z)));
             serverWorld.addFreshEntity(lightningBolt);
         }
     }

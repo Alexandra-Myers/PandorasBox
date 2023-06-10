@@ -8,13 +8,12 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.Random;
 
@@ -30,7 +29,7 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
         Block block = world.getBlockState(pos).getBlock();
 
@@ -50,9 +49,9 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate
             {
                 setBlockSafe(world, pos, Blocks.SAND.defaultBlockState());
 
-                if (world.getBlockState(pos.above()).isAir(world, pos.above()))
+                if (world.getBlockState(pos.above()).isAir())
                 {
-                    if (world instanceof ServerWorld && random.nextInt(20 * 20) == 0)
+                    if (world instanceof ServerLevel && random.nextInt(20 * 20) == 0)
                     {
                         setBlockSafe(world, pos.above(1), Blocks.CACTUS.defaultBlockState());
                         setBlockSafe(world, pos.above(2), Blocks.CACTUS.defaultBlockState());

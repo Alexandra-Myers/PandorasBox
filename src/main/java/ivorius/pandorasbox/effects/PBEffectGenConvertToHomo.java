@@ -9,17 +9,16 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.*;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
 
 import java.util.Random;
 
@@ -36,7 +35,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
@@ -51,7 +50,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
             }
             else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SAND, Blocks.MYCELIUM, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM))
             {
-                if (world.getBlockState(pos.above()).isAir(world, pos.above()))
+                if (world.getBlockState(pos.above()).isAir())
                 {
                     setBlockSafe(world, pos, Blocks.GRASS_BLOCK.defaultBlockState());
                 }
@@ -76,7 +75,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
         }
         else if (pass == 1)
         {
-            if (world instanceof ServerWorld)
+            if (world instanceof ServerLevel)
             {
                 if (random.nextInt(15 * 15) == 0)
                 {
@@ -96,7 +95,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
                         treeFeature.place(world, world.random, pos);
                     }
                 }
-                else if (blockState.isAir(world, pos) && Blocks.SNOW.defaultBlockState().canSurvive(world, pos))
+                else if (blockState.isAir() && Blocks.SNOW.defaultBlockState().canSurvive(world, pos))
                 {
                     if (random.nextInt(3 * 3) == 0)
                     {
@@ -110,7 +109,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
         }
         else
         {
-            SheepEntity sheep = (SheepEntity) lazilySpawnEntity(world, entity, random, "sheep", 1.0f / (10 * 10), pos);
+            Sheep sheep = (Sheep) lazilySpawnEntity(world, entity, random, "sheep", 1.0f / (10 * 10), pos);
             if (canSpawnEntity(world, blockState, pos, sheep))
             {
                 sheep.setColor(DyeColor.byId(random.nextInt(16)));

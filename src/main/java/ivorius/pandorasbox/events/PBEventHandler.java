@@ -90,7 +90,6 @@ public class PBEventHandler
         stained_glass = new ArrayListExtensions<>();
         saplings = new ArrayListExtensions<>();
         pots = new ArrayListExtensions<>();
-        cats = new ArrayListExtensions<>();
         for (Block block : ForgeRegistries.BLOCKS) {
             if (block.defaultBlockState().is(BlockTags.LOGS)) {
                 logs.add(block);
@@ -129,7 +128,6 @@ public class PBEventHandler
                 pots.add(block);
             }
         }
-        cats.addAll(BuiltInRegistries.CAT_VARIANT.registryKeySet());
         PBEffects.registerEffectCreators();
     }
     public BlockPos getPosInFront(BlockPos pos, Direction direction) {

@@ -8,6 +8,7 @@ package ivorius.pandorasbox;
 import com.mojang.brigadier.arguments.ArgumentType;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.client.ClientProxy;
+import ivorius.pandorasbox.client.PBSpriteSourceProvider;
 import ivorius.pandorasbox.client.rendering.PandorasBoxBlockEntityRenderer;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
 import ivorius.pandorasbox.effects.PBEffects;
@@ -21,12 +22,16 @@ import ivorius.pandorasbox.weighted.WeightedSelector;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.animal.CatVariant;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -40,6 +45,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+
+import static net.minecraft.core.registries.BuiltInRegistries.COMMAND_ARGUMENT_TYPE;
+import static net.minecraftforge.registries.ForgeRegistries.COMMAND_ARGUMENT_TYPES;
 
 @Mod(PandorasBox.MOD_ID)
 public class PandorasBox
@@ -74,7 +82,6 @@ public class PandorasBox
     public static ArrayListExtensions<Block> stained_glass;
     public static ArrayListExtensions<Block> saplings;
     public static ArrayListExtensions<Block> pots;
-    public static ArrayListExtensions<ResourceKey<CatVariant>> cats;
 
     public static PBEventHandler fmlEventHandler;
     public PandorasBox() {
@@ -82,6 +89,7 @@ public class PandorasBox
         EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
         Registry.init(EVENT_BUS);
         EVENT_BUS.addListener(this::preInit);
+        EVENT_BUS.addListener(this::gatherData);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -104,10 +112,17 @@ public class PandorasBox
         fmlEventHandler = new PBEventHandler();
         fmlEventHandler.register();
 
-        ArgumentTypeInfos.register("pbeffect", PBEffectArgument.class, SingletonArgumentInfo.contextFree(PBEffectArgument::effect));
+        ArgumentTypeInfos.register(COMMAND_ARGUMENT_TYPE, "pbeffect", PBEffectArgument.class, SingletonArgumentInfo.contextFree(PBEffectArgument::effect));
 
         proxy.preInit();
 
         proxy.load();
+    }
+    public void gatherData(GatherDataEvent event) {
+        DataGenerator gen = event.getGenerator();
+        PackOutput packOutput = gen.getPackOutput();
+
+        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        gen.addProvider(event.includeClient(), new PBSpriteSourceProvider(packOutput, existingFileHelper));
     }
 }
