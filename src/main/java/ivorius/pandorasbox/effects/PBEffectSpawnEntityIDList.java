@@ -8,32 +8,42 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.random.PandorasBoxEntityNamer;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.utils.StringConverter;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.entity.monster.*;
-import net.minecraft.entity.monster.piglin.AbstractPiglinEntity;
-import net.minecraft.entity.passive.CatEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.FireworkRocketEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import ivorius.pandorasbox.weighted.WeightedSelector;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.entity.animal.CatVariant;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.ElderGuardian;
+import net.minecraft.world.entity.monster.WitherSkeleton;
+import net.minecraft.world.entity.monster.hoglin.Hoglin;
+import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Random;
+import static ivorius.pandorasbox.PandorasBox.cats;
 
 /**
  * Created by lukas on 30.03.14.
@@ -78,7 +88,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
     }
 
     @Override
-    public Entity spawnEntity(World world, PandorasBoxEntity pbEntity, Random random, int number, double x, double y, double z)
+    public Entity spawnEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, int number, double x, double y, double z)
     {
         if(world.isClientSide()) return null;
         String[] entityTower = entityIDs[number];
@@ -109,7 +119,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         return previousEntity;
     }
 
-    public static void randomizeEntity(Random random, long namingSeed, LivingEntity entityLiving, int nameEntities, int equipLevel, int buffLevel)
+    public static void randomizeEntity(RandomSource random, long namingSeed, LivingEntity entityLiving, int nameEntities, int equipLevel, int buffLevel)
     {
         if (nameEntities == 1)
         {
@@ -122,7 +132,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         }
         else if (nameEntities == 3)
         {
-            entityLiving.setCustomName(PandorasBoxEntityNamer.getRandomCasualName(new Random(namingSeed)));
+            entityLiving.setCustomName(PandorasBoxEntityNamer.getRandomCasualName(RandomSource.create(namingSeed)));
         }
 
         if (equipLevel > 0)
@@ -145,18 +155,18 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
                         ItemStack itemStack = PandorasBoxHelper.getRandomWeaponItemForLevel(random, itemLevel);
                         if(itemStack == null) itemStack = ItemStack.EMPTY;
 
-                        entityLiving.setItemSlot(EquipmentSlotType.MAINHAND, itemStack);
+                        entityLiving.setItemSlot(EquipmentSlot.MAINHAND, itemStack);
                     }
                     else
                     {
                         if (i == 4 && random.nextFloat() < 0.2f / equipLevel)
                         {
-                            entityLiving.setItemSlot(EquipmentSlotType.HEAD, new ItemStack(random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.PUMPKIN));
+                            entityLiving.setItemSlot(EquipmentSlot.HEAD, new ItemStack(random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.PUMPKIN));
                         }
                         else
                         {
-                            EquipmentSlotType slot = i == 1 ? EquipmentSlotType.LEGS : i == 2 ? EquipmentSlotType.FEET : EquipmentSlotType.CHEST;
-                            Item item = MobEntity.getEquipmentForSlot(slot, Math.min(itemLevel, 4));
+                            EquipmentSlot slot = i == 1 ? EquipmentSlot.LEGS : i == 2 ? EquipmentSlot.FEET : EquipmentSlot.CHEST;
+                            Item item = Mob.getEquipmentForSlot(slot, Math.min(itemLevel, 4));
 
                             if (item != null)
                             {
@@ -174,28 +184,28 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
         if (buffLevel > 0)
         {
-            ModifiableAttributeInstance health = entityLiving.getAttribute(Attributes.MAX_HEALTH);
+            AttributeInstance health = entityLiving.getAttribute(Attributes.MAX_HEALTH);
             if (health != null)
             {
                 double healthMultiplierP = random.nextDouble() * buffLevel * 0.25;
                 health.addPermanentModifier(new AttributeModifier("Zeus's magic", healthMultiplierP, AttributeModifier.Operation.fromValue(1)));
             }
 
-            ModifiableAttributeInstance knockbackResistance = entityLiving.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+            AttributeInstance knockbackResistance = entityLiving.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
             if (knockbackResistance != null)
             {
                 double knockbackResistanceP = random.nextDouble() * buffLevel * 0.25;
                 knockbackResistance.addPermanentModifier(new AttributeModifier("Zeus's magic", knockbackResistanceP, AttributeModifier.Operation.fromValue(1)));
             }
 
-            ModifiableAttributeInstance movementSpeed = entityLiving.getAttribute(Attributes.MOVEMENT_SPEED);
+            AttributeInstance movementSpeed = entityLiving.getAttribute(Attributes.MOVEMENT_SPEED);
             if (movementSpeed != null)
             {
                 double movementSpeedP = random.nextDouble() * buffLevel * 0.08;
                 movementSpeed.addPermanentModifier(new AttributeModifier("Zeus's magic", movementSpeedP, AttributeModifier.Operation.fromValue(1)));
             }
 
-            ModifiableAttributeInstance attackDamage = entityLiving.getAttribute(Attributes.ATTACK_DAMAGE);
+            AttributeInstance attackDamage = entityLiving.getAttribute(Attributes.ATTACK_DAMAGE);
             if (attackDamage != null)
             {
                 double attackDamageP = random.nextDouble() * buffLevel * 0.25;
@@ -204,21 +214,21 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         }
     }
 
-    public static Entity createEntity(World world, PandorasBoxEntity pbEntity, Random random, String entityID, double x, double y, double z)
+    public static Entity createEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, String entityID, double x, double y, double z)
     {
         try
         {
             if ("pbspecial_XP".equals(entityID))
             {
-                ExperienceOrbEntity entity = EntityType.EXPERIENCE_ORB.create(world);
+                ExperienceOrb entity = EntityType.EXPERIENCE_ORB.create(world);
                 assert entity != null;
                 entity.value = 10;
                 return entity;
             }
             else if ("pbspecial_wolfTamed".equals(entityID))
             {
-                PlayerEntity nearest = getPlayer(world, pbEntity);
-                WolfEntity wolf = EntityType.WOLF.create(world);
+                Player nearest = getPlayer(world, pbEntity);
+                Wolf wolf = EntityType.WOLF.create(world);
 
                 assert wolf != null;
                 wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
@@ -229,33 +239,34 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
                     wolf.getNavigation().stop();
                     wolf.setTarget(null);
                     wolf.setOwnerUUID(nearest.getUUID());
-                    wolf.level.broadcastEntityEvent(wolf, (byte) 7);
+                    wolf.level().broadcastEntityEvent(wolf, (byte) 7);
                 }
 
                 return wolf;
             }
             else if ("pbspecial_ocelotTamed".equals(entityID))
             {
-                PlayerEntity nearest = getPlayer(world, pbEntity);
+                Player nearest = getPlayer(world, pbEntity);
 
-                CatEntity ocelot = EntityType.CAT.create(world);
+                Cat ocelot = EntityType.CAT.create(world);
 
                 assert ocelot != null;
                 ocelot.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
                 if (nearest != null)
                 {
+                    ResourceKey<CatVariant> catVariantResourceKey = cats.get(ocelot.level().getRandom().nextInt(cats.size()));
                     ocelot.setTame(true);
-                    ocelot.setCatType(1 + ocelot.level.random.nextInt(10));
+                    ocelot.setVariant(BuiltInRegistries.CAT_VARIANT.getOrThrow(catVariantResourceKey));
                     ocelot.setOwnerUUID(nearest.getUUID());
-                    ocelot.level.broadcastEntityEvent(ocelot, (byte) 7);
+                    ocelot.level().broadcastEntityEvent(ocelot, (byte) 7);
                 }
 
                 return ocelot;
             }
             else if (entityID.startsWith("pbspecial_tnt"))
             {
-                TNTEntity entitytntprimed = EntityType.TNT.create(world);
+                PrimedTnt entitytntprimed = EntityType.TNT.create(world);
                 assert entitytntprimed != null;
                 entitytntprimed.setPos(x, y, z);
                 entitytntprimed.setFuse(Integer.parseInt(entityID.substring(13)));
@@ -264,7 +275,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             }
             else if ("pbspecial_invisibleTnt".startsWith(entityID))
             {
-                TNTEntity entitytntprimed = EntityType.TNT.create(world);
+                PrimedTnt entitytntprimed = EntityType.TNT.create(world);
                 assert entitytntprimed != null;
                 entitytntprimed.setPos(x, y, z);
                 entitytntprimed.setFuse(Integer.parseInt(entityID.substring(22)));
@@ -285,7 +296,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             }
             else if ("pbspecial_angryWolf".equals(entityID))
             {
-                WolfEntity wolf = EntityType.WOLF.create(world);
+                Wolf wolf = EntityType.WOLF.create(world);
                 assert wolf != null;
                 wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 wolf.setTarget(world.getNearestPlayer(x, y, z, 40.0, false));
@@ -294,7 +305,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             }
             else if ("pbspecial_superchargedCreeper".equals(entityID))
             {
-                CreeperEntity creeper = EntityType.CREEPER.create(world);
+                Creeper creeper = EntityType.CREEPER.create(world);
                 assert creeper != null;
                 creeper.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 creeper.getEntityData().set(creeperPoweredParameter(), true);
@@ -302,18 +313,18 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             }
             else if ("pbspecial_skeletonWither".equals(entityID))
             {
-                WitherSkeletonEntity skeleton = EntityType.WITHER_SKELETON.create(world);
+                WitherSkeleton skeleton = EntityType.WITHER_SKELETON.create(world);
                 assert skeleton != null;
                 skeleton.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
-                skeleton.setItemSlot(EquipmentSlotType.MAINHAND, new ItemStack(Items.STONE_SWORD));
+                skeleton.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
                 skeleton.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
 
                 return skeleton;
             }
             else if ("pbspecial_elderGuardian".equals(entityID))
             {
-                ElderGuardianEntity entity = EntityType.ELDER_GUARDIAN.create(world);
+                ElderGuardian entity = EntityType.ELDER_GUARDIAN.create(world);
                 assert entity != null;
                 entity.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
@@ -321,16 +332,16 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             }
             entityID = StringConverter.convertCamelCase(entityID);
 
-            EntityType<?> entity = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(entityID));
+            EntityType<?> entity = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(entityID));
             assert entity != null;
             Entity entity1 = entity.create(world);
             assert entity1 != null;
             entity1.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-            if(entity1 instanceof AbstractPiglinEntity) {
-                ((AbstractPiglinEntity)entity1).setImmuneToZombification(true);
+            if(entity1 instanceof AbstractPiglin) {
+                ((AbstractPiglin)entity1).setImmuneToZombification(true);
             }
-            if(entity1 instanceof HoglinEntity) {
-                ((HoglinEntity)entity1).setImmuneToZombification(true);
+            if(entity1 instanceof Hoglin) {
+                ((Hoglin)entity1).setImmuneToZombification(true);
             }
 
             return entity1;
@@ -343,26 +354,26 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         return null;
     }
 
-    private static DataParameter<Boolean> creeperPoweredParameter() throws IllegalAccessException
+    private static EntityDataAccessor<Boolean> creeperPoweredParameter() throws IllegalAccessException
     {
-        return (DataParameter<Boolean>) ObfuscationReflectionHelper.findField(CreeperEntity.class, "field_184714_b").get(null);
+        return (EntityDataAccessor<Boolean>) ObfuscationReflectionHelper.findField(Creeper.class, "f_32274_").get(null);
     }
-    private static DataParameter<ItemStack> fireworkStackParameter() throws IllegalAccessException
+    private static EntityDataAccessor<ItemStack> fireworkStackParameter() throws IllegalAccessException
     {
-        return (DataParameter<ItemStack>) ObfuscationReflectionHelper.findField(FireworkRocketEntity.class, "field_184566_a").get(null);
+        return (EntityDataAccessor<ItemStack>) ObfuscationReflectionHelper.findField(FireworkRocketEntity.class, "f_37019_").get(null);
     }
 
-    public static CompoundNBT createRandomFirework(Random random)
+    public static CompoundTag createRandomFirework(RandomSource random)
     {
-        CompoundNBT compound = new CompoundNBT();
+        CompoundTag compound = new CompoundTag();
         compound.put("Explosions", createRandomFireworkExplosions(random, (random.nextInt(20)) != 0 ? 1 : (1 + random.nextInt(2))));
         compound.putByte("Flight", (byte) ((random.nextInt(15) != 0) ? 1 : (2 + random.nextInt(2))));
         return compound;
     }
 
-    public static ListNBT createRandomFireworkExplosions(Random random, int number)
+    public static ListTag createRandomFireworkExplosions(RandomSource random, int number)
     {
-        ListNBT list = new ListNBT();
+        ListTag list = new ListTag();
 
         for (int i = 0; i < number; i++)
         {
@@ -372,9 +383,9 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         return list;
     }
 
-    public static CompoundNBT createRandomFireworkExplosion(Random random)
+    public static CompoundTag createRandomFireworkExplosion(RandomSource random)
     {
-        CompoundNBT fireworkCompound = new CompoundNBT();
+        CompoundTag fireworkCompound = new CompoundTag();
 
         fireworkCompound.putBoolean("Flicker", random.nextInt(20) == 0);
         fireworkCompound.putBoolean("Trail", random.nextInt(30) == 0);
@@ -401,7 +412,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -413,7 +424,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

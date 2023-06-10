@@ -3,9 +3,10 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.Registry;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -37,9 +38,9 @@ public class PBEffectDuplicateBox extends PBEffectNormal
     }
 
     @Override
-    public void setUpEffect(World world, PandorasBoxEntity box, Vec3d effectCenter, Random random)
+    public void setUpEffect(Level world, PandorasBoxEntity box, Vec3d effectCenter, RandomSource random)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
             PBEffect effect = PBECRegistry.createRandomEffect(world, random, box.getX(), box.getY(), box.getZ(), true);
             PandorasBoxEntity newBox = Registry.Box.get().create(world);
@@ -48,7 +49,7 @@ public class PBEffectDuplicateBox extends PBEffectNormal
 
             newBox.setBoxEffect(effect);
             newBox.setTimeBoxWaiting(40);
-            newBox.moveTo(box.getX(), box.getY(), box.getZ(), box.yRot, box.xRot);
+            newBox.moveTo(box.getX(), box.getY(), box.getZ(), box.getYRot(), box.getXRot());
 
             if (spawnMode == MODE_BOX_IN_BOX) {
                 newBox.beginFloatingUp();
@@ -59,13 +60,13 @@ public class PBEffectDuplicateBox extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, float prevRatio, float newRatio)
     {
 
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -73,7 +74,7 @@ public class PBEffectDuplicateBox extends PBEffectNormal
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

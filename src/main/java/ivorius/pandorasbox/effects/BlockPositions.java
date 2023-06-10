@@ -1,9 +1,9 @@
 package ivorius.pandorasbox.effects;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.phys.AABB;
 
 import java.util.Collection;
 
@@ -29,12 +29,12 @@ public final class BlockPositions
         return new int[]{pos.getX(), pos.getY(), pos.getZ()};
     }
 
-    public static BlockPos readWithBase(CompoundNBT compound, String keyBase)
+    public static BlockPos readWithBase(CompoundTag compound, String keyBase)
     {
         return new BlockPos(compound.getInt(keyBase + "_x"), compound.getInt(keyBase + "_y"), compound.getInt(keyBase + "_z"));
     }
 
-    public static void writeToNBT(String keyBase, BlockPos coord, CompoundNBT compound)
+    public static void writeToNBT(String keyBase, BlockPos coord, CompoundTag compound)
     {
         if (coord != null)
         {
@@ -44,7 +44,7 @@ public final class BlockPositions
         }
     }
 
-    public static BlockPos readFromNBT(String keyBase, CompoundNBT compound)
+    public static BlockPos readFromNBT(String keyBase, CompoundTag compound)
     {
         return compound.contains(keyBase + "_x") && compound.contains(keyBase + "_y") && compound.contains(keyBase + "_z")
                 ? new BlockPos(compound.getInt(keyBase + "_x"), compound.getInt(keyBase + "_y"), compound.getInt(keyBase + "_z"))
@@ -149,8 +149,8 @@ public final class BlockPositions
         return new BlockPos(pos.getX() - sub.getX(), pos.getY() - sub.getY(), pos.getZ() - sub.getZ());
     }
 
-    public static AxisAlignedBB expandToAABB(BlockPos pos, double x, double y, double z)
+    public static AABB expandToAABB(BlockPos pos, double x, double y, double z)
     {
-        return new AxisAlignedBB(pos).expandTowards(x, y, z);
+        return new AABB(pos).expandTowards(x, y, z);
     }
 }

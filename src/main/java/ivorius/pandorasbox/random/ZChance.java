@@ -5,6 +5,8 @@
 
 package ivorius.pandorasbox.random;
 
+import net.minecraft.util.RandomSource;
+
 import java.util.Random;
 
 /**
@@ -20,7 +22,7 @@ public class ZChance implements ZValue
     }
 
     @Override
-    public boolean getValue(Random random)
+    public boolean getValue(RandomSource random)
     {
         return random.nextDouble() < chance;
     }

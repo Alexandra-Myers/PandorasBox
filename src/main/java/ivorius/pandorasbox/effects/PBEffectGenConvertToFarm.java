@@ -12,6 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -104,7 +105,7 @@ public class PBEffectGenConvertToFarm extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -112,7 +113,7 @@ public class PBEffectGenConvertToFarm extends PBEffectGenerate
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

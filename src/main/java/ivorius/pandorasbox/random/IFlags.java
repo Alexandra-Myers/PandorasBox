@@ -5,6 +5,8 @@
 
 package ivorius.pandorasbox.random;
 
+import net.minecraft.util.RandomSource;
+
 import java.util.Random;
 
 /**
@@ -37,7 +39,7 @@ public class IFlags implements IValue
     }
 
     @Override
-    public int getValue(Random random)
+    public int getValue(RandomSource random)
     {
         int value = 0;
         int flagsSet = 0;
@@ -76,7 +78,7 @@ public class IFlags implements IValue
         return value;
     }
 
-    public static int getRandomValue(Random random, int[] values, double[] weights)
+    public static int getRandomValue(RandomSource random, int[] values, double[] weights)
     {
         double total = 0.0;
         for (double weight : weights)

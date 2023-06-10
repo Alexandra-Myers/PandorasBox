@@ -10,11 +10,11 @@ import ivorius.pandorasbox.effects.PBEffectEntitiesThrowItems;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -40,7 +40,7 @@ public class PBECThrowItems implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         int time = this.time.getValue(random);
         double range = this.range.getValue(random);
@@ -55,7 +55,7 @@ public class PBECThrowItems implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.15f;
     }

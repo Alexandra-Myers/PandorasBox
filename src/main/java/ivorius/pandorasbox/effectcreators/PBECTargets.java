@@ -11,10 +11,10 @@ import ivorius.pandorasbox.effects.PBEffectGenTargets;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.weighted.WeightedEntity;
-import net.minecraft.world.World;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 import java.util.Collection;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -38,7 +38,7 @@ public class PBECTargets implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         double range = this.range.getValue(random);
         double targetSize = this.targetSize.getValue(random);
@@ -53,7 +53,7 @@ public class PBECTargets implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.15f;
     }

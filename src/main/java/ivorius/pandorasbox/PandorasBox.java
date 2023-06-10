@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.client.ClientProxy;
 import ivorius.pandorasbox.client.rendering.PandorasBoxBlockEntityRenderer;
@@ -16,29 +17,23 @@ import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.server.ServerProxy;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.PBEffectArgument;
-import net.minecraft.block.Block;
-import net.minecraft.block.SaplingBlock;
-import net.minecraft.block.StainedGlassBlock;
-import net.minecraft.command.arguments.ArgumentSerializer;
-import net.minecraft.command.arguments.ArgumentTypes;
-import net.minecraft.entity.EntityType;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.structure.VillageConfig;
+import ivorius.pandorasbox.weighted.WeightedSelector;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.animal.CatVariant;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
@@ -63,10 +58,10 @@ public class PandorasBox
     public static Logger logger  = LogManager.getLogger();
 
     public final IEventBus EVENT_BUS;
-    public Feature<BaseTreeFeatureConfig> LOLIPOP;
-    public Feature<BaseTreeFeatureConfig> COLOURFUL_TREE;
-    public Feature<BaseTreeFeatureConfig> RAINBOW;
-    public Feature<BaseTreeFeatureConfig> MEGA_JUNGLE;
+    public Feature<TreeConfiguration> LOLIPOP;
+    public Feature<TreeConfiguration> COLOURFUL_TREE;
+    public Feature<TreeConfiguration> RAINBOW;
+    public Feature<TreeConfiguration> MEGA_JUNGLE;
     public static ArrayListExtensions<Block> logs;
     public static ArrayListExtensions<Block> leaves;
     public static ArrayListExtensions<Block> flowers;
@@ -79,6 +74,7 @@ public class PandorasBox
     public static ArrayListExtensions<Block> stained_glass;
     public static ArrayListExtensions<Block> saplings;
     public static ArrayListExtensions<Block> pots;
+    public static ArrayListExtensions<ResourceKey<CatVariant>> cats;
 
     public static PBEventHandler fmlEventHandler;
     public PandorasBox() {
@@ -86,7 +82,6 @@ public class PandorasBox
         EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
         Registry.init(EVENT_BUS);
         EVENT_BUS.addListener(this::preInit);
-        EVENT_BUS.addListener(this::clientInit);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -109,14 +104,10 @@ public class PandorasBox
         fmlEventHandler = new PBEventHandler();
         fmlEventHandler.register();
 
-        ArgumentTypes.register("pbeffect", PBEffectArgument.class, new ArgumentSerializer<>(PBEffectArgument::effect));
+        ArgumentTypeInfos.register("pbeffect", PBEffectArgument.class, SingletonArgumentInfo.contextFree(PBEffectArgument::effect));
 
         proxy.preInit();
 
         proxy.load();
-    }
-    public void clientInit(FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(Registry.Box.get(), PandorasBoxRenderer::new);
-        PandorasBoxBlockEntityRenderer.register();
     }
 }

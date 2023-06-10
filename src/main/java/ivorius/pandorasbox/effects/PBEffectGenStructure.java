@@ -1,16 +1,11 @@
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.PandorasBoxHelper;
-import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-
-import java.util.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class PBEffectGenStructure extends PBEffectNormal {
     public int length;
@@ -23,7 +18,7 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     public int z;
     public boolean hasAlreadyStarted = false;
     public boolean grounded = true;
-    public BlockPos.Mutable blockPos = new BlockPos.Mutable();
+    public BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
 
     public PBEffectGenStructure() {
     }
@@ -43,7 +38,7 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
         this.unifiedSeed = unifiedSeed;
     }
     @Override
-    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio) {
+    public void doEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, float prevRatio, float newRatio) {
         if(world.isClientSide()) return;
         world.getBlockState(blockPos);
         if(!hasAlreadyStarted) {
@@ -76,9 +71,9 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
             }
         }
     }
-    public abstract void buildStructure(World world, PandorasBoxEntity entity, BlockPos currentPos, Random random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ);
+    public abstract void buildStructure(Level world, PandorasBoxEntity entity, BlockPos currentPos, RandomSource random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ);
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -97,7 +92,7 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

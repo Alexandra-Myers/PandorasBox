@@ -8,9 +8,9 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
-import net.minecraft.block.Block;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.gen.feature.TreeFeature;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
 
 /**
  * Created by lukas on 30.03.14.
@@ -48,7 +48,7 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -57,7 +57,7 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

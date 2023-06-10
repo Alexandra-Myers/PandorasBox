@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.weighted;
 
-import net.minecraft.potion.Effect;
+import net.minecraft.world.effect.MobEffect;
 
 /**
  * Created by lukas on 31.03.14.
@@ -14,7 +14,7 @@ public class WeightedPotion implements WeightedSelector.Item
 {
     public double weight;
 
-    public Effect potion;
+    public MobEffect potion;
 
     public int minStrength;
     public int maxStrength;
@@ -22,7 +22,7 @@ public class WeightedPotion implements WeightedSelector.Item
     public int minDuration;
     public int maxDuration;
 
-    public WeightedPotion(double weight, Effect potion, int minStrength, int maxStrength, int minDuration, int maxDuration)
+    public WeightedPotion(double weight, MobEffect potion, int minStrength, int maxStrength, int minDuration, int maxDuration)
     {
         this.weight = weight;
         this.potion = potion;

@@ -6,12 +6,13 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -30,17 +31,17 @@ public class PBEffectEntitiesBomberman extends PBEffectEntityBased
     }
 
     @Override
-    public void affectEntity(World world, PandorasBoxEntity box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength)
+    public void affectEntity(Level world, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
-            int prevBombs = MathHelper.floor(prevRatio * bombs);
-            int newBombs = MathHelper.floor(newRatio * bombs);
+            int prevBombs = Mth.floor(prevRatio * bombs);
+            int newBombs = Mth.floor(newRatio * bombs);
             int bombs = newBombs - prevBombs;
 
             for (int i = 0; i < bombs; i++)
             {
-                TNTEntity entitytntprimed = new TNTEntity(world, entity.getX(), entity.getY(), entity.getZ(), null);
+                PrimedTnt entitytntprimed = new PrimedTnt(world, entity.getX(), entity.getY(), entity.getZ(), null);
                 entitytntprimed.setFuse(45 + random.nextInt(20));
 
                 world.addFreshEntity(entitytntprimed);
@@ -49,7 +50,7 @@ public class PBEffectEntitiesBomberman extends PBEffectEntityBased
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -57,7 +58,7 @@ public class PBEffectEntitiesBomberman extends PBEffectEntityBased
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

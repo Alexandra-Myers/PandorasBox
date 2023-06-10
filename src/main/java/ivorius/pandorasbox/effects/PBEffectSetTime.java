@@ -7,11 +7,12 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.storage.ServerWorldInfo;
-
-import java.util.Random;
 
 /**
  * Created by lukas on 03.04.14.
@@ -28,7 +29,7 @@ public class PBEffectSetTime extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, float prevRatio, float newRatio)
     {
         int newPlus = MathHelper.floor(totalPlus * newRatio);
         int prevPlus = MathHelper.floor(totalPlus * prevRatio);
@@ -40,7 +41,7 @@ public class PBEffectSetTime extends PBEffectNormal
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -48,7 +49,7 @@ public class PBEffectSetTime extends PBEffectNormal
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

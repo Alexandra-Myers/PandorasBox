@@ -1,13 +1,10 @@
 package ivorius.pandorasbox.worldgen;
 
-import net.minecraft.block.Block;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.gen.IWorldGenerationReader;
-import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 
-import java.util.Random;
-import java.util.Set;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 public interface AccessibleTreeFeature {
 
@@ -15,5 +12,5 @@ public interface AccessibleTreeFeature {
 
     void setSoil(Block newSoil);
 
-    boolean place(IWorldGenerationReader worldIn, Random rand, BlockPos position);
+    boolean place(Level worldIn, RandomSource rand, BlockPos position);
 }

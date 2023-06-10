@@ -6,12 +6,12 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -103,7 +103,7 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -113,7 +113,7 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

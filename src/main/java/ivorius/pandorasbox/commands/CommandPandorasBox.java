@@ -7,24 +7,23 @@ package ivorius.pandorasbox.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBEffectArgument;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.Entity;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.world.entity.Entity;
 
 public class CommandPandorasBox
 {
 
-    public CommandPandorasBox(CommandDispatcher<CommandSource> dispatcher) {
+    public CommandPandorasBox(CommandDispatcher<CommandSourceStack> dispatcher) {
         register(dispatcher);
     }
-    static void register(CommandDispatcher<CommandSource> dispatcher) {
+    static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("pandora")
                 .requires(cs->cs.hasPermission(2)) //permission
                 .then(Commands.argument("player", EntityArgument.player())
@@ -38,13 +37,13 @@ public class CommandPandorasBox
 
         if (effectCreator != null)
         {
-            box = PBECRegistry.spawnPandorasBox(player.level, player.getCommandSenderWorld().random, effectCreator, player);
+            box = PBECRegistry.spawnPandorasBox(player.level(), player.getCommandSenderWorld().random, effectCreator, player);
 
             if (box != null)
                 box.setCanGenerateMoreEffectsAfterwards(false);
         }
         else
-            box = PBECRegistry.spawnPandorasBox(player.level, player.getCommandSenderWorld().random, true, player);
+            box = PBECRegistry.spawnPandorasBox(player.level(), player.getCommandSenderWorld().random, true, player);
 
         if (box != null)
         {

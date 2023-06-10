@@ -11,10 +11,10 @@ import ivorius.pandorasbox.effects.PBEffectSpawnEntities;
 import ivorius.pandorasbox.effects.PBEffectSpawnEntityIDList;
 import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.weighted.WeightedEntity;
-import net.minecraft.world.World;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 import java.util.Collection;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -62,7 +62,7 @@ public class PBECSpawnEntities implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         int time = this.time.getValue(random);
         int number = this.number.getValue(random);
@@ -88,12 +88,12 @@ public class PBECSpawnEntities implements PBEffectCreator
         return constructEffect(random, entitiesToSpawn, time, nameEntities, equipLevel, buffLevel, valueThrow, valueSpawn);
     }
 
-    public static PBEffect constructEffect(Random random, String[][] entitiesToSpawn, int time, ValueThrow valueThrow, ValueSpawn valueSpawn)
+    public static PBEffect constructEffect(RandomSource random, String[][] entitiesToSpawn, int time, ValueThrow valueThrow, ValueSpawn valueSpawn)
     {
         return constructEffect(random, entitiesToSpawn, time, 0, 0, 0, valueThrow, valueSpawn);
     }
 
-    public static PBEffect constructEffect(Random random, String[][] entitiesToSpawn, int time, int nameEntities, int equipLevel, int buffLevel, ValueThrow valueThrow, ValueSpawn valueSpawn)
+    public static PBEffect constructEffect(RandomSource random, String[][] entitiesToSpawn, int time, int nameEntities, int equipLevel, int buffLevel, ValueThrow valueThrow, ValueSpawn valueSpawn)
     {
         boolean canSpawn = valueSpawn != null;
         boolean canThrow = valueThrow != null;
@@ -114,14 +114,14 @@ public class PBECSpawnEntities implements PBEffectCreator
         throw new RuntimeException("Both spawnRange and throwStrength are null!");
     }
 
-    public static void setEffectThrow(PBEffectSpawnEntities effect, Random random, ValueThrow valueThrow)
+    public static void setEffectThrow(PBEffectSpawnEntities effect, RandomSource random, ValueThrow valueThrow)
     {
         double[] throwX = ValueHelper.getValueRange(valueThrow.throwStrengthSide, random);
         double[] throwY = ValueHelper.getValueRange(valueThrow.throwStrengthY, random);
         effect.setDoesSpawnFromBox(throwX[0], throwX[1], throwY[0], throwY[1]);
     }
 
-    public static void setEffectSpawn(PBEffectSpawnEntities effect, Random random, ValueSpawn valueSpawn)
+    public static void setEffectSpawn(PBEffectSpawnEntities effect, RandomSource random, ValueSpawn valueSpawn)
     {
         double range = valueSpawn.spawnRange.getValue(random);
         double spawnShift = valueSpawn.spawnShift.getValue(random);
@@ -129,7 +129,7 @@ public class PBECSpawnEntities implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.1f;
     }

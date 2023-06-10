@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.random;
 
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 
 /**
  * Created by lukas on 04.04.14.
@@ -20,7 +20,7 @@ public class DConstant implements DValue
     }
 
     @Override
-    public double getValue(Random random)
+    public double getValue(RandomSource random)
     {
         return constant;
     }

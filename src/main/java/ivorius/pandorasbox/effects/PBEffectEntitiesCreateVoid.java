@@ -6,12 +6,13 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -28,15 +29,15 @@ public class PBEffectEntitiesCreateVoid extends PBEffectEntityBased
     }
 
     @Override
-    public void affectEntity(World world, PandorasBoxEntity box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength)
+    public void affectEntity(Level world, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
-            if (entity instanceof PlayerEntity)
+            if (entity instanceof Player)
             {
-                int baseY = MathHelper.floor(entity.getY());
-                int baseX = MathHelper.floor(entity.getX());
-                int baseZ = MathHelper.floor(entity.getZ());
+                int baseY = Mth.floor(entity.getY());
+                int baseX = Mth.floor(entity.getX());
+                int baseZ = Mth.floor(entity.getZ());
 
                 for (int x = -1; x <= 1; x++)
                 {

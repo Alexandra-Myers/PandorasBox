@@ -5,6 +5,8 @@
 
 package ivorius.pandorasbox.random;
 
+import net.minecraft.util.RandomSource;
+
 import java.util.Random;
 
 /**
@@ -12,5 +14,5 @@ import java.util.Random;
  */
 public interface ZValue
 {
-    public boolean getValue(Random random);
+    public boolean getValue(RandomSource random);
 }

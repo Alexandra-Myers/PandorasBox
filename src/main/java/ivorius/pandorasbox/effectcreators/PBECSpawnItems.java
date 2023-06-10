@@ -10,16 +10,17 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectSpawnItemStacks;
 import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
-import net.minecraft.enchantment.EnchantmentData;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.world.World;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -56,7 +57,7 @@ public class PBECSpawnItems implements PBEffectCreator
         return new ValueSpawn(new DLinear(5.0, 30.0), new DConstant(150.0));
     }
 
-    public static PBEffect constructEffect(Random random, ItemStack[] stacks, int time, ValueThrow valueThrow, ValueSpawn valueSpawn)
+    public static PBEffect constructEffect(RandomSource random, ItemStack[] stacks, int time, ValueThrow valueThrow, ValueSpawn valueSpawn)
     {
         boolean canSpawn = valueSpawn != null;
         boolean canThrow = valueThrow != null;
@@ -77,7 +78,7 @@ public class PBECSpawnItems implements PBEffectCreator
         throw new RuntimeException("Both spawnRange and throwStrength are null!");
     }
 
-    public static ItemStack[] getItemStacks(Random random, List<RandomizedItemStack> items, int number, boolean split, boolean mixUp, int enchantLevel, boolean giveNames)
+    public static ItemStack[] getItemStacks(RandomSource random, List<RandomizedItemStack> items, int number, boolean split, boolean mixUp, int enchantLevel, boolean giveNames)
     {
         ArrayList<ItemStack> list = new ArrayList<>();
         for (int i = 0; i < number; i++)
@@ -88,7 +89,7 @@ public class PBECSpawnItems implements PBEffectCreator
 
             if (enchantLevel > 0)
             {
-                List enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, false);
+                List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, false);
 
                 if (enchantments.size() == 0)
                 {
@@ -97,9 +98,9 @@ public class PBECSpawnItems implements PBEffectCreator
 
                 if (enchantments.size() > 0)
                 {
-                    for (Object enchantment : enchantments)
+                    for (EnchantmentInstance enchantment : enchantments)
                     {
-                        EnchantmentData enchantmentdata = (EnchantmentData) enchantment;
+                        EnchantmentInstance enchantmentdata = (EnchantmentInstance) enchantment;
 
                         if (stack.getItem() == Items.ENCHANTED_BOOK)
                         {
@@ -136,7 +137,7 @@ public class PBECSpawnItems implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         int number = this.number.getValue(random);
         int ticksPerItem = this.ticksPerItem.getValue(random);
@@ -146,7 +147,7 @@ public class PBECSpawnItems implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.1f;
     }

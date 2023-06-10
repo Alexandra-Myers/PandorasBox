@@ -7,9 +7,12 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -64,7 +67,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased
     public abstract boolean hasFlag(World world, PandorasBoxEntity entity, Random random, BlockPos pos);
 
     @Override
-    public void generateInRange(World world, PandorasBoxEntity entity, Random random, Vec3d effectCenter, double prevRange, double newRange, int pass)
+    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3d effectCenter, double prevRange, double newRange, int pass)
     {
         byte requiredRange = (byte) MathHelper.ceil(newRange);
 
@@ -151,7 +154,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -160,7 +163,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

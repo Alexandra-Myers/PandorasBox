@@ -15,6 +15,7 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Features;
@@ -467,7 +468,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound) {
+    public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
         biome = compound.getString("biome");
         timesFeatureAMade = compound.getInt("featureACount");
@@ -475,7 +476,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound) {
+    public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
         if(biome != null) {
             compound.putString("biome", biome);

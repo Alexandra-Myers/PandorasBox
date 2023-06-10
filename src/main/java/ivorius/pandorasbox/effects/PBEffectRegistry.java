@@ -6,8 +6,8 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBox;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
@@ -41,23 +41,23 @@ public class PBEffectRegistry
         return registeredEffects.values();
     }
 
-    public static void writeEffect(PBEffect effect, CompoundNBT compound)
+    public static void writeEffect(PBEffect effect, CompoundTag compound)
     {
         if (effect != null)
         {
             compound.putString("pbEffectID", effect.getEffectID());
-            CompoundNBT pbEffectCompound = new CompoundNBT();
+            CompoundTag pbEffectCompound = new CompoundTag();
             effect.writeToNBT(pbEffectCompound);
             compound.put("pbEffectCompound", pbEffectCompound);
         }
     }
 
-    public static PBEffect loadEffect(CompoundNBT compound)
+    public static PBEffect loadEffect(CompoundTag compound)
     {
         return loadEffect(compound.getString("pbEffectID"), compound.getCompound("pbEffectCompound"));
     }
 
-    public static PBEffect loadEffect(String id, CompoundNBT compound)
+    public static PBEffect loadEffect(String id, CompoundTag compound)
     {
         Class<? extends PBEffect> clazz = getEffect(id);
 

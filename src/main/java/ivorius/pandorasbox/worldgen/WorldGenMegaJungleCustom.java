@@ -6,18 +6,14 @@
 package ivorius.pandorasbox.worldgen;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.VineBlock;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.IWorldGenerationReader;
-import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
-import net.minecraft.world.gen.feature.TreeFeature;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 
 import java.util.Random;
 import java.util.Set;
@@ -30,13 +26,13 @@ public class WorldGenMegaJungleCustom extends TreeFeature implements MegaTreeFea
     public BlockState leavesMetadata;
     public BlockState woodMetadata;
     public int height;
-    public WorldGenMegaJungleCustom(Codec<BaseTreeFeatureConfig> configIn, int height)
+    public WorldGenMegaJungleCustom(Codec<TreeConfiguration> configIn, int height)
     {
         super(configIn);
         this.height = height;
     }
 
-    private void func_175932_b(World worldIn, Random p_175932_2_, BlockPos p_175932_3_, BlockState p_175932_4_)
+    private void func_175932_b(Level worldIn, Random p_175932_2_, BlockPos p_175932_3_, BlockState p_175932_4_)
     {
         if (p_175932_2_.nextInt(3) > 0 && worldIn.isEmptyBlock(p_175932_3_))
         {
@@ -44,7 +40,7 @@ public class WorldGenMegaJungleCustom extends TreeFeature implements MegaTreeFea
         }
     }
 
-    private void func_175930_c(World worldIn, BlockPos p_175930_2_, int p_175930_3_)
+    private void func_175930_c(Level worldIn, BlockPos p_175930_2_, int p_175930_3_)
     {
         byte b0 = 2;
 
@@ -55,16 +51,15 @@ public class WorldGenMegaJungleCustom extends TreeFeature implements MegaTreeFea
     }
 
     //Helper macro
-    private boolean isAirLeaves(World world, BlockPos pos)
+    private boolean isAirLeaves(Level world, BlockPos pos)
     {
         BlockState blockState = world.getBlockState(pos);
-        Block block = blockState.getBlock();
-        return block.isAir(blockState, world, pos) || block.is(BlockTags.LEAVES);
+        return blockState.isAir() || blockState.is(BlockTags.LEAVES);
     }
 
 
     // Overwritten
-    protected void func_175925_a(World worldIn, BlockPos p_175925_2_, int p_175925_3_)
+    protected void func_175925_a(Level worldIn, BlockPos p_175925_2_, int p_175925_3_)
     {
         int j = p_175925_3_ * p_175925_3_;
 
@@ -80,7 +75,7 @@ public class WorldGenMegaJungleCustom extends TreeFeature implements MegaTreeFea
                     BlockPos blockpos1 = p_175925_2_.offset(k, 0, l);
                     BlockState state = worldIn.getBlockState(blockpos1);
 
-                    if (state.getBlock().isAir(state, worldIn, blockpos1) || state.getBlock().is(BlockTags.LEAVES))
+                    if (state.isAir() || state.is(BlockTags.LEAVES))
                     {
                         worldIn.setBlockAndUpdate(blockpos1, this.leavesMetadata);
                     }
@@ -89,7 +84,7 @@ public class WorldGenMegaJungleCustom extends TreeFeature implements MegaTreeFea
         }
     }
 
-    protected void func_175928_b(World worldIn, BlockPos p_175928_2_, int p_175928_3_)
+    protected void func_175928_b(Level worldIn, BlockPos p_175928_2_, int p_175928_3_)
     {
         int j = p_175928_3_ * p_175928_3_;
 
@@ -101,9 +96,8 @@ public class WorldGenMegaJungleCustom extends TreeFeature implements MegaTreeFea
                 {
                     BlockPos blockpos1 = p_175928_2_.offset(k, 0, l);
                     BlockState blockState = worldIn.getBlockState(blockpos1);
-                    Block block = blockState.getBlock();
 
-                    if (block.isAir(blockState, worldIn, blockpos1) || block.is(BlockTags.LEAVES))
+                    if (blockState.isAir() || blockState.is(BlockTags.LEAVES))
                     {
                         worldIn.setBlockAndUpdate(blockpos1, leavesMetadata);
                     }
@@ -123,24 +117,22 @@ public class WorldGenMegaJungleCustom extends TreeFeature implements MegaTreeFea
     }
 
     @Override
-    public boolean place(IWorldGenerationReader world, Random rand, BlockPos position) {
+    public boolean place(Level worldIn, Random rand, BlockPos position) {
         int i = (int) Math.round(height + (height * rand.nextDouble()) / 2);
-        World worldIn = world instanceof World ? (World) world : null;
-        if(worldIn == null) return false;
 
         this.func_175930_c(worldIn, position.above(i), 2);
 
         for (int j = position.getY() + i - 2 - rand.nextInt(4); j > position.getY() + i / 2; j -= 2 + rand.nextInt(4))
         {
             float f = rand.nextFloat() * (float) Math.PI * 2.0F;
-            int k = position.getX() + (int) (0.5F + MathHelper.cos(f) * 4.0F);
-            int l = position.getZ() + (int) (0.5F + MathHelper.sin(f) * 4.0F);
+            int k = position.getX() + (int) (0.5F + Mth.cos(f) * 4.0F);
+            int l = position.getZ() + (int) (0.5F + Mth.sin(f) * 4.0F);
             int i1;
 
             for (i1 = 0; i1 < 5; ++i1)
             {
-                k = position.getX() + (int) (1.5F + MathHelper.cos(f) * (float) i1);
-                l = position.getZ() + (int) (1.5F + MathHelper.sin(f) * (float) i1);
+                k = position.getX() + (int) (1.5F + Mth.cos(f) * (float) i1);
+                l = position.getZ() + (int) (1.5F + Mth.sin(f) * (float) i1);
                 worldIn.setBlockAndUpdate(new BlockPos(k, j - 3 + i1 / 2, l), this.woodMetadata);
             }
 

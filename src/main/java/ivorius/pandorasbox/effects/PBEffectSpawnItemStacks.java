@@ -11,9 +11,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.World;
-
-import java.util.Random;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by lukas on 30.03.14.
@@ -40,7 +41,7 @@ public class PBEffectSpawnItemStacks extends PBEffectSpawnEntities
     }
 
     @Override
-    public Entity spawnEntity(World world, PandorasBoxEntity entity, Random random, int number, double x, double y, double z)
+    public Entity spawnEntity(Level world, PandorasBoxEntity entity, RandomSource random, int number, double x, double y, double z)
     {
         if(world.isClientSide()) return null;
         ItemEntity entityItem = new ItemEntity(world, x, y, z, stacks[number]);
@@ -50,7 +51,7 @@ public class PBEffectSpawnItemStacks extends PBEffectSpawnEntities
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -58,7 +59,7 @@ public class PBEffectSpawnItemStacks extends PBEffectSpawnEntities
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

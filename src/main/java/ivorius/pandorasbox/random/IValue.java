@@ -5,12 +5,12 @@
 
 package ivorius.pandorasbox.random;
 
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 
 /**
  * Created by lukas on 04.04.14.
  */
 public interface IValue
 {
-    public int getValue(Random random);
+    public int getValue(RandomSource random);
 }

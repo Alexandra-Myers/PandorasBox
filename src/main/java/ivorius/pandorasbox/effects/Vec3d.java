@@ -1,9 +1,10 @@
 package ivorius.pandorasbox.effects;
 
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 
-public class Vec3d extends Vector3d {
+public class Vec3d extends Vec3 {
     public Vec3d(double p_i47092_1_, double p_i47092_3_, double p_i47092_5_) {
         super(p_i47092_1_, p_i47092_3_, p_i47092_5_);
     }

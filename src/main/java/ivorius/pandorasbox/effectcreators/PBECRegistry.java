@@ -18,11 +18,11 @@ import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.StringConverter;
 import ivorius.pandorasbox.utils.WrappedBiMap;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 
 import java.util.*;
 
@@ -86,13 +86,13 @@ public class PBECRegistry
         return badCreators.contains(name);
     }
 
-    public static PBEffectCreator randomEffectCreatorOfType(Random random, boolean good)
+    public static PBEffectCreator randomEffectCreatorOfType(RandomSource random, boolean good)
     {
         ArrayList<String> list = good ? goodCreators : badCreators;
         return effectCreators.get(new ResourceLocation(PandorasBox.MOD_ID, list.get(random.nextInt(list.size()))));
     }
 
-    public static PBEffect createEffect(World world, Random random, double x, double y, double z, PBEffectCreator creator)
+    public static PBEffect createEffect(Level world, RandomSource random, double x, double y, double z, PBEffectCreator creator)
     {
         if (!isAnyNull(world, random, creator))
             return constructEffectSafe(creator, world, x, y, z, random);
@@ -100,7 +100,7 @@ public class PBECRegistry
         return null;
     }
 
-    public static PBEffect createRandomEffectOfType(World world, Random random, double x, double y, double z, boolean good)
+    public static PBEffect createRandomEffectOfType(Level world, RandomSource random, double x, double y, double z, boolean good)
     {
         PBEffectCreator creator = randomEffectCreatorOfType(random, good);
 
@@ -110,7 +110,7 @@ public class PBECRegistry
         return null;
     }
 
-    public static PBEffect createRandomEffect(World world, Random random, double x, double y, double z, boolean multi)
+    public static PBEffect createRandomEffect(Level world, RandomSource random, double x, double y, double z, boolean multi)
     {
         float currentMinChance = 1.0f;
         ArrayList<PBEffect> effects = new ArrayList<>();
@@ -162,30 +162,30 @@ public class PBECRegistry
         return Math.pow(effectFactor, 1.0 / PBConfig.boxIntensity);
     }
 
-    public static PBEffect constructEffectSafe(PBEffectCreator creator, World world, double x, double y, double z, Random random)
+    public static PBEffect constructEffectSafe(PBEffectCreator creator, Level world, double x, double y, double z, RandomSource random)
     {
 //        if(isAnyNull(creator, world, random)) return null;
         return creator.constructEffect(world, x, y, z, random);
     }
 
-    public static PandorasBoxEntity spawnPandorasBox(World world, Random random, boolean multi, Entity entity, BlockPos pos, boolean floatAway)
+    public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, boolean multi, Entity entity, BlockPos pos, boolean floatAway)
     {
         PBEffect effect = createRandomEffect(world, random, pos.getX(), pos.getY() + 1.2, pos.getZ(), multi);
         return spawnPandorasBox(world, effect, entity, pos, floatAway);
     }
-    public static PandorasBoxEntity spawnPandorasBox(World world, Random random, boolean multi, Entity entity)
+    public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, boolean multi, Entity entity)
     {
         PBEffect effect = createRandomEffect(world, random, entity.getX(), entity.getY() + 1.2, entity.getZ(), multi);
         return spawnPandorasBox(world, effect, entity, null, true);
     }
 
-    public static PandorasBoxEntity spawnPandorasBox(World world, Random random, PBEffectCreator creator, Entity entity)
+    public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, PBEffectCreator creator, Entity entity)
     {
         PBEffect effect = createEffect(world, random, entity.getX(), entity.getY() + 1.2, entity.getZ(), creator);
         return spawnPandorasBox(world, effect, entity, null, true);
     }
 
-    public static PandorasBoxEntity spawnPandorasBox(World world, PBEffect effect, Entity entity, BlockPos pos, boolean floatAway)
+    public static PandorasBoxEntity spawnPandorasBox(Level world, PBEffect effect, Entity entity, BlockPos pos, boolean floatAway)
     {
         if (effect != null && !world.isClientSide())
         {
@@ -193,11 +193,11 @@ public class PBECRegistry
 
             if(pos == null) {
                 pos = new BlockPos(
-                        entity.getX() + entity.getDirection().getStepX(),
-                        entity.getY() + entity.getDirection().getStepY(),
-                        entity.getZ() + entity.getDirection().getStepZ());
+                        (int) (entity.getX() + entity.getDirection().getStepX()),
+                        (int) (entity.getY() + entity.getDirection().getStepY()),
+                        (int) (entity.getZ() + entity.getDirection().getStepZ()));
             }
-            while(!world.getBlockState(pos).isAir(world, pos)) {
+            while(!world.getBlockState(pos).isAir()) {
                 pos = pos.above();
             }
 
@@ -205,7 +205,7 @@ public class PBECRegistry
 
             entityPandorasBox.setBoxEffect(effect);
             entityPandorasBox.setTimeBoxWaiting(40);
-            entityPandorasBox.moveTo(pos, entity.yRot + 180.0f, 0.0f);
+            entityPandorasBox.moveTo(pos, entity.getYRot() + 180.0f, 0.0f);
 
             if (floatAway) {
                 entityPandorasBox.beginFloatingAway();

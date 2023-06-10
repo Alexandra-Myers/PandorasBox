@@ -5,14 +5,12 @@ import ivorius.pandorasbox.math.IvMathHelper;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.WeightedBlock;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-
-import java.util.List;
-import java.util.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 
 public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
     public ArrayListExtensions<WeightedBlock> bricks = new ArrayListExtensions<>();
@@ -29,11 +27,11 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
         this.axis = axis;
     }
     @Override
-    public void buildStructure(World world, PandorasBoxEntity entity, BlockPos currentPos, Random random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
-        boolean bl = MathHelper.ceil(length / 2) >= 2;
-        boolean bl1 = MathHelper.ceil(width / 2) >= 2;
-        int portalXAxis = bl ? MathHelper.ceil(length / 2) : 2;
-        int portalZAxis = bl1 ? MathHelper.ceil(width / 2) : 2;
+    public void buildStructure(Level world, PandorasBoxEntity entity, BlockPos currentPos, RandomSource random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
+        boolean bl = Mth.ceil(length / 2) >= 2;
+        boolean bl1 = Mth.ceil(width / 2) >= 2;
+        int portalXAxis = bl ? Mth.ceil(length / 2) : 2;
+        int portalZAxis = bl1 ? Mth.ceil(width / 2) : 2;
         if (currentPos.getY() >= startingYOffset + originY
                 && currentPos.getY() < originY + height
                 && axis == Direction.Axis.X

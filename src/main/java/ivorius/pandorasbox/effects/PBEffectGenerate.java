@@ -6,12 +6,11 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-
-import java.util.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by lukas on 30.03.14.
@@ -29,13 +28,13 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     }
 
     @Override
-    public void generateInRange(World world, PandorasBoxEntity entity, Random random, Vec3d effectCenter, double prevRange, double newRange, int pass)
+    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3d effectCenter, double prevRange, double newRange, int pass)
     {
-        int requiredRange = MathHelper.ceil(newRange);
+        int requiredRange = Mth.ceil(newRange);
 
-        int baseX = MathHelper.floor(effectCenter.x);
-        int baseY = MathHelper.floor(effectCenter.y);
-        int baseZ = MathHelper.floor(effectCenter.z);
+        int baseX = Mth.floor(effectCenter.x);
+        int baseY = Mth.floor(effectCenter.y);
+        int baseZ = Mth.floor(effectCenter.z);
 
         for (int x = -requiredRange; x <= requiredRange; x++)
         {
@@ -43,7 +42,7 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
             {
                 for (int z = -requiredRange; z <= requiredRange; z++)
                 {
-                    double dist = MathHelper.sqrt(x * x + y * y + z * z);
+                    double dist = Mth.sqrt(x * x + y * y + z * z);
 
                     if (dist <= newRange)
                     {
@@ -57,17 +56,17 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
         }
     }
 
-    public abstract void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range);
+    public abstract void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range);
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
         compound.putInt("unifiedSeed", unifiedSeed);
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
         unifiedSeed = compound.getInt("unifiedSeed");

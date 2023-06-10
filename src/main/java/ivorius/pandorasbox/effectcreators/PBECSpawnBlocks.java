@@ -10,12 +10,12 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectSpawnBlocks;
 import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.weighted.WeightedBlock;
-import net.minecraft.block.Block;
-import net.minecraft.world.World;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -62,7 +62,7 @@ public class PBECSpawnBlocks implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         int number = this.number.getValue(random);
         int ticksPerBlock = this.ticksPerBlock.getValue(random);
@@ -92,7 +92,7 @@ public class PBECSpawnBlocks implements PBEffectCreator
         return constructEffect(random, blocks, number * ticksPerBlock + 1, valueThrow, valueSpawn);
     }
 
-    public static Block[] constructBlocks(Random random, Block[] blocks, int number, boolean mixUp)
+    public static Block[] constructBlocks(RandomSource random, Block[] blocks, int number, boolean mixUp)
     {
         ArrayList<Block> list = new ArrayList<>();
 
@@ -104,7 +104,7 @@ public class PBECSpawnBlocks implements PBEffectCreator
         return list.toArray(new Block[list.size()]);
     }
 
-    public static PBEffect constructEffect(Random random, Block[] blocks, int time, ValueThrow valueThrow, ValueSpawn valueSpawn)
+    public static PBEffect constructEffect(RandomSource random, Block[] blocks, int time, ValueThrow valueThrow, ValueSpawn valueSpawn)
     {
         boolean canSpawn = valueSpawn != null;
         boolean canThrow = valueThrow != null;
@@ -126,7 +126,7 @@ public class PBECSpawnBlocks implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.1f;
     }

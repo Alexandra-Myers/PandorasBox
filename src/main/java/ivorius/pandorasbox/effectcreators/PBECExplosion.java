@@ -10,9 +10,8 @@ import ivorius.pandorasbox.effects.PBEffectExplode;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ZValue;
-import net.minecraft.world.World;
-
-import java.util.Random;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by lukas on 30.03.14.
@@ -31,7 +30,7 @@ public class PBECExplosion implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         int time = this.time.getValue(random);
         double explosionRadius = this.explosionRadius.getValue(random);
@@ -42,7 +41,7 @@ public class PBECExplosion implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.5f;
     }

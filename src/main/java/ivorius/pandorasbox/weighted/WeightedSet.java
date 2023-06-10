@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.weighted;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Created by lukas on 31.03.14.

@@ -6,32 +6,29 @@
 package ivorius.pandorasbox.entitites;
 
 import ivorius.pandorasbox.PBConfig;
-import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.effects.Vec3d;
 import ivorius.pandorasbox.network.PartialUpdateHandler;
-import net.minecraft.entity.*;
-import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.datasync.IDataSerializer;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.Random;
 
@@ -42,7 +39,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 {
     public static final float BOX_UPSCALE_SPEED = 0.02f;
 
-    private static final DataParameter<Integer> BOX_DEATH_TICKS = EntityDataManager.defineId(PandorasBoxEntity.class, DataSerializers.INT);
+    private static final EntityDataAccessor<Integer> BOX_DEATH_TICKS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
 
     protected int timeBoxWaiting;
     protected int effectTicksExisted;
@@ -52,7 +49,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
     protected boolean floatUp = false;
     protected float floatAwayProgress = -1.0f;
-    public static final EntityDataSerializer<PBEffect> PBEFFECT_SERIALIZER = new EntityDataSerializer<PBEffect>() {
+    public static final EntityDataSerializer<PBEffect> PBEFFECT_SERIALIZER = new EntityDataSerializer<>() {
         @Override
         public void write(FriendlyByteBuf p_135025_, PBEffect p_135026_) {
             CompoundTag compound = new CompoundTag();
@@ -73,11 +70,11 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     };
 
     protected float scaleInProgress = 1.0f;
-    private static final DataParameter<PBEffect> DATA_EFFECT_ID = EntityDataManager.defineId(PandorasBoxEntity.class, PBEFFECT_SERIALIZER);
+    private static final EntityDataAccessor<PBEffect> DATA_EFFECT_ID = SynchedEntityData.defineId(PandorasBoxEntity.class, PBEFFECT_SERIALIZER);
 
     protected Vec3d effectCenter = new Vec3d(0, 0, 0);
 
-    public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> p_i50172_1_, World p_i50172_2_) {
+    public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> p_i50172_1_, Level p_i50172_2_) {
         super(p_i50172_1_, p_i50172_2_);
     }
 
@@ -168,6 +165,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     @Override
     public void tick()
     {
+        Level level = level();
         super.tick();
         if (timeBoxWaiting == 0 && getDeathTicks() < 0)
         {
@@ -175,16 +173,16 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
             if (effect == null)
             {
-                if (level instanceof ServerWorld)
+                if (level instanceof ServerLevel)
                 {
-                    remove();
+                    remove(RemovalReason.DISCARDED);
                 }
             }
             else
             {
                 if (effect.isDone(this, effectTicksExisted))
                 {
-                    if (level instanceof ServerWorld)
+                    if (level instanceof ServerLevel)
                     {
                         boolean isCompletelyDone = true;
 
@@ -223,7 +221,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
         if (floatAwayProgress >= 0.0f && floatAwayProgress < 1.0f)
         {
-            float speed = MathHelper.square(floatAwayProgress - 0.7f);
+            float speed = Mth.square(floatAwayProgress - 0.7f);
             if (floatUp)
             {
                 setDeltaMovement(getDeltaMovement().add(0, speed * 0.015f, 0));
@@ -296,10 +294,10 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
         if (getDeathTicks() >= 0)
         {
-            if (level instanceof ServerWorld)
+            if (level instanceof ServerLevel)
             {
                 if (getDeathTicks() >= 30)
-                    remove();
+                    remove(RemovalReason.DISCARDED);
             }
             else
             {
@@ -309,7 +307,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
                     double yP = (random.nextDouble() - random.nextDouble()) * 0.5;
                     double zP = (random.nextDouble() - random.nextDouble()) * 0.5;
 
-                    level.addParticle(ParticleTypes.SMOKE, getX() + xP, getY() + yP, getZ() + zP, 0.0D, 0.0D, 0.0D);
+                    level().addParticle(ParticleTypes.SMOKE, getX() + xP, getY() + yP, getZ() + zP, 0.0D, 0.0D, 0.0D);
                 }
             }
 
@@ -321,7 +319,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         effectTicksExisted = 0;
         timeBoxWaiting = random.nextInt(40);
 
-        boxEffect = ensureNotNull(PBECRegistry.createRandomEffect(level, random, effectCenter.x, effectCenter.y, effectCenter.z, true));
+        boxEffect = ensureNotNull(PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true));
         entityData.set(DATA_EFFECT_ID, boxEffect);
     }
 
@@ -365,12 +363,12 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     }
     public PBEffect ensureNotNull(PBEffect input) {
         while(input == null) {
-            input = PBECRegistry.createRandomEffect(level, random, effectCenter.x, effectCenter.y, effectCenter.z, true);
+            input = PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true);
         }
         return input;
     }
 
-    public Random getRandom()
+    public RandomSource getRandom()
     {
         return random;
     }
@@ -388,13 +386,13 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     public float getRatioBoxOpen(float partialTicks)
     {
         if (floatAwayProgress >= 0.0f)
-            return MathHelper.clamp(((floatAwayProgress + partialTicks * 0.025f - 0.5f) * 2.0f), 0.0f, 1.0f);
+            return Mth.clamp(((floatAwayProgress + partialTicks * 0.025f - 0.5f) * 2.0f), 0.0f, 1.0f);
         else
             return 1.0f;
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -423,7 +421,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         floatUp = compound.getBoolean("floatUp");
         scaleInProgress = compound.getFloat("scaleInProgress");
 
-        if (compound.contains("effectCenterX", Constants.NBT.TAG_DOUBLE) && compound.contains("effectCenterY", Constants.NBT.TAG_DOUBLE) && compound.contains("effectCenterZ", Constants.NBT.TAG_DOUBLE))
+        if (compound.contains("effectCenterX", 6) && compound.contains("effectCenterY", 6) && compound.contains("effectCenterZ", 6))
             setEffectCenter(compound.getDouble("effectCenterX"), compound.getDouble("effectCenterY"), compound.getDouble("effectCenterZ"));
         else
             setEffectCenter(getX(), getY(), getZ());

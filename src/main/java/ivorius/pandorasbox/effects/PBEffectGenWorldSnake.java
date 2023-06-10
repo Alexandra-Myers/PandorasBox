@@ -7,12 +7,13 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
-import net.minecraft.block.Block;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import java.util.Random;
 
@@ -52,16 +53,16 @@ public class PBEffectGenWorldSnake extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, float prevRatio, float newRatio)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
-            int requiredRange = MathHelper.ceil(size);
+            int requiredRange = Mth.ceil(size);
 
-            float f1 = MathHelper.cos(-dirYaw * 0.017453292F - (float) Math.PI);
-            float f2 = MathHelper.sin(-dirYaw * 0.017453292F - (float) Math.PI);
-            float f3 = -MathHelper.cos(-dirPitch * 0.017453292F);
-            float f4 = MathHelper.sin(-dirPitch * 0.017453292F);
+            float f1 = Mth.cos(-dirYaw * 0.017453292F - (float) Math.PI);
+            float f2 = Mth.sin(-dirYaw * 0.017453292F - (float) Math.PI);
+            float f3 = -Mth.cos(-dirPitch * 0.017453292F);
+            float f4 = Mth.sin(-dirPitch * 0.017453292F);
 
             double dirX = f2 * f3 * speed;
             double dirY = f4 * speed;
@@ -71,9 +72,9 @@ public class PBEffectGenWorldSnake extends PBEffectNormal
             double newY = currentY + dirY;
             double newZ = currentZ + dirZ;
 
-            int baseX = MathHelper.floor(newX);
-            int baseY = MathHelper.floor(newY);
-            int baseZ = MathHelper.floor(newZ);
+            int baseX = Mth.floor(newX);
+            int baseY = Mth.floor(newY);
+            int baseZ = Mth.floor(newZ);
 
             for (int x = -requiredRange; x <= requiredRange; x++)
             {
@@ -99,18 +100,18 @@ public class PBEffectGenWorldSnake extends PBEffectNormal
             dirYaw += dirYawAcc;
             dirPitch += dirPitchAcc;
 
-            dirYawAcc += MathHelper.clamp((random.nextFloat() - random.nextFloat()) * 0.5f, -10.0f, 10.0f);
-            dirPitchAcc += MathHelper.clamp((random.nextFloat() - random.nextFloat()) * 0.5f, -10.0f, 10.0f);
+            dirYawAcc += Mth.clamp((random.nextFloat() - random.nextFloat()) * 0.5f, -10.0f, 10.0f);
+            dirPitchAcc += Mth.clamp((random.nextFloat() - random.nextFloat()) * 0.5f, -10.0f, 10.0f);
         }
     }
 
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Random random, BlockPos pos)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, BlockPos pos)
     {
         setBlockVarying(world, pos, blocks[random.nextInt(blocks.length)], unifiedSeed);
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -131,7 +132,7 @@ public class PBEffectGenWorldSnake extends PBEffectNormal
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

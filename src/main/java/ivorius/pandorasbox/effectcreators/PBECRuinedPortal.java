@@ -7,20 +7,18 @@ package ivorius.pandorasbox.effectcreators;
 
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenPool;
 import ivorius.pandorasbox.effects.PBEffectGenRuinedPortal;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedSelector;
-import net.minecraft.block.Block;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -49,7 +47,7 @@ public class PBECRuinedPortal implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         int rangeX = this.rangeX.getValue(random);
         int rangeY = this.rangeY.getValue(random);
@@ -64,7 +62,7 @@ public class PBECRuinedPortal implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.1f;
     }

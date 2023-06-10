@@ -11,17 +11,16 @@ import ivorius.pandorasbox.effects.PBEffectGenReplace;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.ZValue;
 import ivorius.pandorasbox.weighted.WeightedBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -44,14 +43,14 @@ public class PBECReplace implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         double range = this.range.getValue(random);
-        int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
+        int time = Mth.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        int baseX = MathHelper.floor(x);
-        int baseY = MathHelper.floor(y);
-        int baseZ = MathHelper.floor(z);
+        int baseX = Mth.floor(x);
+        int baseY = Mth.floor(y);
+        int baseZ = Mth.floor(z);
         boolean takeRandomNearbyBlocks = this.takeRandomNearbyBlocks.getValue(random);
 
         Block[] srcSelection = new Block[0];
@@ -67,7 +66,7 @@ public class PBECReplace implements PBEffectCreator
                     {
                         BlockState block = world.getBlockState(new BlockPos(baseX + xP, baseY + yP, baseZ + zP));
 
-                        if (block.getMaterial() != Material.AIR)
+                        if (!block.isAir())
                             nearbyBlocks.add(new WeightedBlock(100, block.getBlock()));
 //                        else // dud
                     }
@@ -91,7 +90,7 @@ public class PBECReplace implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.1f;
     }

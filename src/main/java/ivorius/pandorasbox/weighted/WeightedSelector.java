@@ -1,6 +1,7 @@
 package ivorius.pandorasbox.weighted;
 
 import com.google.common.collect.Collections2;
+import net.minecraft.util.RandomSource;
 
 import java.util.*;
 import java.util.function.ToDoubleFunction;
@@ -29,7 +30,7 @@ public class WeightedSelector
         return items.stream().anyMatch(item -> weightFunction.applyAsDouble(item) > 0);
     }
 
-    public static <T> T selectWeightless(Random rand, Collection<T> items, int counted)
+    public static <T> T selectWeightless(RandomSource rand, Collection<T> items, int counted)
     {
         counted = rand.nextInt(counted);
         for (Iterator<T> iterator = items.iterator(); true; )
@@ -40,22 +41,22 @@ public class WeightedSelector
         }
     }
 
-    public static <T extends Item> T selectItem(Random rand, Collection<T> items)
+    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items)
     {
         return selectItem(rand, items, totalWeight(items));
     }
 
-    public static <T extends Item> T selectItem(Random rand, Collection<T> items, double totalWeight)
+    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items, double totalWeight)
     {
         return selectItem(rand, items, totalWeight, false);
     }
 
-    public static <T extends Item> T selectItem(Random rand, Collection<T> items, boolean remove)
+    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items, boolean remove)
     {
         return selectItem(rand, items, totalWeight(items), remove);
     }
 
-    public static <T extends Item> T selectItem(Random rand, Collection<T> items, double totalWeight, boolean remove)
+    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items, double totalWeight, boolean remove)
     {
         if (items.size() == 0)
             throw new IndexOutOfBoundsException();
@@ -77,22 +78,22 @@ public class WeightedSelector
         return selectWeightless(rand, items, counted);
     }
 
-    public static <T> T select(Random rand, Collection<T> items, final ToDoubleFunction<T> weightFunction)
+    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction)
     {
         return select(rand, items, weightFunction, totalWeight(items, weightFunction));
     }
 
-    public static <T> T select(Random rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, double totalWeight)
+    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, double totalWeight)
     {
         return select(rand, items, weightFunction, totalWeight, false);
     }
 
-    public static <T> T select(Random rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, boolean remove)
+    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, boolean remove)
     {
         return select(rand, items, weightFunction, totalWeight(items, weightFunction), remove);
     }
 
-    public static <T> T select(Random rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, double totalWeight, boolean remove)
+    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, double totalWeight, boolean remove)
     {
         if (items.size() == 0)
             throw new IndexOutOfBoundsException();
@@ -114,22 +115,22 @@ public class WeightedSelector
         return selectWeightless(rand, items, counted);
     }
 
-    public static <T> T select(Random rand, Collection<SimpleItem<T>> items)
+    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items)
     {
         return selectItem(rand, items).getItem();
     }
 
-    public static <T> T select(Random rand, Collection<SimpleItem<T>> items, double totalWeight)
+    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, double totalWeight)
     {
         return selectItem(rand, items, totalWeight).getItem();
     }
 
-    public static <T> T select(Random rand, Collection<SimpleItem<T>> items, boolean remove)
+    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, boolean remove)
     {
         return selectItem(rand, items, remove).getItem();
     }
 
-    public static <T> T select(Random rand, Collection<SimpleItem<T>> items, double totalWeight, boolean remove)
+    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, double totalWeight, boolean remove)
     {
         return selectItem(rand, items, totalWeight, remove).getItem();
     }

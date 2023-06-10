@@ -6,14 +6,13 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-
-import java.util.Random;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by lukas on 30.03.14.
@@ -55,9 +54,9 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, PandorasBoxEntity box, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(Level world, PandorasBoxEntity box, Vec3d effectCenter, RandomSource random, float prevRatio, float newRatio)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
             int prev = getSpawnNumber(prevRatio);
             int toSpawn = getSpawnNumber(newRatio) - prev;
@@ -90,9 +89,9 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
                         float dirSide = random.nextFloat() * 2.0f * 3.1415926f;
                         double throwStrengthSide = throwStrengthSideMin + random.nextDouble() * (throwStrengthSideMax - throwStrengthSideMin);
 
-                        newEntity.push(MathHelper.sin(dirSide) * throwStrengthSide,
+                        newEntity.push(Mth.sin(dirSide) * throwStrengthSide,
                                 throwStrengthYMin + random.nextDouble() * (throwStrengthYMax - throwStrengthYMin),
-                                MathHelper.cos(dirSide) * throwStrengthSide);
+                                Mth.cos(dirSide) * throwStrengthSide);
                         newEntity.hurtMarked = true;
                     }
                 }
@@ -102,13 +101,13 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
 
     private int getSpawnNumber(float ratio)
     {
-        return MathHelper.floor(ratio * number);
+        return Mth.floor(ratio * number);
     }
 
-    public abstract Entity spawnEntity(World world, PandorasBoxEntity pbEntity, Random random, int number, double x, double y, double z);
+    public abstract Entity spawnEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, int number, double x, double y, double z);
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -123,7 +122,7 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

@@ -11,6 +11,7 @@ import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -31,7 +32,7 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
         super(maxTicksAlive);
     }
 
-    public void createRandomStructures(Random random, int number, double range, Collection<WeightedBlock> blocks)
+    public void createRandomStructures(RandomSource random, int number, double range, Collection<WeightedBlock> blocks)
     {
         this.structures = new Structure[number];
         for (int i = 0; i < number; i++)

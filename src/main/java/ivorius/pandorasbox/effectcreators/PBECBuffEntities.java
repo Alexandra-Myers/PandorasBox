@@ -11,8 +11,9 @@ import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.pandorasbox.weighted.WeightedPotion;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.world.World;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.level.Level;
 
 import java.util.Collection;
 import java.util.Random;
@@ -40,13 +41,13 @@ public class PBECBuffEntities implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         int number = this.number.getValue(random);
         int time = this.time.getValue(random);
         double range = this.range.getValue(random);
 
-        EffectInstance[] effects = new EffectInstance[number];
+        MobEffectInstance[] effects = new MobEffectInstance[number];
         for (int i = 0; i < effects.length; i++)
         {
             WeightedPotion weightedPotion = WeightedSelector.selectItem(random, applicablePotions);
@@ -55,14 +56,14 @@ public class PBECBuffEntities implements PBEffectCreator
                     .minDuration;
             int strength = random.nextInt(weightedPotion.maxStrength - weightedPotion.minStrength + 1) + weightedPotion
                     .minStrength;
-            effects[i] = new EffectInstance(weightedPotion.potion, duration, strength, false, false);
+            effects[i] = new MobEffectInstance(weightedPotion.potion, duration, strength, false, false);
         }
 
         return new PBEffectEntitiesBuff(time, range, effects);
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return chanceForMoreEffects;
     }

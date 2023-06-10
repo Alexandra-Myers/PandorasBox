@@ -7,11 +7,12 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
-import net.minecraft.block.Block;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import java.util.Random;
 
@@ -32,9 +33,9 @@ public class PBEffectGenDome extends PBEffectGenerate2D
     }
 
     @Override
-    public void generateOnSurface(World world, PandorasBoxEntity box, Vec3d effectCenter, Random random, BlockPos pos, double dist, int pass)
+    public void generateOnSurface(Level world, PandorasBoxEntity box, Vec3d effectCenter, RandomSource random, BlockPos pos, double dist, int pass)
     {
-        int domeHeightY = MathHelper.ceil(range);
+        int domeHeightY = Mth.ceil(range);
 
         for (int y = -domeHeightY; y <= domeHeightY; y++)
         {
@@ -74,7 +75,7 @@ public class PBEffectGenDome extends PBEffectGenerate2D
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -85,7 +86,7 @@ public class PBEffectGenDome extends PBEffectGenerate2D
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

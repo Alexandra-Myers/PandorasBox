@@ -5,6 +5,8 @@
 
 package ivorius.pandorasbox.random;
 
+import net.minecraft.util.RandomSource;
+
 import java.util.Random;
 
 /**
@@ -34,7 +36,7 @@ public class DWeighted implements DValue
     }
 
     @Override
-    public double getValue(Random random)
+    public double getValue(RandomSource random)
     {
         int total = getTotalWeight(weights);
         int selected = random.nextInt(total);

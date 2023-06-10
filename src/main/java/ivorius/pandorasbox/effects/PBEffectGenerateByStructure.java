@@ -7,12 +7,12 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -31,16 +31,16 @@ public abstract class PBEffectGenerateByStructure extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, float prevRatio, float newRatio)
     {
         for (Structure structure : structures)
         {
             float newStructureRatio = getStructureRatio(newRatio, structure);
             float prevStructureRatio = getStructureRatio(prevRatio, structure);
 
-            int baseX = MathHelper.floor(effectCenter.x);
-            int baseY = MathHelper.floor(effectCenter.y);
-            int baseZ = MathHelper.floor(effectCenter.z);
+            int baseX = Mth.floor(effectCenter.x);
+            int baseY = Mth.floor(effectCenter.y);
+            int baseZ = Mth.floor(effectCenter.z);
 
             if (newStructureRatio > prevStructureRatio)
             {
@@ -51,20 +51,20 @@ public abstract class PBEffectGenerateByStructure extends PBEffectNormal
 
     private float getStructureRatio(float ratio, Structure structure)
     {
-        return MathHelper.clamp((ratio - structure.structureStart) / structure.structureLength, 0.0f, 1.0f);
+        return Mth.clamp((ratio - structure.structureStart) / structure.structureLength, 0.0f, 1.0f);
     }
 
-    public abstract void generateStructure(World world, PandorasBoxEntity entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio);
+    public abstract void generateStructure(Level world, PandorasBoxEntity entity, RandomSource random, Structure structure, BlockPos pos, float newRatio, float prevRatio);
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
-        ListNBT structureTagList = new ListNBT();
+        ListTag structureTagList = new ListTag();
         for (Structure structure : structures)
         {
-            CompoundNBT structureCompound = new CompoundNBT();
+            CompoundTag structureCompound = new CompoundTag();
             structure.writeToNBT(structureCompound);
             structureTagList.add(structureCompound);
         }
@@ -72,11 +72,11 @@ public abstract class PBEffectGenerateByStructure extends PBEffectNormal
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 
-        ListNBT structureTagList = compound.getList("structures", Constants.NBT.TAG_COMPOUND);
+        ListTag structureTagList = compound.getList("structures", 10);
         structures = new Structure[structureTagList.size()];
         for (int i = 0; i < structures.length; i++)
         {
@@ -86,21 +86,21 @@ public abstract class PBEffectGenerateByStructure extends PBEffectNormal
 
     public abstract Structure createStructure();
 
-    public Structure createStructure(CompoundNBT compound)
+    public Structure createStructure(CompoundTag compound)
     {
         Structure structure = createStructure();
         structure.readFromNBT(compound);
         return structure;
     }
 
-    public static void applyRandomProperties(Structure structure, double range, Random random)
+    public static void applyRandomProperties(Structure structure, double range, RandomSource random)
     {
         structure.structureLength = random.nextFloat() * 0.8f + 0.1f;
         structure.structureStart = random.nextFloat() * (1.0f - structure.structureLength);
 
-        structure.x = MathHelper.floor((random.nextDouble() - random.nextDouble()) * range);
-        structure.y = MathHelper.floor((random.nextDouble() - random.nextDouble()) * range);
-        structure.z = MathHelper.floor((random.nextDouble() - random.nextDouble()) * range);
+        structure.x = Mth.floor((random.nextDouble() - random.nextDouble()) * range);
+        structure.y = Mth.floor((random.nextDouble() - random.nextDouble()) * range);
+        structure.z = Mth.floor((random.nextDouble() - random.nextDouble()) * range);
 
         structure.unifiedSeed = PandorasBoxHelper.getRandomUnifiedSeed(random);
     }
@@ -131,7 +131,7 @@ public abstract class PBEffectGenerateByStructure extends PBEffectNormal
             this.unifiedSeed = unifiedSeed;
         }
 
-        public void writeToNBT(CompoundNBT compound)
+        public void writeToNBT(CompoundTag compound)
         {
             compound.putFloat("structureStart", structureStart);
             compound.putFloat("structureLength", structureLength);
@@ -142,7 +142,7 @@ public abstract class PBEffectGenerateByStructure extends PBEffectNormal
             compound.putInt("unifiedSeed", unifiedSeed);
         }
 
-        public void readFromNBT(CompoundNBT compound)
+        public void readFromNBT(CompoundTag compound)
         {
             structureStart = compound.getFloat("structureStart");
             structureLength = compound.getFloat("structureLength");

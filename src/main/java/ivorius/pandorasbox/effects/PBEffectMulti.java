@@ -6,9 +6,8 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 /**
  * Created by lukas on 31.03.14.
@@ -53,18 +52,18 @@ public class PBEffectMulti extends PBEffect
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
-        ListNBT list = new ListNBT();
+        ListTag list = new ListTag();
 
         for (int i = 0; i < effects.length; i++)
         {
-            CompoundNBT cmp = new CompoundNBT();
+            CompoundTag cmp = new CompoundTag();
 
             cmp.putInt("delay", delays[i]);
 
             cmp.putString("pbEffectID", effects[i].getEffectID());
-            CompoundNBT effectCmp = new CompoundNBT();
+            CompoundTag effectCmp = new CompoundTag();
             effects[i].writeToNBT(effectCmp);
             cmp.put("pbEffectCompound", effectCmp);
 
@@ -75,16 +74,16 @@ public class PBEffectMulti extends PBEffect
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
-        ListNBT list = compound.getList("effects", Constants.NBT.TAG_COMPOUND);
+        ListTag list = compound.getList("effects", 10);
 
         effects = new PBEffect[list.size()];
         delays = new int[effects.length];
 
         for (int i = 0; i < effects.length; i++)
         {
-            CompoundNBT cmp = list.getCompound(i);
+            CompoundTag cmp = list.getCompound(i);
 
             delays[i] = cmp.getInt("delay");
             effects[i] = PBEffectRegistry.loadEffect(cmp.getString("pbEffectID"), cmp.getCompound("pbEffectCompound"));

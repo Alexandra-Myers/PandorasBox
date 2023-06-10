@@ -11,11 +11,11 @@ import ivorius.pandorasbox.random.ValueSpawn;
 import ivorius.pandorasbox.random.ValueThrow;
 import ivorius.pandorasbox.random.ZValue;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -48,7 +48,7 @@ public class PBECSpawnEnchantedItems implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         int number = this.number.getValue(random);
         int enchantLevel = this.enchantmentLevel.getValue(random);
@@ -64,7 +64,7 @@ public class PBECSpawnEnchantedItems implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.1f;
     }

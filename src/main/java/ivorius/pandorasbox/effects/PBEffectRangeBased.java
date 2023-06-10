@@ -7,11 +7,10 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.math.IvMathHelper;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-
-import java.util.Random;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by lukas on 31.03.14.
@@ -33,7 +32,7 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
+    public void doEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, float prevRatio, float newRatio)
     {
         for (int i = 0; i < passes; i++)
         {
@@ -54,13 +53,13 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
         double fullRange = range + (passes - 1) * 5.0;
         double tempRange = ratio * fullRange - pass * 5.0;
 
-        return MathHelper.clamp(tempRange, 0.0, range);
+        return Mth.clamp(tempRange, 0.0, range);
     }
 
-    public abstract void generateInRange(World world, PandorasBoxEntity entity, Random random, Vec3d effectCenter, double prevRange, double newRange, int pass);
+    public abstract void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3d effectCenter, double prevRange, double newRange, int pass);
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -71,7 +70,7 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

@@ -13,11 +13,11 @@ import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ValueHelper;
 import ivorius.pandorasbox.random.ZValue;
 import ivorius.pandorasbox.weighted.WeightedBlock;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 import java.util.Collection;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -42,7 +42,7 @@ public class PBECRandomShapes implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         double range = this.range.getValue(random);
         int number = this.number.getValue(random);
@@ -50,7 +50,7 @@ public class PBECRandomShapes implements PBEffectCreator
 
         double[] size = ValueHelper.getValueRange(this.size, random);
 
-        int time = MathHelper.floor((random.nextDouble() * 4.0 + 1.0) * size[1] * 8.0);
+        int time = Mth.floor((random.nextDouble() * 4.0 + 1.0) * size[1] * 8.0);
         boolean sameBlockSetup = this.sameBlockSetup.getValue(random);
 
         PBEffectGenShapes genTransform = new PBEffectGenShapes(time);
@@ -66,7 +66,7 @@ public class PBECRandomShapes implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.2f;
     }

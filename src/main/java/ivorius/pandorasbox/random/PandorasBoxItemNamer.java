@@ -5,10 +5,8 @@
 
 package ivorius.pandorasbox.random;
 
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-
-import java.util.Random;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.RandomSource;
 
 public class PandorasBoxItemNamer
 {
@@ -19,7 +17,7 @@ public class PandorasBoxItemNamer
 
     public static String[] suffixes = new String[]{"of Blasphemy", "of Destruction", "of Happy Fun Times", "of Anger", "of Ultimate Evil", "of Gold", "of Wealth", "of Nyan", "of Lords and Knights", "of Water", "of Fire", "of Notch", "of Mojang", "of Light", "of Empty Fridges", "of Cold", "of Icecream", "of Cold Blooded Murder", "of Secret Organizations", "of Computers", "of 4th Wall Breaking", "#_::/", "of Electricity", "of Alien Technology", "of Political Correctness", "with a Twist", "of Teasing Grammer Nazis", "of Updates", "with 3 Heads", "of Manleyness", "that has a far too long name, greatly to the dismay of the holding player", "- deal with it", "of Luck"};
 
-    public static TextComponent getRandomName(Random random)
+    public static Component getRandomName(RandomSource random)
     {
         StringBuilder nameBuilder = new StringBuilder();
 
@@ -43,6 +41,6 @@ public class PandorasBoxItemNamer
             nameBuilder.append(suffixes[random.nextInt(suffixes.length)]);
         }
 
-        return new StringTextComponent(nameBuilder.toString());
+        return Component.literal(nameBuilder.toString());
     }
 }

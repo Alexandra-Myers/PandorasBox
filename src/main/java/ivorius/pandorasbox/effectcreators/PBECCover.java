@@ -11,12 +11,12 @@ import ivorius.pandorasbox.effects.PBEffectGenCover;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.ZValue;
 import ivorius.pandorasbox.weighted.WeightedBlock;
-import net.minecraft.block.Block;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import java.util.Collection;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -36,11 +36,11 @@ public class PBECCover implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         double range = this.range.getValue(random);
         boolean overSurface = this.overSurface.getValue(random);
-        int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
+        int time = Mth.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
         Block[] selection = PandorasBoxHelper.getRandomBlockList(random, blocks);
 
@@ -49,7 +49,7 @@ public class PBECCover implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.1f;
     }

@@ -65,10 +65,6 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-    }
-
-    @Override
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
         PandorasBoxItem.executeRandomEffect(worldIn, player, pos, false);
         worldIn.removeBlock(pos, false);
@@ -126,6 +122,6 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     @org.jetbrains.annotations.Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
-        return Registry.TEPB.get().create();
+        return Registry.TEPB.get().create(p_153215_, p_153216_);
     }
 }

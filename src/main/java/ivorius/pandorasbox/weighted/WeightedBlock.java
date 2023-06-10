@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.weighted;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 /**
  * Created by lukas on 31.03.14.

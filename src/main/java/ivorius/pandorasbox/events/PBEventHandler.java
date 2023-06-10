@@ -7,41 +7,37 @@ import ivorius.pandorasbox.commands.CommandPandorasBox;
 import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import ivorius.pandorasbox.worldgen.PBLoot;
-import net.minecraft.block.Block;
-import net.minecraft.block.SaplingBlock;
-import net.minecraft.block.StainedGlassBlock;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import ivorius.pandorasbox.weighted.WeightedSelector;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.entity.animal.CatVariant;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.StainedGlassBlock;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.joml.Vector3d;
+
 import java.util.Map;
+import java.util.Objects;
 
 import static ivorius.pandorasbox.PandorasBox.*;
 
@@ -57,21 +53,6 @@ public class PBEventHandler
     }
 
     @SubscribeEvent
-    public void onConfigChanged(ModConfig.ModConfigEvent event)
-    {
-        if ((event instanceof ModConfig.Reloading || event instanceof ModConfig.Loading) && event.getConfig().getModId().equals(PandorasBox.MOD_ID))
-        {
-            PBConfig.loadConfig();
-        }
-    }
-
-    @SubscribeEvent
-    public void onLoadLootTable(LootTableLoadEvent event)
-    {
-        if (PBConfig.allowLootTableInjection)
-            PBLoot.injectLoot(event.getTable(), event.getName());
-    }
-    @SubscribeEvent
     public void onCommandRegister(RegisterCommandsEvent evt) {
         new CommandPandorasBox(evt.getDispatcher());
     }
@@ -80,15 +61,23 @@ public class PBEventHandler
         ItemStack stack = event.getItemStack();
         Item item = stack.getItem();
         if(item instanceof BlockItem) {
-            BlockPos pos = event.getPlayer().blockPosition();
-            Direction direction = event.getPlayer().getDirection();
+            BlockPos pos = event.getEntity().blockPosition();
+            Direction direction = event.getEntity().getDirection();
             BlockPos frontPos = getPosInFront(pos, direction);
-            ((BlockItem) item).place(new BlockItemUseContext(event.getPlayer(), event.getHand(), stack,
-                    new BlockRayTraceResult(new Vector3d(frontPos.getX() + 0.5 + direction.getStepX() * 0.5, frontPos.getY() + 0.5 + direction.getStepY() * 0.5, frontPos.getZ() + 0.5 + direction.getStepZ() * 0.5), direction, frontPos, false)));
+            ((BlockItem) item).place(new BlockPlaceContext(event.getEntity(), event.getHand(), stack,
+                    new BlockHitResult(new Vec3(frontPos.getX() + 0.5 + direction.getStepX() * 0.5, frontPos.getY() + 0.5 + direction.getStepY() * 0.5, frontPos.getZ() + 0.5 + direction.getStepZ() * 0.5), direction, frontPos, false)));
         }
     }
     @SubscribeEvent
-    public void serverInit(FMLServerStartedEvent event) {
+    public void serverInit(ServerStartedEvent event) {
+        initPB();
+    }
+    @SubscribeEvent
+    public void datapackReload(OnDatapackSyncEvent event) {
+        if(event.getPlayer() != null) return;
+        initPB();
+    }
+    public void initPB() {
         logs = new ArrayListExtensions<>();
         leaves = new ArrayListExtensions<>();
         flowers = new ArrayListExtensions<>();
@@ -101,32 +90,33 @@ public class PBEventHandler
         stained_glass = new ArrayListExtensions<>();
         saplings = new ArrayListExtensions<>();
         pots = new ArrayListExtensions<>();
+        cats = new ArrayListExtensions<>();
         for (Block block : ForgeRegistries.BLOCKS) {
-            if (BlockTags.LOGS.contains(block)) {
+            if (block.defaultBlockState().is(BlockTags.LOGS)) {
                 logs.add(block);
             }
-            if (BlockTags.LEAVES.contains(block)) {
+            if (block.defaultBlockState().is(BlockTags.LEAVES)) {
                 leaves.add(block);
             }
-            if (BlockTags.SMALL_FLOWERS.contains(block)) {
+            if (block.defaultBlockState().is(BlockTags.SMALL_FLOWERS)) {
                 flowers.add(block);
             }
-            if (BlockTags.WOOL.contains(block)) {
+            if (block.defaultBlockState().is(BlockTags.WOOL)) {
                 wool.add(block);
             }
-            if (BlockTags.SLABS.contains(block)) {
+            if (block.defaultBlockState().is(BlockTags.SLABS)) {
                 slabs.add(block);
             }
-            if (BlockTags.STONE_BRICKS.contains(block)) {
+            if (block.defaultBlockState().is(BlockTags.STONE_BRICKS)) {
                 bricks.add(block);
             }
-            if (block.getRegistryName().getPath().endsWith("terracotta")) {
+            if (Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block)).getPath().endsWith("terracotta")) {
                 terracotta.add(block);
             }
-            if (block.getRegistryName().getPath().endsWith("_terracotta")) {
+            if (Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block)).getPath().endsWith("_terracotta")) {
                 stained_terracotta.add(block);
             }
-            if (BlockTags.PLANKS.contains(block)) {
+            if (block.defaultBlockState().is(BlockTags.PLANKS)) {
                 planks.add(block);
             }
             if (block instanceof StainedGlassBlock) {
@@ -135,24 +125,20 @@ public class PBEventHandler
             if (block instanceof SaplingBlock) {
                 saplings.add(block);
             }
-            if (BlockTags.FLOWER_POTS.contains(block)) {
+            if (block.defaultBlockState().is(BlockTags.FLOWER_POTS)) {
                 pots.add(block);
             }
         }
+        cats.addAll(BuiltInRegistries.CAT_VARIANT.registryKeySet());
         PBEffects.registerEffectCreators();
     }
     public BlockPos getPosInFront(BlockPos pos, Direction direction) {
-        switch (direction) {
-            case WEST:
-                return pos.west();
-            case EAST:
-                return pos.east();
-            case NORTH:
-                return pos.north();
-            case SOUTH:
-                return pos.south();
-            default:
-                return pos;
-        }
+        return switch (direction) {
+            case WEST -> pos.west();
+            case EAST -> pos.east();
+            case NORTH -> pos.north();
+            case SOUTH -> pos.south();
+            default -> pos;
+        };
     }
 }

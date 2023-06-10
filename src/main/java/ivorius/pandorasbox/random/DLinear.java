@@ -5,6 +5,8 @@
 
 package ivorius.pandorasbox.random;
 
+import net.minecraft.util.RandomSource;
+
 import java.util.Random;
 
 /**
@@ -22,7 +24,7 @@ public class DLinear implements DValue
     }
 
     @Override
-    public double getValue(Random random)
+    public double getValue(RandomSource random)
     {
         return min + random.nextDouble() * (max - min);
     }

@@ -7,14 +7,13 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -38,19 +37,17 @@ public class PBEffectEntitiesThrowItems extends PBEffectEntityBased
     }
 
     @Override
-    public void affectEntity(World world, PandorasBoxEntity box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength)
+    public void affectEntity(Level world, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength)
     {
-        if (world instanceof ServerWorld && entity instanceof PlayerEntity)
+        if (world instanceof ServerLevel  && entity instanceof Player player)
         {
-            PlayerEntity player = (PlayerEntity) entity;
-
             Random itemRandom = new Random(entity.getId());
-            for (int i = 0; i < player.inventory.getContainerSize(); i++)
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++)
             {
                 double expectedThrow = itemRandom.nextDouble();
                 if (newRatio >= expectedThrow && prevRatio < expectedThrow)
                 {
-                    ItemStack stack = player.inventory.getItem(i);
+                    ItemStack stack = player.getInventory().getItem(i);
                     if (stack != null)
                     {
                         if (random.nextDouble() < chancePerItem)
@@ -60,7 +57,7 @@ public class PBEffectEntitiesThrowItems extends PBEffectEntityBased
                                 player.drop(stack, false);
                             }
 
-                            player.inventory.setItem(i, ItemStack.EMPTY);
+                            player.getInventory().setItem(i, ItemStack.EMPTY);
                         }
                     }
                 }
@@ -76,7 +73,7 @@ public class PBEffectEntitiesThrowItems extends PBEffectEntityBased
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -86,7 +83,7 @@ public class PBEffectEntitiesThrowItems extends PBEffectEntityBased
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 

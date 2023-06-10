@@ -5,19 +5,17 @@
 
 package ivorius.pandorasbox.effects;
 
-import com.google.common.collect.Sets;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.math.IvMathHelper;
 import ivorius.pandorasbox.utils.PBNBTHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.command.impl.SetBlockCommand;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-
-import java.util.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.commands.SetBlockCommand;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 /**
  * Created by lukas on 30.03.14.
@@ -37,22 +35,22 @@ public class PBEffectGenPool extends PBEffectGenStructure
     }
 
     @Override
-    public void buildStructure(World world, PandorasBoxEntity entity, BlockPos currentPos, Random random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
+    public void buildStructure(Level world, PandorasBoxEntity entity, BlockPos currentPos, RandomSource random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
         if(platformBlock == null) platformBlock = Blocks.QUARTZ_BLOCK;
-        ServerWorld serverWorld = (ServerWorld) world;
+        ServerLevel serverLevel = (ServerLevel) world;
         if (currentPos.getY() == originY) {
-            setBlockSafe(serverWorld, currentPos, platformBlock.defaultBlockState());
+            setBlockSafe(serverLevel, currentPos, platformBlock.defaultBlockState());
         } else if (IvMathHelper.compareOffsets(currentPos.getX(), originX, length) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width)) {
-            setBlockSafe(serverWorld, currentPos, platformBlock.defaultBlockState());
+            setBlockSafe(serverLevel, currentPos, platformBlock.defaultBlockState());
         } else if (currentPos.getY() < originY + height) {
-            setBlockSafe(serverWorld, currentPos, block.defaultBlockState());
+            setBlockSafe(serverLevel, currentPos, block.defaultBlockState());
         } else {
             setBlockToAirSafe(world, currentPos);
         }
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         super.writeToNBT(compound);
 
@@ -63,7 +61,7 @@ public class PBEffectGenPool extends PBEffectGenStructure
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         super.readFromNBT(compound);
 
@@ -73,9 +71,9 @@ public class PBEffectGenPool extends PBEffectGenStructure
     enum Mode {
         REPLACE((p_198450_0_, p_198450_1_, p_198450_2_, p_198450_3_) -> p_198450_2_);
 
-        public final SetBlockCommand.IFilter filter;
+        public final SetBlockCommand.Filter filter;
 
-        Mode(SetBlockCommand.IFilter p_i47985_3_) {
+        Mode(SetBlockCommand.Filter p_i47985_3_) {
             this.filter = p_i47985_3_;
         }
     }

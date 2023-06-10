@@ -6,10 +6,11 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -26,15 +27,15 @@ public class PBEffectEntitiesBombpack extends PBEffectEntityBased
     }
 
     @Override
-    public void affectEntity(World world, PandorasBoxEntity box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength)
+    public void affectEntity(Level world, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
             Random itemRandom = new Random(entity.getId());
             double expectedBomb = itemRandom.nextDouble();
             if (newRatio >= expectedBomb && prevRatio < expectedBomb)
             {
-                TNTEntity entitytntprimed = new TNTEntity(world, entity.getX(), entity.getY(), entity.getZ(), null);
+                PrimedTnt entitytntprimed = new PrimedTnt(world, entity.getX(), entity.getY(), entity.getZ(), null);
 //                entitytntprimed.fuse = 60 + random.nextInt(160); // Use normal fuse for correct visual effect
 
                 world.addFreshEntity(entitytntprimed);

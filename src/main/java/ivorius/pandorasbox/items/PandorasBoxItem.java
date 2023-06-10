@@ -7,19 +7,16 @@ package ivorius.pandorasbox.items;
 
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import org.joml.Vector3d;
 
 public class PandorasBoxItem extends BlockItem
 {
@@ -29,16 +26,16 @@ public class PandorasBoxItem extends BlockItem
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        executeRandomEffect(world, player, new BlockPos(new Vector3d(player.getX(), player.getEyeY(), player.getZ())), true);
-        if (!player.abilities.instabuild) {
+        executeRandomEffect(world, player, player.blockPosition(), true);
+        if (!player.getAbilities().instabuild) {
             itemstack.shrink(1);
         }
         return super.use(world, player, hand);
     }
 
-    public static PandorasBoxEntity executeRandomEffect(World world, Entity entity, BlockPos pos, boolean floatAway)
+    public static PandorasBoxEntity executeRandomEffect(Level world, Player entity, BlockPos pos, boolean floatAway)
     {
 //        if(PBECRegistry.isAnyNull(world, entity)) return null;
         if(world.isClientSide()) return null;

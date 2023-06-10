@@ -5,26 +5,35 @@
 
 package ivorius.pandorasbox.worldgen;
 
+import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.IWorldGenerationReader;
-import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.TreeFeature;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.valueproviders.ClampedInt;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.util.valueproviders.WeightedListInt;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.AcaciaFoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
+import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.BiConsumer;
 
 public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeature
 {
@@ -32,7 +41,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
     public static Block soil;
     public final int addition;
 
-    public WorldGenLollipop(Codec<BaseTreeFeatureConfig> configIn, int addition)
+    public WorldGenLollipop(Codec<TreeConfiguration> configIn, int addition)
     {
         super(configIn);
         this.addition = addition;
@@ -49,11 +58,10 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
     }
 
     @Override
-    public boolean place(IWorldGenerationReader worldIn, Random rand, BlockPos position) {
+    public boolean place(Level world, RandomSource rand, BlockPos position) {
         int l = rand.nextInt(addition) + 5;
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         blocks.addAll(PandorasBox.wool);
-        World world = worldIn instanceof World ? (World) worldIn : null;
 
         boolean flag = true;
 
@@ -85,15 +93,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
                 {
                     for (k1 = par5 - b0; k1 <= par5 + b0 && flag; ++k1)
                     {
-                        if (i1 >= 0 && i1 < 256)
-                        {
-                            BlockPos pos = new BlockPos(j1, i1, k1);
-                            Block block = world.getBlockState(pos).getBlock();
-                        }
-                        else
-                        {
-                            flag = false;
-                        }
+                        flag = !(i1 >= 0 && i1 < 256);
                     }
                 }
             }
@@ -112,7 +112,24 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
                 boolean isSoil = block2 == soil;
                 if (isSoil && par4 < 256 - l - 1)
                 {
-                    block2.onPlantGrow(block2State, world, pos, new BlockPos(par3, par4, par5));
+                    Set<BlockPos> set = Sets.newHashSet();
+                    BiConsumer<BlockPos, BlockState> biconsumer = (p_160548_, p_160549_) -> {
+                        set.add(p_160548_.immutable());
+                        world.setBlock(p_160548_, p_160549_, 19);
+                    };
+                    block2State.onTreeGrow(world, biconsumer, rand, pos, new TreeConfiguration.TreeConfigurationBuilder(BlockStateProvider.simple(Blocks.AIR), new TrunkPlacer(1, 1, 1) {
+                        @Override
+                        protected TrunkPlacerType<?> type() {
+                            return TrunkPlacerType.STRAIGHT_TRUNK_PLACER;
+                        }
+
+                        @Override
+                        public List<FoliagePlacer.FoliageAttachment> placeTrunk(LevelSimulatedReader p_226157_, BiConsumer<BlockPos, BlockState> p_226158_, RandomSource p_226159_, int p_226160_, BlockPos p_226161_, TreeConfiguration p_226162_) {
+                            setDirtAt(p_226157_, p_226158_, p_226159_, p_226161_.below(), p_226162_);
+                            return new ArrayListExtensions<>();
+                        }
+                    }, BlockStateProvider.simple(Blocks.AIR), new AcaciaFoliagePlacer(UniformInt.of(1, 2), UniformInt.of(1, 2)), new TwoLayersFeatureSize(50, 5, 10)).build());
+
                     int k2;
 
                     for (int shift = -1; shift <= 1; shift++)
@@ -129,11 +146,10 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
 
                                     BlockPos pos1 = new BlockPos(x, rY, z);
                                     BlockState block1State = world.getBlockState(pos1);
-                                    Block block1 = block1State.getBlock();
 
-                                    if (block1.isAir(block1State, world, pos1) || block1.is(BlockTags.LEAVES))
+                                    if (block1State.isAir() || block1State.is(BlockTags.LEAVES))
                                     {
-                                        this.setBlock(worldIn, pos1, blocks.get(metas[rand.nextInt(metas.length)]).defaultBlockState());
+                                        this.setBlock(world, pos1, blocks.get(metas[rand.nextInt(metas.length)]).defaultBlockState());
                                     }
                                 }
                             }
@@ -144,11 +160,10 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
                     {
                         BlockPos pos1 = new BlockPos(par3, par4 + k2, par5);
                         BlockState block3State = world.getBlockState(pos1);
-                        Block block3 = block3State.getBlock();
 
-                        if (block3State.isAir(world, pos1) || block3.is(BlockTags.LEAVES))
+                        if (block3State.isAir() || block3State.is(BlockTags.LEAVES))
                         {
-                            this.setBlock(worldIn, pos1, blocks.get(metas[0]).defaultBlockState());
+                            this.setBlock(world, pos1, blocks.get(metas[0]).defaultBlockState());
                         }
                     }
 

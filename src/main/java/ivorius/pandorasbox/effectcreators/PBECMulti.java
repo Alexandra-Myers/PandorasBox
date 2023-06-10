@@ -7,7 +7,8 @@ package ivorius.pandorasbox.effectcreators;
 
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectMulti;
-import net.minecraft.world.World;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -38,7 +39,7 @@ public class PBECMulti implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         PBEffect[] createdEffects = new PBEffect[effects.length];
 
@@ -51,7 +52,7 @@ public class PBECMulti implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         float min = 999;
         for (PBEffectCreator effect : effects) {

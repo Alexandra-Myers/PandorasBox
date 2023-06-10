@@ -1,7 +1,7 @@
 package ivorius.pandorasbox.client.rendering.effects;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import ivorius.pandorasbox.effects.PBEffectExplode;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 
@@ -11,7 +11,7 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplode>
 {
     @Override
-    public void renderBox(PandorasBoxEntity entity, PBEffectExplode effect, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
+    public void renderBox(PandorasBoxEntity entity, PBEffectExplode effect, float partialTicks, PoseStack matrixStack, VertexConsumer consumer)
     {
         if (!entity.isInvisible())
         {
@@ -26,7 +26,7 @@ public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplo
             matrixStack.pushPose();
             matrixStack.translate(0.0f, 0.2f, 0.0f);
             matrixStack.scale(scale, scale, scale);
-            IvRenderHelper.renderLights(entity.tickCount + partialTicks, lightColor, timePassed, 10, matrixStack, builder);
+            IvRenderHelper.renderLights(entity.tickCount + partialTicks, lightColor, timePassed, 10, matrixStack, consumer);
             matrixStack.popPose();
         }
     }

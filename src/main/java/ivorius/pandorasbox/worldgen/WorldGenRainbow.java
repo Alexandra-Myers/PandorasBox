@@ -8,20 +8,17 @@ package ivorius.pandorasbox.worldgen;
 import com.mojang.serialization.Codec;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.IWorldGenerationReader;
-import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
-import net.minecraft.world.gen.feature.TreeFeature;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Created by lukas on 14.02.14.
@@ -31,7 +28,7 @@ public class WorldGenRainbow extends TreeFeature implements AccessibleTreeFeatur
     public final int addition;
     public Block soil;
 
-    public WorldGenRainbow(Codec<BaseTreeFeatureConfig> configIn, int addition)
+    public WorldGenRainbow(Codec<TreeConfiguration> configIn, int addition)
     {
         super(configIn);
 
@@ -49,8 +46,7 @@ public class WorldGenRainbow extends TreeFeature implements AccessibleTreeFeatur
     }
 
     @Override
-    public boolean place(IWorldGenerationReader worldIn, Random rand, BlockPos position) {
-        World world = worldIn instanceof World ? (World) worldIn : null;
+    public boolean place(Level world, RandomSource rand, BlockPos position) {
         int par3 = position.getX();
         int par4 = position.getY();
         int par5 = position.getZ();
@@ -58,7 +54,7 @@ public class WorldGenRainbow extends TreeFeature implements AccessibleTreeFeatur
         blocks.addAll(PandorasBox.wool);
 
         if(world == null) return false;
-        if (world.getBlockState(position).getBlock() == soil && world.getBlockState(position.above()).isAir(world, position))
+        if (world.getBlockState(position).getBlock() == soil && world.getBlockState(position.above()).isAir())
         {
             boolean rotated = rand.nextBoolean();
             int l = rand.nextInt(addition) + 5;
@@ -69,9 +65,9 @@ public class WorldGenRainbow extends TreeFeature implements AccessibleTreeFeatur
                 {
                     for (int y = -l / 2; y <= l / 2; y++)
                     {
-                        int distance = MathHelper.floor(MathHelper.sqrt(s * s + y * y));
+                        int distance = Mth.floor(Mth.sqrt(s * s + y * y));
 
-                        if (distance <= (l / 2 - MathHelper.floor(MathHelper.sqrt(shift * shift)) * 2) && distance > l / 4)
+                        if (distance <= (l / 2 - Mth.floor(Mth.sqrt(shift * shift)) * 2) && distance > l / 4)
                         {
                             int x = (!rotated ? s : shift) + par3;
                             int z = (rotated ? s : shift) + par5;
@@ -79,9 +75,8 @@ public class WorldGenRainbow extends TreeFeature implements AccessibleTreeFeatur
 
                             BlockPos placePos = new BlockPos(x, rY, z);
                             BlockState block1State = world.getBlockState(placePos);
-                            Block block1 = block1State.getBlock();
 
-                            if (block1.isAir(block1State, world, placePos) || block1.is(BlockTags.LEAVES))
+                            if (block1State.isAir() || block1State.is(BlockTags.LEAVES))
                             {
                                 int meta = distance;
                                 if (meta < 0)

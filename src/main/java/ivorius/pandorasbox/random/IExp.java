@@ -5,6 +5,8 @@
 
 package ivorius.pandorasbox.random;
 
+import net.minecraft.util.RandomSource;
+
 import java.util.Random;
 
 /**
@@ -25,7 +27,7 @@ public class IExp implements IValue
     }
 
     @Override
-    public int getValue(Random random)
+    public int getValue(RandomSource random)
     {
         return (int) Math.round(min + ((Math.pow(exp, random.nextDouble()) - 1.0) / (exp - 1.0)) * (max - min));
     }

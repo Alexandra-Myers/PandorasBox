@@ -9,12 +9,13 @@ import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
-import net.minecraft.block.Block;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import java.util.Collection;
 import java.util.Random;
@@ -31,7 +32,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
         super(maxTicksAlive);
     }
 
-    public void setRandomShapes(Random random, Collection<WeightedBlock> blocks, double range, double minSize, double maxSize, int number, int shape)
+    public void setRandomShapes(RandomSource random, Collection<WeightedBlock> blocks, double range, double minSize, double maxSize, int number, int shape)
     {
         structures = new Structure[number];
 
@@ -47,7 +48,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
         }
     }
 
-    public void setShapes(Random random, Block[] blockSelection, double range, double minSize, double maxSize, int number, int shape, int unifiedSeed)
+    public void setShapes(RandomSource random, Block[] blockSelection, double range, double minSize, double maxSize, int number, int shape, int unifiedSeed)
     {
         structures = new Structure[number];
 
@@ -65,9 +66,9 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
     }
 
     @Override
-    public void generateStructure(World world, PandorasBoxEntity entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio)
+    public void generateStructure(Level world, PandorasBoxEntity entity, RandomSource random, Structure structure, BlockPos pos, float newRatio, float prevRatio)
     {
-        if (world instanceof ServerWorld)
+        if (world instanceof ServerLevel)
         {
             StructureShape structureShape = (StructureShape) structure;
             double prevSize = structureShape.size * prevRatio;
@@ -75,7 +76,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
 
             if (structureShape.shapeType == 0)
             {
-                int requiredRange = MathHelper.floor(newSize);
+                int requiredRange = Mth.floor(newSize);
 
                 for (int xPlus = -requiredRange; xPlus <= requiredRange; xPlus++)
                 {
@@ -83,7 +84,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
                     {
                         for (int zPlus = -requiredRange; zPlus <= requiredRange; zPlus++)
                         {
-                            double dist = MathHelper.sqrt(xPlus * xPlus + yPlus * yPlus + zPlus * zPlus);
+                            double dist = Mth.sqrt(xPlus * xPlus + yPlus * yPlus + zPlus * zPlus);
 
                             if (dist <= newSize)
                             {
@@ -102,7 +103,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
             }
             else if (structureShape.shapeType == 1)
             {
-                int requiredRange = MathHelper.floor(newSize);
+                int requiredRange = Mth.floor(newSize);
 
                 for (int xPlus = -requiredRange; xPlus <= requiredRange; xPlus++)
                 {
@@ -131,8 +132,8 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
             }
             else if (structureShape.shapeType == 2 || structureShape.shapeType == 3)
             {
-                int requiredRange = MathHelper.floor(newSize);
-                int totalHeight = MathHelper.floor(structureShape.size);
+                int requiredRange = Mth.floor(newSize);
+                int totalHeight = Mth.floor(structureShape.size);
 
                 for (int yPlus = -requiredRange; yPlus <= requiredRange; yPlus++)
                 {
@@ -162,7 +163,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
         }
     }
 
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Random random, StructureShape structure, BlockPos pos)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, StructureShape structure, BlockPos pos)
     {
         Block block = structure.blocks[random.nextInt(structure.blocks.length)];
         setBlockVarying(world, pos, block, structure.unifiedSeed);
@@ -186,7 +187,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
         }
 
         @Override
-        public void writeToNBT(CompoundNBT compound)
+        public void writeToNBT(CompoundTag compound)
         {
             super.writeToNBT(compound);
 
@@ -197,7 +198,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure
         }
 
         @Override
-        public void readFromNBT(CompoundNBT compound)
+        public void readFromNBT(CompoundTag compound)
         {
             super.readFromNBT(compound);
 

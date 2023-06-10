@@ -5,6 +5,8 @@
 
 package ivorius.pandorasbox.random;
 
+import net.minecraft.util.RandomSource;
+
 import java.util.Random;
 
 /**
@@ -12,7 +14,7 @@ import java.util.Random;
  */
 public class ValueHelper
 {
-    public static int[] getValueRange(IValue value, Random random)
+    public static int[] getValueRange(IValue value, RandomSource random)
     {
         int[] result = new int[2];
 
@@ -26,7 +28,7 @@ public class ValueHelper
         return result;
     }
 
-    public static double[] getValueRange(DValue value, Random random)
+    public static double[] getValueRange(DValue value, RandomSource random)
     {
         double[] result = new double[2];
 

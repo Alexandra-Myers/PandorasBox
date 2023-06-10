@@ -11,16 +11,18 @@ import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.*;
-import net.minecraft.block.*;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Effects;
-import net.minecraft.state.Property;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
@@ -66,7 +68,7 @@ public class PandorasBoxHelper
 
             Item item = block.asItem();
             if (item != null)
-                addItem(new RandomizedItemStack(item, 1, item.getItemStackLimit(new ItemStack(item)), weight));
+                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(new ItemStack(item)), weight));
         }
     }
     public static void addBlocks(double weight, List<Block> blocks)
@@ -77,7 +79,7 @@ public class PandorasBoxHelper
 
             Item item = block.asItem();
             if (item != null)
-                addItem(new RandomizedItemStack(item, 1, item.getItemStackLimit(new ItemStack(item)), weight));
+                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(new ItemStack(item)), weight));
         }
     }
 
@@ -102,12 +104,12 @@ public class PandorasBoxHelper
             if (object instanceof Item)
             {
                 Item item = (Item) object;
-                addItem(new RandomizedItemStack(item, 1, item.getItemStackLimit(new ItemStack(item)), weight));
+                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(new ItemStack(item)), weight));
             }
             else if (object instanceof ItemStack)
             {
                 ItemStack itemStack = (ItemStack) object;
-                addItem(new RandomizedItemStack(itemStack, 1, itemStack.getItem().getItemStackLimit(itemStack), weight));
+                addItem(new RandomizedItemStack(itemStack, 1, itemStack.getItem().getMaxStackSize(itemStack), weight));
             }
         }
     }
@@ -150,9 +152,9 @@ public class PandorasBoxHelper
         equipmentSets.add(new WeightedSet(weight, set));
     }
 
-    public static void addPotions(List<WeightedPotion> list, double weight, int minStrength, int maxStrength, int minDuration, int maxDuration, Effect... potions)
+    public static void addPotions(List<WeightedPotion> list, double weight, int minStrength, int maxStrength, int minDuration, int maxDuration, MobEffect... potions)
     {
-        for (Effect effect : potions)
+        for (MobEffect effect : potions)
         {
             list.add(new WeightedPotion(weight, effect, minStrength, maxStrength, minDuration, maxDuration));
         }
@@ -319,10 +321,11 @@ public class PandorasBoxHelper
         glass.addAll(PandorasBox.stained_glass);
         misc.addAll(Items.LAVA_BUCKET, Items.MILK_BUCKET, Items.WATER_BUCKET, Items.FLINT_AND_STEEL, Items.PAINTING, Items.FLOWER_POT, Items.MINECART, Items.CAULDRON);
         for(Item item : ForgeRegistries.ITEMS) {
-            if(ItemTags.BOATS.contains(item) || ItemTags.BEDS.contains(item)) {
+            ItemStack stack = new ItemStack(item);
+            if(stack.is(ItemTags.BOATS) || stack.is(ItemTags.BEDS)) {
                 misc.add(item);
             }
-            if(ItemTags.MUSIC_DISCS.contains(item)) {
+            if(stack.is(ItemTags.MUSIC_DISCS)) {
                 records.add(item);
             }
             if(item instanceof DyeItem) {
@@ -370,7 +373,7 @@ public class PandorasBoxHelper
         addEquipmentSet(8.0, Items.LEATHER_HELMET, Items.IRON_HOE, new ItemStack(Items.WHEAT_SEEDS, 32), new ItemStack(Items.PUMPKIN_SEEDS, 4), new ItemStack(Items.MELON_SEEDS, 4), new ItemStack(Items.BLUE_DYE, 8), new ItemStack(Items.DIRT, 32), Items.WATER_BUCKET, Items.WATER_BUCKET);
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.DIAMOND_AXE, new ItemStack(Items.BEEF, 16));
         for(Block block : PandorasBox.wool) {
-            if(new Random().nextDouble() > 0.8) {
+            if(RandomSource.create().nextDouble() > 0.8) {
                 addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
             }
         }
@@ -381,9 +384,9 @@ public class PandorasBoxHelper
         addEquipmentLevelsInOrder(Items.WOODEN_SHOVEL, Items.WOODEN_SHOVEL, Items.GOLDEN_SHOVEL, Items.STONE_SHOVEL, Items.IRON_SHOVEL, Items.DIAMOND_SHOVEL);
         addEquipmentLevelsInOrder(Items.WOODEN_HOE, Items.WOODEN_HOE, Items.GOLDEN_HOE, Items.STONE_HOE, Items.IRON_HOE, Items.DIAMOND_HOE);
 
-        addPotions(buffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, Effects.REGENERATION, Effects.MOVEMENT_SPEED, Effects.DAMAGE_BOOST, Effects.JUMP, Effects.DAMAGE_RESISTANCE, Effects.WATER_BREATHING, Effects.FIRE_RESISTANCE, Effects.NIGHT_VISION, Effects.INVISIBILITY, Effects.ABSORPTION);
-        addPotions(debuffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, Effects.BLINDNESS, Effects.CONFUSION, Effects.DIG_SLOWDOWN, Effects.WEAKNESS, Effects.HUNGER);
-        addPotions(debuffs, 10.0, 0, 2, 20 * 30, 20 * 60, Effects.WITHER);
+        addPotions(buffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.REGENERATION, MobEffects.MOVEMENT_SPEED, MobEffects.DAMAGE_BOOST, MobEffects.JUMP, MobEffects.DAMAGE_RESISTANCE, MobEffects.WATER_BREATHING, MobEffects.FIRE_RESISTANCE, MobEffects.NIGHT_VISION, MobEffects.INVISIBILITY, MobEffects.ABSORPTION);
+        addPotions(debuffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.BLINDNESS, MobEffects.CONFUSION, MobEffects.DIG_SLOWDOWN, MobEffects.WEAKNESS, MobEffects.HUNGER);
+        addPotions(debuffs, 10.0, 0, 2, 20 * 30, 20 * 60, MobEffects.WITHER);
 
         addEnchantableArmor(10.0, Items.IRON_HELMET, Items.GOLDEN_HELMET, Items.DIAMOND_HELMET, Items.IRON_CHESTPLATE, Items.GOLDEN_CHESTPLATE, Items.DIAMOND_CHESTPLATE, Items.IRON_LEGGINGS, Items.GOLDEN_LEGGINGS, Items.DIAMOND_LEGGINGS, Items.IRON_BOOTS, Items.GOLDEN_BOOTS, Items.DIAMOND_BOOTS);
 
@@ -396,12 +399,12 @@ public class PandorasBoxHelper
         );
     }
 
-    public static int getRandomUnifiedSeed(Random random)
+    public static int getRandomUnifiedSeed(RandomSource random)
     {
         return Math.abs(random.nextInt());
     }
 
-    private static <T> T randomElement(Collection<T> collection, Random random)
+    private static <T> T randomElement(Collection<T> collection, RandomSource random)
     {
         int num = random.nextInt(collection.size());
         int i = 0;
@@ -411,7 +414,7 @@ public class PandorasBoxHelper
         throw new InternalError();
     }
 
-    public static BlockState getRandomBlockState(Random rand, Block block, int unified)
+    public static BlockState getRandomBlockState(RandomSource rand, Block block, int unified)
     {
         BlockState state = block.defaultBlockState();
 
@@ -419,7 +422,7 @@ public class PandorasBoxHelper
         if (randomizableProperties != null)
         {
             if (unified >= 0)
-                rand = new Random(unified ^ rand.nextInt(256));
+                rand = RandomSource.create(unified ^ rand.nextInt(256));
 
             for (Property property : randomizableProperties)
                 state = state.setValue(property, PandorasBoxHelper.<Comparable>randomElement(property.getPossibleValues(), rand));
@@ -428,7 +431,7 @@ public class PandorasBoxHelper
         return state;
     }
 
-    public static Block[] getRandomBlockList(Random rand, Collection<WeightedBlock> selection)
+    public static Block[] getRandomBlockList(RandomSource rand, Collection<WeightedBlock> selection)
     {
         int number = 1;
         while (number < 10 && rand.nextFloat() < 0.7f)
@@ -464,7 +467,7 @@ public class PandorasBoxHelper
         return blocks;
     }
 
-    public static Block getRandomBlock(Random rand, Collection<WeightedBlock> randomBlockList)
+    public static Block getRandomBlock(RandomSource rand, Collection<WeightedBlock> randomBlockList)
     {
         if (randomBlockList != null && randomBlockList.size() > 0)
             return WeightedSelector.selectItem(rand, randomBlockList).block;
@@ -472,7 +475,7 @@ public class PandorasBoxHelper
         return WeightedSelector.selectItem(rand, blocks).block;
     }
 
-    public static WeightedEntity[] getRandomEntityList(Random rand, Collection<WeightedEntity> selection)
+    public static WeightedEntity[] getRandomEntityList(RandomSource rand, Collection<WeightedEntity> selection)
     {
         WeightedEntity[] entities = new WeightedEntity[rand.nextInt(5) + 1];
 
@@ -482,12 +485,12 @@ public class PandorasBoxHelper
         return entities;
     }
 
-    public static WeightedEntity getRandomEntityFromList(Random rand, Collection<WeightedEntity> entityList)
+    public static WeightedEntity getRandomEntityFromList(RandomSource rand, Collection<WeightedEntity> entityList)
     {
         return WeightedSelector.selectItem(rand, entityList);
     }
 
-    public static ItemStack getRandomWeaponItemForLevel(Random random, int level)
+    public static ItemStack getRandomWeaponItemForLevel(RandomSource random, int level)
     {
         Set<Item> itemSet = equipmentForLevels.keySet();
         Item[] itemArray = itemSet.toArray(new Item[itemSet.size()]);

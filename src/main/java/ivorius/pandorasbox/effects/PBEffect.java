@@ -5,26 +5,21 @@
 
 package ivorius.pandorasbox.effects;
 
-import com.google.common.collect.Sets;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.command.arguments.BlockStateInput;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IClearable;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Potion;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -38,43 +33,43 @@ public abstract class PBEffect
         return PBEffectRegistry.getEffectID(this);
     }
 
-    public static boolean setBlockToAirSafe(World world, BlockPos pos)
+    public static boolean setBlockToAirSafe(Level world, BlockPos pos)
     {
-        boolean safeDest = world.getBlockState(pos).isAir(world, pos) || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
+        boolean safeDest = world.getBlockState(pos).isAir() || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
         return safeDest && world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
     }
 
-    public static boolean setBlockSafe(World world, BlockPos pos, BlockState state)
+    public static boolean setBlockSafe(Level world, BlockPos pos, BlockState state)
     {
-        boolean safeDest = world.getBlockState(pos).isAir(world, pos) || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
-        boolean safeSrc = state.isAir(world, pos)|| state.getDestroySpeed(world, pos) >= 0f;
+        boolean safeDest = world.getBlockState(pos).isAir() || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
+        boolean safeSrc = state.isAir()|| state.getDestroySpeed(world, pos) >= 0f;
 
         return safeDest && safeSrc && world.setBlockAndUpdate(pos, state);
     }
-    public static boolean setBlockUnsafeSrc(World world, BlockPos pos, BlockState state)
+    public static boolean setBlockUnsafeSrc(Level world, BlockPos pos, BlockState state)
     {
-        boolean safeDest = world.getBlockState(pos).isAir(world, pos) || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
+        boolean safeDest = world.getBlockState(pos).isAir() || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
 
         return safeDest && world.setBlockAndUpdate(pos, state);
     }
 
-    public static boolean setBlockVarying(World world, BlockPos pos, Block block, int unified)
+    public static boolean setBlockVarying(Level world, BlockPos pos, Block block, int unified)
     {
         return setBlockSafe(world, pos, PandorasBoxHelper.getRandomBlockState(world.random, block, unified));
     }
 
-    public static boolean setBlockVaryingUnsafeSrc(World world, BlockPos pos, Block block, int unified)
+    public static boolean setBlockVaryingUnsafeSrc(Level world, BlockPos pos, Block block, int unified)
     {
         return setBlockUnsafeSrc(world, pos, PandorasBoxHelper.getRandomBlockState(world.random, block, unified));
     }
 
-    public static PlayerEntity getRandomNearbyPlayer(World world, PandorasBoxEntity box)
+    public static Player getRandomNearbyPlayer(Level world, PandorasBoxEntity box)
     {
-        List<PlayerEntity> players = world.getEntitiesOfClass(PlayerEntity.class, box.getBoundingBox().expandTowards(30.0, 30.0, 30.0));
+        List<Player> players = world.getEntitiesOfClass(Player.class, box.getBoundingBox().expandTowards(30.0, 30.0, 30.0));
         return players.get(box.getRandom().nextInt(players.size()));
     }
 
-    public static PlayerEntity getPlayer(World world, PandorasBoxEntity box)
+    public static Player getPlayer(Level world, PandorasBoxEntity box)
     {
         return getRandomNearbyPlayer(world, box); // We don't know the owner :/
     }
@@ -100,7 +95,7 @@ public abstract class PBEffect
         return false;
     }
 
-    public static Entity lazilySpawnEntity(World world, PandorasBoxEntity box, Random random, String entityID, float chance, BlockPos pos)
+    public static Entity lazilySpawnEntity(Level world, PandorasBoxEntity box, Random random, String entityID, float chance, BlockPos pos)
     {
         if (random.nextFloat() < chance && !world.isClientSide())
         {
@@ -114,13 +109,13 @@ public abstract class PBEffect
 
         return null;
     }
-    public static Entity lazilySpawnFlyingEntity(World world, PandorasBoxEntity box, Random random, String entityID, float chance, BlockPos pos) {
+    public static Entity lazilySpawnFlyingEntity(Level world, PandorasBoxEntity box, Random random, String entityID, float chance, BlockPos pos) {
         Entity entity =  lazilySpawnEntity(world, box, random, entityID, chance, pos);
         if(entity != null) world.addFreshEntity(entity);
         return entity;
     }
 
-    public static boolean canSpawnEntity(World world, BlockState block, BlockPos pos, Entity entity)
+    public static boolean canSpawnEntity(Level world, BlockState block, BlockPos pos, Entity entity)
     {
         if(entity == null) return false;
         if (world.isClientSide())
@@ -136,7 +131,7 @@ public abstract class PBEffect
         return false;
     }
 
-    public boolean canSpawnFlyingEntity(World world, BlockState block, BlockPos pos)
+    public boolean canSpawnFlyingEntity(Level world, BlockState block, BlockPos pos)
     {
         if (world.isClientSide())
             return false;
@@ -146,15 +141,15 @@ public abstract class PBEffect
 
     public void addPotionEffectDuration(LivingEntity entity, Potion potionEffect)
     {
-        for(EffectInstance effectInstance : potionEffect.getEffects()) {
+        for(MobEffectInstance effectInstance : potionEffect.getEffects()) {
             if (entity.canBeAffected(effectInstance)) {
                 boolean addNewEffect = true;
 
                 if (entity.hasEffect(effectInstance.getEffect())) {
-                    EffectInstance prevEffect = entity.getEffect(effectInstance.getEffect());
+                    MobEffectInstance prevEffect = entity.getEffect(effectInstance.getEffect());
                     if (prevEffect.getAmplifier() == effectInstance.getAmplifier()) {
                         int duration = prevEffect.getDuration() + effectInstance.getDuration();
-                        EffectInstance combined = new EffectInstance(effectInstance.getEffect(), duration, effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.isVisible());
+                        MobEffectInstance combined = new MobEffectInstance(effectInstance.getEffect(), duration, effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.isVisible());
                         entity.addEffect(combined);
                     }
                 }
@@ -168,9 +163,9 @@ public abstract class PBEffect
 
     public abstract boolean isDone(PandorasBoxEntity entity, int ticksAlive);
 
-    public abstract void writeToNBT(CompoundNBT compound);
+    public abstract void writeToNBT(CompoundTag compound);
 
-    public abstract void readFromNBT(CompoundNBT compound);
+    public abstract void readFromNBT(CompoundTag compound);
 
     public abstract boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity);
 }

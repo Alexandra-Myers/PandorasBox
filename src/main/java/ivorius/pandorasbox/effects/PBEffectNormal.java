@@ -6,10 +6,9 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
-
-import java.util.Random;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by lukas on 30.03.14.
@@ -34,13 +33,13 @@ public abstract class PBEffectNormal extends PBEffect
         return (float) ticks / (float) maxTicksAlive;
     }
 
-    public abstract void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio);
+    public abstract void doEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, float prevRatio, float newRatio);
 
-    public void setUpEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random)
+    public void setUpEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random)
     {
     }
 
-    public void finalizeEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random)
+    public void finalizeEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random)
     {
     }
 
@@ -51,13 +50,13 @@ public abstract class PBEffectNormal extends PBEffect
         float newRatio = getRatioDone(ticksAlive + 1);
 
         if (ticksAlive == 0)
-            setUpEffect(entity.level, entity, effectCenter, entity.getRandom());
+            setUpEffect(entity.level(), entity, effectCenter, entity.getRandom());
 
         if (prevRatio >= 0.0f && newRatio <= 1.0f && newRatio > prevRatio)
-            doEffect(entity.level, entity, effectCenter, entity.getRandom(), prevRatio, newRatio);
+            doEffect(entity.level(), entity, effectCenter, entity.getRandom(), prevRatio, newRatio);
 
         if (ticksAlive == maxTicksAlive - 1)
-            finalizeEffect(entity.level, entity, effectCenter, entity.getRandom());
+            finalizeEffect(entity.level(), entity, effectCenter, entity.getRandom());
     }
 
     @Override
@@ -67,13 +66,13 @@ public abstract class PBEffectNormal extends PBEffect
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
+    public void writeToNBT(CompoundTag compound)
     {
         compound.putInt("maxTicksAlive", maxTicksAlive);
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
+    public void readFromNBT(CompoundTag compound)
     {
         maxTicksAlive = compound.getInt("maxTicksAlive");
     }
