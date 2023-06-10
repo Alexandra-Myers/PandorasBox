@@ -25,6 +25,7 @@ import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.CatVariant;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -112,7 +113,7 @@ public class PandorasBox
         fmlEventHandler = new PBEventHandler();
         fmlEventHandler.register();
 
-        ArgumentTypeInfos.register(COMMAND_ARGUMENT_TYPE, "pbeffect", PBEffectArgument.class, SingletonArgumentInfo.contextFree(PBEffectArgument::effect));
+        COMMAND_ARGUMENT_TYPES.register(new ResourceLocation(PandorasBox.MOD_ID, "pbeffect"), SingletonArgumentInfo.contextFree(PBEffectArgument::effect));
 
         proxy.preInit();
 
