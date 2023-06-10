@@ -1,14 +1,20 @@
 package ivorius.pandorasbox.init;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.block.PandorasBoxBlock;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.items.PandorasBoxItem;
+import ivorius.pandorasbox.utils.PBEffectArgument;
 import ivorius.pandorasbox.worldgen.WorldGenColorfulTree;
 import ivorius.pandorasbox.worldgen.WorldGenLollipop;
 import ivorius.pandorasbox.worldgen.WorldGenMegaJungleCustom;
 import ivorius.pandorasbox.worldgen.WorldGenRainbow;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
@@ -29,6 +35,7 @@ public class Registry {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MOD_ID);
     private static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MOD_ID);
+    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENTS = DeferredRegister.create(ForgeRegistries.COMMAND_ARGUMENT_TYPES, MOD_ID);
     private static final DeferredRegister<EntityDataSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.Keys.ENTITY_DATA_SERIALIZERS, MOD_ID);
 //    private static final DeferredRegister<Structure<?>> STRUCTURES = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, MOD_ID);
 
@@ -39,6 +46,7 @@ public class Registry {
         TILES.register(bus);
         ENTITIES.register(bus);
         SERIALIZERS.register(bus);
+        ARGUMENTS.register(bus);
 //        STRUCTURES.register(bus);
     }
     public static final RegistryObject<EntityDataSerializer<?>> PBEFFECTSERIALIZER = SERIALIZERS.register("box_effect", () -> PandorasBoxEntity.PBEFFECT_SERIALIZER);
@@ -51,5 +59,6 @@ public class Registry {
     public static final RegistryObject<Feature<TreeConfiguration>> LOLIPOP = FEATURES.register("lolipop", () -> new WorldGenLollipop(TreeConfiguration.CODEC, 20));
     public static final RegistryObject<Feature<TreeConfiguration>> COLOURFUL_TREE = FEATURES.register("colourful_tree", () -> new WorldGenColorfulTree(TreeConfiguration.CODEC, 20));
     public static final RegistryObject<Feature<TreeConfiguration>> RAINBOW = FEATURES.register("rainbow", () -> new WorldGenRainbow(TreeConfiguration.CODEC, 20));
+    public static final RegistryObject<SingletonArgumentInfo<PBEffectArgument>> PBEFFECTARGUMENT = ARGUMENTS.register("pbeffect", () -> SingletonArgumentInfo.contextFree(PBEffectArgument::effect));
     public static final RegistryObject<Feature<TreeConfiguration>> MEGA_JUNGLE = FEATURES.register("mega_jungle", () -> new WorldGenMegaJungleCustom(TreeConfiguration.CODEC, 20));
 }
