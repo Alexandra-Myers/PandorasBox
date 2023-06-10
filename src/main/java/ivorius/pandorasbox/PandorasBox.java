@@ -89,6 +89,7 @@ public class PandorasBox
         // Register the setup method for modloading
         EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
         Registry.init(EVENT_BUS);
+        COMMAND_ARGUMENT_TYPES.register(new ResourceLocation(PandorasBox.MOD_ID, "pbeffect"), SingletonArgumentInfo.contextFree(PBEffectArgument::effect));
         EVENT_BUS.addListener(this::preInit);
         EVENT_BUS.addListener(this::gatherData);
 
@@ -112,9 +113,6 @@ public class PandorasBox
 
         fmlEventHandler = new PBEventHandler();
         fmlEventHandler.register();
-
-        COMMAND_ARGUMENT_TYPES.register(new ResourceLocation(PandorasBox.MOD_ID, "pbeffect"), SingletonArgumentInfo.contextFree(PBEffectArgument::effect));
-
         proxy.preInit();
 
         proxy.load();
