@@ -11,6 +11,7 @@ import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.features.TreeFeatures;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -28,6 +29,8 @@ import java.util.Optional;
 import java.util.Random;
 
 import static net.minecraft.data.worldgen.features.NetherFeatures.*;
+import static net.minecraft.data.worldgen.features.TreeFeatures.CRIMSON_FUNGUS_PLANTED;
+import static net.minecraft.data.worldgen.features.TreeFeatures.WARPED_FUNGUS_PLANTED;
 import static net.minecraft.data.worldgen.placement.NetherPlacements.WARPED_FOREST_VEGETATION;
 import static net.minecraft.data.worldgen.placement.VegetationPlacements.BROWN_MUSHROOM_NETHER;
 import static net.minecraft.data.worldgen.placement.VegetationPlacements.RED_MUSHROOM_NETHER;
@@ -266,6 +269,19 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0)))
+        {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverWorld)
+            {
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = serverWorld.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
+                boolean success = configuredFeatureRegistry.get(CRIMSON_FUNGUS_PLANTED).place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                if(success) timesFeatureAMade++;
+            }
+        }
         if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0)))
         {
             BlockPos posBelow = pos.below();
@@ -336,6 +352,19 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
             for (Entity entity1 : entities) {
                 canSpawnEntity(world, blockState, pos, entity1);
+            }
+        }
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0)))
+        {
+            BlockPos posBelow = pos.below();
+            BlockState blockBelowState = world.getBlockState(posBelow);
+
+            if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverWorld)
+            {
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = serverWorld.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
+                boolean success = configuredFeatureRegistry.get(WARPED_FUNGUS_PLANTED).place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                if(success) timesFeatureAMade++;
             }
         }
         if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0)))
