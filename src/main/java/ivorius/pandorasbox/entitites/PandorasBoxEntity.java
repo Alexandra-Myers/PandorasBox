@@ -159,7 +159,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     @Override
     protected void defineSynchedData() {
         this.getEntityData().define(BOX_DEATH_TICKS, -1);
-        this.getEntityData().define(DATA_EFFECT_ID, null);
+        this.getEntityData().define(DATA_EFFECT_ID, PBECRegistry.effectCreatorWithName("matryoshka").constructEffect(this.level(), this.getX(), this.getY(), this.getZ(), this.random));
     }
 
     @Override

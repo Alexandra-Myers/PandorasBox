@@ -26,10 +26,12 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
     @Override
     public void render(PandorasBoxBlockEntity blockEntity, float p_112308_, PoseStack matrixStack, MultiBufferSource multiBufferSource, int p_112311_, int p_112312_) {
         VertexConsumer builder = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(texture));
+        matrixStack.pushPose();
         matrixStack.translate(0.5f, 1.5f, 0.5f);
         matrixStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
         float yRot = blockEntity.getFinalRotationYaw();
         matrixStack.mulPose(Axis.YP.rotationDegrees(yRot));
         model.renderToBuffer(matrixStack, builder, p_112311_, p_112312_, 1,1,1,1);
+        matrixStack.popPose();
     }
 }
