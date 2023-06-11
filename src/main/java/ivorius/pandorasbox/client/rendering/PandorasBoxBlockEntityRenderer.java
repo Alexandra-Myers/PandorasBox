@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 
 public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<PandorasBoxBlockEntity> {
     public static final ResourceLocation texture = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
@@ -19,8 +20,8 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
     public PandorasBoxBlockEntityRenderer(BlockEntityRendererProvider.Context p_i226006_1_) {
         model = new PandorasBoxBlockEntityModel(p_i226006_1_.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
     }
-    public static void register() {
-        BlockEntityRenderers.register(Registry.TEPB.get(), PandorasBoxBlockEntityRenderer::new);
+    public static void register(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(Registry.TEPB.get(), PandorasBoxBlockEntityRenderer::new);
     }
 
     @Override

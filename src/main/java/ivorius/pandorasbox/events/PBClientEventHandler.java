@@ -10,6 +10,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -20,9 +21,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = PandorasBox.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class PBClientEventHandler {
     @SubscribeEvent
-    public void clientInit(FMLClientSetupEvent event) {
-        EntityRenderers.register(Registry.Box.get(), PandorasBoxRenderer::new);
-        PandorasBoxBlockEntityRenderer.register();
+    public void entityRendererInit(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(Registry.Box.get(), PandorasBoxRenderer::new);
+        PandorasBoxBlockEntityRenderer.register(event);
     }
     @SubscribeEvent
     public void addPB(BuildCreativeModeTabContentsEvent event) {

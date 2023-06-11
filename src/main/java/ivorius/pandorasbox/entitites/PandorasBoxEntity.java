@@ -6,11 +6,15 @@
 package ivorius.pandorasbox.entitites;
 
 import ivorius.pandorasbox.PBConfig;
+import ivorius.pandorasbox.effectcreators.PBECDuplicateBox;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
+import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.effects.Vec3d;
 import ivorius.pandorasbox.network.PartialUpdateHandler;
+import ivorius.pandorasbox.random.DConstant;
+import ivorius.pandorasbox.random.IConstant;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -159,7 +163,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     @Override
     protected void defineSynchedData() {
         this.getEntityData().define(BOX_DEATH_TICKS, -1);
-        this.getEntityData().define(DATA_EFFECT_ID, PBECRegistry.effectCreatorWithName("matryoshka").constructEffect(this.level(), this.getX(), this.getY(), this.getZ(), this.random));
+        this.getEntityData().define(DATA_EFFECT_ID, new PBECDuplicateBox(new IConstant(PBEffectDuplicateBox.MODE_BOX_IN_BOX), new DConstant(0.5)).constructEffect(this.level(), this.getX(), this.getY(), this.getZ(), this.random));
     }
 
     @Override
