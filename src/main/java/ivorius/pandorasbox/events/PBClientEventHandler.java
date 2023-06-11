@@ -24,16 +24,16 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = PandorasBox.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class PBClientEventHandler {
     @SubscribeEvent
-    public void modelLayerLocationInit(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    public static void modelLayerLocationInit(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(PandorasBoxModel.LAYER_LOCATION, PandorasBoxModel::createBodyLayer);
     }
     @SubscribeEvent
-    public void entityRendererInit(EntityRenderersEvent.RegisterRenderers event) {
+    public static void entityRendererInit(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(Registry.Box.get(), PandorasBoxRenderer::new);
         PandorasBoxBlockEntityRenderer.register(event);
     }
     @SubscribeEvent
-    public void addPB(BuildCreativeModeTabContentsEvent event) {
+    public static void addPB(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             event.accept(Registry.PB);
         }
