@@ -3,8 +3,11 @@ package ivorius.pandorasbox.events;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.client.PBSpriteSourceProvider;
 import ivorius.pandorasbox.client.rendering.PandorasBoxBlockEntityRenderer;
+import ivorius.pandorasbox.client.rendering.PandorasBoxModel;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
 import ivorius.pandorasbox.init.Registry;
+import net.minecraft.client.model.geom.LayerDefinitions;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -20,6 +23,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = PandorasBox.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class PBClientEventHandler {
+    @SubscribeEvent
+    public void modelLayerLocationInit(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(PandorasBoxModel.LAYER_LOCATION, PandorasBoxModel::createBodyLayer);
+    }
     @SubscribeEvent
     public void entityRendererInit(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(Registry.Box.get(), PandorasBoxRenderer::new);
