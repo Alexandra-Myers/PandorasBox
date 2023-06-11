@@ -52,8 +52,8 @@ public class PandorasBoxBlockEntity extends BlockEntity
 
     public float getFinalRotationYaw()
     {
-//        if(getRotationYaw() - getBaseRotationYaw() > 90) return getBaseRotationYaw();
-        return getRotationYaw(); // TODO Block model doesn't support gradual rotation yet
+        if(getRotationYaw() - getBaseRotationYaw() > 90) return getBaseRotationYaw();
+        return getRotationYaw();
     }
 
     @Override
