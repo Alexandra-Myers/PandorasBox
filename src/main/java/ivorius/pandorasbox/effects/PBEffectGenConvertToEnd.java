@@ -5,19 +5,32 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.google.common.collect.Lists;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.SectionPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+
+import java.util.ArrayList;
+
+import static ivorius.pandorasbox.effects.PBEffectGenConvertToNether.makeResolver;
 
 /**
  * Created by lukas on 30.03.14.
@@ -35,50 +48,41 @@ public class PBEffectGenConvertToEnd extends PBEffectGenerate
     @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
-        BlockState blockState = world.getBlockState(pos);
-        Block block = blockState.getBlock();
-        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-        blocks.addAll(Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK);
-        ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
-        misc.addAll(Blocks.ICE, Blocks.WATER, Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.VINE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM);
-        blocks.addAll(PandorasBox.logs);
-        misc.addAll(PandorasBox.leaves, PandorasBox.flowers);
+        if(world instanceof ServerLevel serverLevel) {
+            BlockState blockState = world.getBlockState(pos);
+            Block block = blockState.getBlock();
+            ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
+            blocks.addAll(Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK);
+            ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
+            misc.addAll(Blocks.ICE, Blocks.WATER, Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.VINE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM);
+            blocks.addAll(PandorasBox.logs);
+            misc.addAll(PandorasBox.leaves, PandorasBox.flowers);
 
-        if (pass == 0)
-        {
-            if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.CHORUS_PLANT, Blocks.CHORUS_FLOWER))
-            {
+            if (pass == 0) {
+                if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.CHORUS_PLANT, Blocks.CHORUS_FLOWER)) {
 
+                } else if (isBlockAnyOf(block, blocks)) {
+                    setBlockSafe(world, pos, Blocks.OBSIDIAN.defaultBlockState());
+                } else if (isBlockAnyOf(block, misc)) {
+                    setBlockToAirSafe(world, pos);
+                } else if (world.loadedAndEntityCanStandOn(pos, entity)) {
+                    setBlockSafe(world, pos, Blocks.END_STONE.defaultBlockState());
+                }
+            } else {
+                Entity enderman = lazilySpawnEntity(world, entity, random, "enderman", 1.0f / (20 * 20), pos);
+                canSpawnEntity(world, blockState, pos, enderman);
             }
-            else if (isBlockAnyOf(block, blocks))
-            {
-                setBlockSafe(world, pos, Blocks.OBSIDIAN.defaultBlockState());
-            }
-            else if (isBlockAnyOf(block, misc))
-            {
-                setBlockToAirSafe(world, pos);
-            }
-            else if (world.loadedAndEntityCanStandOn(pos, entity))
-            {
-                setBlockSafe(world, pos, Blocks.END_STONE.defaultBlockState());
-            }
-        }
-        else
-        {
-            Entity enderman = lazilySpawnEntity(world, entity, random, "enderman", 1.0f / (20 * 20), pos);
-            canSpawnEntity(world, blockState, pos, enderman);
-        }
-        if (random.nextDouble() < Math.pow(0.2, Math.floor(timesFeatureAMade / 16.0)))
-        {
-            BlockPos posBelow = pos.below();
-            BlockState blockBelowState = world.getBlockState(posBelow);
+            if (random.nextDouble() < Math.pow(0.2, Math.floor(timesFeatureAMade / 16.0))) {
+                BlockPos posBelow = pos.below();
+                BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.isAir() && !isBlockAnyOf(blockBelowState.getBlock(), Blocks.CHORUS_FLOWER, Blocks.CHORUS_PLANT, Blocks.OBSIDIAN) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverWorld)
-            {
-                setBlockSafe(world, posBelow, Blocks.END_STONE.defaultBlockState());
-                boolean success = Feature.CHORUS_PLANT.place(FeatureConfiguration.NONE, serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
-                if(success) timesFeatureAMade++;
+                if (blockState.isAir() && !isBlockAnyOf(blockBelowState.getBlock(), Blocks.CHORUS_FLOWER, Blocks.CHORUS_PLANT, Blocks.OBSIDIAN) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverWorld) {
+                    setBlockSafe(world, posBelow, Blocks.END_STONE.defaultBlockState());
+                    boolean success = Feature.CHORUS_PLANT.place(FeatureConfiguration.NONE, serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                    if (success) timesFeatureAMade++;
+                }
             }
+            changeBiome(Biomes.END_BARRENS, pass, effectCenter, serverLevel);
         }
     }
 }

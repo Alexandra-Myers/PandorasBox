@@ -5,12 +5,28 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.google.common.collect.Lists;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.SectionPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+
+import java.util.ArrayList;
+
+import static ivorius.pandorasbox.effects.PBEffectGenConvertToNether.makeResolver;
 
 /**
  * Created by lukas on 30.03.14.
@@ -18,6 +34,7 @@ import net.minecraft.world.level.Level;
 public abstract class PBEffectGenerate extends PBEffectRangeBased
 {
     public int unifiedSeed;
+    public boolean biomeUnchanged = true;
     public PBEffectGenerate() {}
 
     public PBEffectGenerate(int time, double range, int passes, int unifiedSeed)
@@ -25,6 +42,31 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
         super(time, range, passes);
 
         this.unifiedSeed = unifiedSeed;
+    }
+    public static Vec3i floorAll(double x, double y, double z) {
+        return new Vec3i(Mth.floor(x), Mth.floor(y), Mth.floor(z));
+    }
+    public void changeBiome(ResourceKey<Biome> biomeResourceKey, int pass, Vec3d effectCenter, ServerLevel serverLevel) {
+        if(!biomeUnchanged) return;
+        BoundingBox boundingbox = BoundingBox.fromCorners(floorAll(range + (passes - 1) * 5.0 + effectCenter.x, range + (passes - 1) * 5.0 + effectCenter.y, range + (passes - 1) * 5.0 + effectCenter.z), floorAll(effectCenter.x - range + (passes - 1) * 5.0, effectCenter.y - range + (passes - 1) * 5.0, effectCenter.z - range + (passes - 1) * 5.0));
+        ArrayList<ChunkAccess> chunks = new ArrayList<>();
+        for (int k = SectionPos.blockToSectionCoord(boundingbox.minZ()); k <= SectionPos.blockToSectionCoord(boundingbox.maxZ()); ++k) {
+            for (int l = SectionPos.blockToSectionCoord(boundingbox.minX()); l <= SectionPos.blockToSectionCoord(boundingbox.maxX()); ++l) {
+                ChunkAccess chunkaccess = serverLevel.getChunk(l, k, ChunkStatus.FULL, false);
+                chunks.add(chunkaccess);
+            }
+        }
+        for (ChunkAccess chunkAccess : chunks) {
+            Registry<Biome> biomeRegistry = serverLevel.registryAccess().registryOrThrow(Registries.BIOME);
+            Biome biome = biomeRegistry.get(biomeResourceKey);
+            assert biome != null;
+            chunkAccess.fillBiomesFromNoise(makeResolver(biomeRegistry.wrapAsHolder(biome)), serverLevel.getChunkSource().randomState().sampler());
+            chunkAccess.setUnsaved(true);
+        }
+
+        serverLevel.getChunkSource().chunkMap.resendBiomesForChunks(chunks);
+        biomeUnchanged = false;
+
     }
 
     @Override
@@ -63,6 +105,7 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     {
         super.writeToNBT(compound);
         compound.putInt("unifiedSeed", unifiedSeed);
+        compound.putBoolean("biomeUnchanged", biomeUnchanged);
     }
 
     @Override
@@ -70,5 +113,6 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     {
         super.readFromNBT(compound);
         unifiedSeed = compound.getInt("unifiedSeed");
+        biomeUnchanged = compound.getBoolean("biomeUnchanged");
     }
 }
