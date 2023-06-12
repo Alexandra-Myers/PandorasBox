@@ -20,6 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -74,10 +75,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluid.LEVEL);
+                Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
-                    blockState2 = blockState2.setValue(FlowingFluid.LEVEL, integer.get());
+                    blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                 }
                 setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
@@ -156,10 +157,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluid.LEVEL);
+                Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
-                    blockState2 = blockState2.setValue(FlowingFluid.LEVEL, integer.get());
+                    blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                 }
                 setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
@@ -218,10 +219,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluid.LEVEL);
+                Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
-                    blockState2 = blockState2.setValue(FlowingFluid.LEVEL, integer.get());
+                    blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                 }
                 setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
@@ -310,10 +311,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluid.LEVEL);
+                Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
-                    blockState2 = blockState2.setValue(FlowingFluid.LEVEL, integer.get());
+                    blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                 }
                 setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {
@@ -393,10 +394,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
-                Optional<Integer> integer = blockState.getOptionalValue(FlowingFluid.LEVEL);
+                Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
-                    blockState2 = blockState2.setValue(FlowingFluid.LEVEL, integer.get());
+                    blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                 }
                 setBlockSafe(world, pos, blockState2);
             } else if (isBlockAnyOf(block, blocks)) {

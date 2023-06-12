@@ -22,6 +22,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -107,7 +108,7 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate
                 {
                     setBlockToAirSafe(world, pos);
                 }
-                else if ((block == Blocks.LAVA && !blockState.getValue(FlowingFluid.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK)
+                else if ((block == Blocks.LAVA && !blockState.getValue(LiquidBlock.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK)
                 {
                     setBlockSafe(world, pos, Blocks.COBBLESTONE.defaultBlockState());
                 }

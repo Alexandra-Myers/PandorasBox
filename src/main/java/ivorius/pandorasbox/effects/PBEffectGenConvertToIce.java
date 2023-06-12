@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 
@@ -49,7 +50,7 @@ public class PBEffectGenConvertToIce extends PBEffectGenerate
             {
                 setBlockSafe(world, pos, Blocks.AIR.defaultBlockState());
             }
-            else if ((block == Blocks.LAVA && !blockState.getValue(FlowingFluid.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK)
+            else if ((block == Blocks.LAVA && !blockState.getValue(LiquidBlock.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK)
             {
                 setBlockSafe(world, pos, Blocks.ICE.defaultBlockState());
             }
