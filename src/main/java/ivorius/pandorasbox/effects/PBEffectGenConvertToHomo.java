@@ -5,30 +5,23 @@
 
 package ivorius.pandorasbox.effects;
 
-import com.google.common.collect.Lists;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
 
 import java.util.Random;
-
-import static ivorius.pandorasbox.effects.PBEffectGenConvertToNether.makeResolver;
 
 /**
  * Created by lukas on 30.03.14.
@@ -73,9 +66,9 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
                 }
             } else if (pass == 1) {
                 if (random.nextInt(15 * 15) == 0) {
-                    int[] lolliColors = new int[world.random.nextInt(4) + 1];
+                    int[] lolliColors = new int[random.nextInt(4) + 1];
                     for (int i = 0; i < lolliColors.length; i++) {
-                        lolliColors[i] = world.random.nextInt(16);
+                        lolliColors[i] = random.nextInt(16);
                     }
 
                     TreeFeature treeGen = (TreeFeature) PandorasBox.instance.RAINBOW;
