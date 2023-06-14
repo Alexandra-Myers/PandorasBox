@@ -52,7 +52,7 @@ public class PBEffectGenConvertToHeavenly extends PBEffectGenerate
                 blocks.addAll(PandorasBox.flowers);
                 if (isBlockAnyOf(block, blocks)) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.DIRT, Blocks.GRASS_BLOCK)) {
+                } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DEEPSLATE, Blocks.TUFF)) {
                     if (world.getBlockState(pos.above()).getBlock() == Blocks.AIR) {
                         if (world.random.nextInt(6 * 6) == 0) {
                             setBlockSafe(world, pos, Blocks.DIRT.defaultBlockState());

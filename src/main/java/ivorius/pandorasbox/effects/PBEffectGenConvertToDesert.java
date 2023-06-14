@@ -51,8 +51,8 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate
                 blocks.addAll(Blocks.ICE, Blocks.WATER, Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM, Blocks.RED_MUSHROOM_BLOCK);
                 ArrayListExtensions<Block> soil = new ArrayListExtensions<>();
                 ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
-                soil.addAll(Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.GRASS_BLOCK, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.DIRT, Blocks.MYCELIUM);
-                misc.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.BLACKSTONE, Blocks.BASALT, Blocks.END_STONE);
+                soil.addAll(Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.GRASS_BLOCK, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.DIRT, Blocks.MYCELIUM, Blocks.MOSS_BLOCK);
+                misc.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.BLACKSTONE, Blocks.BASALT, Blocks.END_STONE, Blocks.DEEPSLATE, Blocks.TUFF);
                 blocks.addAll(PandorasBox.flowers, PandorasBox.leaves, PandorasBox.logs);
                 misc.addAll(PandorasBox.terracotta);
                 if (isBlockAnyOf(block, blocks)) {

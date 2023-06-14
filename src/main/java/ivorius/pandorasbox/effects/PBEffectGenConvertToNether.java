@@ -76,7 +76,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
-        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.SANDSTONE, Blocks.END_STONE, Blocks.MYCELIUM);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.DEEPSLATE, Blocks.SANDSTONE, Blocks.END_STONE, Blocks.MYCELIUM);
         blocks.addAll(PandorasBox.flowers, PandorasBox.logs, PandorasBox.leaves);
         misc.addAll(PandorasBox.terracotta);
 
@@ -100,7 +100,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.SOUL_SAND.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
                 setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
+            } else if (isBlockAnyOf(block, Blocks.GRANITE, Blocks.TUFF)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir()) {
                 if (random.nextInt(25) == 0) {
@@ -159,7 +159,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
-        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.END_STONE, Blocks.MYCELIUM);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DIRT, Blocks.END_STONE, Blocks.MYCELIUM);
         blocks.addAll(PandorasBox.flowers, PandorasBox.logs, PandorasBox.leaves);
         misc.addAll(PandorasBox.terracotta);
 
@@ -181,9 +181,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
                 setBlockSafe(world, pos, Blocks.SOUL_SOIL.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.SANDSTONE)) {
+            } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.DEEPSLATE, Blocks.SANDSTONE)) {
                 setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
+            } else if (isBlockAnyOf(block, Blocks.GRANITE, Blocks.TUFF)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir()) {
                 boolean bl = !isBlockAnyOf(world.getBlockState(pos.below()).getBlock(), Blocks.BONE_BLOCK) ? random.nextInt(40) == 0 : random.nextInt(20) == 0;
@@ -245,10 +245,11 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         ArrayListExtensions<Block> flowers = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
-        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND, Blocks.SANDSTONE);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.DEEPSLATE, Blocks.DIORITE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND, Blocks.SANDSTONE);
         blocks.addAll(PandorasBox.logs, PandorasBox.leaves);
         misc.addAll(PandorasBox.terracotta);
         flowers.addAll(PandorasBox.flowers);
+        blocks.removeAll(Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM, Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM);
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
@@ -276,7 +277,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     setBlockSafe(world, pos, Blocks.CRIMSON_ROOTS.defaultBlockState());
                 else
                     setBlockSafe(world, pos, Blocks.CRIMSON_FUNGUS.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
+            } else if (isBlockAnyOf(block, Blocks.GRANITE, Blocks.TUFF)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir()) {
                 if (random.nextInt(25) == 0) {
@@ -338,10 +339,11 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         ArrayListExtensions<Block> flowers = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
-        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.GRANITE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND, Blocks.SANDSTONE);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DIRT, Blocks.STONE, Blocks.ANDESITE, Blocks.GRANITE, Blocks.DEEPSLATE, Blocks.END_STONE, Blocks.MYCELIUM, Blocks.SAND, Blocks.SANDSTONE);
         blocks.addAll(PandorasBox.logs, PandorasBox.leaves);
         misc.addAll(PandorasBox.terracotta);
         flowers.addAll(PandorasBox.flowers);
+        blocks.removeAll(Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM, Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM);
 
         if (pass == 0) {
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
@@ -369,7 +371,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     setBlockSafe(world, pos, Blocks.WARPED_ROOTS.defaultBlockState());
                 else
                     setBlockSafe(world, pos, Blocks.WARPED_FUNGUS.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
+            } else if (isBlockAnyOf(block, Blocks.GRANITE, Blocks.TUFF)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir()) {
                 if (random.nextInt(25) == 0) {
@@ -423,7 +425,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
         blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
-        misc.addAll(Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.END_STONE, Blocks.MYCELIUM);
+        misc.addAll(Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DIRT, Blocks.END_STONE, Blocks.MYCELIUM);
         blocks.addAll(PandorasBox.flowers, PandorasBox.logs, PandorasBox.leaves);
         misc.addAll(PandorasBox.terracotta);
 
@@ -447,9 +449,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
                 setBlockSafe(world, pos, Blocks.BASALT.defaultBlockState());
-            }  else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.SANDSTONE)) {
+            }  else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.DEEPSLATE, Blocks.SANDSTONE)) {
                 setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.GRANITE)) {
+            } else if (isBlockAnyOf(block, Blocks.GRANITE, Blocks.TUFF)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir()) {
                 if (random.nextInt(25) == 0) {

@@ -70,7 +70,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
         int par5 = position.getZ();
 
         if(world == null) return false;
-        if (par4 >= 1 && par4 + l + 1 <= 256)
+        if (par4 >= 1 && par4 + l + 1 <= 320)
         {
             int j1;
             int k1;
@@ -93,7 +93,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
                 {
                     for (k1 = par5 - b0; k1 <= par5 + b0 && flag; ++k1)
                     {
-                        flag = !(i1 >= 0 && i1 < 256);
+                        flag = !(i1 >= 0 && i1 < 320);
                     }
                 }
             }
@@ -104,31 +104,14 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
             }
             else
             {
-                BlockPos pos = new BlockPos(par3, par4 - 1, par5);
+                BlockPos pos = position.below();
                 BlockState block2State = world.getBlockState(pos);
                 Block block2 = block2State.getBlock();
                 boolean rotated = rand.nextBoolean();
 
                 boolean isSoil = block2 == soil;
-                if (isSoil && par4 < 256 - l - 1)
+                if (isSoil && par4 < 320 - l - 1)
                 {
-                    Set<BlockPos> set = Sets.newHashSet();
-                    BiConsumer<BlockPos, BlockState> biconsumer = (p_160548_, p_160549_) -> {
-                        set.add(p_160548_.immutable());
-                        world.setBlock(p_160548_, p_160549_, 19);
-                    };
-                    block2State.onTreeGrow(world, biconsumer, rand, pos, new TreeConfiguration.TreeConfigurationBuilder(BlockStateProvider.simple(Blocks.AIR), new TrunkPlacer(1, 1, 1) {
-                        @Override
-                        protected TrunkPlacerType<?> type() {
-                            return TrunkPlacerType.STRAIGHT_TRUNK_PLACER;
-                        }
-
-                        @Override
-                        public List<FoliagePlacer.FoliageAttachment> placeTrunk(LevelSimulatedReader p_226157_, BiConsumer<BlockPos, BlockState> p_226158_, RandomSource p_226159_, int p_226160_, BlockPos p_226161_, TreeConfiguration p_226162_) {
-                            setDirtAt(p_226157_, p_226158_, p_226159_, p_226161_.below(), p_226162_);
-                            return new ArrayListExtensions<>();
-                        }
-                    }, BlockStateProvider.simple(Blocks.AIR), new AcaciaFoliagePlacer(UniformInt.of(1, 2), UniformInt.of(1, 2)), new TwoLayersFeatureSize(50, 5, 10)).build());
 
                     int k2;
 

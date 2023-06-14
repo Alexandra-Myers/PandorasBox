@@ -51,7 +51,7 @@ public class PBEffectGenConvertToOverworld extends PBEffectGenerate
             if (pass == 0) {
                 if (isBlockAnyOf(block, Blocks.SNOW, Blocks.SNOW_BLOCK)) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SOUL_SAND, Blocks.SAND, Blocks.MYCELIUM, Blocks.DIRT)) {
+                } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.DEEPSLATE, Blocks.TUFF, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SOUL_SAND, Blocks.SAND, Blocks.MYCELIUM, Blocks.DIRT, Blocks.MOSS_BLOCK)) {
                     BlockPos posUp = pos.above();
                     if (world.getBlockState(posUp).getBlock() == Blocks.AIR) {
                         setBlockSafe(world, pos, Blocks.GRASS_BLOCK.defaultBlockState());

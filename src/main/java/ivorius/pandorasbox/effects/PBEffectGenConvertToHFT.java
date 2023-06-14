@@ -85,8 +85,7 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
                     } else {
                         treeGen = (TreeFeature) PandorasBox.instance.RAINBOW;
                     }
-                    if (treeGen instanceof AccessibleTreeFeature) {
-                        AccessibleTreeFeature treeFeature = (AccessibleTreeFeature) treeGen;
+                    if (treeGen instanceof AccessibleTreeFeature treeFeature) {
                         treeFeature.setMetas(lolliColors);
                         treeFeature.setSoil(placeBlock);
                         treeFeature.place(world, world.random, pos);
