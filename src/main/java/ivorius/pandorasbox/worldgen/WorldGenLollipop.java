@@ -50,50 +50,26 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
 
         boolean flag = true;
 
-        int par3 = position.getX();
-        int par4 = position.getY();
-        int par5 = position.getZ();
+        int posX = position.getX();
+        int posY = position.getY();
+        int posZ = position.getZ();
 
-        if(world == null) {
-            LogUtils.getLogger().info("Lolipop generation: Failed world check");
-            return false;
-        }
-        LogUtils.getLogger().info("Lolipop generation: Past world check");
-        if (par4 >= -63 && par4 + l + 1 <= 320) {
-            LogUtils.getLogger().info("Lolipop generation: Past height check");
-            int j1;
-            int k1;
-
-            for (int i1 = par4; i1 <= par4 + 1 + l; ++i1) {
-                byte b0 = 1;
-
-                if (i1 == par4) {
-                    b0 = 0;
-                }
-
-                if (i1 >= par4 + 1 + l - 2) {
-                    b0 = 2;
-                }
-
-                for (j1 = par3 - b0; j1 <= par3 + b0 && flag; ++j1) {
-                    for (k1 = par5 - b0; k1 <= par5 + b0 && flag; ++k1) {
-                        flag = !(i1 >= -64 && i1 < 320);
-                    }
-                }
+        if(world == null) return false;
+        if (posY >= -63 && posY + l + 1 <= 320) {
+            for (int i = posY; i <= posY + 1 + l; ++i) {
+                flag &= i >= -64 && i < 320;
             }
 
             if (!flag) {
-                LogUtils.getLogger().info("Lolipop generation: Failed flag check");
                 return false;
             } else {
-                LogUtils.getLogger().info("Lolipop generation: Past flag check");
                 BlockPos pos = position.below();
                 BlockState block2State = world.getBlockState(pos);
                 Block block2 = block2State.getBlock();
                 boolean rotated = rand.nextBoolean();
 
                 boolean isSoil = block2 == soil;
-                if (isSoil && par4 < 320 - l - 1) {
+                if (isSoil && posY < 320 - l - 1) {
                     LogUtils.getLogger().info("Lolipop generation: Past soil check");
 
                     int k2;
@@ -102,9 +78,9 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
                         for (int s = -l / 2; s <= l / 2; s++) {
                             for (int y = -l / 2; y <= l / 2; y++) {
                                 if (s * s + y * y <= (l * l / 4 - shift * shift * 4)) {
-                                    int x = (!rotated ? s : shift) + par3;
-                                    int z = (rotated ? s : shift) + par5;
-                                    int rY = y + par4 + l;
+                                    int x = (!rotated ? s : shift) + posX;
+                                    int z = (rotated ? s : shift) + posZ;
+                                    int rY = y + posY + l;
 
                                     BlockPos pos1 = new BlockPos(x, rY, z);
                                     BlockState block1State = world.getBlockState(pos1);
@@ -120,7 +96,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
                     }
 
                     for (k2 = 0; k2 < l; ++k2) {
-                        BlockPos pos1 = new BlockPos(par3, par4 + k2, par5);
+                        BlockPos pos1 = new BlockPos(posX, posY + k2, posZ);
                         BlockState block3State = world.getBlockState(pos1);
 
                         if (block3State.isAir() || block3State.is(BlockTags.LEAVES)) {
@@ -132,12 +108,11 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
 
                     return true;
                 } else {
-                    LogUtils.getLogger().info("Lolipop generation: Failed soil check");
+                    LogUtils.getLogger().error("Lolipop generation: Failed soil check");
                     return false;
                 }
             }
         } else {
-            LogUtils.getLogger().info("Lolipop generation: Failed height check");
             return false;
         }
     }
