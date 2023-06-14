@@ -16,7 +16,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeResolver;
@@ -25,9 +24,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.structure.*;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -110,10 +107,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
-                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.04) {
-                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
-                } else if(world.getBlockState(pos.above()).getBlock() == Blocks.GLOWSTONE && random.nextFloat() < 0.08) {
-                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.02) {
+                    createGlowstoneBlobs(world, pos, random);
                 }
             }
         } else {
@@ -201,10 +196,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
-                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.04) {
-                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
-                } else if(world.getBlockState(pos.above()).getBlock() == Blocks.GLOWSTONE && random.nextFloat() < 0.08) {
-                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.02) {
+                    createGlowstoneBlobs(world, pos, random);
                 } else if(!world.getBlockState(pos.below()).isAir() && !isBlockAnyOf(world.getBlockState(pos.below()).getBlock(), Blocks.GLOWSTONE) && bl) {
                     setBlockSafe(world, pos, Blocks.BONE_BLOCK.defaultBlockState());
                 }
@@ -250,6 +243,18 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
 //        }
         changeBiome(Biomes.SOUL_SAND_VALLEY, pass, effectCenter, world);
     }
+
+    private void createGlowstoneBlobs(ServerLevel world, BlockPos pos, RandomSource random) {
+        BlockPos posBelow = pos.below();
+        BlockState blockBelowState = world.getBlockState(posBelow);
+
+        if (blockBelowState.isRedstoneConductor(world, posBelow))
+        {
+            Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+            Objects.requireNonNull(configuredFeatureRegistry.get(GLOWSTONE_EXTRA)).place(world, world.getChunkSource().getGenerator(), random, pos);
+        }
+    }
+
     public void createCrimson(ServerLevel world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
@@ -301,10 +306,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
-                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.04) {
-                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
-                } else if(world.getBlockState(pos.above()).getBlock() == Blocks.GLOWSTONE && random.nextFloat() < 0.08) {
-                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.02) {
+                    createGlowstoneBlobs(world, pos, random);
                 }
             }
         } else {
@@ -332,7 +335,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
-                boolean success = configuredFeatureRegistry.get(CRIMSON_FUNGUS_PLANTED).place(world, world.getChunkSource().getGenerator(), random, pos);
+                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(CRIMSON_FUNGUS_PLANTED)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
@@ -345,7 +348,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
-                boolean success = configuredFeatureRegistry.get(CRIMSON_FOREST_VEGETATION).place(world, world.getChunkSource().getGenerator(), random, pos);
+                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(CRIMSON_FOREST_VEGETATION)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
         }
@@ -402,10 +405,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
-                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.04) {
-                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
-                } else if(world.getBlockState(pos.above()).getBlock() == Blocks.GLOWSTONE && random.nextFloat() < 0.08) {
-                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.02) {
+                    createGlowstoneBlobs(world, pos, random);
                 }
             }
         } else {
@@ -426,7 +427,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
-                boolean success = configuredFeatureRegistry.get(WARPED_FUNGUS_PLANTED).place(world, world.getChunkSource().getGenerator(), random, pos);
+                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(WARPED_FUNGUS_PLANTED)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
@@ -439,7 +440,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
-                boolean success = configuredFeatureRegistry.get(WARPED_FOREST_VEGETION).place(world, world.getChunkSource().getGenerator(), random, pos);
+                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(WARPED_FOREST_VEGETION)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
         }
@@ -489,10 +490,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
-                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.04) {
-                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
-                } else if(world.getBlockState(pos.above()).getBlock() == Blocks.GLOWSTONE && random.nextFloat() < 0.08) {
-                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.02) {
+                    createGlowstoneBlobs(world, pos, random);
                 }
             }
         } else {
@@ -517,7 +516,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow))
             {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
-                boolean success = configuredFeatureRegistry.get(SMALL_BASALT_COLUMNS).place(world, world.getChunkSource().getGenerator(), random, pos);
+                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(SMALL_BASALT_COLUMNS)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
@@ -528,7 +527,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow))
             {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
-                boolean success = configuredFeatureRegistry.get(LARGE_BASALT_COLUMNS).place(world, world.getChunkSource().getGenerator(), random, pos);
+                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(LARGE_BASALT_COLUMNS)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
         }
