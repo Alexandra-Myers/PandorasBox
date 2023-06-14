@@ -36,9 +36,9 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator<MegaTreeFea
     public ArrayListExtensions<MegaTreeFeature> initializeGens()
     {
         ArrayListExtensions<MegaTreeFeature> trees = new ArrayListExtensions<>();
-        trees.add(0, (MegaTreeFeature) PandorasBox.instance.MEGA_JUNGLE);
-        trees.get(0).setLeaves(leafBlock.defaultBlockState());
-        trees.get(0).setTrunk(trunkBlock.defaultBlockState());
+        trees.add(treeJungle, (MegaTreeFeature) PandorasBox.instance.MEGA_JUNGLE);
+        trees.get(treeJungle).setLeaves(leafBlock.defaultBlockState());
+        trees.get(treeJungle).setTrunk(trunkBlock.defaultBlockState());
         return trees;
     }
 

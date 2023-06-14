@@ -39,14 +39,14 @@ public class PBEffectGenTrees extends PBEffectGenerateByGenerator<ResourceKey<Co
     public ArrayListExtensions<ResourceKey<ConfiguredFeature<?, ?>>> initializeGens()
     {
         ArrayListExtensions<ResourceKey<ConfiguredFeature<?, ?>>> trees = new ArrayListExtensions<>();
-        trees.add(JUNGLE_TREE);
-        trees.add(OAK);
-        trees.add(FANCY_OAK);
-        trees.add(MEGA_JUNGLE_TREE);
-        trees.add(JUNGLE_TREE);
-        trees.add(DARK_OAK);
-        trees.add(SPRUCE);
-        trees.add(BIRCH);
+        trees.add(treeSmall, JUNGLE_BUSH);
+        trees.add(treeNormal, OAK);
+        trees.add(treeBig, FANCY_OAK);
+        trees.add(treeHuge, MEGA_JUNGLE_TREE);
+        trees.add(treeJungle, JUNGLE_TREE);
+        trees.add(treeComplexNormal, DARK_OAK);
+        trees.add(treeTaiga, SPRUCE);
+        trees.add(treeBirch, BIRCH);
         return trees;
     }
 
