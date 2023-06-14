@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -27,22 +28,28 @@ import java.util.Optional;
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
+public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate
 {
     public boolean requiresSolidGround;
     public double chancePerBlock;
 
     public int generatorFlags;
-    public PBEffectGenerateByGenerator() {}
+    protected final ArrayListExtensions<T> treeGens;
+    public PBEffectGenerateByGenerator() {
+        this.treeGens = initializeGens();
+    }
 
     public PBEffectGenerateByGenerator(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags)
     {
         super(time, range, 1, unifiedSeed);
+        this.treeGens = initializeGens();
 
         this.requiresSolidGround = requiresSolidGround;
         this.chancePerBlock = chancePerBlock;
         this.generatorFlags = generatorFlags;
     }
+
+    abstract ArrayListExtensions<T> initializeGens();
 
     @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
@@ -59,7 +66,7 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
                 {
                     setBlockSafe(world, posBelow, Blocks.DIRT.defaultBlockState());
 
-                    Object generator = getRandomGenerator(getGenerators(), generatorFlags, random);
+                    T generator = getRandomGenerator(getGenerators(), generatorFlags, random);
                     if (generator instanceof ResourceKey<?> key) {
                         Optional<Registry<ConfiguredFeature<?, ?>>> configuredFeatureRegistry = world.registryAccess().registry(Registries.CONFIGURED_FEATURE);
                         if(configuredFeatureRegistry.isEmpty()) return;
@@ -75,9 +82,9 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
         }
     }
 
-    public abstract List<?> getGenerators();
+    public abstract List<T> getGenerators();
 
-    public static Object getRandomGenerator(List<?> generators, int flags, RandomSource random)
+    public T getRandomGenerator(List<T> generators, int flags, RandomSource random)
     {
         int totalNumber = 0;
 
