@@ -92,9 +92,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockToAirSafe(world, pos);
             } else if (isBlockAnyOf(block, Blocks.CLAY)) {
                 setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.COAL_ORE)) {
+            } else if (isBlockAnyOf(block, Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
+            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
             } else if (isBlockAnyOf(block, Blocks.SAND)) {
                 setBlockSafe(world, pos, Blocks.SOUL_SAND.defaultBlockState());
@@ -175,9 +175,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockToAirSafe(world, pos);
             } else if (isBlockAnyOf(block, Blocks.SAND, Blocks.CLAY)) {
                 setBlockSafe(world, pos, Blocks.SOUL_SAND.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.COAL_ORE)) {
+            } else if (isBlockAnyOf(block, Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
+            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
                 setBlockSafe(world, pos, Blocks.SOUL_SOIL.defaultBlockState());
@@ -263,9 +263,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockToAirSafe(world, pos);
             } else if (isBlockAnyOf(block, Blocks.CLAY)) {
                 setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.COAL_ORE)) {
+            } else if (isBlockAnyOf(block, Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
+            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
                 if(random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir())
@@ -357,9 +357,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockToAirSafe(world, pos);
             } else if (isBlockAnyOf(block, Blocks.CLAY)) {
                 setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.COAL_ORE)) {
+            } else if (isBlockAnyOf(block, Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
+            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
                 if(random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir())
@@ -443,9 +443,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
             } else if (isBlockAnyOf(block, Blocks.SAND)) {
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.COAL_ORE)) {
+            } else if (isBlockAnyOf(block, Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
-            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE)) {
+            } else if (isBlockAnyOf(block, Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE)) {
                 setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
             } else if (isBlockAnyOf(block, misc)) {
                 setBlockSafe(world, pos, Blocks.BASALT.defaultBlockState());
