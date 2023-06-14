@@ -60,7 +60,7 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
             iCTWTGASTB.addAll(PandorasBox.logs, PandorasBox.leaves);
             blocks.addAll(PandorasBox.terracotta, PandorasBox.wool);
             misc.addAll(PandorasBox.terracotta);
-            Block placeBlock = misc.get(groundMetas[world.random.nextInt(groundMetas.length)]);
+            Block placeBlock = misc.get(groundMetas[random.nextInt(groundMetas.length)]);
             if (pass == 0) {
                 if (isBlockAnyOf(block, iCTWTGASTB)) {
                     setBlockToAirSafe(world, pos);
@@ -70,17 +70,17 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
                     setBlockSafe(world, pos, placeBlock.defaultBlockState());
                 }
             } else if (pass == 1) {
-                if (world.random.nextInt(10 * 10) == 0) {
-                    int[] lolliColors = new int[world.random.nextInt(4) + 1];
+                if (random.nextInt(10 * 10) == 0) {
+                    int[] lolliColors = new int[random.nextInt(4) + 1];
                     for (int i = 0; i < lolliColors.length; i++) {
-                        lolliColors[i] = world.random.nextInt(16);
+                        lolliColors[i] = random.nextInt(16);
                     }
 
                     TreeFeature treeGen;
 
-                    if (world.random.nextBoolean()) {
+                    if (random.nextBoolean()) {
                         treeGen = (TreeFeature) PandorasBox.instance.LOLIPOP;
-                    } else if (world.random.nextInt(6) > 0) {
+                    } else if (random.nextInt(6) > 0) {
                         treeGen = (TreeFeature) PandorasBox.instance.COLOURFUL_TREE;
                     } else {
                         treeGen = (TreeFeature) PandorasBox.instance.RAINBOW;
@@ -88,11 +88,11 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
                     if (treeGen instanceof AccessibleTreeFeature treeFeature) {
                         treeFeature.setMetas(lolliColors);
                         treeFeature.setSoil(placeBlock);
-                        treeFeature.place(world, world.random, pos);
+                        treeFeature.place(world, random, pos);
                     }
-                } else if (world.random.nextInt(5 * 5) == 0) {
+                } else if (random.nextInt(5 * 5) == 0) {
                     if (world.getBlockState(pos.below()).getBlock() == placeBlock && world.getBlockState(pos).isAir()) {
-                        if (world.random.nextBoolean()) {
+                        if (random.nextBoolean()) {
                             setBlockSafe(world, pos, Blocks.CAKE.defaultBlockState());
                         } else {
                             ItemEntity entityItem = new ItemEntity(world, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.COOKIE));
