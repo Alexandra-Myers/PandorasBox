@@ -5,12 +5,17 @@
 
 package ivorius.pandorasbox.effects;
 
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.world.gen.feature.*;
+
+import java.util.List;
+
+import static net.minecraft.world.gen.feature.Features.*;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenTrees extends PBEffectGenerateByGenerator
+public class PBEffectGenTrees extends PBEffectGenerateByGenerator<ConfiguredFeature<?, ?>>
 {
     public PBEffectGenTrees() {}
 
@@ -23,30 +28,27 @@ public class PBEffectGenTrees extends PBEffectGenerateByGenerator
     public static final int treeTaiga = 6;
     public static final int treeBirch = 7;
 
-    private ConfiguredFeature[] treeGens;
-
     public PBEffectGenTrees(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags)
     {
         super(time, range, unifiedSeed, requiresSolidGround, chancePerBlock, generatorFlags);
-        initializeGens();
     }
-
-    private void initializeGens()
+    @Override
+    public ArrayListExtensions<ConfiguredFeature<?, ?>> initializeGens()
     {
-        treeGens = new ConfiguredFeature[8];
-
-        treeGens[treeSmall] = Features.JUNGLE_BUSH;
-        treeGens[treeNormal] = Features.OAK;
-        treeGens[treeBig] = Features.FANCY_OAK;
-        treeGens[treeHuge] = Features.MEGA_JUNGLE_TREE;
-        treeGens[treeJungle] = Features.JUNGLE_TREE;
-        treeGens[treeComplexNormal] = Features.DARK_OAK;
-        treeGens[treeTaiga] = Features.SPRUCE;
-        treeGens[treeBirch] = Features.BIRCH;
+        ArrayListExtensions<ConfiguredFeature<?, ?>> trees = new ArrayListExtensions<>();
+        trees.add(treeSmall, JUNGLE_BUSH);
+        trees.add(treeNormal, OAK);
+        trees.add(treeBig, FANCY_OAK);
+        trees.add(treeHuge, MEGA_JUNGLE_TREE);
+        trees.add(treeJungle, JUNGLE_TREE);
+        trees.add(treeComplexNormal, DARK_OAK);
+        trees.add(treeTaiga, SPRUCE);
+        trees.add(treeBirch, BIRCH);
+        return trees;
     }
 
     @Override
-    public ConfiguredFeature[] getGenerators()
+    public List<ConfiguredFeature<?, ?>> getGenerators()
     {
         return treeGens;
     }

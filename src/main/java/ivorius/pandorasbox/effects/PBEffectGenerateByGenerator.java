@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.minecraft.block.BlockState;
@@ -17,27 +18,34 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.server.ServerWorld;
 
+import java.util.List;
 import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
+public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate
 {
     public boolean requiresSolidGround;
     public double chancePerBlock;
 
     public int generatorFlags;
-    public PBEffectGenerateByGenerator() {}
+    protected final ArrayListExtensions<T> treeGens;
+    public PBEffectGenerateByGenerator() {
+        this.treeGens = initializeGens();
+    }
 
     public PBEffectGenerateByGenerator(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags)
     {
         super(time, range, 1, unifiedSeed);
+        this.treeGens = initializeGens();
 
         this.requiresSolidGround = requiresSolidGround;
         this.chancePerBlock = chancePerBlock;
         this.generatorFlags = generatorFlags;
     }
+
+    abstract ArrayListExtensions<T> initializeGens();
 
     @Override
     public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
@@ -54,7 +62,7 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
                 {
                     setBlockSafe(world, posBelow, Blocks.DIRT.defaultBlockState());
 
-                    Object generator = getRandomGenerator(getGenerators(), generatorFlags, random);
+                    T generator = getRandomGenerator(getGenerators(), generatorFlags, random);
                     if(generator instanceof ConfiguredFeature) {
                         ConfiguredFeature<?, ?> feature = (ConfiguredFeature<?, ?>) generator;
                         ServerWorld serverWorld = (ServerWorld) world;
@@ -69,13 +77,13 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
         }
     }
 
-    public abstract Object[] getGenerators();
+    public abstract List<T> getGenerators();
 
-    public static Object getRandomGenerator(Object[] generators, int flags, Random random)
+    public T getRandomGenerator(List<T> generators, int flags, Random random)
     {
         int totalNumber = 0;
 
-        for (int i = 0; i < generators.length; i++)
+        for (int i = 0; i < generators.size(); i++)
         {
             int flag = 1 << i;
             if ((flags & flag) > 0)
@@ -85,14 +93,14 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
         }
 
         int chosenGen = random.nextInt(totalNumber);
-        for (int i = 0; i < generators.length; i++)
+        for (int i = 0; i < generators.size(); i++)
         {
             int flag = 1 << i;
             if ((flags & flag) > 0)
             {
                 if (chosenGen == 0)
                 {
-                    return generators[i];
+                    return generators.get(i);
                 }
 
                 chosenGen--;
