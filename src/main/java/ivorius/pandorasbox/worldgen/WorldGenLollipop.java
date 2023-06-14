@@ -43,7 +43,6 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
 
     @Override
     public boolean place(Level world, RandomSource rand, BlockPos position) {
-        LogUtils.getLogger().info("Lolipop generation: Started");
         int l = rand.nextInt(addition) + 5;
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         blocks.addAll(PandorasBox.wool);
@@ -70,8 +69,6 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
 
                 boolean isSoil = block2 == soil;
                 if (isSoil && posY < 320 - l - 1) {
-                    LogUtils.getLogger().info("Lolipop generation: Past soil check");
-
                     int k2;
 
                     for (int shift = -1; shift <= 1; shift++) {
@@ -88,7 +85,6 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
                                     if (block1State.isAir() || block1State.is(BlockTags.LEAVES)) {
                                         Block block = blocks.get(metas[rand.nextInt(metas.length)]);
                                         this.setBlock(world, pos1, block.defaultBlockState());
-                                        LogUtils.getLogger().info("Lolipop generation: Placed block " + block.getName());
                                     }
                                 }
                             }
@@ -102,13 +98,11 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
                         if (block3State.isAir() || block3State.is(BlockTags.LEAVES)) {
                             Block block = blocks.get(metas[0]);
                             this.setBlock(world, pos1, block.defaultBlockState());
-                            LogUtils.getLogger().info("Lolipop generation: Placed block " + block.getName());
                         }
                     }
 
                     return true;
                 } else {
-                    LogUtils.getLogger().error("Lolipop generation: Failed soil check");
                     return false;
                 }
             }

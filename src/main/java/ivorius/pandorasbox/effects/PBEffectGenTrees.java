@@ -6,12 +6,15 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static net.minecraft.data.worldgen.features.TreeFeatures.*;
 
@@ -31,36 +34,30 @@ public class PBEffectGenTrees extends PBEffectGenerateByGenerator
     public static final int treeTaiga = 6;
     public static final int treeBirch = 7;
 
-    private ConfiguredFeature[] treeGens;
+    private ArrayListExtensions<ResourceKey<ConfiguredFeature<?, ?>>> treeGens;
 
     public PBEffectGenTrees(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags)
     {
         super(time, range, unifiedSeed, requiresSolidGround, chancePerBlock, generatorFlags);
+        initializeGens();
     }
 
-    @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
-        initializeGens(world);
-        super.generateOnBlock(world, entity, effectCenter, random, pass, pos, range);
-    }
-
-    private void initializeGens(Level world)
+    private void initializeGens()
     {
-        treeGens = new ConfiguredFeature[8];
-        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+        treeGens = new ArrayListExtensions<>();
 
-        treeGens[treeSmall] = configuredFeatureRegistry.get(JUNGLE_BUSH);
-        treeGens[treeNormal] = configuredFeatureRegistry.get(OAK);
-        treeGens[treeBig] = configuredFeatureRegistry.get(FANCY_OAK);
-        treeGens[treeHuge] = configuredFeatureRegistry.get(MEGA_JUNGLE_TREE);
-        treeGens[treeJungle] = configuredFeatureRegistry.get(JUNGLE_TREE);
-        treeGens[treeComplexNormal] = configuredFeatureRegistry.get(DARK_OAK);
-        treeGens[treeTaiga] = configuredFeatureRegistry.get(SPRUCE);
-        treeGens[treeBirch] = configuredFeatureRegistry.get(BIRCH);
+        treeGens.add(JUNGLE_TREE);
+        treeGens.add(OAK);
+        treeGens.add(FANCY_OAK);
+        treeGens.add(MEGA_JUNGLE_TREE);
+        treeGens.add(JUNGLE_TREE);
+        treeGens.add(DARK_OAK);
+        treeGens.add(SPRUCE);
+        treeGens.add(BIRCH);
     }
 
     @Override
-    public ConfiguredFeature[] getGenerators()
+    public List<?> getGenerators()
     {
         return treeGens;
     }

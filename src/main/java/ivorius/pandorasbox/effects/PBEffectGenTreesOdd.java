@@ -6,11 +6,14 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBox;
+import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
+
+import java.util.List;
 
 /**
  * Created by lukas on 30.03.14.
@@ -23,7 +26,7 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator
     public Block trunkBlock;
     public Block leafBlock;
 
-    private TreeFeature[] treeGens;
+    private ArrayListExtensions<TreeFeature> treeGens;
 
     public PBEffectGenTreesOdd(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags, Block trunkBlock, Block leafBlock)
     {
@@ -35,14 +38,14 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator
 
     private void initializeGens()
     {
-        treeGens = new TreeFeature[1];
-        treeGens[treeJungle] = (TreeFeature) PandorasBox.instance.MEGA_JUNGLE;
-        ((MegaTreeFeature)treeGens[treeJungle]).setLeaves(leafBlock.defaultBlockState());
-        ((MegaTreeFeature)treeGens[treeJungle]).setTrunk(trunkBlock.defaultBlockState());
+        treeGens = new ArrayListExtensions<>();
+        treeGens.add(0, (TreeFeature) PandorasBox.instance.MEGA_JUNGLE);
+        ((MegaTreeFeature)treeGens.get(0)).setLeaves(leafBlock.defaultBlockState());
+        ((MegaTreeFeature)treeGens.get(0)).setTrunk(trunkBlock.defaultBlockState());
     }
 
     @Override
-    public TreeFeature[] getGenerators()
+    public List<TreeFeature> getGenerators()
     {
         return treeGens;
     }

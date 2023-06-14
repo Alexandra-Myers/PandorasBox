@@ -8,13 +8,21 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lukas on 30.03.14.
@@ -52,12 +60,14 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
                     setBlockSafe(world, posBelow, Blocks.DIRT.defaultBlockState());
 
                     Object generator = getRandomGenerator(getGenerators(), generatorFlags, random);
-                    if(generator instanceof ConfiguredFeature) {
-                        ConfiguredFeature<?, ?> feature = (ConfiguredFeature<?, ?>) generator;
+                    if (generator instanceof ResourceKey<?> key) {
+                        Optional<Registry<ConfiguredFeature<?, ?>>> configuredFeatureRegistry = world.registryAccess().registry(Registries.CONFIGURED_FEATURE);
+                        if(configuredFeatureRegistry.isEmpty()) return;
+                        ConfiguredFeature<?, ?> feature = configuredFeatureRegistry.get().get((ResourceKey<ConfiguredFeature<?, ?>>) key);
+                        assert feature != null;
                         feature.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
                     }
-                    if(generator instanceof MegaTreeFeature) {
-                        MegaTreeFeature feature = (MegaTreeFeature) generator;
+                    if(generator instanceof MegaTreeFeature feature) {
                         feature.place(world, random, pos);
                     }
                 }
@@ -65,13 +75,13 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
         }
     }
 
-    public abstract Object[] getGenerators();
+    public abstract List<?> getGenerators();
 
-    public static Object getRandomGenerator(Object[] generators, int flags, RandomSource random)
+    public static Object getRandomGenerator(List<?> generators, int flags, RandomSource random)
     {
         int totalNumber = 0;
 
-        for (int i = 0; i < generators.length; i++)
+        for (int i = 0; i < generators.size(); i++)
         {
             int flag = 1 << i;
             if ((flags & flag) > 0)
@@ -81,14 +91,14 @@ public abstract class PBEffectGenerateByGenerator extends PBEffectGenerate
         }
 
         int chosenGen = random.nextInt(totalNumber);
-        for (int i = 0; i < generators.length; i++)
+        for (int i = 0; i < generators.size(); i++)
         {
             int flag = 1 << i;
             if ((flags & flag) > 0)
             {
                 if (chosenGen == 0)
                 {
-                    return generators[i];
+                    return generators.get(i);
                 }
 
                 chosenGen--;
