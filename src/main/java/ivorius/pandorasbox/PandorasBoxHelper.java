@@ -301,9 +301,9 @@ public class PandorasBoxHelper
         ArrayListExtensions<Item> records = new ArrayListExtensions<>();
         ArrayListExtensions<Item> dyes = new ArrayListExtensions<>();
         glass.addAll(Blocks.COAL_ORE, Blocks.LAPIS_ORE, Blocks.REDSTONE_ORE, Blocks.NETHER_QUARTZ_ORE, Blocks.GLASS);
-        planks.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.SAND);
+        planks.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.SAND, Blocks.RED_SAND);
         randomizable.addAll(
-                Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.DIRT, Blocks.SAND, Blocks.STONE_BRICK_STAIRS,
+                Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.DIRT, Blocks.SAND, Blocks.RED_SAND, Blocks.STONE_BRICK_STAIRS,
                 Blocks.QUARTZ_BLOCK, Blocks.QUARTZ_STAIRS,
                 Blocks.SMOOTH_QUARTZ, Blocks.SMOOTH_QUARTZ_STAIRS,
                 Blocks.SANDSTONE, Blocks.SANDSTONE_STAIRS,

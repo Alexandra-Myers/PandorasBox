@@ -38,15 +38,17 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate
         {
             ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
             blocks.addAll(Blocks.ICE, Blocks.WATER, Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM, Blocks.RED_MUSHROOM_BLOCK);
+            ArrayListExtensions<Block> soil = new ArrayListExtensions<>();
             ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
-            misc.addAll(Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.BLACKSTONE, Blocks.BASALT, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.GRASS_BLOCK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.DIRT, Blocks.MYCELIUM);
+            soil.addAll(Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.RED_SAND, Blocks.GRASS_BLOCK, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.DIRT, Blocks.MYCELIUM);
+            misc.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.RED_SANDSTONE, Blocks.BLACKSTONE, Blocks.BASALT, Blocks.END_STONE);
             blocks.addAll(PandorasBox.flowers, PandorasBox.leaves, PandorasBox.logs);
             misc.addAll(PandorasBox.terracotta);
             if (isBlockAnyOf(block, blocks))
             {
                 setBlockToAirSafe(world, pos);
             }
-            else if (isBlockAnyOf(block, misc))
+            else if (isBlockAnyOf(block, soil))
             {
                 setBlockSafe(world, pos, Blocks.SAND.defaultBlockState());
 
@@ -59,6 +61,8 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate
                         setBlockSafe(world, pos.above(3), Blocks.CACTUS.defaultBlockState());
                     }
                 }
+            } else if (isBlockAnyOf(block, misc)){
+                setBlockSafe(world, pos, Blocks.SANDSTONE.defaultBlockState());
             }
         }
     }

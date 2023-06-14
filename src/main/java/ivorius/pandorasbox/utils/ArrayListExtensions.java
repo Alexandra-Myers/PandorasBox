@@ -29,4 +29,28 @@ public class ArrayListExtensions<T> extends ArrayList<T> implements IterableExte
         }
         return bl;
     }
+    @SafeVarargs
+    public final boolean removeAll(T... entries) {
+        return removeAll(Arrays.asList(entries));
+    }
+    @SafeVarargs
+    public final boolean removeAll(Collection<T>... entries) {
+        boolean bl = true;
+        for(Collection<T> entry : entries) {
+            bl &= removeAll(entry);
+        }
+        return bl;
+    }
+    @SafeVarargs
+    public final boolean removeAll(int index, T... entries) {
+        return removeAll(index, Arrays.asList(entries));
+    }
+    @SafeVarargs
+    public final boolean removeAll(int index, Collection<T>... entries) {
+        boolean bl = true;
+        for (Collection<T> entry : entries) {
+            bl &= removeAll(index, entry);
+        }
+        return bl;
+    }
 }

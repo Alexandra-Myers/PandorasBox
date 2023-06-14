@@ -49,7 +49,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
             {
                 setBlockToAirSafe(world, pos);
             }
-            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SAND, Blocks.MYCELIUM, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM))
+            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SAND, Blocks.RED_SAND, Blocks.MYCELIUM, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM))
             {
                 if (world.getBlockState(pos.above()).isAir(world, pos.above()))
                 {
@@ -64,12 +64,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
             {
                 setBlockToAirSafe(world, pos);
             }
-
-            if (isBlockAnyOf(block, Blocks.LAVA))
-            {
-                setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
-            }
-            if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.ICE))
+            if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.ICE, Blocks.LAVA))
             {
                 setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
             }

@@ -40,7 +40,7 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate
             ArrayListExtensions<Block> iCTWTGASTB = new ArrayListExtensions<>();
             ArrayListExtensions<Block> weird = new ArrayListExtensions<>();
             ArrayListExtensions<Block> hmm = new ArrayListExtensions<>();
-            hmm.addAll(Blocks.NETHERRACK, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.END_STONE, Blocks.BASALT, Blocks.BLACKSTONE);
+            hmm.addAll(Blocks.NETHERRACK, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.BASALT, Blocks.BLACKSTONE);
             blocks.addAll(Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
             weird.addAll(Blocks.MYCELIUM, Blocks.GRASS_BLOCK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.CAKE);
             iCTWTGASTB.addAll(Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM, Blocks.FIRE, Blocks.SOUL_FIRE);
@@ -68,7 +68,7 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate
             {
                 setBlockSafe(world, pos, Blocks.STONE.defaultBlockState());
             }
-            else if (isBlockAnyOf(block, Blocks.SOUL_SAND, Blocks.SOUL_SOIL))
+            else if (isBlockAnyOf(block, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.RED_SAND))
             {
                 setBlockSafe(world, pos, Blocks.SAND.defaultBlockState());
             }

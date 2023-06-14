@@ -64,38 +64,9 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
         if(world == null) return false;
         if (par4 >= 1 && par4 + l + 1 <= 256)
         {
-            int j1;
-            int k1;
-
             for (int i1 = par4; i1 <= par4 + 1 + l; ++i1)
             {
-                byte b0 = 1;
-
-                if (i1 == par4)
-                {
-                    b0 = 0;
-                }
-
-                if (i1 >= par4 + 1 + l - 2)
-                {
-                    b0 = 2;
-                }
-
-                for (j1 = par3 - b0; j1 <= par3 + b0 && flag; ++j1)
-                {
-                    for (k1 = par5 - b0; k1 <= par5 + b0 && flag; ++k1)
-                    {
-                        if (i1 >= 0 && i1 < 256)
-                        {
-                            BlockPos pos = new BlockPos(j1, i1, k1);
-                            Block block = world.getBlockState(pos).getBlock();
-                        }
-                        else
-                        {
-                            flag = false;
-                        }
-                    }
-                }
+                flag = i1 >= 0 && i1 < 256;
             }
 
             if (!flag)
