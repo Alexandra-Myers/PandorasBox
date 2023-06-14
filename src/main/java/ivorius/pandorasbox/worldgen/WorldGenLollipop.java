@@ -10,13 +10,12 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
-
-import java.util.Random;
 
 public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeature
 {
@@ -41,7 +40,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
     }
 
     @Override
-    public boolean place(Level world, Random rand, BlockPos position) {
+    public boolean place(Level world, RandomSource rand, BlockPos position) {
         int l = rand.nextInt(addition) + 5;
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         blocks.addAll(PandorasBox.wool);

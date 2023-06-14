@@ -12,6 +12,7 @@ import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,7 +43,7 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
      * Sets the distance limit for how far away the generator will populate leaves from the base leaf node.
      */
     int leafDistanceLimit;
-    List field_175948_j;
+    List<FoliageCoordinates> field_175948_j;
 
     public WorldGenColorfulTree(Codec<TreeConfiguration> configIn, int height)
     {
@@ -100,7 +101,7 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
                     {
                         int i1 = this.field_175947_m.getX() - blockpos.getX();
                         int j1 = this.field_175947_m.getZ() - blockpos.getZ();
-                        double d4 = (double) blockpos.getY() - Math.sqrt((double) (i1 * i1 + j1 * j1)) * this.field_175944_d;
+                        double d4 = (double) blockpos.getY() - Math.sqrt(i1 * i1 + j1 * j1) * this.field_175944_d;
                         int k1 = d4 > (double) j ? j : (int) d4;
                         BlockPos blockpos2 = new BlockPos(this.field_175947_m.getX(), k1, this.field_175947_m.getZ());
 
@@ -203,8 +204,7 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
     void func_175941_b()
     {
 
-        for (Object o : this.field_175948_j) {
-            FoliageCoordinates foliagecoordinates = (FoliageCoordinates) o;
+        for (FoliageCoordinates foliagecoordinates : this.field_175948_j) {
             this.func_175940_a(foliagecoordinates);
         }
     }
@@ -235,13 +235,12 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
     void func_175939_d()
     {
 
-        for (Object o : this.field_175948_j) {
-            FoliageCoordinates foliagecoordinates = (FoliageCoordinates) o;
-            int i = foliagecoordinates.func_177999_q();
+        for (FoliageCoordinates foliageCoordinates : this.field_175948_j) {
+            int i = foliageCoordinates.func_177999_q();
             BlockPos blockpos = new BlockPos(this.field_175947_m.getX(), i, this.field_175947_m.getZ());
 
             if (this.leafNodeNeedsBase(i - this.field_175947_m.getY())) {
-                this.func_175937_a(blockpos, foliagecoordinates, trunk);
+                this.func_175937_a(blockpos, foliageCoordinates, trunk);
             }
         }
     }
@@ -262,16 +261,11 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
         {
             for (int j = 0; j <= i; ++j)
             {
-                BlockPos blockpos3 = p_175936_1_.offset(BlockPos.containing(0.5F + (float) j * f, 0.5F + (float) j * f1, 0.5F + (float) j * f2));
+                p_175936_1_.offset(BlockPos.containing(0.5F + (float) j * f, 0.5F + (float) j * f1, 0.5F + (float) j * f2));
             }
 
             return -1;
         }
-    }
-
-    public void func_175904_e()
-    {
-        this.leafDistanceLimit = 5;
     }
 
     /**
@@ -319,7 +313,7 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
     }
 
     @Override
-    public boolean place(Level worldIn, Random rand, BlockPos position) {
+    public boolean place(Level worldIn, RandomSource rand, BlockPos position) {
         this.field_175946_l = worldIn;
         this.field_175947_m = position;
         this.field_175949_k = new Random(rand.nextLong());
@@ -352,7 +346,6 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
     static class FoliageCoordinates extends BlockPos
     {
         private final int field_178000_b;
-        private static final String __OBFID = "CL_00002001";
 
         public FoliageCoordinates(BlockPos p_i45635_1_, int p_i45635_2_)
         {

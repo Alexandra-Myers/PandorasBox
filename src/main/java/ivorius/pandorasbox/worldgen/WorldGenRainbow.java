@@ -11,13 +11,12 @@ import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
-
-import java.util.Random;
 
 /**
  * Created by lukas on 14.02.14.
@@ -45,7 +44,7 @@ public class WorldGenRainbow extends TreeFeature implements AccessibleTreeFeatur
     }
 
     @Override
-    public boolean place(Level world, Random rand, BlockPos position) {
+    public boolean place(Level world, RandomSource rand, BlockPos position) {
         int par3 = position.getX();
         int par4 = position.getY();
         int par5 = position.getZ();

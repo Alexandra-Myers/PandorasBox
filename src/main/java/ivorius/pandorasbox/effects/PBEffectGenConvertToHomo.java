@@ -21,8 +21,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
 
-import java.util.Random;
-
 /**
  * Created by lukas on 30.03.14.
  */
@@ -36,10 +34,9 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random1, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
         if(world instanceof ServerLevel serverLevel) {
-            Random random = new Random();
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
             ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -86,7 +83,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
                     }
                 }
             } else {
-                Sheep sheep = (Sheep) lazilySpawnEntity(world, entity, random1, "sheep", 1.0f / (10 * 10), pos);
+                Sheep sheep = (Sheep) lazilySpawnEntity(world, entity, random, "sheep", 1.0f / (10 * 10), pos);
                 if (canSpawnEntity(world, blockState, pos, sheep)) {
                     sheep.setColor(DyeColor.byId(random.nextInt(16)));
                 }
