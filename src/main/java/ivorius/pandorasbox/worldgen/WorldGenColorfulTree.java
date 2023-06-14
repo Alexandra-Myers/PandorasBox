@@ -28,33 +28,33 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
     public int[] metas;
     public Block soil;
 
-    private Random field_175949_k;
-    private Level field_175946_l;
-    private BlockPos field_175947_m;
+    private Random random;
+    private Level level;
+    private BlockPos origin;
     int heightLimit;
     int height;
     double heightAttenuation;
     double field_175944_d;
     double field_175945_e;
     double leafDensity;
-    int field_175943_g;
-    int field_175950_h;
+    int spread;
+    int maxHeight;
     /**
      * Sets the distance limit for how far away the generator will populate leaves from the base leaf node.
      */
     int leafDistanceLimit;
-    List<FoliageCoordinates> field_175948_j;
+    List<FoliageCoordinates> foliageCoords;
 
     public WorldGenColorfulTree(Codec<TreeConfiguration> configIn, int height)
     {
         super(configIn);
-        this.field_175947_m = BlockPos.ZERO;
+        this.origin = BlockPos.ZERO;
         this.heightAttenuation = 0.618D;
         this.field_175944_d = 0.381D;
         this.field_175945_e = 1.0D;
         this.leafDensity = 1.0D;
-        this.field_175943_g = 1;
-        this.field_175950_h = height;
+        this.spread = 1;
+        this.maxHeight = height;
         this.leafDistanceLimit = 4;
     }
 
@@ -77,10 +77,10 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
             i = 1;
         }
 
-        int j = this.field_175947_m.getY() + this.height;
+        int j = this.origin.getY() + this.height;
         int k = this.heightLimit - this.leafDistanceLimit;
-        this.field_175948_j = Lists.newArrayList();
-        this.field_175948_j.add(new FoliageCoordinates(this.field_175947_m.above(k), j));
+        this.foliageCoords = Lists.newArrayList();
+        this.foliageCoords.add(new FoliageCoordinates(this.origin.above(k), j));
 
         for (; k >= 0; --k)
         {
@@ -90,47 +90,43 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
             {
                 for (int l = 0; l < i; ++l)
                 {
-                    double d0 = this.field_175945_e * (double) f * ((double) this.field_175949_k.nextFloat() + 0.328D);
-                    double d1 = (double) (this.field_175949_k.nextFloat() * 2.0F) * Math.PI;
+                    double d0 = this.field_175945_e * (double) f * ((double) this.random.nextFloat() + 0.328D);
+                    double d1 = (double) (this.random.nextFloat() * 2.0F) * Math.PI;
                     double d2 = d0 * Math.sin(d1) + 0.5D;
                     double d3 = d0 * Math.cos(d1) + 0.5D;
-                    BlockPos blockpos = this.field_175947_m.offset(BlockPos.containing(d2, k - 1, d3));
+                    BlockPos blockpos = this.origin.offset(BlockPos.containing(d2, k - 1, d3));
                     BlockPos blockpos1 = blockpos.above(this.leafDistanceLimit);
 
-                    if (this.func_175936_a(blockpos, blockpos1) == -1)
-                    {
-                        int i1 = this.field_175947_m.getX() - blockpos.getX();
-                        int j1 = this.field_175947_m.getZ() - blockpos.getZ();
-                        double d4 = (double) blockpos.getY() - Math.sqrt(i1 * i1 + j1 * j1) * this.field_175944_d;
-                        int k1 = d4 > (double) j ? j : (int) d4;
-                        BlockPos blockpos2 = new BlockPos(this.field_175947_m.getX(), k1, this.field_175947_m.getZ());
+                    this.func_175936_a(blockpos, blockpos1);
+                    int i1 = this.origin.getX() - blockpos.getX();
+                    int j1 = this.origin.getZ() - blockpos.getZ();
+                    double d4 = (double) blockpos.getY() - Math.sqrt(i1 * i1 + j1 * j1) * this.field_175944_d;
+                    int k1 = (int) Math.min(d4, j);
+                    BlockPos blockpos2 = new BlockPos(this.origin.getX(), k1, this.origin.getZ());
 
-                        if (this.func_175936_a(blockpos2, blockpos) == -1)
-                        {
-                            this.field_175948_j.add(new FoliageCoordinates(blockpos, blockpos2.getY()));
-                        }
-                    }
+                    this.func_175936_a(blockpos2, blockpos);
+                    this.foliageCoords.add(new FoliageCoordinates(blockpos, blockpos2.getY()));
                 }
             }
         }
     }
 
-    void func_180712_a(BlockPos p_180712_1_, float p_180712_2_, BlockState p_180712_3_)
+    void createLeaves(BlockPos blockPos, float f, BlockState blockState)
     {
-        int i = (int) ((double) p_180712_2_ + 0.618D);
+        int i = (int) ((double) f + 0.618D);
 
         for (int j = -i; j <= i; ++j)
         {
             for (int k = -i; k <= i; ++k)
             {
-                if (Math.pow((double) Math.abs(j) + 0.5D, 2.0D) + Math.pow((double) Math.abs(k) + 0.5D, 2.0D) <= (double) (p_180712_2_ * p_180712_2_))
+                if (Math.pow((double) Math.abs(j) + 0.5D, 2.0D) + Math.pow((double) Math.abs(k) + 0.5D, 2.0D) <= (double) (f * f))
                 {
-                    BlockPos blockpos1 = p_180712_1_.offset(j, 0, k);
-                    BlockState state = this.field_175946_l.getBlockState(blockpos1);
+                    BlockPos blockpos1 = blockPos.offset(j, 0, k);
+                    BlockState state = this.level.getBlockState(blockpos1);
 
                     if (state.isAir() || state.is(BlockTags.LEAVES))
                     {
-                        this.setBlock(this.field_175946_l, blockpos1, p_180712_3_);
+                        this.setBlock(this.level, blockpos1, blockState);
                     }
                 }
             }
@@ -170,30 +166,30 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
         return p_76495_1_ >= 0 && p_76495_1_ < this.leafDistanceLimit ? (p_76495_1_ != 0 && p_76495_1_ != this.leafDistanceLimit - 1 ? 3.0F : 2.0F) : -1.0F;
     }
 
-    void func_175940_a(BlockPos p_175940_1_)
+    void placeLeaves(BlockPos blockPos)
     {
         for (int i = 0; i < this.leafDistanceLimit; ++i)
         {
-            this.func_180712_a(p_175940_1_.above(i), this.leafSize(i), trunk.defaultBlockState());
+            this.createLeaves(blockPos.above(i), this.leafSize(i), trunk.defaultBlockState());
         }
     }
 
-    void func_175937_a(BlockPos p_175937_1_, BlockPos p_175937_2_, Block p_175937_3_)
+    void placeBlock(BlockPos blockPos, BlockPos blockPos1, Block block)
     {
-        BlockPos blockpos2 = p_175937_2_.offset(-p_175937_1_.getX(), -p_175937_1_.getY(), -p_175937_1_.getZ());
-        int i = this.func_175935_b(blockpos2);
-        float f = (float) blockpos2.getX() / (float) i;
-        float f1 = (float) blockpos2.getY() / (float) i;
-        float f2 = (float) blockpos2.getZ() / (float) i;
+        BlockPos blockPos2 = blockPos1.offset(-blockPos.getX(), -blockPos.getY(), -blockPos.getZ());
+        int i = this.getHighestAbsoluteCoordinate(blockPos2);
+        float f = (float) blockPos2.getX() / (float) i;
+        float f1 = (float) blockPos2.getY() / (float) i;
+        float f2 = (float) blockPos2.getZ() / (float) i;
 
         for (int j = 0; j <= i; ++j)
         {
-            BlockPos blockpos3 = p_175937_1_.offset(BlockPos.containing(0.5F + (float) j * f, 0.5F + (float) j * f1, 0.5F + (float) j * f2));
-            this.setBlock(this.field_175946_l, blockpos3, p_175937_3_.defaultBlockState());
+            BlockPos blockPos3 = blockPos.offset(BlockPos.containing(0.5F + (float) j * f, 0.5F + (float) j * f1, 0.5F + (float) j * f2));
+            this.setBlock(this.level, blockPos3, block.defaultBlockState());
         }
     }
 
-    private int func_175935_b(BlockPos p_175935_1_)
+    private int getHighestAbsoluteCoordinate(BlockPos p_175935_1_)
     {
         int i = Mth.abs(p_175935_1_.getX());
         int j = Mth.abs(p_175935_1_.getY());
@@ -201,11 +197,11 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
         return k > i && k > j ? k : (Math.max(j, i));
     }
 
-    void func_175941_b()
+    void createLeafNodes()
     {
 
-        for (FoliageCoordinates foliagecoordinates : this.field_175948_j) {
-            this.func_175940_a(foliagecoordinates);
+        for (FoliageCoordinates foliagecoordinates : this.foliageCoords) {
+            this.placeLeaves(foliagecoordinates);
         }
     }
 
@@ -217,55 +213,49 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
         return (double) p_76493_1_ >= (double) this.heightLimit * 0.2D;
     }
 
-    void func_175942_c()
+    void buildTrunk()
     {
-        BlockPos blockpos = this.field_175947_m;
-        BlockPos blockpos1 = this.field_175947_m.above(this.height);
+        BlockPos blockpos = this.origin;
+        BlockPos blockpos1 = this.origin.above(this.height);
         Block block = trunk;
-        this.func_175937_a(blockpos, blockpos1, block);
+        this.placeBlock(blockpos, blockpos1, block);
 
-        if (this.field_175943_g == 2)
+        if (this.spread == 2)
         {
-            this.func_175937_a(blockpos.east(), blockpos1.east(), block);
-            this.func_175937_a(blockpos.east().south(), blockpos1.east().south(), block);
-            this.func_175937_a(blockpos.south(), blockpos1.south(), block);
+            this.placeBlock(blockpos.east(), blockpos1.east(), block);
+            this.placeBlock(blockpos.east().south(), blockpos1.east().south(), block);
+            this.placeBlock(blockpos.south(), blockpos1.south(), block);
         }
     }
 
-    void func_175939_d()
+    void placeLeaves()
     {
 
-        for (FoliageCoordinates foliageCoordinates : this.field_175948_j) {
-            int i = foliageCoordinates.func_177999_q();
-            BlockPos blockpos = new BlockPos(this.field_175947_m.getX(), i, this.field_175947_m.getZ());
+        for (FoliageCoordinates foliageCoordinates : this.foliageCoords) {
+            int i = foliageCoordinates.getHeight();
+            BlockPos blockpos = new BlockPos(this.origin.getX(), i, this.origin.getZ());
 
-            if (this.leafNodeNeedsBase(i - this.field_175947_m.getY())) {
-                this.func_175937_a(blockpos, foliageCoordinates, trunk);
+            if (this.leafNodeNeedsBase(i - this.origin.getY())) {
+                this.placeBlock(blockpos, foliageCoordinates, trunk);
             }
         }
     }
 
-    int func_175936_a(BlockPos p_175936_1_, BlockPos p_175936_2_)
+    int func_175936_a(BlockPos blockPos, BlockPos blockPos1)
     {
-        BlockPos blockpos2 = p_175936_2_.offset(-p_175936_1_.getX(), -p_175936_1_.getY(), -p_175936_1_.getZ());
-        int i = this.func_175935_b(blockpos2);
-        float f = (float) blockpos2.getX() / (float) i;
-        float f1 = (float) blockpos2.getY() / (float) i;
-        float f2 = (float) blockpos2.getZ() / (float) i;
+        BlockPos blockPos2 = blockPos1.offset(-blockPos.getX(), -blockPos.getY(), -blockPos.getZ());
+        int i = this.getHighestAbsoluteCoordinate(blockPos2);
+        float f = (float) blockPos2.getX() / (float) i;
+        float f1 = (float) blockPos2.getY() / (float) i;
+        float f2 = (float) blockPos2.getZ() / (float) i;
 
-        if (i == 0)
-        {
-            return -1;
-        }
-        else
-        {
-            for (int j = 0; j <= i; ++j)
-            {
-                p_175936_1_.offset(BlockPos.containing(0.5F + (float) j * f, 0.5F + (float) j * f1, 0.5F + (float) j * f2));
+        if (i != 0) {
+            for (int j = 0; j <= i; ++j) {
+                blockPos.offset(BlockPos.containing(0.5F + (float) j * f, 0.5F + (float) j * f1, 0.5F + (float) j * f2));
             }
 
-            return -1;
         }
+        return -1;
     }
 
     /**
@@ -274,8 +264,8 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
      */
     private boolean validTreeLocation()
     {
-        BlockPos down = this.field_175947_m.below();
-        BlockState state = this.field_175946_l.getBlockState(down);
+        BlockPos down = this.origin.below();
+        BlockState state = this.level.getBlockState(down);
         boolean isSoil = state.getBlock() == soil;
 
         if (!isSoil)
@@ -284,7 +274,7 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
         }
         else
         {
-            int i = this.func_175936_a(this.field_175947_m, this.field_175947_m.above(this.heightLimit - 1));
+            int i = this.func_175936_a(this.origin, this.origin.above(this.heightLimit - 1));
 
             if (i == -1)
             {
@@ -314,48 +304,48 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
 
     @Override
     public boolean place(Level worldIn, RandomSource rand, BlockPos position) {
-        this.field_175946_l = worldIn;
-        this.field_175947_m = position;
-        this.field_175949_k = new Random(rand.nextLong());
+        this.level = worldIn;
+        this.origin = position;
+        this.random = new Random(rand.nextLong());
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         blocks.addAll(PandorasBox.wool);
         trunk = blocks.get(metas[rand.nextInt(metas.length)]);
 
-        if(field_175946_l == null) return false;
+        if(level == null) return false;
         if (this.heightLimit == 0)
         {
-            this.heightLimit = 5 + this.field_175949_k.nextInt(this.field_175950_h);
+            this.heightLimit = 5 + this.random.nextInt(this.maxHeight);
         }
 
         if (!this.validTreeLocation())
         {
-            this.field_175946_l = null; //Fix vanilla Mem leak, holds latest world
+            this.level = null; //Fix vanilla Mem leak, holds latest world
             return false;
         }
         else
         {
             this.generateLeafNodeList();
-            this.func_175941_b();
-            this.func_175942_c();
-            this.func_175939_d();
-            this.field_175946_l = null; //Fix vanilla Mem leak, holds latest world
+            this.createLeafNodes();
+            this.buildTrunk();
+            this.placeLeaves();
+            this.level = null; //Fix vanilla Mem leak, holds latest world
             return true;
         }
     }
 
     static class FoliageCoordinates extends BlockPos
     {
-        private final int field_178000_b;
+        private final int height;
 
-        public FoliageCoordinates(BlockPos p_i45635_1_, int p_i45635_2_)
+        public FoliageCoordinates(BlockPos blockPos, int height)
         {
-            super(p_i45635_1_.getX(), p_i45635_1_.getY(), p_i45635_1_.getZ());
-            this.field_178000_b = p_i45635_2_;
+            super(blockPos);
+            this.height = height;
         }
 
-        public int func_177999_q()
+        public int getHeight()
         {
-            return this.field_178000_b;
+            return this.height;
         }
     }
 }

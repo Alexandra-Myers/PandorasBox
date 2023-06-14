@@ -69,7 +69,7 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
 
                     AccessibleTreeFeature treeFeature = (AccessibleTreeFeature) PandorasBox.instance.RAINBOW;
 
-                    if (random.nextFloat() > 0.25) {
+                    if (random.nextFloat() > 0.5) {
                         treeFeature = (AccessibleTreeFeature) PandorasBox.instance.LOLIPOP;
                     } else if (random.nextFloat() > 0.4) {
                         treeFeature = (AccessibleTreeFeature) PandorasBox.instance.COLOURFUL_TREE;
