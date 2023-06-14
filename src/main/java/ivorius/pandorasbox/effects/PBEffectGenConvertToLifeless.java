@@ -66,7 +66,7 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate
                     setBlockSafe(world, pos, Blocks.DIRT.defaultBlockState());
                 } else if (isBlockAnyOf(block, hmm)) {
                     setBlockSafe(world, pos, Blocks.STONE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Blocks.SOUL_SAND, Blocks.SOUL_SOIL)) {
+                } else if (isBlockAnyOf(block, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.RED_SAND)) {
                     setBlockSafe(world, pos, Blocks.SAND.defaultBlockState());
                 }
             }

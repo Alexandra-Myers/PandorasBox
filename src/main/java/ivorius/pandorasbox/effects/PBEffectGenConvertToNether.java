@@ -245,14 +245,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     }
 
     private void createGlowstoneBlobs(ServerLevel world, BlockPos pos, RandomSource random) {
-        BlockPos posBelow = pos.below();
-        BlockState blockBelowState = world.getBlockState(posBelow);
-
-        if (blockBelowState.isRedstoneConductor(world, posBelow))
-        {
-            Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
-            Objects.requireNonNull(configuredFeatureRegistry.get(GLOWSTONE_EXTRA)).place(world, world.getChunkSource().getGenerator(), random, pos);
-        }
+        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+        Objects.requireNonNull(configuredFeatureRegistry.get(GLOWSTONE_EXTRA)).place(world, world.getChunkSource().getGenerator(), random, pos);
     }
 
     public void createCrimson(ServerLevel world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos) {
