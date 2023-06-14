@@ -5,35 +5,18 @@
 
 package ivorius.pandorasbox.worldgen;
 
-import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.RandomSource;
-import net.minecraft.util.valueproviders.ClampedInt;
-import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.util.valueproviders.WeightedListInt;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
-import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
-import net.minecraft.world.level.levelgen.feature.foliageplacers.AcaciaFoliagePlacer;
-import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
-import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.function.BiConsumer;
 
 public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeature
 {
@@ -58,7 +41,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
     }
 
     @Override
-    public boolean place(Level world, RandomSource rand, BlockPos position) {
+    public boolean place(Level world, Random rand, BlockPos position) {
         int l = rand.nextInt(addition) + 5;
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         blocks.addAll(PandorasBox.wool);

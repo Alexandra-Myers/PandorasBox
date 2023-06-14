@@ -48,9 +48,10 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random1, int pass, BlockPos pos, double range)
     {
         if(world instanceof ServerLevel serverLevel) {
+            Random random = new Random();
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
             ArrayListExtensions<Block> misc = new ArrayListExtensions<>();

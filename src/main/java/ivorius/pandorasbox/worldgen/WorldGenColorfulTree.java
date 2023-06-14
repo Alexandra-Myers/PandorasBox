@@ -12,7 +12,6 @@ import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -320,7 +319,7 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
     }
 
     @Override
-    public boolean place(Level worldIn, RandomSource rand, BlockPos position) {
+    public boolean place(Level worldIn, Random rand, BlockPos position) {
         this.field_175946_l = worldIn;
         this.field_175947_m = position;
         this.field_175949_k = new Random(rand.nextLong());
