@@ -67,20 +67,16 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
                         lolliColors[i] = random.nextInt(16);
                     }
 
-                    TreeFeature treeGen;
+                    AccessibleTreeFeature treeFeature = (AccessibleTreeFeature) PandorasBox.instance.RAINBOW;
 
-                    if (random.nextBoolean()) {
-                        treeGen = (TreeFeature) PandorasBox.instance.LOLIPOP;
-                    } else if (random.nextInt(6) > 0) {
-                        treeGen = (TreeFeature) PandorasBox.instance.COLOURFUL_TREE;
-                    } else {
-                        treeGen = (TreeFeature) PandorasBox.instance.RAINBOW;
+                    if (random.nextFloat() > 0.25) {
+                        treeFeature = (AccessibleTreeFeature) PandorasBox.instance.LOLIPOP;
+                    } else if (random.nextFloat() > 0.4) {
+                        treeFeature = (AccessibleTreeFeature) PandorasBox.instance.COLOURFUL_TREE;
                     }
-                    if (treeGen instanceof AccessibleTreeFeature treeFeature) {
-                        treeFeature.setMetas(lolliColors);
-                        treeFeature.setSoil(placeBlock);
-                        treeFeature.place(world, random, pos);
-                    }
+                    treeFeature.setMetas(lolliColors);
+                    treeFeature.setSoil(placeBlock);
+                    treeFeature.place(world, random, pos);
                 } else if (random.nextInt(5 * 5) == 0) {
                     if (world.getBlockState(pos.below()).getBlock() == placeBlock && world.getBlockState(pos).isAir()) {
                         if (random.nextBoolean()) {

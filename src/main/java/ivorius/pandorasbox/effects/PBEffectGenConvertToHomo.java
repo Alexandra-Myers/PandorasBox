@@ -68,12 +68,10 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
                         lolliColors[i] = random.nextInt(16);
                     }
 
-                    TreeFeature treeGen = (TreeFeature) PandorasBox.instance.RAINBOW;
-                    if (treeGen instanceof AccessibleTreeFeature treeFeature) {
-                        treeFeature.setMetas(lolliColors);
-                        treeFeature.setSoil(Blocks.GRASS_BLOCK);
-                        treeFeature.place(world, random, pos);
-                    }
+                    AccessibleTreeFeature treeFeature = (AccessibleTreeFeature) PandorasBox.instance.RAINBOW;
+                    treeFeature.setMetas(lolliColors);
+                    treeFeature.setSoil(Blocks.GRASS_BLOCK);
+                    treeFeature.place(world, random, pos);
                 } else if (blockState.isAir() && Blocks.SNOW.defaultBlockState().canSurvive(world, pos)) {
                     if (random.nextInt(3 * 3) == 0) {
                         int meta;
