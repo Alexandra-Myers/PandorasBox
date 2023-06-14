@@ -13,6 +13,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.VegetationFeatures;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
@@ -67,9 +68,6 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     public static BiomeResolver makeResolver(Holder<Biome> biomeHolder) {
         return (x, y, z, climateSampler) -> biomeHolder;
     }
-    private static Optional<ChunkPos> checkLoaded(ServerLevel p_214544_, ChunkPos p_214545_, ChunkPos p_214546_) {
-        return ChunkPos.rangeClosed(p_214545_, p_214546_).filter((p_214542_) -> !p_214544_.isLoaded(p_214542_.getWorldPosition())).findAny();
-    }
     public void createWastes(ServerLevel world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
@@ -104,11 +102,18 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir()) {
                 if (random.nextInt(25) == 0) {
-                    if (world.random.nextFloat() < 0.9f) {
-                        setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
+                    if (world.random.nextFloat() < 0.99f) {
+                        if(world.getBlockState(pos.below()).is(BlockTags.SOUL_FIRE_BASE_BLOCKS)) {
+                            setBlockSafe(world, pos, Blocks.SOUL_FIRE.defaultBlockState());
+                        } else if(!world.getBlockState(pos.below()).isAir())
+                            setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
+                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.04) {
+                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                } else if(world.getBlockState(pos.above()).getBlock() == Blocks.GLOWSTONE && random.nextFloat() < 0.08) {
+                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                 }
             }
         } else {
@@ -188,12 +193,19 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             } else if (world.getBlockState(pos).isAir()) {
                 boolean bl = !isBlockAnyOf(world.getBlockState(pos.below()).getBlock(), Blocks.BONE_BLOCK) ? random.nextInt(40) == 0 : random.nextInt(20) == 0;
                 if (random.nextInt(25) == 0) {
-                    if (world.random.nextFloat() < 0.9f) {
-                        setBlockSafe(world, pos, Blocks.SOUL_FIRE.defaultBlockState());
+                    if (world.random.nextFloat() < 0.99f) {
+                        if(world.getBlockState(pos.below()).is(BlockTags.SOUL_FIRE_BASE_BLOCKS)) {
+                            setBlockSafe(world, pos, Blocks.SOUL_FIRE.defaultBlockState());
+                        } else if(!world.getBlockState(pos.below()).isAir())
+                            setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
-                }else if(!world.getBlockState(pos.below()).isAir() && !isBlockAnyOf(world.getBlockState(pos.below()).getBlock(), Blocks.GLOWSTONE) && bl) {
+                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.04) {
+                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                } else if(world.getBlockState(pos.above()).getBlock() == Blocks.GLOWSTONE && random.nextFloat() < 0.08) {
+                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                } else if(!world.getBlockState(pos.below()).isAir() && !isBlockAnyOf(world.getBlockState(pos.below()).getBlock(), Blocks.GLOWSTONE) && bl) {
                     setBlockSafe(world, pos, Blocks.BONE_BLOCK.defaultBlockState());
                 }
             }
@@ -281,11 +293,18 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir()) {
                 if (random.nextInt(25) == 0) {
-                    if (world.random.nextFloat() < 0.9f) {
-                        setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
+                    if (world.random.nextFloat() < 0.99f) {
+                        if(world.getBlockState(pos.below()).is(BlockTags.SOUL_FIRE_BASE_BLOCKS)) {
+                            setBlockSafe(world, pos, Blocks.SOUL_FIRE.defaultBlockState());
+                        } else if(!world.getBlockState(pos.below()).isAir())
+                            setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
+                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.04) {
+                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                } else if(world.getBlockState(pos.above()).getBlock() == Blocks.GLOWSTONE && random.nextFloat() < 0.08) {
+                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                 }
             }
         } else {
@@ -375,11 +394,18 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir()) {
                 if (random.nextInt(25) == 0) {
-                    if (world.random.nextFloat() < 0.9f) {
-                        setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
+                    if (world.random.nextFloat() < 0.99f) {
+                        if(world.getBlockState(pos.below()).is(BlockTags.SOUL_FIRE_BASE_BLOCKS)) {
+                            setBlockSafe(world, pos, Blocks.SOUL_FIRE.defaultBlockState());
+                        } else if(!world.getBlockState(pos.below()).isAir())
+                            setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
+                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.04) {
+                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                } else if(world.getBlockState(pos.above()).getBlock() == Blocks.GLOWSTONE && random.nextFloat() < 0.08) {
+                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                 }
             }
         } else {
@@ -455,11 +481,18 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
             } else if (world.getBlockState(pos).isAir()) {
                 if (random.nextInt(25) == 0) {
-                    if (world.random.nextFloat() < 0.9f) {
-                        setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
+                    if (world.random.nextFloat() < 0.99f) {
+                        if(world.getBlockState(pos.below()).is(BlockTags.SOUL_FIRE_BASE_BLOCKS)) {
+                            setBlockSafe(world, pos, Blocks.SOUL_FIRE.defaultBlockState());
+                        } else if(!world.getBlockState(pos.below()).isAir())
+                            setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
                     } else {
                         setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                     }
+                } else if(!world.getBlockState(pos.above()).isAir() && random.nextFloat() < 0.04) {
+                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
+                } else if(world.getBlockState(pos.above()).getBlock() == Blocks.GLOWSTONE && random.nextFloat() < 0.08) {
+                    setBlockSafe(world, pos, Blocks.GLOWSTONE.defaultBlockState());
                 }
             }
         } else {
