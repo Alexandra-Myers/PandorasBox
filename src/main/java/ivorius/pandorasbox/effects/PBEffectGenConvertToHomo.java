@@ -45,7 +45,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
             if (pass == 0) {
                 if (isBlockAnyOf(block, Blocks.SNOW, Blocks.SNOW_BLOCK)) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SAND, Blocks.MYCELIUM, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.DEEPSLATE, Blocks.TUFF)) {
+                } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SAND, Blocks.RED_SAND, Blocks.MYCELIUM, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.DEEPSLATE, Blocks.TUFF)) {
                     if (world.getBlockState(pos.above()).isAir()) {
                         setBlockSafe(world, pos, Blocks.GRASS_BLOCK.defaultBlockState());
                     } else {
