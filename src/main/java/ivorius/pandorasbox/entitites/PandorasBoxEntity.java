@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.entitites;
 
-import ivorius.pandorasbox.PBConfig;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.effectcreators.PBECDuplicateBox;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
@@ -33,8 +33,6 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
-
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
@@ -192,7 +190,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
                         if (canGenerateMoreEffectsAfterwards && effect.canGenerateMoreEffectsAfterwards(this))
                         {
-                            if (random.nextFloat() < PBConfig.boxLongevity)
+                            if (random.nextFloat() < PandorasBox.CONFIG.boxLongevity.get())
                             {
                                 startNewEffect();
 

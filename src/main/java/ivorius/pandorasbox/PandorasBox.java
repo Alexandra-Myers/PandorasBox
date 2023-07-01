@@ -14,6 +14,7 @@ import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -58,10 +59,12 @@ public class PandorasBox
     public static ArrayListExtensions<Block> stained_glass;
     public static ArrayListExtensions<Block> saplings;
     public static ArrayListExtensions<Block> pots;
+    public static PBConfig CONFIG;
 
     public static PBEventHandler fmlEventHandler;
     public PandorasBox() {
         // Register the setup method for modloading
+        initConfig();
         EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
         Registry.init(EVENT_BUS);
         EVENT_BUS.addListener(this::preInit);
@@ -69,6 +72,9 @@ public class PandorasBox
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         instance = this;
+    }
+    public static void initConfig() {
+        CONFIG = new PBConfig(new ForgeConfigSpec.Builder());
     }
 
     public void preInit(final FMLCommonSetupEvent event)
@@ -82,7 +88,6 @@ public class PandorasBox
 //            SHRINE = WorldGenRegistries.register(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE, "shrine", SHRINE_STRUCTURE.get().configured(new VillageConfig(() -> START, 7)));
 //        }
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, PBConfig.commonSpec);
-        PBConfig.loadConfig();
 
         fmlEventHandler = new PBEventHandler();
         fmlEventHandler.register();

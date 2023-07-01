@@ -3,6 +3,7 @@ package ivorius.pandorasbox.events;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.commands.CommandPandorasBox;
 import ivorius.pandorasbox.effects.PBEffects;
+import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.StainedGlassBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -28,6 +30,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Objects;
 
 import static ivorius.pandorasbox.PandorasBox.*;
+import static ivorius.pandorasbox.init.Registry.MODID;
 
 /**
  * Created by lukas on 29.07.14.
@@ -55,6 +58,11 @@ public class PBEventHandler
             ((BlockItem) item).place(new BlockPlaceContext(event.getEntity(), event.getHand(), stack,
                     new BlockHitResult(new Vec3(frontPos.getX() + 0.5 + direction.getStepX() * 0.5, frontPos.getY() + 0.5 + direction.getStepY() * 0.5, frontPos.getZ() + 0.5 + direction.getStepZ() * 0.5), direction, frontPos, false)));
         }
+    }
+    @SubscribeEvent
+    public static void gatherData(GatherDataEvent event) {
+        if(CONFIG.allowLootTableInjection.get())
+            event.getGenerator().addProvider(event.includeServer(), new Registry.DataProvider(event.getGenerator().getPackOutput(), MODID));
     }
     @SubscribeEvent
     public void serverInit(ServerStartedEvent event) {
