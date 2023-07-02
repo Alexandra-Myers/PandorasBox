@@ -11,11 +11,11 @@ public class PBConfig
 {
     private static final String CONFIG_PREFIX = "gui." + PandorasBox.MOD_ID + ".config.";
 
-    public final ForgeConfigSpec.BooleanValue allowLootTableInjection;
-    public final ForgeConfigSpec.DoubleValue boxLongevity;
-    public final ForgeConfigSpec.DoubleValue boxIntensity;
-    public final ForgeConfigSpec.IntValue maxEffectsPerBox;
-    public final ForgeConfigSpec.DoubleValue goodEffectChance;
+    public ForgeConfigSpec.BooleanValue allowLootTableInjection;
+    public ForgeConfigSpec.DoubleValue boxLongevity;
+    public ForgeConfigSpec.DoubleValue boxIntensity;
+    public ForgeConfigSpec.IntValue maxEffectsPerBox;
+    public ForgeConfigSpec.DoubleValue goodEffectChance;
 
     PBConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
