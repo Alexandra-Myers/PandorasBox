@@ -1,14 +1,14 @@
 package ivorius.pandorasbox;
 
 import net.minecraftforge.common.ForgeConfigSpec;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 
 /**
  * Created by lukas on 29.07.14.
  */
 public class PBConfig
 {
-    public static ForgeConfigSpec commonSpec;
     private static final String CONFIG_PREFIX = "gui." + PandorasBox.MOD_ID + ".config.";
 
     public final ForgeConfigSpec.BooleanValue allowLootTableInjection;
@@ -17,9 +17,8 @@ public class PBConfig
     public final ForgeConfigSpec.IntValue maxEffectsPerBox;
     public final ForgeConfigSpec.DoubleValue goodEffectChance;
 
-    PBConfig(ForgeConfigSpec.Builder builder) {
-
-        builder.push("common");
+    PBConfig() {
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
         allowLootTableInjection = builder.comment("Whether Pandora's Box will inject loot into loot tables")
                 .translation(CONFIG_PREFIX + "allowLootTableInjection").worldRestart()
@@ -41,6 +40,6 @@ public class PBConfig
                 .translation(CONFIG_PREFIX + "goodEffectChance").worldRestart()
                 .defineInRange("goodEffectChance", 0.49, 0, 10);
 
-        commonSpec = builder.build();
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON,builder.build());
     }
 }
