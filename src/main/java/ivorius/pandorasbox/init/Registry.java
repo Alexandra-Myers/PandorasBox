@@ -1,50 +1,28 @@
 package ivorius.pandorasbox.init;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.util.Pair;
 import ivorius.pandorasbox.block.PandorasBoxBlock;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.items.PandorasBoxItem;
-import ivorius.pandorasbox.utils.MapExtensions;
-import ivorius.pandorasbox.worldgen.WorldGenColorfulTree;
-import ivorius.pandorasbox.worldgen.WorldGenLollipop;
-import ivorius.pandorasbox.worldgen.WorldGenMegaJungleCustom;
-import ivorius.pandorasbox.worldgen.WorldGenRainbow;
-import ivorius.pandorasbox.worldgen.structure.SurfaceStructure;
+import ivorius.pandorasbox.worldgen.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.*;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPatternRegistry;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
-import net.minecraft.world.gen.feature.structure.PlainsVillagePools;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.structure.VillageConfig;
-import net.minecraft.world.gen.feature.structure.VillageStructure;
-import net.minecraft.world.gen.feature.template.ProcessorLists;
+import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DataSerializerEntry;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import static ivorius.pandorasbox.PandorasBox.MOD_ID;
 
 public class Registry {
+    private static final DeferredRegister<GlobalLootModifierSerializer<?>> GLM = DeferredRegister.create(ForgeRegistries.LOOT_MODIFIER_SERIALIZERS, MOD_ID);
     private static final DeferredRegister<TileEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MOD_ID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
@@ -65,6 +43,8 @@ public class Registry {
     public static final RegistryObject<DataSerializerEntry> PBEFFECTSERIALIZER = SERIALIZERS.register("box_effect", () -> new DataSerializerEntry(PandorasBoxEntity.PBEFFECT_SERIALIZER));
 //    public static final RegistryObject<Structure<VillageConfig>> SHRINE_STRUCTURE = STRUCTURES.register("shrine", () -> new SurfaceStructure(VillageConfig.CODEC));
 //    public static final JigsawPattern START = JigsawPatternRegistry.register(new JigsawPattern(new ResourceLocation("pandorasbox:shrine/start_pool"), new ResourceLocation("empty"), ImmutableList.of(Pair.of(JigsawPiece.single("pandorasbox:shrine", ProcessorLists.EMPTY), 1), Pair.of(JigsawPiece.single("pandorasbox:shrine_small", ProcessorLists.EMPTY), 100)), JigsawPattern.PlacementBehaviour.RIGID));
+
+    private static final RegistryObject<PandoraLootModifier.Serializer> PANDORA = GLM.register("pandora", PandoraLootModifier.Serializer::new);
     public static final RegistryObject<PandorasBoxBlock> PB = BLOCKS.register("pandoras_box", PandorasBoxBlock::new);
     public static final RegistryObject<PandorasBoxItem> PBI = ITEMS.register("pandoras_box", () -> new PandorasBoxItem(PB.get(), new Item.Properties().tab(ItemGroup.TAB_MISC)));
     public static final RegistryObject<EntityType<PandorasBoxEntity>> Box = ENTITIES.register("pandoras_box", () -> EntityType.Builder.of(PandorasBoxEntity::new, EntityClassification.MISC).fireImmune().noSummon().sized(0.6f, 0.6f).build("pandoras_box"));

@@ -4,7 +4,6 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.commands.CommandPandorasBox;
 import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import ivorius.pandorasbox.worldgen.PBLoot;
 import net.minecraft.block.Block;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.StainedGlassBlock;
@@ -18,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -40,12 +38,6 @@ public class PBEventHandler
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @SubscribeEvent
-    public void onLoadLootTable(LootTableLoadEvent event)
-    {
-        if (CONFIG.allowLootTableInjection.get())
-            event.setTable(PBLoot.injectLoot(event.getTable(), event.getName()));
-    }
     @SubscribeEvent
     public void onCommandRegister(RegisterCommandsEvent evt) {
         new CommandPandorasBox(evt.getDispatcher());
