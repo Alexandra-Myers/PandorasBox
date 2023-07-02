@@ -1,11 +1,8 @@
 package ivorius.pandorasbox.events;
 
-import com.mojang.serialization.Codec;
-import ivorius.pandorasbox.PBConfig;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.commands.CommandPandorasBox;
 import ivorius.pandorasbox.effects.PBEffects;
-import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.PBLoot;
 import net.minecraft.block.Block;
@@ -17,32 +14,18 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-import java.util.Map;
 
 import static ivorius.pandorasbox.PandorasBox.*;
 
@@ -58,19 +41,10 @@ public class PBEventHandler
     }
 
     @SubscribeEvent
-    public void onConfigChanged(ModConfig.ModConfigEvent event)
-    {
-        if ((event instanceof ModConfig.Reloading || event instanceof ModConfig.Loading) && event.getConfig().getModId().equals(PandorasBox.MOD_ID))
-        {
-            PBConfig.loadConfig();
-        }
-    }
-
-    @SubscribeEvent
     public void onLoadLootTable(LootTableLoadEvent event)
     {
-        if (PBConfig.allowLootTableInjection)
-            PBLoot.injectLoot(event.getTable(), event.getName());
+        if (CONFIG.allowLootTableInjection.get())
+            event.setTable(PBLoot.injectLoot(event.getTable(), event.getName()));
     }
     @SubscribeEvent
     public void onCommandRegister(RegisterCommandsEvent evt) {

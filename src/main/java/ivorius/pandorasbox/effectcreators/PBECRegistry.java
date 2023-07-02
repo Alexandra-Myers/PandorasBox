@@ -129,7 +129,7 @@ public class PBECRegistry
             }
 
             if (creator == null)
-                creator = randomEffectCreatorOfType(random, random.nextFloat() < PBConfig.goodEffectChance);
+                creator = randomEffectCreatorOfType(random, random.nextFloat() < PandorasBox.CONFIG.goodEffectChance.get());
 
 //            if(isAnyNull(creator, world, random)) return null;
             PBEffect effect = constructEffectSafe(creator, world, x, y, z, random);
@@ -139,7 +139,7 @@ public class PBECRegistry
 
             currentMinChance = Math.min(currentMinChance, creator.chanceForMoreEffects(world, x, y, z, random));
         }
-        while (random.nextFloat() < newEffectChance(currentMinChance) && effects.size() < PBConfig.maxEffectsPerBox && multi);
+        while (random.nextFloat() < newEffectChance(currentMinChance) && effects.size() < PandorasBox.CONFIG.maxEffectsPerBox.get() && multi);
 
         if (effects.size() == 1)
         {
@@ -159,7 +159,7 @@ public class PBECRegistry
 
     private static double newEffectChance(double effectFactor)
     {
-        return Math.pow(effectFactor, 1.0 / PBConfig.boxIntensity);
+        return Math.pow(effectFactor, 1.0 / PandorasBox.CONFIG.boxIntensity.get());
     }
 
     public static PBEffect constructEffectSafe(PBEffectCreator creator, World world, double x, double y, double z, Random random)

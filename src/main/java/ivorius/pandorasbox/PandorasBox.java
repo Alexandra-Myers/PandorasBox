@@ -51,7 +51,7 @@ public class PandorasBox
 {
     public static final String NAME = "Pandora's Box";
     public static final String MOD_ID = "pandorasbox";
-    public static final String VERSION = "2.2.3-1.16.5";
+    public static final String VERSION = "2.2.4-1.16.5";
 
     public static PandorasBox instance;
 
@@ -79,10 +79,12 @@ public class PandorasBox
     public static ArrayListExtensions<Block> stained_glass;
     public static ArrayListExtensions<Block> saplings;
     public static ArrayListExtensions<Block> pots;
+    public static PBConfig CONFIG;
 
     public static PBEventHandler fmlEventHandler;
     public PandorasBox() {
         // Register the setup method for modloading
+        initConfig();
         EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
         Registry.init(EVENT_BUS);
         EVENT_BUS.addListener(this::preInit);
@@ -92,6 +94,10 @@ public class PandorasBox
         MinecraftForge.EVENT_BUS.register(this);
         instance = this;
     }
+    public static void initConfig() {
+        CONFIG = new PBConfig();
+    }
+
 
     public void preInit(final FMLCommonSetupEvent event)
     {
@@ -103,8 +109,6 @@ public class PandorasBox
 //        if(SHRINE == null) {
 //            SHRINE = WorldGenRegistries.register(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE, "shrine", SHRINE_STRUCTURE.get().configured(new VillageConfig(() -> START, 7)));
 //        }
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, PBConfig.commonSpec);
-        PBConfig.loadConfig();
 
         fmlEventHandler = new PBEventHandler();
         fmlEventHandler.register();

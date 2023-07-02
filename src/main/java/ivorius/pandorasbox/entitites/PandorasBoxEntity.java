@@ -5,15 +5,13 @@
 
 package ivorius.pandorasbox.entitites;
 
-import ivorius.pandorasbox.PBConfig;
-import ivorius.pandorasbox.PandorasBoxHelper;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.effects.Vec3d;
 import ivorius.pandorasbox.network.PartialUpdateHandler;
 import net.minecraft.entity.*;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -23,7 +21,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
@@ -185,7 +182,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
                         if (canGenerateMoreEffectsAfterwards && effect.canGenerateMoreEffectsAfterwards(this))
                         {
-                            if (random.nextFloat() < PBConfig.boxLongevity)
+                            if (random.nextFloat() < PandorasBox.CONFIG.boxLongevity.get())
                             {
                                 startNewEffect();
 

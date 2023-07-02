@@ -17,7 +17,9 @@ import static net.minecraft.world.gen.feature.Features.*;
  */
 public class PBEffectGenTrees extends PBEffectGenerateByGenerator<ConfiguredFeature<?, ?>>
 {
-    public PBEffectGenTrees() {}
+    public PBEffectGenTrees() {
+
+    }
 
     public static final int treeSmall = 0;
     public static final int treeNormal = 1;
@@ -31,6 +33,7 @@ public class PBEffectGenTrees extends PBEffectGenerateByGenerator<ConfiguredFeat
     public PBEffectGenTrees(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags)
     {
         super(time, range, unifiedSeed, requiresSolidGround, chancePerBlock, generatorFlags);
+        this.treeGens = initializeGens();
     }
     @Override
     public ArrayListExtensions<ConfiguredFeature<?, ?>> initializeGens()

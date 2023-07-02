@@ -9,10 +9,7 @@ import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -20,6 +17,7 @@ import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.ChestTileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -46,7 +44,6 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate
         {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
-            BlockState below = world.getBlockState(pos.below());
 
             if (pass == 0)
             {
@@ -63,7 +60,7 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate
                     {
                         if (random.nextInt(10 * 10) == 0)
                         {
-                            setBlockSafe(world, pos, Blocks.CHEST.getStateDefinition().getPossibleStates().get(world.random.nextInt(4)));
+                            setBlockSafe(world, pos, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.Plane.HORIZONTAL.getRandomDirection(world.random)));
                             ChestTileEntity tileentitychest = (ChestTileEntity) world.getBlockEntity(pos);
 
                             if (tileentitychest != null)
