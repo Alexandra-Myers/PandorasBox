@@ -1,15 +1,6 @@
 package ivorius.pandorasbox.worldgen;
 
-
-
-
-import com.google.common.base.Suppliers;
-
 import com.google.gson.JsonObject;
-import com.mojang.serialization.Codec;
-
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
@@ -17,21 +8,12 @@ import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-
 import net.minecraftforge.common.loot.LootModifier;
-
 import net.minecraftforge.registries.ForgeRegistries;
-
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
-
-import java.util.function.Supplier;
-
-
-
 
 public class PandoraLootModifier extends LootModifier {
 
@@ -50,7 +32,8 @@ public class PandoraLootModifier extends LootModifier {
   }
 
   public List<ItemStack> maybeInject(List<ItemStack> generatedLoot, int chance) {
-    if(new Random().nextInt(100) <= chance) {
+    float percentageChance = chance / 100F;
+    if(new Random().nextFloat() <= percentageChance) {
       generatedLoot.add(item.getDefaultInstance());
     }
     return generatedLoot;
