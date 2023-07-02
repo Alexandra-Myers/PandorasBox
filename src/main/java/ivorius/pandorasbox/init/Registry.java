@@ -58,24 +58,6 @@ public class Registry {
         ARGUMENTS.register(bus);
 //        STRUCTURES.register(bus);
     }
-    public static class DataProvider extends GlobalLootModifierProvider
-    {
-        public DataProvider(PackOutput output, String modid)
-        {
-            super(output, modid);
-        }
-
-        @Override
-        protected void start()
-        {
-            add("pandora", new PandoraLootModifier(
-                    new LootItemCondition[] {build("chests/simple_dungeon"), build("chests/jungle_temple"), build("chests/abandoned_mineshaft"), build("chests/desert_pyramid"), build("chests/stronghold_corridor"), build("chests/stronghold_crossing"), build("chests/stronghold_library")}, 10, Registry.PBI.get())
-            );
-        }
-        static LootItemCondition build(String id) {
-            return LootTableIdCondition.builder(new ResourceLocation(id)).build();
-        }
-    }
     public static final RegistryObject<EntityDataSerializer<?>> PBEFFECTSERIALIZER = SERIALIZERS.register("box_effect", () -> PandorasBoxEntity.PBEFFECT_SERIALIZER);
 //    public static final RegistryObject<Structure<VillageConfig>> SHRINE_STRUCTURE = STRUCTURES.register("shrine", () -> new SurfaceStructure(VillageConfig.CODEC));
 //    public static final JigsawPattern START = JigsawPatternRegistry.register(new JigsawPattern(new ResourceLocation("pandorasbox:shrine/start_pool"), new ResourceLocation("empty"), ImmutableList.of(Pair.of(JigsawPiece.single("pandorasbox:shrine", ProcessorLists.EMPTY), 1), Pair.of(JigsawPiece.single("pandorasbox:shrine_small", ProcessorLists.EMPTY), 100)), JigsawPattern.PlacementBehaviour.RIGID));

@@ -59,11 +59,6 @@ public class PBEventHandler
         }
     }
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
-        if(CONFIG.allowLootTableInjection.get())
-            event.getGenerator().addProvider(event.includeServer(), new Registry.DataProvider(event.getGenerator().getPackOutput(), MOD_ID));
-    }
-    @SubscribeEvent
     public void serverInit(ServerStartedEvent event) {
         initPB();
     }
