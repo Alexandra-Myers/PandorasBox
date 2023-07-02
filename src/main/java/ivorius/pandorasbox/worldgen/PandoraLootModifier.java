@@ -45,7 +45,8 @@ public class PandoraLootModifier extends LootModifier {
     return generatedLoot;
   }
   public ObjectArrayList<ItemStack> maybeInject(ObjectArrayList<ItemStack> generatedLoot, int chance) {
-    if(new Random().nextInt(100) <= chance) {
+    float percentageChance = chance / 100F;
+    if(new Random().nextFloat() <= percentageChance) {
       generatedLoot.add(item.getDefaultInstance());
     }
     return generatedLoot;

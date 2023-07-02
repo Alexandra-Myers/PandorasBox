@@ -11,6 +11,7 @@ import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -77,7 +79,7 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate
                     {
                         if (random.nextInt(10 * 10) == 0)
                         {
-                            setBlockSafe(world, pos, Blocks.CHEST.getStateDefinition().getPossibleStates().get(world.random.nextInt(4)));
+                            setBlockSafe(world, pos, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.Plane.HORIZONTAL.getRandomDirection(world.random)));
                             ChestBlockEntity tileentitychest = (ChestBlockEntity) world.getBlockEntity(pos);
 
                             if (tileentitychest != null)
