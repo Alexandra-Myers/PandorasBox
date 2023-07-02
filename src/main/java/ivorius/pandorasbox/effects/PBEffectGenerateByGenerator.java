@@ -34,15 +34,13 @@ public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate
     public double chancePerBlock;
 
     public int generatorFlags;
-    protected final ArrayListExtensions<T> treeGens;
+    protected ArrayListExtensions<T> treeGens = null;
     public PBEffectGenerateByGenerator() {
-        this.treeGens = initializeGens();
     }
 
     public PBEffectGenerateByGenerator(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags)
     {
         super(time, range, 1, unifiedSeed);
-        this.treeGens = initializeGens();
 
         this.requiresSolidGround = requiresSolidGround;
         this.chancePerBlock = chancePerBlock;
@@ -54,6 +52,8 @@ public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate
     @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
+        if(treeGens == null)
+            this.treeGens = initializeGens();
         if (world instanceof ServerLevel serverWorld)
         {
             if (random.nextDouble() < chancePerBlock)

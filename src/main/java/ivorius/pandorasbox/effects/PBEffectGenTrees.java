@@ -33,6 +33,7 @@ public class PBEffectGenTrees extends PBEffectGenerateByGenerator<ResourceKey<Co
     public PBEffectGenTrees(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags)
     {
         super(time, range, unifiedSeed, requiresSolidGround, chancePerBlock, generatorFlags);
+        treeGens = initializeGens();
     }
 
     @Override

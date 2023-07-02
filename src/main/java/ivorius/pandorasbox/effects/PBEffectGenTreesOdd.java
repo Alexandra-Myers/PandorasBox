@@ -20,7 +20,9 @@ import java.util.List;
 public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator<MegaTreeFeature>
 {
     public static final int treeJungle = 0;
-    public PBEffectGenTreesOdd() {}
+    public PBEffectGenTreesOdd() {
+
+    }
 
     public Block trunkBlock;
     public Block leafBlock;
@@ -30,6 +32,7 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator<MegaTreeFea
         super(time, range, unifiedSeed, requiresSolidGround, chancePerBlock, generatorFlags);
         this.trunkBlock = trunkBlock;
         this.leafBlock = leafBlock;
+        this.treeGens = initializeGens();
     }
 
     @Override
