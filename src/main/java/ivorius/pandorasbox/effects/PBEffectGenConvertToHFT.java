@@ -21,7 +21,6 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.TreeFeature;
 
 /**
  * Created by lukas on 30.03.14.
@@ -55,9 +54,7 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
             if (pass == 0) {
                 if (isBlockAnyOf(block, iCTWTGASTB)) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, blocks)) {
-
-                } else if (Block.isShapeFullBlock(blockState.getBlockSupportShape(world, pos))) {
+                } else if (!isBlockAnyOf(block, blocks) && Block.isShapeFullBlock(blockState.getBlockSupportShape(world, pos))) {
                     setBlockSafe(world, pos, placeBlock.defaultBlockState());
                 }
             } else if (pass == 1) {
