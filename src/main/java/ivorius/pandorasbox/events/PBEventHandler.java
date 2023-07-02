@@ -30,7 +30,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Objects;
 
 import static ivorius.pandorasbox.PandorasBox.*;
-import static ivorius.pandorasbox.init.Registry.MODID;
 
 /**
  * Created by lukas on 29.07.14.
@@ -62,7 +61,7 @@ public class PBEventHandler
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         if(CONFIG.allowLootTableInjection.get())
-            event.getGenerator().addProvider(event.includeServer(), new Registry.DataProvider(event.getGenerator().getPackOutput(), MODID));
+            event.getGenerator().addProvider(event.includeServer(), new Registry.DataProvider(event.getGenerator().getPackOutput(), MOD_ID));
     }
     @SubscribeEvent
     public void serverInit(ServerStartedEvent event) {

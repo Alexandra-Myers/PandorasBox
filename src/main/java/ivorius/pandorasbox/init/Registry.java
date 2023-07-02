@@ -1,6 +1,5 @@
 package ivorius.pandorasbox.init;
 
-import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.serialization.Codec;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.block.PandorasBoxBlock;
@@ -9,7 +8,6 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.items.PandorasBoxItem;
 import ivorius.pandorasbox.utils.PBEffectArgument;
 import ivorius.pandorasbox.worldgen.*;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
@@ -35,10 +33,8 @@ import net.minecraftforge.registries.RegistryObject;
 import static ivorius.pandorasbox.PandorasBox.MOD_ID;
 
 public class Registry {
-    public static final String MODID = "global_loot_test";
-    public static final boolean ENABLE = true;
 
-    private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLM = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MODID);
+    private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLM = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MOD_ID);
     private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);

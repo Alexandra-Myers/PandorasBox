@@ -14,8 +14,8 @@ public class PBConfig
     public ForgeConfigSpec.BooleanValue allowLootTableInjection;
     public ForgeConfigSpec.DoubleValue boxLongevity;
     public ForgeConfigSpec.DoubleValue boxIntensity;
-    public ForgeConfigSpec.IntValue maxEffectsPerBox;
     public ForgeConfigSpec.DoubleValue goodEffectChance;
+    public ForgeConfigSpec.IntValue maxEffectsPerBox;
 
     PBConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
