@@ -28,7 +28,7 @@ displayURL="http://ivorius.de/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="examplemod.png" #optional
 # A text field displayed in the mod UI
-credits="Ivorius: Development, Visuals" #optional
+credits="Ivorius: Original Creator; Alexandra: Development, Visuals" #optional
 # A text field displayed in the mod UI
 authors="Ivorius, Alexandra" #optional
 # The description text for the mod (multi line!) (#mandatory)
