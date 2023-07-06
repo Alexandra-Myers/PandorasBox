@@ -1,0 +1,8 @@
+{
+    "entity.pandorasbox.pandoras_box": "Ящик Пандоры",
+    "block.pandorasbox.pandoras_box": "Ящик Пандоры",
+
+    "pandorasbox.configgui.title": "Pandora's Box",
+    "pandorasbox.configgui.ctgy.balancing": "Балансирование",
+    "pandorasbox.configgui.ctgy.balancing.tooltip": "Параметры влияющие на баланс мода."
+}
