@@ -5,53 +5,37 @@
 
 package ivorius.pandorasbox;
 
-import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.client.ClientProxy;
 import ivorius.pandorasbox.client.rendering.PandorasBoxBlockEntityRenderer;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
 import ivorius.pandorasbox.effects.PBEffects;
-import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.events.PBEventHandler;
 import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.server.ServerProxy;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.PBEffectArgument;
 import net.minecraft.block.Block;
-import net.minecraft.block.SaplingBlock;
-import net.minecraft.block.StainedGlassBlock;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
-import net.minecraft.entity.EntityType;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.structure.VillageConfig;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
 
 @Mod(PandorasBox.MOD_ID)
 public class PandorasBox
 {
     public static final String NAME = "Pandora's Box";
     public static final String MOD_ID = "pandorasbox";
-    public static final String VERSION = "2.2.4-1.16.5";
+    public static final String VERSION = "2.2.5-1.16.5";
 
     public static PandorasBox instance;
 
