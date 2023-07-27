@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Collection;
 
@@ -43,7 +44,7 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
         if (world instanceof ServerLevel serverLevel)
         {

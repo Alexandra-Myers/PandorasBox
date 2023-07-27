@@ -8,6 +8,7 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by lukas on 31.03.14.
@@ -27,7 +28,7 @@ public class PBEffectMulti extends PBEffect
     }
 
     @Override
-    public void doTick(PandorasBoxEntity entity, Vec3d effectCenter, int ticksAlive)
+    public void doTick(PandorasBoxEntity entity, Vec3 effectCenter, int ticksAlive)
     {
         for (int i = 0; i < effects.length; i++)
         {

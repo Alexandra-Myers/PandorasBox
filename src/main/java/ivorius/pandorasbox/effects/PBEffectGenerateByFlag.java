@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by lukas on 30.03.14.
@@ -31,7 +32,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased
     }
 
     @Override
-    public void setUpEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random)
+    public void setUpEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random)
     {
         super.setUpEffect(world, entity, effectCenter, random);
 
@@ -63,7 +64,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased
     public abstract boolean hasFlag(Level world, PandorasBoxEntity entity, RandomSource random, BlockPos pos);
 
     @Override
-    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3d effectCenter, double prevRange, double newRange, int pass)
+    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass)
     {
         byte requiredRange = (byte) Mth.ceil(newRange);
 

@@ -17,6 +17,7 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by lukas on 30.03.14.
@@ -31,7 +32,7 @@ public class PBEffectGenConvertToHeavenly extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
         if (world instanceof ServerLevel serverLevel) {
             BlockState blockState = world.getBlockState(pos);

@@ -11,7 +11,6 @@ import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
-import ivorius.pandorasbox.effects.Vec3d;
 import ivorius.pandorasbox.network.PartialUpdateHandler;
 import ivorius.pandorasbox.random.DConstant;
 import ivorius.pandorasbox.random.IConstant;
@@ -31,6 +30,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +75,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     protected float scaleInProgress = 1.0f;
     private static final EntityDataAccessor<PBEffect> DATA_EFFECT_ID = SynchedEntityData.defineId(PandorasBoxEntity.class, PBEFFECT_SERIALIZER);
 
-    protected Vec3d effectCenter = new Vec3d(0, 0, 0);
+    protected Vec3 effectCenter = new Vec3(0, 0, 0);
 
     public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> p_i50172_1_, Level p_i50172_2_) {
         super(p_i50172_1_, p_i50172_2_);
@@ -136,14 +136,14 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         this.floatAwayProgress = floatAwayProgress;
     }
 
-    public Vec3d getEffectCenter()
+    public Vec3 getEffectCenter()
     {
         return effectCenter;
     }
 
     public void setEffectCenter(double x, double y, double z)
     {
-        this.effectCenter = new Vec3d(x, y, z);
+        this.effectCenter = new Vec3(x, y, z);
     }
 
     public float getCurrentScale()
@@ -223,7 +223,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
             }
             else
             {
-                moveRelative(0.4f, new Vec3d(-0.00f, speed * 0.02f, -0.02f));
+                moveRelative(0.4f, new Vec3(-0.00f, speed * 0.02f, -0.02f));
                 setDeltaMovement(getDeltaMovement().add(0, speed * 0.015f, 0));
             }
 

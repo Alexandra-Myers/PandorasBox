@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by lukas on 30.03.14.
@@ -30,7 +31,7 @@ public class PBEffectGenConvertToRainbowCloth extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
 
         if (pass == 0)
@@ -39,7 +40,7 @@ public class PBEffectGenConvertToRainbowCloth extends PBEffectGenerate
             {
                 if (world.getBlockState(pos.above()).isAir())
                 {
-                    double dist = Mth.sqrt((float) effectCenter.distanceToSqr(new Vec3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5)));
+                    double dist = Mth.sqrt((float) effectCenter.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5)));
                     setBlockSafe(world, pos, PandorasBox.wool.get(woolMetas[Mth.floor(dist / ringSize) % woolMetas.length]).defaultBlockState());
                 }
             }

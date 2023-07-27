@@ -13,6 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by lukas on 30.03.14.
@@ -31,7 +32,7 @@ public class PBEffectGenDome extends PBEffectGenerate2D
     }
 
     @Override
-    public void generateOnSurface(Level world, PandorasBoxEntity box, Vec3d effectCenter, RandomSource random, BlockPos pos, double dist, int pass)
+    public void generateOnSurface(Level world, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, BlockPos pos, double dist, int pass)
     {
         int domeHeightY = Mth.ceil(range);
 

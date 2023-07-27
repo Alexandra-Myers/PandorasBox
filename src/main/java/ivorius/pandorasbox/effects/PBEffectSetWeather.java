@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ServerLevelData;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by lukas on 03.04.14.
@@ -30,12 +31,12 @@ public class PBEffectSetWeather extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, float prevRatio, float newRatio)
+    public void doEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio)
     {
     }
 
     @Override
-    public void finalizeEffect(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random)
+    public void finalizeEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random)
     {
         if (world.getLevelData() instanceof ServerLevelData worldInfo) {
             worldInfo.setRainTime(rainTime);

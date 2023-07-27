@@ -21,6 +21,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 
@@ -44,7 +45,7 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     public static Vec3i floorAll(double x, double y, double z) {
         return new Vec3i(Mth.floor(x), Mth.floor(y), Mth.floor(z));
     }
-    public void changeBiome(ResourceKey<Biome> biomeResourceKey, int pass, Vec3d effectCenter, ServerLevel serverLevel) {
+    public void changeBiome(ResourceKey<Biome> biomeResourceKey, int pass, Vec3 effectCenter, ServerLevel serverLevel) {
         if(!biomeUnchanged) return;
         BoundingBox boundingbox = BoundingBox.fromCorners(floorAll(range + (passes - 1) * 5.0 + effectCenter.x, range + (passes - 1) * 5.0 + effectCenter.y, range + (passes - 1) * 5.0 + effectCenter.z), floorAll(effectCenter.x - range + (passes - 1) * 5.0, effectCenter.y - range + (passes - 1) * 5.0, effectCenter.z - range + (passes - 1) * 5.0));
         ArrayList<ChunkAccess> chunks = new ArrayList<>();
@@ -68,7 +69,7 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     }
 
     @Override
-    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3d effectCenter, double prevRange, double newRange, int pass)
+    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass)
     {
         int requiredRange = Mth.ceil(newRange);
 
@@ -96,7 +97,7 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
         }
     }
 
-    public abstract void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range);
+    public abstract void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range);
 
     @Override
     public void writeToNBT(CompoundTag compound)

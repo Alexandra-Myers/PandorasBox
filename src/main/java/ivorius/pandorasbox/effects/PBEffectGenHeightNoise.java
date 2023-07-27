@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Random;
@@ -46,7 +47,7 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
     }
 
     @Override
-    public void generateOnSurface(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, BlockPos pos, double range, int pass)
+    public void generateOnSurface(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, BlockPos pos, double range, int pass)
     {
         if (world instanceof ServerLevel)
         {

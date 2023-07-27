@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -50,7 +51,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos, double range)
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
     {
         if(world instanceof ServerLevel serverLevel) {
             switch (biome) {
@@ -65,7 +66,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     public static BiomeResolver makeResolver(Holder<Biome> biomeHolder) {
         return (x, y, z, climateSampler) -> biomeHolder;
     }
-    public void createWastes(ServerLevel world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos) {
+    public void createWastes(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -153,7 +154,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         }
         changeBiome(Biomes.NETHER_WASTES, pass, effectCenter, world);
     }
-    public void createSoul(ServerLevel world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos) {
+    public void createSoul(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -249,7 +250,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         Objects.requireNonNull(configuredFeatureRegistry.get(GLOWSTONE_EXTRA)).place(world, world.getChunkSource().getGenerator(), random, pos);
     }
 
-    public void createCrimson(ServerLevel world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos) {
+    public void createCrimson(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -348,7 +349,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         }
         changeBiome(Biomes.CRIMSON_FOREST, pass, effectCenter, world);
     }
-    public void createWarped(ServerLevel world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos) {
+    public void createWarped(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -440,7 +441,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         }
         changeBiome(Biomes.WARPED_FOREST, pass, effectCenter, world);
     }
-    public void createDeltas(ServerLevel world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, int pass, BlockPos pos) {
+    public void createDeltas(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();

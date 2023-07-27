@@ -13,6 +13,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by lukas on 30.03.14.
@@ -54,7 +55,7 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(Level world, PandorasBoxEntity box, Vec3d effectCenter, RandomSource random, float prevRatio, float newRatio)
+    public void doEffect(Level world, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio)
     {
         if (world instanceof ServerLevel)
         {

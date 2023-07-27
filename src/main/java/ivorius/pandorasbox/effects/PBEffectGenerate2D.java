@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by lukas on 30.03.14.
@@ -28,7 +29,7 @@ public abstract class PBEffectGenerate2D extends PBEffectRangeBased
     }
 
     @Override
-    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3d effectCenter, double prevRange, double newRange, int pass)
+    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass)
     {
         int requiredRange = Mth.floor(newRange);
 
@@ -57,7 +58,7 @@ public abstract class PBEffectGenerate2D extends PBEffectRangeBased
         }
     }
 
-    public abstract void generateOnSurface(Level world, PandorasBoxEntity entity, Vec3d effectCenter, RandomSource random, BlockPos pos, double distance, int pass);
+    public abstract void generateOnSurface(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, BlockPos pos, double distance, int pass);
 
     @Override
     public void writeToNBT(CompoundTag compound)
