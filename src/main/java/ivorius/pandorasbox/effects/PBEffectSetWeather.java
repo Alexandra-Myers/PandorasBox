@@ -11,8 +11,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ServerLevelData;
 
-import java.util.Random;
-
 /**
  * Created by lukas on 03.04.14.
  */

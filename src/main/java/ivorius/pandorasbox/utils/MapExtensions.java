@@ -1,11 +1,11 @@
 package ivorius.pandorasbox.utils;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+@SuppressWarnings("unused")
 public interface MapExtensions<K, V> {
     /**
      * @return A new ArrayListExtensions containing all of this Map's keys.
@@ -75,16 +75,16 @@ public interface MapExtensions<K, V> {
         return map().isEmpty();
     }
 
-    default boolean containsKey(Object key) {
+    default boolean containsKey(K key) {
         return map().containsKey(key);
     }
 
-    default boolean containsValue(Object value) {
+    default boolean containsValue(V value) {
         return map().containsValue(value);
     }
 
 
-    default V get(Object key) {
+    default V get(K key) {
         return map().get(key);
     }
 
@@ -95,7 +95,7 @@ public interface MapExtensions<K, V> {
         return newValue;
     }
 
-    default V remove(Object key) {
+    default V remove(K key) {
         Map<K, V> map = map();
         V removedValue = map.remove(key);
         setMap(map);
@@ -134,7 +134,7 @@ public interface MapExtensions<K, V> {
         return map().hashCode();
     }
 
-    default V getOrDefault(Object key, V defaultValue) {
+    default V getOrDefault(K key, V defaultValue) {
         return map().getOrDefault(key, defaultValue);
     }
 
@@ -157,7 +157,7 @@ public interface MapExtensions<K, V> {
         return v;
     }
 
-    default boolean remove(Object key, Object value) {
+    default boolean remove(K key, V value) {
         Map<K, V> map = map();
         boolean v = map.remove(key, value);
         setMap(map);

@@ -1,7 +1,6 @@
 package ivorius.pandorasbox.client.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import ivorius.pandorasbox.block.PandorasBoxBlock;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.init.Registry;
 import net.minecraft.client.model.geom.EntityModelSet;

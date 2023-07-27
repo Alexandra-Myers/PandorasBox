@@ -10,7 +10,6 @@ import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

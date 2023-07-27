@@ -64,9 +64,9 @@ public class PBEffectGenConvertToEnd extends PBEffectGenerate
                 BlockPos posBelow = pos.below();
                 BlockState blockBelowState = world.getBlockState(posBelow);
 
-                if (blockState.isAir() && !isBlockAnyOf(blockBelowState.getBlock(), Blocks.CHORUS_FLOWER, Blocks.CHORUS_PLANT, Blocks.OBSIDIAN) && blockBelowState.isRedstoneConductor(world, posBelow) && world instanceof ServerLevel serverWorld) {
+                if (blockState.isAir() && !isBlockAnyOf(blockBelowState.getBlock(), Blocks.CHORUS_FLOWER, Blocks.CHORUS_PLANT, Blocks.OBSIDIAN) && blockBelowState.isRedstoneConductor(world, posBelow)) {
                     setBlockSafe(world, posBelow, Blocks.END_STONE.defaultBlockState());
-                    boolean success = Feature.CHORUS_PLANT.place(FeatureConfiguration.NONE, serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
+                    boolean success = Feature.CHORUS_PLANT.place(FeatureConfiguration.NONE, serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
                     if (success) timesFeatureAMade++;
                 }
             }

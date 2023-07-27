@@ -6,7 +6,6 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 

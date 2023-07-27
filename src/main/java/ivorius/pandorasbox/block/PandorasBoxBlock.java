@@ -7,7 +7,6 @@ package ivorius.pandorasbox.block;
 
 import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.items.PandorasBoxItem;
-import net.minecraft.advancements.critereon.ItemUsedOnLocationTrigger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -22,7 +21,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -33,9 +31,9 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 /**
  * Created by lukas on 15.04.14.
@@ -51,21 +49,21 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
         registerDefaultState(stateDefinition.any().setValue(DIRECTION, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
-    public BlockState rotate(BlockState p_185499_1_, Rotation p_185499_2_) {
+    public @NotNull BlockState rotate(BlockState p_185499_1_, Rotation p_185499_2_) {
         return p_185499_1_.setValue(DIRECTION, p_185499_2_.rotate(p_185499_1_.getValue(DIRECTION)));
     }
 
-    public BlockState mirror(BlockState p_185471_1_, Mirror p_185471_2_) {
+    public @NotNull BlockState mirror(BlockState p_185471_1_, Mirror p_185471_2_) {
         return p_185471_1_.rotate(p_185471_2_.getRotation(p_185471_1_.getValue(DIRECTION)));
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState p_60555_, @NotNull BlockGetter p_60556_, @NotNull BlockPos p_60557_, @NotNull CollisionContext p_60558_) {
         return Block.box(3.2, 0.0, 3.2, 12.8, 9.6, 12.8);
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult rayTraceResult) {
         PandorasBoxItem.executeRandomEffect(worldIn, player, pos, false);
         worldIn.removeBlock(pos, false);
         worldIn.removeBlockEntity(pos);
@@ -74,12 +72,12 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+    public void setPlacedBy(Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity livingEntity, @NotNull ItemStack itemStack) {
         worldIn.setBlock(pos, this.defaultBlockState().setValue(DIRECTION, livingEntity.getDirection().getOpposite()), 2);
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
@@ -93,7 +91,7 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
         builder.add(DIRECTION, WATERLOGGED);
     }
 
-    public FluidState getFluidState(BlockState state) {
+    public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -121,7 +119,7 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos p_153215_, @NotNull BlockState p_153216_) {
         return Registry.TEPB.get().create(p_153215_, p_153216_);
     }
 }

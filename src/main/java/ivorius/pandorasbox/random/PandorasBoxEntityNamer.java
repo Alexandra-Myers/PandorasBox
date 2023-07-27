@@ -8,8 +8,6 @@ package ivorius.pandorasbox.random;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 
-import java.util.Random;
-
 public class PandorasBoxEntityNamer
 {
     public static String[] prefixesB = new String[]{"The", "The one and only", "Our", "Everyone's", "Woodcutter's", "Notch's", "Miner's", "Steve's", "Creeper's", "A", "Similar to the", "Your", "A copy of the"};

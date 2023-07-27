@@ -14,8 +14,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 
-import java.util.Random;
-
 /**
  * Created by lukas on 30.03.14.
  */

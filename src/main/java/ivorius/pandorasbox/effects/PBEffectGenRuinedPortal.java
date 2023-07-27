@@ -28,10 +28,10 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
     }
     @Override
     public void buildStructure(Level world, PandorasBoxEntity entity, BlockPos currentPos, RandomSource random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
-        boolean bl = Mth.ceil(length / 2) >= 2;
-        boolean bl1 = Mth.ceil(width / 2) >= 2;
-        int portalXAxis = bl ? Mth.ceil(length / 2) : 2;
-        int portalZAxis = bl1 ? Mth.ceil(width / 2) : 2;
+        boolean bl = Mth.ceil(length * 0.5) >= 2;
+        boolean bl1 = Mth.ceil(width * 0.5) >= 2;
+        int portalXAxis = bl ? Mth.ceil(length * 0.5) : 2;
+        int portalZAxis = bl1 ? Mth.ceil(width * 0.5) : 2;
         if (currentPos.getY() >= startingYOffset + originY
                 && currentPos.getY() < originY + height
                 && axis == Direction.Axis.X

@@ -33,6 +33,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 30.03.14.
@@ -53,7 +54,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     protected float floatAwayProgress = -1.0f;
     public static final EntityDataSerializer<PBEffect> PBEFFECT_SERIALIZER = new EntityDataSerializer<>() {
         @Override
-        public void write(FriendlyByteBuf p_135025_, PBEffect p_135026_) {
+        public void write(FriendlyByteBuf p_135025_, @NotNull PBEffect p_135026_) {
             CompoundTag compound = new CompoundTag();
             CompoundTag effectCompound = new CompoundTag();
             PBEffectRegistry.writeEffect(p_135026_, effectCompound);
@@ -62,11 +63,11 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         }
 
         @Override
-        public PBEffect read(FriendlyByteBuf p_135024_) {
+        public @NotNull PBEffect read(FriendlyByteBuf p_135024_) {
             return PBEffectRegistry.loadEffect(p_135024_.readNbt().getCompound("boxEffect"));
         }
 
-        public PBEffect copy(PBEffect p_192717_1_) {
+        public @NotNull PBEffect copy(@NotNull PBEffect p_192717_1_) {
             return p_192717_1_;
         }
     };
@@ -86,15 +87,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    public boolean canCollideWith(Entity p_241849_1_) {
-        return false;
-    }
-
-    public boolean canBeCollidedWith() {
-        return false;
-    }
-
-    public boolean isPushable() {
+    public boolean canCollideWith(@NotNull Entity p_241849_1_) {
         return false;
     }
 
@@ -394,21 +387,21 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public void push(Entity entityIn) {
+    public void push(@NotNull Entity entityIn) {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
         readBoxData(compound);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
         writeBoxData(compound);
     }
 

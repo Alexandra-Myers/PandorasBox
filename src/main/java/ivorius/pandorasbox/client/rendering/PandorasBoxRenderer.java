@@ -13,21 +13,16 @@ import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderer;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderingRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.joml.Vector3f;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static com.mojang.math.Axis.YP;
@@ -53,7 +48,7 @@ public class PandorasBoxRenderer<T extends PandorasBoxEntity> extends EntityRend
     }
 
     @Override
-    public void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource renderTypeBuffer, int packedLightIn) {
+    public void render(@NotNull T entity, float entityYaw, float partialTicks, @NotNull PoseStack matrixStack, @NotNull MultiBufferSource renderTypeBuffer, int packedLightIn) {
         super.render(entity, entityYaw, partialTicks, matrixStack, renderTypeBuffer, packedLightIn);
         matrixStack.pushPose();
         model.PBE = entity;
@@ -89,7 +84,7 @@ public class PandorasBoxRenderer<T extends PandorasBoxEntity> extends EntityRend
 
     }
     @Override
-    public ResourceLocation getTextureLocation(T var1)
+    public @NotNull ResourceLocation getTextureLocation(@NotNull T var1)
     {
         return texture;
     }

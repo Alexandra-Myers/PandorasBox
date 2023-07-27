@@ -8,11 +8,12 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unused")
 public class WeightedSelector
 {
     public static <T extends Item> double totalWeight(Collection<T> items)
     {
-        return items.stream().mapToDouble(Item::getWeight).reduce(0, Double::sum);
+        return items.stream().mapToDouble(Item::weight).reduce(0, Double::sum);
     }
 
     public static <T> double totalWeight(Collection<T> items, final ToDoubleFunction<T> weightFunction)
@@ -22,7 +23,7 @@ public class WeightedSelector
 
     public static boolean canSelect(Collection<? extends Item> items)
     {
-        return items.stream().anyMatch(item -> item.getWeight() > 0);
+        return items.stream().anyMatch(item -> item.weight() > 0);
     }
 
     public static <T> boolean canSelect(Collection<T> items, ToDoubleFunction<T> weightFunction)
@@ -66,7 +67,7 @@ public class WeightedSelector
         for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); counted++)
         {
             T t = iterator.next();
-            random -= t.getWeight();
+            random -= t.weight();
             if (random <= 0.0)
             {
                 if (remove)
@@ -117,86 +118,60 @@ public class WeightedSelector
 
     public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items)
     {
-        return selectItem(rand, items).getItem();
+        return selectItem(rand, items).item();
     }
 
     public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, double totalWeight)
     {
-        return selectItem(rand, items, totalWeight).getItem();
+        return selectItem(rand, items, totalWeight).item();
     }
 
     public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, boolean remove)
     {
-        return selectItem(rand, items, remove).getItem();
+        return selectItem(rand, items, remove).item();
     }
 
     public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, double totalWeight, boolean remove)
     {
-        return selectItem(rand, items, totalWeight, remove).getItem();
+        return selectItem(rand, items, totalWeight, remove).item();
     }
 
     public interface Item
     {
-        double getWeight();
+        double weight();
     }
 
-    public static class SimpleItem<T> implements Item, Comparable<Item>
-    {
-        protected final double weight;
-        protected final T item;
+    public record SimpleItem<T>(double weight, T item) implements Item, Comparable<Item> {
 
-        public SimpleItem(double weight, T item)
-        {
-            this.item = item;
-            this.weight = weight;
-        }
-
-        public static <T> SimpleItem<T> of(double weight, T item)
-        {
+        public static <T> SimpleItem<T> of(double weight, T item) {
             return new SimpleItem<>(weight, item);
         }
 
-        public static <T> List<SimpleItem<T>> apply(Stream<T> items, final ToDoubleFunction<T> weightFunction)
-        {
+        public static <T> List<SimpleItem<T>> apply(Stream<T> items, final ToDoubleFunction<T> weightFunction) {
             return items.map(input -> new SimpleItem<>(weightFunction.applyAsDouble(input), input)).collect(Collectors.toList());
         }
 
-        public static <T> Collection<SimpleItem<T>> apply(Collection<T> items, final ToDoubleFunction<T> weightFunction)
-        {
+        public static <T> Collection<SimpleItem<T>> apply(Collection<T> items, final ToDoubleFunction<T> weightFunction) {
             return Collections2.transform(items, item -> new SimpleItem<>(weightFunction.applyAsDouble(item), item));
         }
 
-        public static <T> List<SimpleItem<T>> apply(List<T> items, final ToDoubleFunction<T> weightFunction)
-        {
+        public static <T> List<SimpleItem<T>> apply(List<T> items, final ToDoubleFunction<T> weightFunction) {
             return apply(items.stream(), weightFunction);
         }
 
-        public T getItem()
-        {
-            return item;
-        }
-
         @Override
-        public double getWeight()
-        {
-            return weight;
-        }
-
-        @Override
-        public boolean equals(Object o)
-        {
+        public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            SimpleItem that = (SimpleItem) o;
+            SimpleItem<?> that = (SimpleItem<?>) o;
 
             if (Double.compare(that.weight, weight) != 0) return false;
-            return item != null ? item.equals(that.item) : that.item == null;
+            return Objects.equals(item, that.item);
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             int result;
             long temp;
             temp = Double.doubleToLongBits(weight);
@@ -206,8 +181,7 @@ public class WeightedSelector
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "SimpleItem{" +
                     "weight=" + weight +
                     ", item=" + item +
@@ -215,9 +189,8 @@ public class WeightedSelector
         }
 
         @Override
-        public int compareTo(Item o)
-        {
-            return Double.compare(weight, o.getWeight());
+        public int compareTo(Item o) {
+            return Double.compare(weight, o.weight());
         }
     }
 
@@ -226,7 +199,7 @@ public class WeightedSelector
         @Override
         public int compare(Item o1, Item o2)
         {
-            return Double.compare(o1.getWeight(), o2.getWeight());
+            return Double.compare(o1.weight(), o2.weight());
         }
     }
 }

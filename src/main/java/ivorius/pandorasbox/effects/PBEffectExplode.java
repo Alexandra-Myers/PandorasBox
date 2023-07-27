@@ -6,8 +6,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 
-import java.util.Random;
-
 /**
  * Created by lukas on 05.12.14.
  */

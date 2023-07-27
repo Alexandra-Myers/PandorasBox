@@ -7,8 +7,6 @@ package ivorius.pandorasbox.random;
 
 import net.minecraft.util.RandomSource;
 
-import java.util.Random;
-
 /**
  * Created by lukas on 04.04.14.
  */

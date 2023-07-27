@@ -48,17 +48,12 @@ public class PBEffectEntitiesThrowItems extends PBEffectEntityBased
                 if (newRatio >= expectedThrow && prevRatio < expectedThrow)
                 {
                     ItemStack stack = player.getInventory().getItem(i);
-                    if (stack != null)
-                    {
-                        if (random.nextDouble() < chancePerItem)
-                        {
-                            if (random.nextDouble() >= itemDeletionChance)
-                            {
-                                player.drop(stack, false);
-                            }
-
-                            player.getInventory().setItem(i, ItemStack.EMPTY);
+                    if (random.nextDouble() < chancePerItem) {
+                        if (random.nextDouble() >= itemDeletionChance) {
+                            player.drop(stack, false);
                         }
+
+                        player.getInventory().setItem(i, ItemStack.EMPTY);
                     }
                 }
             }

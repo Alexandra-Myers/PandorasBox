@@ -23,7 +23,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import org.joml.Vector3d;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -35,7 +35,7 @@ public class PandorasBoxItem extends BlockItem
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         executeRandomEffect(world, player, player.blockPosition(), true);
         if (!player.getAbilities().instabuild) {
@@ -43,7 +43,7 @@ public class PandorasBoxItem extends BlockItem
         }
         return super.use(world, player, hand);
     }
-    public InteractionResult useOn(UseOnContext p_40581_) {
+    public @NotNull InteractionResult useOn(@NotNull UseOnContext p_40581_) {
         return this.place(new BlockPlaceContext(p_40581_));
     }
     @Override

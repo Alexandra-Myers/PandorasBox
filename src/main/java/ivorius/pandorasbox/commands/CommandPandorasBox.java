@@ -11,7 +11,6 @@ import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBEffectArgument;
-import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;

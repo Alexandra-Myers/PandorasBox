@@ -14,8 +14,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-import java.util.Random;
-
 /**
  * Created by lukas on 30.03.14.
  */
@@ -43,9 +41,9 @@ public class PBEffectGenReplace extends PBEffectGenerate
             boolean replace = false;
             for (Block block : blocksToReplace)
             {
-                if (prevBlock == block)
-                {
+                if (prevBlock == block) {
                     replace = true;
+                    break;
                 }
             }
 

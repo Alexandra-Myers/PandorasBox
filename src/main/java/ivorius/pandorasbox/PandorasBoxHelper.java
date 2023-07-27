@@ -101,14 +101,12 @@ public class PandorasBoxHelper
     {
         for (Object object : items)
         {
-            if (object instanceof Item)
+            if (object instanceof Item item)
             {
-                Item item = (Item) object;
                 addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(new ItemStack(item)), weight));
             }
-            else if (object instanceof ItemStack)
+            else if (object instanceof ItemStack itemStack)
             {
-                ItemStack itemStack = (ItemStack) object;
                 addItem(new RandomizedItemStack(itemStack, 1, itemStack.getItem().getMaxStackSize(itemStack), weight));
             }
         }
@@ -118,14 +116,12 @@ public class PandorasBoxHelper
     {
         for (Object object : items)
         {
-            if (object instanceof Item)
+            if (object instanceof Item item)
             {
-                Item item = (Item) object;
                 addItem(new RandomizedItemStack(item, min, max, weight));
             }
-            else if (object instanceof ItemStack)
+            else if (object instanceof ItemStack itemStack)
             {
-                ItemStack itemStack = (ItemStack) object;
                 addItem(new RandomizedItemStack(itemStack, min, max, weight));
             }
         }
@@ -137,14 +133,12 @@ public class PandorasBoxHelper
 
         for (int i = 0; i < set.length; i++)
         {
-            if (items[i] instanceof Item)
+            if (items[i] instanceof Item item)
             {
-                Item item = (Item) items[i];
                 set[i] = new ItemStack(item);
             }
-            else if (items[i] instanceof ItemStack)
+            else if (items[i] instanceof ItemStack itemStack)
             {
-                ItemStack itemStack = (ItemStack) items[i];
                 set[i] = itemStack;
             }
         }
@@ -164,14 +158,12 @@ public class PandorasBoxHelper
     {
         for (Object object : items)
         {
-            if (object instanceof Item)
+            if (object instanceof Item item)
             {
-                Item item = (Item) object;
                 enchantableArmorList.add(new RandomizedItemStack(item, 1, 1, weight));
             }
-            else if (object instanceof ItemStack)
+            else if (object instanceof ItemStack itemStack)
             {
-                ItemStack itemStack = (ItemStack) object;
                 enchantableArmorList.add(new RandomizedItemStack(itemStack, 1, 1, weight));
             }
         }
@@ -181,14 +173,12 @@ public class PandorasBoxHelper
     {
         for (Object object : items)
         {
-            if (object instanceof Item)
+            if (object instanceof Item item)
             {
-                Item item = (Item) object;
                 enchantableToolList.add(new RandomizedItemStack(item, 1, 1, weight));
             }
-            else if (object instanceof ItemStack)
+            else if (object instanceof ItemStack itemStack)
             {
-                ItemStack itemStack = (ItemStack) object;
                 enchantableToolList.add(new RandomizedItemStack(itemStack, 1, 1, weight));
             }
         }

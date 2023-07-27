@@ -11,8 +11,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
-import java.util.Random;
-
 /**
  * Created by lukas on 03.04.14.
  */

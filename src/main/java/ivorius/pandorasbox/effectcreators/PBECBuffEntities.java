@@ -16,7 +16,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.

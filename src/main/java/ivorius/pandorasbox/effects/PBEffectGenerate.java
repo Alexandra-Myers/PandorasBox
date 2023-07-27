@@ -5,7 +5,6 @@
 
 package ivorius.pandorasbox.effects;
 
-import com.google.common.collect.Lists;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -19,7 +18,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
