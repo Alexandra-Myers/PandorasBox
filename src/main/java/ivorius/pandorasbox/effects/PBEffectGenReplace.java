@@ -42,9 +42,9 @@ public class PBEffectGenReplace extends PBEffectGenerate
             boolean replace = false;
             for (Block block : blocksToReplace)
             {
-                if (prevBlock == block)
-                {
+                if (prevBlock == block) {
                     replace = true;
+                    break;
                 }
             }
 

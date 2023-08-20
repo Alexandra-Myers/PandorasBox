@@ -9,7 +9,6 @@ import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.items.PandorasBoxItem;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -31,7 +30,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 /**
  * Created by lukas on 15.04.14.

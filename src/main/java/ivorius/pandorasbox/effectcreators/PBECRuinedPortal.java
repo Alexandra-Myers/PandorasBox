@@ -7,7 +7,6 @@ package ivorius.pandorasbox.effectcreators;
 
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenPool;
 import ivorius.pandorasbox.effects.PBEffectGenRuinedPortal;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
@@ -18,7 +17,6 @@ import net.minecraft.block.Block;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 

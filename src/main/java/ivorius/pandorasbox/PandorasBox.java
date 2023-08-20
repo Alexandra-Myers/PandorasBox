@@ -90,9 +90,6 @@ public class PandorasBox
         COLOURFUL_TREE = Registry.COLOURFUL_TREE.get();
         RAINBOW = Registry.RAINBOW.get();
         MEGA_JUNGLE = Registry.MEGA_JUNGLE.get();
-//        if(SHRINE == null) {
-//            SHRINE = WorldGenRegistries.register(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE, "shrine", SHRINE_STRUCTURE.get().configured(new VillageConfig(() -> START, 7)));
-//        }
 
         fmlEventHandler = new PBEventHandler();
         fmlEventHandler.register();

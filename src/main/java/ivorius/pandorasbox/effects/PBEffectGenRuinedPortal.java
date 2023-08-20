@@ -11,7 +11,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.List;
 import java.util.Random;
 
 public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
@@ -30,10 +29,10 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
     }
     @Override
     public void buildStructure(World world, PandorasBoxEntity entity, BlockPos currentPos, Random random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
-        boolean bl = MathHelper.ceil(length / 2) >= 2;
-        boolean bl1 = MathHelper.ceil(width / 2) >= 2;
-        int portalXAxis = bl ? MathHelper.ceil(length / 2) : 2;
-        int portalZAxis = bl1 ? MathHelper.ceil(width / 2) : 2;
+        boolean bl = MathHelper.ceil(length * 0.5) >= 2;
+        boolean bl1 = MathHelper.ceil(width * 0.5) >= 2;
+        int portalXAxis = bl ? MathHelper.ceil(length * 0.5) : 2;
+        int portalZAxis = bl1 ? MathHelper.ceil(width * 0.5) : 2;
         if (currentPos.getY() >= startingYOffset + originY
                 && currentPos.getY() < originY + height
                 && axis == Direction.Axis.X

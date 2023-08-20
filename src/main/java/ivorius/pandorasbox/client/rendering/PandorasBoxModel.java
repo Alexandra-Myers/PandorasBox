@@ -17,7 +17,6 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.client.renderer.entity.model.SegmentedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.projectile.ArrowEntity;
-import net.minecraft.util.math.vector.Vector3f;
 
 public class PandorasBoxModel extends SegmentedModel<ArrowEntity> {
     private final ModelRenderer feet;

@@ -7,9 +7,7 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -51,12 +49,9 @@ public class PBEffectEntitiesThrowItems extends PBEffectEntityBased
                 if (newRatio >= expectedThrow && prevRatio < expectedThrow)
                 {
                     ItemStack stack = player.inventory.getItem(i);
-                    if (stack != null)
-                    {
-                        if (random.nextDouble() < chancePerItem)
-                        {
-                            if (random.nextDouble() >= itemDeletionChance)
-                            {
+                    if (!stack.isEmpty()) {
+                        if (random.nextDouble() < chancePerItem) {
+                            if (random.nextDouble() >= itemDeletionChance) {
                                 player.drop(stack, false);
                             }
 

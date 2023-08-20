@@ -7,7 +7,6 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

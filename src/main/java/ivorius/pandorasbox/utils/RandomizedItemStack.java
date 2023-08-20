@@ -31,7 +31,7 @@ public class RandomizedItemStack implements WeightedSelector.Item
     }
 
     @Override
-    public double getWeight()
+    public double weight()
     {
         return weight;
     }

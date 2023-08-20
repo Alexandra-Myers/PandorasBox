@@ -83,14 +83,6 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         return false;
     }
 
-    public boolean canBeCollidedWith() {
-        return false;
-    }
-
-    public boolean isPushable() {
-        return false;
-    }
-
     public void setTimeBoxWaiting(int timeBoxWaiting)
     {
         this.timeBoxWaiting = timeBoxWaiting;

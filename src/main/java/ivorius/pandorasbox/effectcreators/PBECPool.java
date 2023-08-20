@@ -8,11 +8,9 @@ package ivorius.pandorasbox.effectcreators;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenPool;
-import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.block.Block;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.Collection;

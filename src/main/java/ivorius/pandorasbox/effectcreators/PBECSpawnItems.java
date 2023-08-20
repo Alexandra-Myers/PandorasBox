@@ -88,7 +88,7 @@ public class PBECSpawnItems implements PBEffectCreator
 
             if (enchantLevel > 0)
             {
-                List enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, false);
+                List<EnchantmentData> enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, false);
 
                 if (enchantments.size() == 0)
                 {
@@ -97,17 +97,15 @@ public class PBECSpawnItems implements PBEffectCreator
 
                 if (enchantments.size() > 0)
                 {
-                    for (Object enchantment : enchantments)
+                    for (EnchantmentData enchantment : enchantments)
                     {
-                        EnchantmentData enchantmentdata = (EnchantmentData) enchantment;
-
                         if (stack.getItem() == Items.ENCHANTED_BOOK)
                         {
-                            EnchantedBookItem.addEnchantment(stack, enchantmentdata);
+                            EnchantedBookItem.addEnchantment(stack, enchantment);
                         }
                         else
                         {
-                            stack.enchant(enchantmentdata.enchantment, enchantmentdata.level);
+                            stack.enchant(enchantment.enchantment, enchantment.level);
                         }
                     }
                 }
@@ -132,7 +130,7 @@ public class PBECSpawnItems implements PBEffectCreator
             }
         }
 
-        return list.toArray(new ItemStack[list.size()]);
+        return list.toArray(new ItemStack[0]);
     }
 
     @Override

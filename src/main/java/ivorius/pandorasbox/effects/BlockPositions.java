@@ -10,6 +10,8 @@ import java.util.Collection;
 /**
  * Created by lukas on 21.07.15.
  */
+
+@SuppressWarnings("unused")
 public final class BlockPositions
 {
     private BlockPositions()

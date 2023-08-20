@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+@SuppressWarnings("unused")
 public class ArrayListExtensions<T> extends ArrayList<T> implements IterableExtensions<T> {
     @SafeVarargs
     public final boolean addAll(T... entries) {

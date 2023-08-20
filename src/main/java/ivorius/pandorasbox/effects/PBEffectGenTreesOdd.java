@@ -11,7 +11,6 @@ import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.gen.feature.TreeFeature;
 
 import java.util.List;
 

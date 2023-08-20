@@ -5,7 +5,6 @@
 
 package ivorius.pandorasbox.effects;
 
-import com.google.common.collect.Sets;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.math.IvMathHelper;
 import ivorius.pandorasbox.utils.PBNBTHelper;

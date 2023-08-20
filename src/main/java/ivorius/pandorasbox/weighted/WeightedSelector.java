@@ -7,11 +7,12 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unused")
 public class WeightedSelector
 {
     public static <T extends Item> double totalWeight(Collection<T> items)
     {
-        return items.stream().mapToDouble(Item::getWeight).reduce(0, Double::sum);
+        return items.stream().mapToDouble(Item::weight).reduce(0, Double::sum);
     }
 
     public static <T> double totalWeight(Collection<T> items, final ToDoubleFunction<T> weightFunction)
@@ -21,7 +22,7 @@ public class WeightedSelector
 
     public static boolean canSelect(Collection<? extends Item> items)
     {
-        return items.stream().anyMatch(item -> item.getWeight() > 0);
+        return items.stream().anyMatch(item -> item.weight() > 0);
     }
 
     public static <T> boolean canSelect(Collection<T> items, ToDoubleFunction<T> weightFunction)
@@ -65,7 +66,7 @@ public class WeightedSelector
         for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); counted++)
         {
             T t = iterator.next();
-            random -= t.getWeight();
+            random -= t.weight();
             if (random <= 0.0)
             {
                 if (remove)
@@ -136,7 +137,7 @@ public class WeightedSelector
 
     public interface Item
     {
-        double getWeight();
+        double weight();
     }
 
     public static class SimpleItem<T> implements Item, Comparable<Item>
@@ -176,7 +177,7 @@ public class WeightedSelector
         }
 
         @Override
-        public double getWeight()
+        public double weight()
         {
             return weight;
         }
@@ -187,10 +188,10 @@ public class WeightedSelector
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            SimpleItem that = (SimpleItem) o;
+            SimpleItem<?> that = (SimpleItem<?>) o;
 
             if (Double.compare(that.weight, weight) != 0) return false;
-            return item != null ? item.equals(that.item) : that.item == null;
+            return Objects.equals(item, that.item);
         }
 
         @Override
@@ -216,7 +217,7 @@ public class WeightedSelector
         @Override
         public int compareTo(Item o)
         {
-            return Double.compare(weight, o.getWeight());
+            return Double.compare(weight, o.weight());
         }
     }
 
@@ -225,7 +226,7 @@ public class WeightedSelector
         @Override
         public int compare(Item o1, Item o2)
         {
-            return Double.compare(o1.getWeight(), o2.getWeight());
+            return Double.compare(o1.weight(), o2.weight());
         }
     }
 }

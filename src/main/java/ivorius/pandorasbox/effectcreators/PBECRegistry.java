@@ -7,12 +7,9 @@ package ivorius.pandorasbox.effectcreators;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import ivorius.pandorasbox.PBConfig;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenLavaCages;
 import ivorius.pandorasbox.effects.PBEffectMulti;
-import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
@@ -21,7 +18,6 @@ import ivorius.pandorasbox.utils.WrappedBiMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.*;

@@ -101,7 +101,7 @@ public class PBECSpawnBlocks implements PBEffectCreator
             list.add(mixUp ? blocks[random.nextInt(blocks.length)] : blocks[i]);
         }
 
-        return list.toArray(new Block[list.size()]);
+        return list.toArray(new Block[0]);
     }
 
     public static PBEffect constructEffect(Random random, Block[] blocks, int time, ValueThrow valueThrow, ValueSpawn valueSpawn)
