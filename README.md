@@ -20,4 +20,4 @@ Requires: [Gradle](https://gradle.org), [Java 8 JDK](http://www.oracle.com/techn
   * Eclipse: gradle eclipse
 * And you're done!
 
-This mod is written with [Minecraft Forge](http://www.minecraftforge.net/). Visit [its repo](https://github.com/MinecraftForge/MinecraftForge) for detailed setup instructions.
+This mod is written with [NeoForge](https://neoforged.net/). Visit [its repo](https://github.com/neoforged/NeoForge) for detailed setup instructions.
