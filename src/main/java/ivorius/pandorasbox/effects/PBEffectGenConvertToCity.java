@@ -17,11 +17,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
- * Created by lukas on 30.03.14.
+ * Created by Alexandra on 2.10.23.
  */
 public class PBEffectGenConvertToCity extends PBEffectGenerate
 {
@@ -107,20 +110,12 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             }
                         } else if (world.random.nextInt(2 * 2) == 0) {
                             setBlockSafe(world, pos, Blocks.WHITE_CONCRETE.defaultBlockState());
-                            int x = 0, y = 0, z = 0;
-                            for (int i = 0; i < world.random.nextIntBetweenInclusive(10, 5); i++) {
-                                if (y <= pos.getY() + i) {
-                                    if (x <= pos.getX() + i) {
-                                        if (z <= pos.getZ() + i) {
-                                            buildStructure(world, new BlockPos(x, y, z), i, pos.getY(), pos.getX(), pos.getZ());
-                                            z++;
-                                        } else {
-                                            z = pos.getZ() - i;
-                                            x++;
-                                        }
-                                    } else {
-                                        x = pos.getX() - i;
-                                        y++;
+                            int width = world.random.nextIntBetweenInclusive(10, 5);
+                            int height = world.random.nextInt(10) * width;
+                            for (int y = pos.getY(); y < pos.getY() + (height * 2 * width); y++) {
+                                for (int x = pos.getX() - width; x < pos.getX() + width; x++) {
+                                    for (int z = pos.getZ() - width; z < pos.getZ() + width; z++) {
+                                        buildStructure(world, new BlockPos(x, y, z), width, height, pos.getY(), pos.getX(), pos.getZ());
                                     }
                                 }
                             }
@@ -130,20 +125,16 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             setBlockSafe(world, pos.below(2), Blocks.REDSTONE_BLOCK.defaultBlockState());
                         } else
                             setBlockSafe(world, pos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
-                    } else {
+                    } else
                         setBlockSafe(world, pos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
-                    }
-                } else if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.LAVA, Blocks.ICE)) {
+                } else if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.LAVA, Blocks.ICE))
                     setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
-                }
 
-                if (isBlockAnyOf(block, Blocks.LAVA)) {
+                if (isBlockAnyOf(block, Blocks.LAVA))
                     setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
-                }
 
-                if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.ICE)) {
+                if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.ICE))
                     setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
-                }
             } else {
                 Entity villager = lazilySpawnEntity(world, entity, random, "villager", 1.0f / (20 * 20), pos);
                 canSpawnEntity(world, blockState, pos, villager);
@@ -151,17 +142,29 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
             changeBiome(Biomes.PLAINS, pass, effectCenter, serverLevel);
         }
     }
-    public void buildStructure(Level world, BlockPos currentPos, int length, int originY, int originX, int originZ) {
+    public void buildStructure(Level world, BlockPos currentPos, int width, int height, int originY, int originX, int originZ) {
         ServerLevel serverLevel = (ServerLevel) world;
-        if (currentPos.getY() == originY || currentPos.getY() == originY + length * 2) {
+        double relative = height * 1.0 / currentPos.getY();
+        if (currentPos.getY() == originY || relative == (int) relative) {
+            if(currentPos.getX() == originX && currentPos.getZ() == originZ) {
+                setBlockSafe(serverLevel, currentPos, Blocks.SPAWNER.defaultBlockState());
+                BlockEntity block = world.getBlockEntity(currentPos);
+                if (block instanceof SpawnerBlockEntity spawnerBlock) {
+                    int entity = world.random.nextInt(ForgeRegistries.ENTITY_TYPES.getValues().size());
+                    spawnerBlock.setEntityId(ForgeRegistries.ENTITY_TYPES.getValues().stream().toList().get(entity), world.random);
+                }
+            }
             setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
-        } else if (IvMathHelper.compareOffsets(currentPos.getX(), originX, length) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, length)) {
-            if (world.random.nextInt(8) != 0)
+        } else if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width)) {
+            if ((currentPos.getX() == originX || currentPos.getZ() == originZ)) {
+                if (currentPos.getY() - originY < 3)
+                    setBlockToAirSafe(serverLevel, currentPos);
+                else
+                    setBlockSafe(world, currentPos, glassState(serverLevel, currentPos, (IronBarsBlock) Blocks.CYAN_STAINED_GLASS_PANE));
+            } else if (world.random.nextInt(8) != 0)
                 setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
             else
-                setBlockSafe(serverLevel, currentPos, glassState(serverLevel, currentPos));
-        } else if (currentPos.getY() < originY + length) {
-            setBlockToAirSafe(world, currentPos);
+                setBlockSafe(serverLevel, currentPos, glassState(serverLevel, currentPos, (IronBarsBlock) Blocks.GLASS_PANE));
         } else {
             setBlockToAirSafe(world, currentPos);
         }
@@ -176,20 +179,19 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
             default -> original;
         };
     }
-    public BlockState glassState(Level blockgetter, BlockPos blockpos) {
-        IronBarsBlock block = (IronBarsBlock) Blocks.GLASS_PANE;
-        BlockPos blockpos1 = blockpos.north();
-        BlockPos blockpos2 = blockpos.south();
-        BlockPos blockpos3 = blockpos.west();
-        BlockPos blockpos4 = blockpos.east();
-        BlockState blockstate = blockgetter.getBlockState(blockpos1);
-        BlockState blockstate1 = blockgetter.getBlockState(blockpos2);
-        BlockState blockstate2 = blockgetter.getBlockState(blockpos3);
-        BlockState blockstate3 = blockgetter.getBlockState(blockpos4);
+    public BlockState glassState(Level level, BlockPos pos, IronBarsBlock block) {
+        BlockPos north = pos.north();
+        BlockPos south = pos.south();
+        BlockPos west = pos.west();
+        BlockPos east = pos.east();
+        BlockState northState = level.getBlockState(north);
+        BlockState southState = level.getBlockState(south);
+        BlockState westState = level.getBlockState(west);
+        BlockState eastState = level.getBlockState(east);
         return block.defaultBlockState()
-                .setValue(IronBarsBlock.NORTH, block.attachsTo(blockstate, blockstate.isFaceSturdy(blockgetter, blockpos1, Direction.SOUTH)))
-                .setValue(IronBarsBlock.SOUTH, block.attachsTo(blockstate1, blockstate1.isFaceSturdy(blockgetter, blockpos2, Direction.NORTH)))
-                .setValue(IronBarsBlock.WEST, block.attachsTo(blockstate2, blockstate2.isFaceSturdy(blockgetter, blockpos3, Direction.EAST)))
-                .setValue(IronBarsBlock.EAST, block.attachsTo(blockstate3, blockstate3.isFaceSturdy(blockgetter, blockpos4, Direction.WEST)));
+                .setValue(IronBarsBlock.NORTH, block.attachsTo(northState, northState.isFaceSturdy(level, north, Direction.SOUTH)))
+                .setValue(IronBarsBlock.SOUTH, block.attachsTo(southState, southState.isFaceSturdy(level, south, Direction.NORTH)))
+                .setValue(IronBarsBlock.WEST, block.attachsTo(westState, westState.isFaceSturdy(level, west, Direction.EAST)))
+                .setValue(IronBarsBlock.EAST, block.attachsTo(eastState, eastState.isFaceSturdy(level, east, Direction.WEST)));
     }
 }
