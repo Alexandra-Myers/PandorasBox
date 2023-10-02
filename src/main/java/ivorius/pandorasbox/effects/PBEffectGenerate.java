@@ -51,12 +51,11 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
         ArrayList<ChunkAccess> chunks = new ArrayList<>();
         for (int k = SectionPos.blockToSectionCoord(boundingbox.minZ()); k <= SectionPos.blockToSectionCoord(boundingbox.maxZ()); ++k) {
             for (int l = SectionPos.blockToSectionCoord(boundingbox.minX()); l <= SectionPos.blockToSectionCoord(boundingbox.maxX()); ++l) {
-                ChunkAccess chunkaccess = serverLevel.getChunk(l, k, ChunkStatus.FULL, false);
-                chunks.add(chunkaccess);
+                ChunkAccess chunkAccess = serverLevel.getChunk(l, k, ChunkStatus.FULL, true);
+                chunks.add(chunkAccess);
             }
         }
         for (ChunkAccess chunkAccess : chunks) {
-            if (chunkAccess == null) continue;
             Registry<Biome> biomeRegistry = serverLevel.registryAccess().registryOrThrow(Registries.BIOME);
             Biome biome = biomeRegistry.get(biomeResourceKey);
             assert biome != null;
