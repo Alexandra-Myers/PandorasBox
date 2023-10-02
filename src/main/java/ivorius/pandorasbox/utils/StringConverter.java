@@ -1,6 +1,5 @@
 package ivorius.pandorasbox.utils;
 
-import java.util.List;
 import java.util.Objects;
 
 public class StringConverter {

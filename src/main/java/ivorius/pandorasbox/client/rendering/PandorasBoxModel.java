@@ -43,10 +43,10 @@ public class PandorasBoxModel extends EntityModel<Arrow> {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition feet = partdefinition.addOrReplaceChild("feet", CubeListBuilder.create().texOffs(0, 14).addBox(-3.0F, 22.0F, 2.0F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(4, 14).addBox(2.0F, 22.0F, 2.0F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(4, 16).addBox(2.0F, 22.0F, -3.0F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 16).addBox(-3.0F, 22.0F, -3.0F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 1.0F, 0.0F));
+        PartDefinition feet = partdefinition.addOrReplaceChild("feet", CubeListBuilder.create().texOffs(0, 14).addBox(-3.5F, 22.0F, 2.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+                .texOffs(4, 14).addBox(2.5F, 22.0F, 2.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+                .texOffs(4, 16).addBox(2.5F, 22.0F, -3.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 16).addBox(-3.5F, 22.0F, -3.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 1.0F, 0.0F));
 
         PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -7.0F, -4.0F, 8.0F, 6.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
