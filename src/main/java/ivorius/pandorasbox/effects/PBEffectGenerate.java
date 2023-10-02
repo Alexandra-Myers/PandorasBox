@@ -56,6 +56,7 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
             }
         }
         for (ChunkAccess chunkAccess : chunks) {
+            if (chunkAccess == null) continue;
             Registry<Biome> biomeRegistry = serverLevel.registryAccess().registryOrThrow(Registries.BIOME);
             Biome biome = biomeRegistry.get(biomeResourceKey);
             assert biome != null;
