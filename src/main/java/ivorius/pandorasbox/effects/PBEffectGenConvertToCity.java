@@ -115,13 +115,13 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                         } else if (world.random.nextInt(144) == 0) {
                             setBlockSafe(world, pos, Blocks.WHITE_CONCRETE.defaultBlockState());
                             int width = world.random.nextIntBetweenInclusive(3, 6);
-                            int height = world.random.nextIntBetweenInclusive(1, 10);
-                            height = height > 3 && world.random.nextFloat() > 0.8 ? height : 3;
-                            height = height * width;
+                            int floors = world.random.nextIntBetweenInclusive(1, 10);
+                            floors = floors > 3 && world.random.nextFloat() > 0.8 ? floors : 3;
+                            int height = floors * width;
                             for (int y = pos.getY(); y <= pos.getY() + (height * 2); y++) {
                                 for (int x = pos.getX() - width; x <= pos.getX() + width; x++) {
                                     for (int z = pos.getZ() - width; z <= pos.getZ() + width; z++) {
-                                        buildStructure(world, new BlockPos(x, y, z), width, height, pos.getY(), pos.getX(), pos.getZ());
+                                        buildStructure(world, new BlockPos(x, y, z), width, height, floors, pos.getY(), pos.getX(), pos.getZ());
                                     }
                                 }
                             }
@@ -148,10 +148,11 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
             changeBiome(Biomes.PLAINS, pass, effectCenter, serverLevel);
         }
     }
-    public void buildStructure(Level world, BlockPos currentPos, int width, int height, int originY, int originX, int originZ) {
+    public void buildStructure(Level world, BlockPos currentPos, int width, int height, int floors, int originY, int originX, int originZ) {
         ServerLevel serverLevel = (ServerLevel) world;
         int relativeHeight = currentPos.getY() - originY;
-        double relative = height * 2.0 / relativeHeight;
+        double floorHeight = (double) height / floors;
+        double relative = floorHeight / relativeHeight;
         if (currentPos.getY() == originY || relative == Math.ceil(relative)) {
             if(currentPos.getX() == originX && currentPos.getZ() == originZ) {
                 setBlockSafe(serverLevel, currentPos, Blocks.SPAWNER.defaultBlockState());
