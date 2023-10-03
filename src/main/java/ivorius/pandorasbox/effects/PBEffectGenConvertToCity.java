@@ -110,9 +110,9 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             }
                         } else if (world.random.nextInt(81) == 0) {
                             setBlockSafe(world, pos, Blocks.WHITE_CONCRETE.defaultBlockState());
-                            int width = world.random.nextIntBetweenInclusive(5, 10);
+                            int width = world.random.nextIntBetweenInclusive(3, 6);
                             int height = world.random.nextInt(10) * width;
-                            for (int y = pos.getY(); y < pos.getY() + (height * 2 * width); y++) {
+                            for (int y = pos.getY(); y < pos.getY() + (height * 2); y++) {
                                 for (int x = pos.getX() - width; x < pos.getX() + width; x++) {
                                     for (int z = pos.getZ() - width; z < pos.getZ() + width; z++) {
                                         buildStructure(world, new BlockPos(x, y, z), width, height, pos.getY(), pos.getX(), pos.getZ());
@@ -145,7 +145,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
     public void buildStructure(Level world, BlockPos currentPos, int width, int height, int originY, int originX, int originZ) {
         ServerLevel serverLevel = (ServerLevel) world;
         double relative = height * 1.0 / currentPos.getY();
-        if (currentPos.getY() == originY || relative == (int) relative) {
+        if (currentPos.getY() == originY || relative == Math.ceil(relative)) {
             if(currentPos.getX() == originX && currentPos.getZ() == originZ) {
                 setBlockSafe(serverLevel, currentPos, Blocks.SPAWNER.defaultBlockState());
                 BlockEntity block = world.getBlockEntity(currentPos);
