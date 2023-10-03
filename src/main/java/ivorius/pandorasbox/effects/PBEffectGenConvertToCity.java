@@ -154,6 +154,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                     int entity = world.random.nextInt(ForgeRegistries.ENTITY_TYPES.getValues().size());
                     spawnerBlock.setEntityId(ForgeRegistries.ENTITY_TYPES.getValues().stream().toList().get(entity), world.random);
                 }
+                return;
             }
             setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
         } else if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width)) {
