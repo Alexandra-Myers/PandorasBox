@@ -158,7 +158,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                 BlockEntity block = world.getBlockEntity(currentPos);
                 if (block instanceof SpawnerBlockEntity spawnerBlock) {
                     List<EntityType<?>> entityTypes = ForgeRegistries.ENTITY_TYPES.getValues().stream().toList();
-                    entityTypes = entityTypes.stream().filter(entityType -> LivingEntity.class.isAssignableFrom(entityType.getBaseClass())).toList();
+                    entityTypes = entityTypes.stream().filter(entityType -> entityType.create(world) instanceof LivingEntity).toList();
                     int entity = world.random.nextInt(entityTypes.size());
                     spawnerBlock.setEntityId(entityTypes.get(entity), world.random);
                 }
