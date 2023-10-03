@@ -112,9 +112,10 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             setBlockSafe(world, pos, Blocks.WHITE_CONCRETE.defaultBlockState());
                             int width = world.random.nextIntBetweenInclusive(3, 6);
                             int height = world.random.nextInt(10) * width;
-                            for (int y = pos.getY(); y < pos.getY() + (height * 2); y++) {
-                                for (int x = pos.getX() - width; x < pos.getX() + width; x++) {
-                                    for (int z = pos.getZ() - width; z < pos.getZ() + width; z++) {
+                            height = height > 3 && world.random.nextFloat() > 0.8 ? height : 3;
+                            for (int y = pos.getY(); y <= pos.getY() + (height * 2); y++) {
+                                for (int x = pos.getX() - width; x <= pos.getX() + width; x++) {
+                                    for (int z = pos.getZ() - width; z <= pos.getZ() + width; z++) {
                                         buildStructure(world, new BlockPos(x, y, z), width, height, pos.getY(), pos.getX(), pos.getZ());
                                     }
                                 }
@@ -165,9 +166,9 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                 setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
             else
                 setBlockSafe(serverLevel, currentPos, glassState(serverLevel, currentPos, (IronBarsBlock) Blocks.GLASS_PANE));
-        } else {
+        } else
             setBlockToAirSafe(world, currentPos);
-        }
+
     }
     public BlockPos randomDir(BlockPos original, RandomSource random) {
         Direction dir = Direction.from2DDataValue(random.nextInt(4));
