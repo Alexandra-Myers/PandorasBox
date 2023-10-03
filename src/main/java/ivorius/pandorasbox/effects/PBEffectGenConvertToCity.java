@@ -14,6 +14,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.*;
@@ -22,6 +24,8 @@ import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.List;
 
 /**
  * Created by Alexandra on 2.10.23.
@@ -50,7 +54,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.RED_SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DEEPSLATE, Blocks.TUFF)) {
                     if (world.getBlockState(pos.above()).getBlock() == Blocks.AIR) {
-                        if (world.random.nextInt(36) == 0) {
+                        if (world.random.nextInt(144) == 0) {
                             for (int i = 0; i < 4; i++) {
                                 BlockPos newPos;
                                 switch (i) {
@@ -95,7 +99,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             setBlockSafe(world, pos, Blocks.DIRT.defaultBlockState());
                             setBlockSafe(world, pos.above(), Blocks.OAK_SAPLING.defaultBlockState().setValue(SaplingBlock.STAGE, 1));
                             ((SaplingBlock) Blocks.OAK_SAPLING).advanceTree(serverLevel, pos.above(),serverLevel.getBlockState(pos.above()), world.random);
-                        } else if (world.random.nextInt(36) == 0) {
+                        } else if (world.random.nextInt(81) == 0) {
                             int pHeight = random.nextIntBetweenInclusive(3, 7);
                             for (int yp = 0; yp <= pHeight; yp++) {
                                 if(yp != pHeight)
@@ -108,11 +112,12 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                                     setBlockSafe(world, newPos.below(), Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, Boolean.TRUE));
                                 }
                             }
-                        } else if (world.random.nextInt(81) == 0) {
+                        } else if (world.random.nextInt(144) == 0) {
                             setBlockSafe(world, pos, Blocks.WHITE_CONCRETE.defaultBlockState());
                             int width = world.random.nextIntBetweenInclusive(3, 6);
-                            int height = world.random.nextInt(10) * width;
+                            int height = world.random.nextIntBetweenInclusive(1, 10);
                             height = height > 3 && world.random.nextFloat() > 0.8 ? height : 3;
+                            height = height * width;
                             for (int y = pos.getY(); y <= pos.getY() + (height * 2); y++) {
                                 for (int x = pos.getX() - width; x <= pos.getX() + width; x++) {
                                     for (int z = pos.getZ() - width; z <= pos.getZ() + width; z++) {
@@ -145,14 +150,17 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
     }
     public void buildStructure(Level world, BlockPos currentPos, int width, int height, int originY, int originX, int originZ) {
         ServerLevel serverLevel = (ServerLevel) world;
-        double relative = height * 1.0 / currentPos.getY();
+        int relativeHeight = currentPos.getY() - originY;
+        double relative = height * 2.0 / relativeHeight;
         if (currentPos.getY() == originY || relative == Math.ceil(relative)) {
             if(currentPos.getX() == originX && currentPos.getZ() == originZ) {
                 setBlockSafe(serverLevel, currentPos, Blocks.SPAWNER.defaultBlockState());
                 BlockEntity block = world.getBlockEntity(currentPos);
                 if (block instanceof SpawnerBlockEntity spawnerBlock) {
-                    int entity = world.random.nextInt(ForgeRegistries.ENTITY_TYPES.getValues().size());
-                    spawnerBlock.setEntityId(ForgeRegistries.ENTITY_TYPES.getValues().stream().toList().get(entity), world.random);
+                    List<EntityType<?>> entityTypes = ForgeRegistries.ENTITY_TYPES.getValues().stream().toList();
+                    entityTypes = entityTypes.stream().filter(entityType -> LivingEntity.class.isAssignableFrom(entityType.getBaseClass())).toList();
+                    int entity = world.random.nextInt(entityTypes.size());
+                    spawnerBlock.setEntityId(entityTypes.get(entity), world.random);
                 }
                 return;
             }
@@ -163,10 +171,8 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                     setBlockToAirSafe(serverLevel, currentPos);
                 else
                     setBlockSafe(world, currentPos, glassState(serverLevel, currentPos, (IronBarsBlock) Blocks.CYAN_STAINED_GLASS_PANE));
-            } else if (world.random.nextInt(8) != 0)
+            } else
                 setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
-            else
-                setBlockSafe(serverLevel, currentPos, glassState(serverLevel, currentPos, (IronBarsBlock) Blocks.GLASS_PANE));
         } else
             setBlockToAirSafe(world, currentPos);
 
