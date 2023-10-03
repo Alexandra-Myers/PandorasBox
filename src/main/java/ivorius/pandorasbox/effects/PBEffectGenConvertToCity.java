@@ -117,8 +117,8 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             int width = world.random.nextIntBetweenInclusive(3, 6);
                             int floors = world.random.nextIntBetweenInclusive(1, 10);
                             floors = floors > 3 && world.random.nextFloat() > 0.8 ? floors : 3;
-                            int height = floors * width;
-                            for (int y = pos.getY(); y <= pos.getY() + (height * 2); y++) {
+                            int height = floors * width * 2;
+                            for (int y = pos.getY(); y <= pos.getY() + height; y++) {
                                 for (int x = pos.getX() - width; x <= pos.getX() + width; x++) {
                                     for (int z = pos.getZ() - width; z <= pos.getZ() + width; z++) {
                                         buildStructure(world, new BlockPos(x, y, z), width, height, floors, pos.getY(), pos.getX(), pos.getZ());
