@@ -50,7 +50,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.RED_SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DEEPSLATE, Blocks.TUFF)) {
                     if (world.getBlockState(pos.above()).getBlock() == Blocks.AIR) {
-                        if (world.random.nextInt(6 * 6) == 0) {
+                        if (world.random.nextInt(36) == 0) {
                             for (int i = 0; i < 4; i++) {
                                 BlockPos newPos;
                                 switch (i) {
@@ -95,7 +95,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             setBlockSafe(world, pos, Blocks.DIRT.defaultBlockState());
                             setBlockSafe(world, pos.above(), Blocks.OAK_SAPLING.defaultBlockState().setValue(SaplingBlock.STAGE, 1));
                             ((SaplingBlock) Blocks.OAK_SAPLING).advanceTree(serverLevel, pos.above(),serverLevel.getBlockState(pos.above()), world.random);
-                        } else if (world.random.nextInt(6 * 6) == 0) {
+                        } else if (world.random.nextInt(36) == 0) {
                             int pHeight = random.nextIntBetweenInclusive(3, 7);
                             for (int yp = 0; yp <= pHeight; yp++) {
                                 if(yp != pHeight)
@@ -108,7 +108,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                                     setBlockSafe(world, newPos.below(), Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, Boolean.TRUE));
                                 }
                             }
-                        } else if (world.random.nextInt(2 * 2) == 0) {
+                        } else if (world.random.nextInt(81) == 0) {
                             setBlockSafe(world, pos, Blocks.WHITE_CONCRETE.defaultBlockState());
                             int width = world.random.nextIntBetweenInclusive(5, 10);
                             int height = world.random.nextInt(10) * width;
@@ -119,7 +119,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                                     }
                                 }
                             }
-                        } else if (world.random.nextInt(8 * 8) == 0) {
+                        } else if (world.random.nextInt(64) == 0) {
                             setBlockSafe(world, pos, Blocks.GLASS.defaultBlockState());
                             setBlockSafe(world, pos.below(), Blocks.REDSTONE_LAMP.defaultBlockState());
                             setBlockSafe(world, pos.below(2), Blocks.REDSTONE_BLOCK.defaultBlockState());
