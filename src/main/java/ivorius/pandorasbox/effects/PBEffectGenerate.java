@@ -51,8 +51,9 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
         ArrayList<ChunkAccess> chunks = new ArrayList<>();
         for (int k = SectionPos.blockToSectionCoord(boundingbox.minZ()); k <= SectionPos.blockToSectionCoord(boundingbox.maxZ()); ++k) {
             for (int l = SectionPos.blockToSectionCoord(boundingbox.minX()); l <= SectionPos.blockToSectionCoord(boundingbox.maxX()); ++l) {
-                ChunkAccess chunkAccess = serverLevel.getChunk(l, k, ChunkStatus.FULL, true);
-                chunks.add(chunkAccess);
+                ChunkAccess chunkAccess = serverLevel.getChunk(l, k, ChunkStatus.FULL, false);
+                if (chunkAccess != null)
+                    chunks.add(chunkAccess);
             }
         }
         for (ChunkAccess chunkAccess : chunks) {

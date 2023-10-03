@@ -96,7 +96,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             setBlockSafe(world, pos.above(), Blocks.OAK_SAPLING.defaultBlockState().setValue(SaplingBlock.STAGE, 1));
                             ((SaplingBlock) Blocks.OAK_SAPLING).advanceTree(serverLevel, pos.above(),serverLevel.getBlockState(pos.above()), world.random);
                         } else if (world.random.nextInt(6 * 6) == 0) {
-                            int pHeight = random.nextInt(5) + 3;
+                            int pHeight = random.nextIntBetweenInclusive(3, 7);
                             for (int yp = 0; yp <= pHeight; yp++) {
                                 if(yp != pHeight)
                                     setBlockSafe(world, pos.above(yp), Blocks.STONE_BRICK_WALL.defaultBlockState());
@@ -110,7 +110,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             }
                         } else if (world.random.nextInt(2 * 2) == 0) {
                             setBlockSafe(world, pos, Blocks.WHITE_CONCRETE.defaultBlockState());
-                            int width = world.random.nextIntBetweenInclusive(10, 5);
+                            int width = world.random.nextIntBetweenInclusive(5, 10);
                             int height = world.random.nextInt(10) * width;
                             for (int y = pos.getY(); y < pos.getY() + (height * 2 * width); y++) {
                                 for (int x = pos.getX() - width; x < pos.getX() + width; x++) {
