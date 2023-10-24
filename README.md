@@ -1,7 +1,6 @@
 Pandora's Box
 ============
 
-[![Build Status](https://drone.io/github.com/Ivorforce/PandorasBox/status.png)](https://drone.io/github.com/Ivorforce/PandorasBox/latest)
 ![Curse Version](http://cf.way2muchnoise.eu/versions/222896_latest.svg)
 ![Curse Downloads](http://cf.way2muchnoise.eu/full_222896_downloads.svg)
 
