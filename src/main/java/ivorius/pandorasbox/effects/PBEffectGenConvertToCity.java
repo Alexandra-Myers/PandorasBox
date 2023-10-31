@@ -143,10 +143,13 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                                     stepPos = stepPos.above();
                                     if (stepPos.getY() - pos.getY() < height + 1) {
                                         setBlockSafe(world, stepPos, stairState);
-                                        for (int i = 0; i < 3; i++) {
-                                            setBlockToAirSafe(world, stepPos.above());
+                                        BlockPos heightenedPos = stepPos.immutable();
+                                        for (int i = 0; i < 4; i++) {
+                                            heightenedPos = heightenedPos.above();
+                                            setBlockToAirSafe(world, heightenedPos);
                                         }
-                                    }
+                                    } else
+                                        setBlockSafe(world, stepPos.below(), Blocks.POLISHED_ANDESITE.defaultBlockState());
                                 }
                                 stairPos = stepPos;
                             }
