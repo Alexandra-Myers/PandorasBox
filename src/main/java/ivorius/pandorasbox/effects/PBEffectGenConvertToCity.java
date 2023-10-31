@@ -159,9 +159,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                 setBlockSafe(world, currentPos, Blocks.TWISTING_VINES.defaultBlockState());
             else
                 setBlockSafe(world, currentPos, Blocks.TWISTING_VINES_PLANT.defaultBlockState());
-            return;
-        }
-        if (currentPos.getY() == originY || relative == Math.ceil(relative)) {
+        } else if (currentPos.getY() == originY || relative == Math.ceil(relative)) {
             if(currentPos.getX() == originX && currentPos.getZ() == originZ) {
                 setBlockSafe(serverLevel, currentPos, Blocks.SPAWNER.defaultBlockState());
                 BlockEntity block = world.getBlockEntity(currentPos);
