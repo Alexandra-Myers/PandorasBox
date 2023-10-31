@@ -118,10 +118,10 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             int floors = world.random.nextIntBetweenInclusive(1, 10);
                             floors = floors < 3 || world.random.nextFloat() > 0.8 ? floors : 3;
                             int height = floors * width * 2;
-                            for (int y = pos.getY(); y <= pos.getY() + height; y++) {
+                            for (int y = pos.getY(); y <= pos.getY() + height + 2; y++) {
                                 for (int x = pos.getX() - width; x <= pos.getX() + width; x++) {
                                     for (int z = pos.getZ() - width; z <= pos.getZ() + width; z++) {
-                                        buildStructure(world, new BlockPos(x, y, z), width, pos.getY(), pos.getX(), pos.getZ());
+                                        buildStructure(world, new BlockPos(x, y, z), width, height, pos.getY(), pos.getX(), pos.getZ());
                                     }
                                 }
                             }
@@ -148,10 +148,19 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
             changeBiome(Biomes.PLAINS, pass, effectCenter, serverLevel);
         }
     }
-    public void buildStructure(Level world, BlockPos currentPos, int width, int originY, int originX, int originZ) {
+    public void buildStructure(Level world, BlockPos currentPos, int width, int height, int originY, int originX, int originZ) {
         ServerLevel serverLevel = (ServerLevel) world;
         int relativeHeight = currentPos.getY() - originY;
         double relative = relativeHeight / (double) (width * 2);
+        if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width - 1) && IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width - 1)) {
+            if (relativeHeight == 0)
+                setBlockSafe(world, currentPos, Blocks.WARPED_NYLIUM.defaultBlockState());
+            else if (relativeHeight == height + 1)
+                setBlockSafe(world, currentPos, Blocks.TWISTING_VINES.defaultBlockState());
+            else
+                setBlockSafe(world, currentPos, Blocks.TWISTING_VINES_PLANT.defaultBlockState());
+            return;
+        }
         if (currentPos.getY() == originY || relative == Math.ceil(relative)) {
             if(currentPos.getX() == originX && currentPos.getZ() == originZ) {
                 setBlockSafe(serverLevel, currentPos, Blocks.SPAWNER.defaultBlockState());
@@ -166,9 +175,18 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
             }
             setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
         } else if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width)) {
+            if (relativeHeight >= height + 1) {
+                if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width) && IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width))
+                    setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
+                else if (relativeHeight == height + 1)
+                    setBlockSafe(world, currentPos, glassState(serverLevel, currentPos, (IronBarsBlock) Blocks.CYAN_STAINED_GLASS_PANE));
+                return;
+            }
             if ((currentPos.getX() == originX || currentPos.getZ() == originZ)) {
-                if (currentPos.getY() - originY < 3)
+                if (relativeHeight < 3)
                     setBlockToAirSafe(serverLevel, currentPos);
+                else if (relativeHeight == 3)
+                    setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
                 else
                     setBlockSafe(world, currentPos, glassState(serverLevel, currentPos, (IronBarsBlock) Blocks.CYAN_STAINED_GLASS_PANE));
             } else
