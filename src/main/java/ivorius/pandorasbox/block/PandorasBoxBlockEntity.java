@@ -45,7 +45,8 @@ public class PandorasBoxBlockEntity extends BlockEntity
 
     public float getBaseRotationYaw()
     {
-        return rotationFromFacing(this.getBlockState().getValue(PandorasBoxBlock.DIRECTION));
+        BlockState state = this.getBlockState();
+        return rotationFromFacing(state.getBlock() instanceof PandorasBoxBlock ? state.getValue(PandorasBoxBlock.DIRECTION) : Direction.NORTH);
     }
 
     public float getFinalRotationYaw()

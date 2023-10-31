@@ -116,12 +116,12 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             setBlockSafe(world, pos, Blocks.WHITE_CONCRETE.defaultBlockState());
                             int width = world.random.nextIntBetweenInclusive(3, 6);
                             int floors = world.random.nextIntBetweenInclusive(1, 10);
-                            floors = floors > 3 && world.random.nextFloat() > 0.8 ? floors : 3;
+                            floors = floors < 3 || world.random.nextFloat() > 0.8 ? floors : 3;
                             int height = floors * width * 2;
                             for (int y = pos.getY(); y <= pos.getY() + height; y++) {
                                 for (int x = pos.getX() - width; x <= pos.getX() + width; x++) {
                                     for (int z = pos.getZ() - width; z <= pos.getZ() + width; z++) {
-                                        buildStructure(world, new BlockPos(x, y, z), width, height, floors, pos.getY(), pos.getX(), pos.getZ());
+                                        buildStructure(world, new BlockPos(x, y, z), width, pos.getY(), pos.getX(), pos.getZ());
                                     }
                                 }
                             }
@@ -148,18 +148,17 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
             changeBiome(Biomes.PLAINS, pass, effectCenter, serverLevel);
         }
     }
-    public void buildStructure(Level world, BlockPos currentPos, int width, int height, int floors, int originY, int originX, int originZ) {
+    public void buildStructure(Level world, BlockPos currentPos, int width, int originY, int originX, int originZ) {
         ServerLevel serverLevel = (ServerLevel) world;
         int relativeHeight = currentPos.getY() - originY;
-        double floorHeight = (double) height / floors;
-        double relative = floorHeight / relativeHeight;
+        double relative = (double) (width * 2) / relativeHeight;
         if (currentPos.getY() == originY || relative == Math.ceil(relative)) {
             if(currentPos.getX() == originX && currentPos.getZ() == originZ) {
                 setBlockSafe(serverLevel, currentPos, Blocks.SPAWNER.defaultBlockState());
                 BlockEntity block = world.getBlockEntity(currentPos);
                 if (block instanceof SpawnerBlockEntity spawnerBlock) {
                     List<EntityType<?>> entityTypes = ForgeRegistries.ENTITY_TYPES.getValues().stream().toList();
-                    entityTypes = entityTypes.stream().filter(entityType -> entityType.create(world) instanceof LivingEntity).toList();
+                    entityTypes = entityTypes.stream().filter(entityType -> entityType.canSummon() && entityType.create(world) instanceof LivingEntity).toList();
                     int entity = world.random.nextInt(entityTypes.size());
                     spawnerBlock.setEntityId(entityTypes.get(entity), world.random);
                 }
