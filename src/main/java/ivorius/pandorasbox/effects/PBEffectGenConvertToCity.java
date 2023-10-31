@@ -119,32 +119,36 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             int floors = world.random.nextIntBetweenInclusive(1, 10);
                             floors = floors < 3 || world.random.nextFloat() > 0.8 ? floors : 3;
                             int height = floors * width * 2;
-                            BlockPos stairPos = pos.offset(width - 1, 0, width - 1);
-                            Direction direction = Direction.EAST;
-                            int sideProgress = 0;
-                            while (stairPos.getY() < height + 1) {
-                                var stepPos = stairPos.relative(direction);
-                                BlockState stairState = Blocks.DEEPSLATE_BRICK_STAIRS.defaultBlockState().trySetValue(StairBlock.FACING, direction);
-                                BlockState inverseState = Blocks.DEEPSLATE_BRICK_STAIRS.defaultBlockState().trySetValue(StairBlock.FACING, direction.getOpposite()).trySetValue(StairBlock.HALF, Half.TOP);
-                                if (++sideProgress == width - 1) {
-                                    direction = direction.getCounterClockWise();
-                                    sideProgress = 0;
-                                    setBlockSafe(world, stepPos, Blocks.DEEPSLATE_BRICKS.defaultBlockState());
-                                } else {
-                                    setBlockSafe(world, stepPos, inverseState);
-                                    stepPos = stepPos.above();
-                                    setBlockSafe(world, stepPos, stairState);
-                                }
-                                stairPos = stepPos;
-                            }
                             for (int y = pos.getY(); y <= pos.getY() + height + 2; y++) {
                                 for (int x = pos.getX() - width; x <= pos.getX() + width; x++) {
                                     for (int z = pos.getZ() - width; z <= pos.getZ() + width; z++) {
-                                        BlockPos currentPos = new BlockPos(x, y, z);
-                                        if (world.getBlockState(currentPos).is(Blocks.DEEPSLATE_BRICK_STAIRS) || world.getBlockState(currentPos).is(Blocks.DEEPSLATE_BRICKS)) continue;
-                                        buildStructure(world, currentPos, width, height, pos.getY(), pos.getX(), pos.getZ());
+                                        buildStructure(world, new BlockPos(x, y, z), width, height, pos.getY(), pos.getX(), pos.getZ());
                                     }
                                 }
+                            }
+                            BlockPos stairPos = pos.offset(width - 1, 0, width - 1);
+                            Direction direction = Direction.WEST;
+                            int sideProgress = 0;
+                            while (stairPos.getY() - pos.getY() < height + 1) {
+                                var stepPos = stairPos.relative(direction);
+                                BlockState stairState = Blocks.STONE_BRICK_STAIRS.defaultBlockState().trySetValue(StairBlock.FACING, direction);
+                                BlockState inverseState = Blocks.STONE_BRICK_STAIRS.defaultBlockState().trySetValue(StairBlock.FACING, direction.getOpposite()).trySetValue(StairBlock.HALF, Half.TOP);
+                                if (++sideProgress == width - 1) {
+                                    direction = direction.getCounterClockWise();
+                                    sideProgress = 0;
+                                    setBlockSafe(world, stepPos, Blocks.POLISHED_ANDESITE.defaultBlockState());
+                                } else {
+                                    if(stairPos.getY() - pos.getY() > 0)
+                                        setBlockSafe(world, stepPos, inverseState);
+                                    stepPos = stepPos.above();
+                                    if (stepPos.getY() - pos.getY() < height + 1) {
+                                        setBlockSafe(world, stepPos, stairState);
+                                        for (int i = 0; i < 3; i++) {
+                                            setBlockToAirSafe(world, stepPos.above());
+                                        }
+                                    }
+                                }
+                                stairPos = stepPos;
                             }
                         } else if (world.random.nextInt(64) == 0) {
                             setBlockSafe(world, pos, Blocks.GLASS.defaultBlockState());
