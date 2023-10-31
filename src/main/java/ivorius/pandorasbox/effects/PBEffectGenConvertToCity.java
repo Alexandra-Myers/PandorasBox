@@ -133,8 +133,8 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                                 var stepPos = stairPos.relative(direction);
                                 BlockState stairState = Blocks.STONE_BRICK_STAIRS.defaultBlockState().trySetValue(StairBlock.FACING, direction);
                                 BlockState inverseState = Blocks.STONE_BRICK_STAIRS.defaultBlockState().trySetValue(StairBlock.FACING, direction.getOpposite()).trySetValue(StairBlock.HALF, Half.TOP);
-                                if (++sideProgress == width - 1) {
-                                    direction = direction.getCounterClockWise();
+                                if (++sideProgress == 2 * (width - 1)) {
+                                    direction = direction.getClockWise();
                                     sideProgress = 0;
                                     setBlockSafe(world, stepPos, Blocks.POLISHED_ANDESITE.defaultBlockState());
                                 } else {
