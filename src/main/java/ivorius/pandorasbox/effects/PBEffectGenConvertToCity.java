@@ -130,13 +130,12 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                                     direction = direction.getCounterClockWise();
                                     sideProgress = 0;
                                     setBlockSafe(world, stepPos, Blocks.DEEPSLATE_BRICKS.defaultBlockState());
-                                    stairPos = stepPos;
                                 } else {
                                     setBlockSafe(world, stepPos, inverseState);
                                     stepPos = stepPos.above();
                                     setBlockSafe(world, stepPos, stairState);
-                                    stairPos = stepPos;
                                 }
+                                stairPos = stepPos;
                             }
                             for (int y = pos.getY(); y <= pos.getY() + height + 2; y++) {
                                 for (int x = pos.getX() - width; x <= pos.getX() + width; x++) {
