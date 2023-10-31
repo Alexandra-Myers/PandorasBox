@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -118,10 +119,31 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                             int floors = world.random.nextIntBetweenInclusive(1, 10);
                             floors = floors < 3 || world.random.nextFloat() > 0.8 ? floors : 3;
                             int height = floors * width * 2;
+                            BlockPos stairPos = pos.offset(width - 1, 0, width - 1);
+                            Direction direction = Direction.EAST;
+                            int sideProgress = 0;
+                            while (stairPos.getY() < height + 1) {
+                                var stepPos = stairPos.relative(direction);
+                                BlockState stairState = Blocks.DEEPSLATE_BRICK_STAIRS.defaultBlockState().trySetValue(StairBlock.FACING, direction);
+                                BlockState inverseState = Blocks.DEEPSLATE_BRICK_STAIRS.defaultBlockState().trySetValue(StairBlock.FACING, direction.getOpposite()).trySetValue(StairBlock.HALF, Half.TOP);
+                                if (++sideProgress == width - 1) {
+                                    direction = direction.getCounterClockWise();
+                                    sideProgress = 0;
+                                    setBlockSafe(world, stepPos, Blocks.DEEPSLATE_BRICKS.defaultBlockState());
+                                    stairPos = stepPos;
+                                } else {
+                                    setBlockSafe(world, stepPos, inverseState);
+                                    stepPos = stepPos.above();
+                                    setBlockSafe(world, stepPos, stairState);
+                                    stairPos = stepPos;
+                                }
+                            }
                             for (int y = pos.getY(); y <= pos.getY() + height + 2; y++) {
                                 for (int x = pos.getX() - width; x <= pos.getX() + width; x++) {
                                     for (int z = pos.getZ() - width; z <= pos.getZ() + width; z++) {
-                                        buildStructure(world, new BlockPos(x, y, z), width, height, pos.getY(), pos.getX(), pos.getZ());
+                                        BlockPos currentPos = new BlockPos(x, y, z);
+                                        if (world.getBlockState(currentPos).is(Blocks.DEEPSLATE_BRICK_STAIRS) || world.getBlockState(currentPos).is(Blocks.DEEPSLATE_BRICKS)) continue;
+                                        buildStructure(world, currentPos, width, height, pos.getY(), pos.getX(), pos.getZ());
                                     }
                                 }
                             }
@@ -152,14 +174,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
         ServerLevel serverLevel = (ServerLevel) world;
         int relativeHeight = currentPos.getY() - originY;
         double relative = relativeHeight / (double) (width * 2);
-        if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width - 1) && IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width - 1)) {
-            if (relativeHeight == 0)
-                setBlockSafe(world, currentPos, Blocks.WARPED_NYLIUM.defaultBlockState());
-            else if (relativeHeight == height + 1)
-                setBlockSafe(world, currentPos, Blocks.TWISTING_VINES.defaultBlockState());
-            else
-                setBlockSafe(world, currentPos, Blocks.TWISTING_VINES_PLANT.defaultBlockState());
-        } else if (currentPos.getY() == originY || relative == Math.ceil(relative)) {
+        if (currentPos.getY() == originY || relative == Math.ceil(relative)) {
             if(currentPos.getX() == originX && currentPos.getZ() == originZ) {
                 setBlockSafe(serverLevel, currentPos, Blocks.SPAWNER.defaultBlockState());
                 BlockEntity block = world.getBlockEntity(currentPos);
@@ -169,6 +184,10 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                     int entity = world.random.nextInt(entityTypes.size());
                     spawnerBlock.setEntityId(entityTypes.get(entity), world.random);
                 }
+                return;
+            }
+            if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width - 1) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width - 1)) {
+                setBlockSafe(world, currentPos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
                 return;
             }
             setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
