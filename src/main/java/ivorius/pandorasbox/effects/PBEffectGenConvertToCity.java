@@ -151,7 +151,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
     public void buildStructure(Level world, BlockPos currentPos, int width, int originY, int originX, int originZ) {
         ServerLevel serverLevel = (ServerLevel) world;
         int relativeHeight = currentPos.getY() - originY;
-        double relative = (double) (width * 2) / relativeHeight;
+        double relative = relativeHeight / (double) (width * 2);
         if (currentPos.getY() == originY || relative == Math.ceil(relative)) {
             if(currentPos.getX() == originX && currentPos.getZ() == originZ) {
                 setBlockSafe(serverLevel, currentPos, Blocks.SPAWNER.defaultBlockState());
