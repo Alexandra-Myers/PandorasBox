@@ -138,7 +138,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                                     sideProgress = 0;
                                     setBlockSafe(world, stepPos, Blocks.POLISHED_ANDESITE.defaultBlockState());
                                 } else {
-                                    if(stairPos.getY() - pos.getY() > 0)
+                                    if(stepPos.getY() - pos.getY() > 0)
                                         setBlockSafe(world, stepPos, inverseState);
                                     stepPos = stepPos.above();
                                     if (stepPos.getY() - pos.getY() < height + 1) {
