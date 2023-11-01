@@ -148,22 +148,4 @@ public class IvMathHelper
     public static boolean compareOffsets(double base, double origin, double offset) {
         return base == origin + offset || base == origin - offset;
     }
-
-    public static boolean compareOffsets(int base, int origin, int offset, int greaterMargin, int lesserMargin) {
-        boolean betweenLarge = base >= origin + offset - lesserMargin && base <= origin + offset + greaterMargin;
-        boolean betweenSmall = base >= origin - offset + lesserMargin && base <= origin - offset - greaterMargin;
-        return betweenLarge || betweenSmall;
-    }
-
-    public static boolean compareOffsets(float base, float origin, float offset, int greaterMargin, int lesserMargin) {
-        boolean betweenLarge = base >= origin + offset - lesserMargin && base <= origin + offset + greaterMargin;
-        boolean betweenSmall = base >= origin - offset + lesserMargin && base <= origin - offset - greaterMargin;
-        return betweenLarge || betweenSmall;
-    }
-
-    public static boolean compareOffsets(double base, double origin, double offset, int greaterMargin, int lesserMargin) {
-        boolean betweenLarge = base >= origin + offset - lesserMargin && base <= origin + offset + greaterMargin;
-        boolean betweenSmall = base >= origin - offset + lesserMargin && base <= origin - offset - greaterMargin;
-        return betweenLarge || betweenSmall;
-    }
 }

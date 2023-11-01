@@ -197,7 +197,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                 }
                 return;
             }
-            if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width, 0, 1) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width, 0, 1)) {
+            if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width - 1) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width - 1)) {
                 setBlockSafe(world, currentPos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
                 return;
             }
@@ -217,7 +217,9 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                     setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
                 else
                     setBlockSafe(world, currentPos, glassState(serverLevel, currentPos, (IronBarsBlock) Blocks.CYAN_STAINED_GLASS_PANE));
-            } else
+            } else if ((currentPos.getX() == originX + width - 1 || currentPos.getZ() == originZ + width - 1))
+                setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
+            else
                 setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
         } else
             setBlockToAirSafe(world, currentPos);
