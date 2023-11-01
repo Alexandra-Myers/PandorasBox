@@ -137,6 +137,11 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                                     direction = direction.getClockWise();
                                     sideProgress = 0;
                                     setBlockSafe(world, stepPos, Blocks.POLISHED_ANDESITE.defaultBlockState());
+                                    BlockPos heightenedPos = stepPos.immutable();
+                                    for (int i = 0; i < 3; i++) {
+                                        heightenedPos = heightenedPos.above();
+                                        setBlockToAirSafe(world, heightenedPos);
+                                    }
                                 } else {
                                     if(stepPos.getY() - pos.getY() > 0)
                                         setBlockSafe(world, stepPos, inverseState);
@@ -144,7 +149,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                                     if (stepPos.getY() - pos.getY() < height + 1) {
                                         setBlockSafe(world, stepPos, stairState);
                                         BlockPos heightenedPos = stepPos.immutable();
-                                        for (int i = 0; i < 4; i++) {
+                                        for (int i = 0; i < 3; i++) {
                                             heightenedPos = heightenedPos.above();
                                             setBlockToAirSafe(world, heightenedPos);
                                         }
@@ -192,7 +197,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                 }
                 return;
             }
-            if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width - 1) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width - 1)) {
+            if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width, 0, 1) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width, 0, 1)) {
                 setBlockSafe(world, currentPos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
                 return;
             }
