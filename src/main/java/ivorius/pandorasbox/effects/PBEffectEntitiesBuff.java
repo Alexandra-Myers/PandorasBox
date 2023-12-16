@@ -33,8 +33,10 @@ public class PBEffectEntitiesBuff extends PBEffectEntityBased
     @Override
     public void affectEntity(Level world, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength)
     {
-        for (MobEffectInstance effect : effects)
+        MobEffectInstance[] effectsAdj = new MobEffectInstance[effects.length];
+        for (int i = 0; i < effects.length; i++)
         {
+            MobEffectInstance effect = effects[i];
             int prevDuration = Mth.floor(prevRatio * strength * effect.getDuration());
             int newDuration = Mth.floor(newRatio * strength * effect.getDuration());
             int duration = newDuration - prevDuration;
@@ -42,10 +44,10 @@ public class PBEffectEntitiesBuff extends PBEffectEntityBased
             if (duration > 0)
             {
                 MobEffectInstance effectInstance = new MobEffectInstance(effect.getEffect(), duration, effect.getAmplifier(), effect.isAmbient(), effect.isVisible());
-                Potion curEffect = new Potion(effectInstance);
-                addPotionEffectDuration(entity, curEffect);
+                effectsAdj[i] = effectInstance;
             }
         }
+        combinedEffectDuration(entity, effectsAdj);
     }
 
     @Override

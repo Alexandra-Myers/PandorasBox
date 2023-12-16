@@ -1,8 +1,8 @@
 package ivorius.pandorasbox;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
  * Created by lukas on 29.07.14.
@@ -11,18 +11,18 @@ public class PBConfig
 {
     private static final String CONFIG_PREFIX = "gui." + PandorasBox.MOD_ID + ".config.";
 
-    public ForgeConfigSpec.BooleanValue allowLootTableInjection;
-    public ForgeConfigSpec.DoubleValue boxLongevity;
-    public ForgeConfigSpec.DoubleValue boxIntensity;
-    public ForgeConfigSpec.DoubleValue goodEffectChance;
-    public ForgeConfigSpec.IntValue maxEffectsPerBox;
+//    public ModConfigSpec.BooleanValue allowLootTableInjection;
+    public ModConfigSpec.DoubleValue boxLongevity;
+    public ModConfigSpec.DoubleValue boxIntensity;
+    public ModConfigSpec.DoubleValue goodEffectChance;
+    public ModConfigSpec.IntValue maxEffectsPerBox;
 
     PBConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
-        allowLootTableInjection = builder.comment("Whether Pandora's Box will inject loot into loot tables")
-                .translation(CONFIG_PREFIX + "allowLootTableInjection").worldRestart()
-                .define("allowLootTableInjection", true);
+//        allowLootTableInjection = builder.comment("Whether Pandora's Box will inject loot into loot tables")
+//                .translation(CONFIG_PREFIX + "allowLootTableInjection").worldRestart()
+//                .define("allowLootTableInjection", true);
 
         boxLongevity = builder.comment("How long a box will last (with continuous effects). Represented by 'chance to continue'.")
                 .translation(CONFIG_PREFIX + "boxLongevity").worldRestart()

@@ -33,21 +33,17 @@ public class PBEffectEntitiesCrush extends PBEffectEntityBased
     {
         boolean lift = ((newRatio * cycles) % 1.000001) < 0.7; // We want 1.0 inclusive
 
+        double x = entity.getDeltaMovement().x;
+        double y = entity.getDeltaMovement().y;
+        double z = entity.getDeltaMovement().z;
+        entity.setDeltaMovement(0, 0, 0);
         if (lift)
         {
-            double x = entity.getDeltaMovement().x;
-            double y = entity.getDeltaMovement().y;
-            double z = entity.getDeltaMovement().z;
-            entity.getDeltaMovement().scale(0);
-            entity.getDeltaMovement().add(x, y * (1.0f - strength) + strength * speed, z);
+            entity.setDeltaMovement(x, y * (1.0f - strength) + strength * speed, z);
         }
         else
         {
-            double x = entity.getDeltaMovement().x;
-            double y = entity.getDeltaMovement().y;
-            double z = entity.getDeltaMovement().z;
-            entity.getDeltaMovement().scale(0);
-            entity.getDeltaMovement().add(x, y - strength * speed, z);
+            entity.setDeltaMovement(x, y - strength * speed, z);
         }
     }
 

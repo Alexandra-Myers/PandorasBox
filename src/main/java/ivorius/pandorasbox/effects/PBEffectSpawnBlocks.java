@@ -45,13 +45,8 @@ public class PBEffectSpawnBlocks extends PBEffectSpawnEntities
     {
         if(world.isClientSide()) return null;
         Block block = blocks[number];
-        FallingBlockEntity entityFallingBlock = EntityType.FALLING_BLOCK.create(world);
-        entityFallingBlock.setStartPos(BlockPos.containing(x, y, z));
-        entityFallingBlock.blockState = block.defaultBlockState();
-        entityFallingBlock.time = 1;
-        world.addFreshEntity(entityFallingBlock);
 
-        return entityFallingBlock;
+        return FallingBlockEntity.fall(world, BlockPos.containing(x, y, z), block.defaultBlockState());
     }
 
     @Override

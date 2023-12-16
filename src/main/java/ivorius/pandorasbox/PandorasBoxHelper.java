@@ -11,6 +11,7 @@ import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
@@ -23,7 +24,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 
@@ -310,7 +310,7 @@ public class PandorasBoxHelper
         glass.addAll(Blocks.SOUL_SAND, Blocks.SOUL_SOIL);
         glass.addAll(PandorasBox.stained_glass);
         misc.addAll(Items.LAVA_BUCKET, Items.MILK_BUCKET, Items.WATER_BUCKET, Items.FLINT_AND_STEEL, Items.PAINTING, Items.FLOWER_POT, Items.MINECART, Items.CAULDRON);
-        for(Item item : ForgeRegistries.ITEMS) {
+        for(Item item : BuiltInRegistries.ITEM.stream().toList()) {
             ItemStack stack = new ItemStack(item);
             if(stack.is(ItemTags.BOATS) || stack.is(ItemTags.BEDS)) {
                 misc.add(item);

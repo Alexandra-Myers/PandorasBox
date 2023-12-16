@@ -2,6 +2,7 @@ package ivorius.pandorasbox.utils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -9,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Created by lukas on 03.02.15.
@@ -164,7 +164,7 @@ public class PBNBTHelper
             Block[] blocks = new Block[nbtTagList.size()];
 
             for (int i = 0; i < blocks.length; i++)
-                blocks[i] = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbtTagList.getString(i)));
+                blocks[i] = BuiltInRegistries.BLOCK.get(new ResourceLocation(nbtTagList.getString(i)));
 
             return blocks;
         }
@@ -273,12 +273,12 @@ public class PBNBTHelper
 
     public static String storeBlockString(Block block)
     {
-        ResourceLocation location = ForgeRegistries.BLOCKS.getKey(block);
-        return location == null ? "minecraft:air" : location.toString();
+        ResourceLocation location = BuiltInRegistries.BLOCK.getKey(block);
+        return location.toString();
     }
 
     public static Block getBlock(String string)
     {
-        return ForgeRegistries.BLOCKS.getValue(new ResourceLocation(string));
+        return BuiltInRegistries.BLOCK.get(new ResourceLocation(string));
     }
 }

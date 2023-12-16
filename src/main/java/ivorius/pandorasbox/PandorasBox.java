@@ -14,25 +14,28 @@ import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.function.Supplier;
 
 @Mod(PandorasBox.MOD_ID)
 public class PandorasBox
 {
     public static final String NAME = "Pandora's Box";
     public static final String MOD_ID = "pandorasbox";
-    public static final String VERSION = "2.3.4-1.20";
+    public static final String VERSION = "2.3.6-1.20.2";
 
     public static PandorasBox instance;
 
-    public static PBProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+    public static PBProxy proxy = runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     public static String filePathTexturesFull = "pandorasbox:textures/mod/";
     public static String filePathTextures = "textures/mod/";
@@ -65,9 +68,6 @@ public class PandorasBox
         EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
         Registry.init(EVENT_BUS);
         EVENT_BUS.addListener(this::preInit);
-
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
         instance = this;
     }
     public static void initConfig() {
@@ -87,5 +87,11 @@ public class PandorasBox
         proxy.preInit();
 
         proxy.load();
+    }
+    public static <T> T runForDist(Supplier<Supplier<T>> clientTarget, Supplier<Supplier<T>> serverTarget) {
+        return switch (FMLEnvironment.dist) {
+            case CLIENT -> clientTarget.get().get();
+            case DEDICATED_SERVER -> serverTarget.get().get();
+        };
     }
 }

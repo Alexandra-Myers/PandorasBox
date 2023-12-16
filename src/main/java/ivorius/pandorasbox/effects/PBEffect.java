@@ -140,15 +140,15 @@ public abstract class PBEffect
         return !(block.getLightBlock(world, pos) > 0 || world.getBlockState(pos.below()).getLightBlock(world, pos.below()) > 0 || world.getBlockState(pos.below(2)).getLightBlock(world, pos.below(2)) > 0);
     }
 
-    public void addPotionEffectDuration(LivingEntity entity, Potion potionEffect)
+    public void combinedEffectDuration(LivingEntity entity, MobEffectInstance[] mobEffects)
     {
-        for(MobEffectInstance effectInstance : potionEffect.getEffects()) {
+        for(MobEffectInstance effectInstance : mobEffects) {
+            if(effectInstance == null)
+                continue;
             if (entity.canBeAffected(effectInstance)) {
-                boolean addNewEffect = true;
-
                 if (entity.hasEffect(effectInstance.getEffect())) {
                     MobEffectInstance prevEffect = entity.getEffect(effectInstance.getEffect());
-                    if (prevEffect.getAmplifier() == effectInstance.getAmplifier()) {
+                    if (prevEffect != null && prevEffect.getAmplifier() == effectInstance.getAmplifier()) {
                         int duration = prevEffect.getDuration() + effectInstance.getDuration();
                         MobEffectInstance combined = new MobEffectInstance(effectInstance.getEffect(), duration, effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.isVisible());
                         entity.addEffect(combined);

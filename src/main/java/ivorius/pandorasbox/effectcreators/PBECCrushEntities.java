@@ -39,8 +39,7 @@ public class PBECCrushEntities implements PBEffectCreator
         double range = this.range.getValue(random);
         double strength = (0.15 + random.nextDouble() * 0.15) * (1 + (cycles - 1) * 0.3);
 
-        PBEffectEntitiesCrush effect = new PBEffectEntitiesCrush(time, range, cycles, strength);
-        return effect;
+        return new PBEffectEntitiesCrush(time, range, cycles, strength);
     }
 
     @Override

@@ -44,8 +44,7 @@ public class PBECHeightNoise implements PBEffectCreator
         int[] shift = ValueHelper.getValueRange(this.shift, random);
         int[] towerSize = ValueHelper.getValueRange(this.towerSize, random);
 
-        PBEffectGenHeightNoise genHeightNoise = new PBEffectGenHeightNoise(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), shift[0], shift[1], towerSize[0], towerSize[1], blockSize);
-        return genHeightNoise;
+        return new PBEffectGenHeightNoise(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), shift[0], shift[1], towerSize[0], towerSize[1], blockSize);
     }
 
     @Override

@@ -11,6 +11,7 @@ import ivorius.pandorasbox.random.PandorasBoxEntityNamer;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.utils.StringConverter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -37,9 +38,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.event.EventHooks;
 
 /**
  * Created by lukas on 30.03.14.
@@ -232,7 +232,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
                 if (nearest != null)
                 {
-                    ForgeEventFactory.onFinalizeSpawn(wolf, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
+                    EventHooks.onFinalizeSpawn(wolf, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                     wolf.getNavigation().stop();
                     wolf.setTarget(null);
                     wolf.tame(nearest);
@@ -252,7 +252,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
                 if (nearest != null)
                 {
-                    ForgeEventFactory.onFinalizeSpawn(ocelot, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
+                    EventHooks.onFinalizeSpawn(ocelot, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                     ocelot.tame(nearest);
                     world.broadcastEntityEvent(ocelot, (byte) 7);
                 }
@@ -286,14 +286,14 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
                 FireworkRocketEntity fireworkRocket = EntityType.FIREWORK_ROCKET.create(world);
                 assert fireworkRocket != null;
                 fireworkRocket.setPos(x, y, z);
-                fireworkRocket.getEntityData().set(fireworkStackParameter(), stack);
+                fireworkRocket.getEntityData().set(FireworkRocketEntity.DATA_ID_FIREWORKS_ITEM, stack);
                 return fireworkRocket;
             }
             else if ("pbspecial_angryWolf".equals(entityID))
             {
                 Wolf wolf = EntityType.WOLF.create(world);
                 assert wolf != null;
-                ForgeEventFactory.onFinalizeSpawn(wolf, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
+                EventHooks.onFinalizeSpawn(wolf, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                 wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 wolf.setTarget(world.getNearestPlayer(x, y, z, 40.0, false));
 
@@ -303,16 +303,16 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             {
                 Creeper creeper = EntityType.CREEPER.create(world);
                 assert creeper != null;
-                ForgeEventFactory.onFinalizeSpawn(creeper, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
+                EventHooks.onFinalizeSpawn(creeper, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                 creeper.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                creeper.getEntityData().set(creeperPoweredParameter(), true);
+                creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
                 return creeper;
             }
             else if ("pbspecial_skeletonWither".equals(entityID))
             {
                 WitherSkeleton skeleton = EntityType.WITHER_SKELETON.create(world);
                 assert skeleton != null;
-                ForgeEventFactory.onFinalizeSpawn(skeleton, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
+                EventHooks.onFinalizeSpawn(skeleton, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                 skeleton.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
                 skeleton.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
@@ -324,15 +324,14 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             {
                 ElderGuardian entity = EntityType.ELDER_GUARDIAN.create(world);
                 assert entity != null;
-                ForgeEventFactory.onFinalizeSpawn(entity, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
+                EventHooks.onFinalizeSpawn(entity, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                 entity.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
 
                 return entity;
             }
             entityID = StringConverter.convertCamelCase(entityID);
 
-            EntityType<?> entity = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(entityID));
-            assert entity != null;
+            EntityType<?> entity = BuiltInRegistries.ENTITY_TYPE.get(new ResourceLocation(entityID));
             Entity entity1 = entity.create(world);
             assert entity1 != null;
             entity1.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
@@ -342,7 +341,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             if(entity1 instanceof Hoglin hoglin)
                 hoglin.setImmuneToZombification(true);
             if (entity1 instanceof Mob mob)
-                ForgeEventFactory.onFinalizeSpawn(mob, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
+                EventHooks.onFinalizeSpawn(mob, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
 
             return entity1;
         }
@@ -352,15 +351,6 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         }
 
         return null;
-    }
-
-    private static EntityDataAccessor<Boolean> creeperPoweredParameter() throws IllegalAccessException
-    {
-        return (EntityDataAccessor<Boolean>) ObfuscationReflectionHelper.findField(Creeper.class, "f_32274_").get(null);
-    }
-    private static EntityDataAccessor<ItemStack> fireworkStackParameter() throws IllegalAccessException
-    {
-        return (EntityDataAccessor<ItemStack>) ObfuscationReflectionHelper.findField(FireworkRocketEntity.class, "f_37019_").get(null);
     }
 
     public static CompoundTag createRandomFirework(RandomSource random)

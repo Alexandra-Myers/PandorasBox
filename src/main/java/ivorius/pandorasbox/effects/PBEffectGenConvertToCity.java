@@ -11,6 +11,7 @@ import ivorius.pandorasbox.math.IvMathHelper;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -24,7 +25,6 @@ import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
@@ -190,7 +190,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                 setBlockSafe(serverLevel, currentPos, Blocks.SPAWNER.defaultBlockState());
                 BlockEntity block = world.getBlockEntity(currentPos);
                 if (block instanceof SpawnerBlockEntity spawnerBlock) {
-                    List<EntityType<?>> entityTypes = ForgeRegistries.ENTITY_TYPES.getValues().stream().toList();
+                    List<EntityType<?>> entityTypes = BuiltInRegistries.ENTITY_TYPE.stream().toList();
                     entityTypes = entityTypes.stream().filter(entityType -> entityType.canSummon() && entityType.create(world) instanceof LivingEntity).toList();
                     int entity = world.random.nextInt(entityTypes.size());
                     spawnerBlock.setEntityId(entityTypes.get(entity), world.random);

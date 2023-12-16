@@ -6,6 +6,7 @@ import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -16,15 +17,14 @@ import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.StainedGlassBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
+import java.util.List;
 import java.util.Objects;
 
 import static ivorius.pandorasbox.PandorasBox.*;
@@ -32,12 +32,11 @@ import static ivorius.pandorasbox.PandorasBox.*;
 /**
  * Created by lukas on 29.07.14.
  */
-@Mod.EventBusSubscriber(modid = PandorasBox.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class PBEventHandler
 {
     public void register()
     {
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
@@ -78,7 +77,8 @@ public class PBEventHandler
         stained_glass = new ArrayListExtensions<>();
         saplings = new ArrayListExtensions<>();
         pots = new ArrayListExtensions<>();
-        for (Block block : ForgeRegistries.BLOCKS) {
+        List<Block> blocks = BuiltInRegistries.BLOCK.stream().toList();
+        for (Block block : blocks) {
             if (block.defaultBlockState().is(BlockTags.LOGS)) {
                 logs.add(block);
             }
@@ -97,10 +97,10 @@ public class PBEventHandler
             if (block.defaultBlockState().is(BlockTags.STONE_BRICKS)) {
                 bricks.add(block);
             }
-            if (Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block)).getPath().endsWith("terracotta")) {
+            if (Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(block)).getPath().endsWith("terracotta")) {
                 terracotta.add(block);
             }
-            if (Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block)).getPath().endsWith("_terracotta")) {
+            if (Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(block)).getPath().endsWith("_terracotta")) {
                 stained_terracotta.add(block);
             }
             if (block.defaultBlockState().is(BlockTags.PLANKS)) {
