@@ -259,7 +259,6 @@ public class PandorasBoxHelper
         addEntities(landMobs, 5.0, 10, 20, "silverfish");
         addEntities(landMobs, 5.0, 2, 6, "magma_cube");
         addEntities(landMobs, 4.0, 2, 8, "vindicator");
-        addEntities(landMobs, 4.0, 2, 6, "piglin_brute");
         addEntities(landMobs, 4.0, 2, 4, "zoglin");
         addEntities(landMobs, 4.0, 1, 2, "ravager");
         addEntities(landMobs, 4.0, 2, 4, "witch");
@@ -267,6 +266,7 @@ public class PandorasBoxHelper
         addEntities(landMobs, 5.0, 2, 6, "pbspecial_angry_wolf");
         addEntities(landMobs, 4.0, 2, 5, "pbspecial_charged_creeper");
         addEntities(landMobs, 3.0, 1, 1, "evoker");
+        addEntities(landMobs, 2.0, 2, 3, "piglin_brute");
         mobs.addAll(landMobs);
         addEntities(mobs, 1.0, 1, 1, "wither");
         addEntities(mobs, 4.0, 2, 5, "blaze");
