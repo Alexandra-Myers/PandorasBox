@@ -6,12 +6,16 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBox;
+import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.math.IvMathHelper;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
+import ivorius.pandorasbox.utils.PBNBTHelper;
+import ivorius.pandorasbox.weighted.WeightedEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -27,17 +31,19 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Alexandra on 2.10.23.
  */
-public class PBEffectGenConvertToCity extends PBEffectGenerate
-{
+public class PBEffectGenConvertToCity extends PBEffectGenerate {
+    public List<EntityType<?>> mobsToSpawn;
     public PBEffectGenConvertToCity() {}
 
-    public PBEffectGenConvertToCity(int time, double range, int unifiedSeed)
+    public PBEffectGenConvertToCity(int time, double range, int unifiedSeed, List<EntityType<?>> mobs)
     {
         super(time, range, 2, unifiedSeed);
+        mobsToSpawn = mobs;
     }
 
     @Override
@@ -190,10 +196,8 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                 setBlockSafe(serverLevel, currentPos, Blocks.SPAWNER.defaultBlockState());
                 BlockEntity block = world.getBlockEntity(currentPos);
                 if (block instanceof SpawnerBlockEntity spawnerBlock) {
-                    List<EntityType<?>> entityTypes = BuiltInRegistries.ENTITY_TYPE.stream().toList();
-                    entityTypes = entityTypes.stream().filter(entityType -> entityType.canSummon() && entityType.create(world) instanceof LivingEntity).toList();
-                    int entity = world.random.nextInt(entityTypes.size());
-                    spawnerBlock.setEntityId(entityTypes.get(entity), world.random);
+                    int entity = world.random.nextInt(mobsToSpawn.size());
+                    spawnerBlock.setEntityId(mobsToSpawn.get(entity), world.random);
                 }
                 return;
             }
@@ -249,5 +253,17 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate
                 .setValue(IronBarsBlock.SOUTH, block.attachsTo(southState, southState.isFaceSturdy(level, south, Direction.NORTH)))
                 .setValue(IronBarsBlock.WEST, block.attachsTo(westState, westState.isFaceSturdy(level, west, Direction.EAST)))
                 .setValue(IronBarsBlock.EAST, block.attachsTo(eastState, eastState.isFaceSturdy(level, east, Direction.WEST)));
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag compound) {
+        super.writeToNBT(compound);
+        PBNBTHelper.writeNBTEntities("entities", mobsToSpawn.toArray(new EntityType[0]), compound);
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag compound) {
+        super.readFromNBT(compound);
+        mobsToSpawn = List.of(Objects.requireNonNull(PBNBTHelper.readNBTEntities("entities", compound)));
     }
 }

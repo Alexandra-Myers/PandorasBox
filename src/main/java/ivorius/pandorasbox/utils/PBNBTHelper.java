@@ -8,6 +8,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
@@ -119,6 +120,33 @@ public class PBNBTHelper
 
             for (String s : strings)
                 nbtTagList.add(StringTag.valueOf(s));
+
+            compound.put(id, nbtTagList);
+        }
+    }
+
+    public static EntityType<?>[] readNBTEntities(String id, CompoundTag compound)
+    {
+        if (compound.contains(id))
+        {
+            ListTag nbtTagList = compound.getList(id, 8);
+            EntityType<?>[] entities = new EntityType<?>[nbtTagList.size()];
+
+            for (int i = 0; i < entities.length; i++)
+                entities[i] = BuiltInRegistries.ENTITY_TYPE.get(new ResourceLocation(nbtTagList.getString(i)));
+
+            return entities;
+        }
+
+        return null;
+    }
+
+    public static void writeNBTEntities(String id, EntityType<?>[] entities, CompoundTag compound) {
+        if (entities != null) {
+            ListTag nbtTagList = new ListTag();
+
+            for (EntityType<?> e : entities)
+                nbtTagList.add(StringTag.valueOf(BuiltInRegistries.ENTITY_TYPE.getKey(e).getPath()));
 
             compound.put(id, nbtTagList);
         }

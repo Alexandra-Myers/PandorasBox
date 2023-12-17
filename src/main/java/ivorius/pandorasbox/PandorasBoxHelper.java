@@ -247,21 +247,26 @@ public class PandorasBoxHelper
         addEntities(landMobs, 7.5, 3, 10, "husk");
         addEntities(landMobs, 10.0, 2, 8, "spider");
         addEntities(landMobs, 10.0, 2, 5, "skeleton");
+        addEntities(landMobs, 10.0, 2, 5, "pillager");
         addEntities(landMobs, 7.5, 2, 5, "stray");
         addEntities(landMobs, 5.0, 2, 5, "pbspecial_wither_skeleton");
         addEntities(landMobs, 10.0, 2, 8, "creeper");
         addEntities(landMobs, 6.0, 2, 8, "slime");
         addEntities(landMobs, 6.0, 2, 8, "zombified_piglin");
         addEntities(landMobs, 6.0, 2, 8, "hoglin");
-        addEntities(landMobs, 6.0, 2, 8, "zoglin");
         addEntities(landMobs, 6.0, 2, 6, "enderman");
         addEntities(landMobs, 5.0, 2, 4, "cave_spider");
         addEntities(landMobs, 5.0, 10, 20, "silverfish");
         addEntities(landMobs, 5.0, 2, 6, "magma_cube");
+        addEntities(landMobs, 4.0, 2, 8, "vindicator");
+        addEntities(landMobs, 4.0, 2, 6, "piglin_brute");
+        addEntities(landMobs, 4.0, 2, 4, "zoglin");
+        addEntities(landMobs, 4.0, 1, 2, "ravager");
         addEntities(landMobs, 4.0, 2, 4, "witch");
         addEntities(landMobs, 4.0, 10, 20, "endermite");
         addEntities(landMobs, 5.0, 2, 6, "pbspecial_angry_wolf");
         addEntities(landMobs, 4.0, 2, 5, "pbspecial_charged_creeper");
+        addEntities(landMobs, 3.0, 1, 1, "evoker");
         mobs.addAll(landMobs);
         addEntities(mobs, 1.0, 1, 1, "wither");
         addEntities(mobs, 4.0, 2, 5, "blaze");
@@ -271,24 +276,35 @@ public class PandorasBoxHelper
         addEntities(creatures, 10.0, 3, 10, "pig", "sheep", "cow", "chicken");
         addEntities(creatures, 6.0, 2, 6, "wolf");
         addEntities(creatures, 6.0, 2, 6, "panda");
+        addEntities(creatures, 6.0, 2, 2, "polar_bear");
+        addEntities(creatures, 6.0, 2, 2, "sniffer");
         addEntities(creatures, 6.0, 2, 6, "fox");
+        addEntities(creatures, 6.0, 2, 6, "allay");
         addEntities(creatures, 5.0, 4, 10, "bat");
+        addEntities(creatures, 5.0, 4, 10, "bee");
+        addEntities(creatures, 6.0, 4, 10, "frog");
         addEntities(creatures, 7.0, 6, 20, "rabbit");
         addEntities(creatures, 4.0, 3, 7, "mooshroom");
         addEntities(creatures, 4.0, 3, 7, "snow_golem");
-        addEntities(creatures, 4.0, 2, 5, "horse");
+        addEntities(creatures, 4.0, 2, 5, "horse", "donkey", "mule");
+        addEntities(creatures, 4.0, 2, 5, "llama");
         addEntities(creatures, 4.0, 2, 6, "ocelot", "cat");
+        addEntities(creatures, 4.0, 2, 6, "parrot");
+        addEntities(creatures, 3.0, 3, 6, "wandering_trader");
         addEntities(creatures, 3.0, 3, 6, "villager");
+        addEntities(creatures, 3.0, 3, 6, "goat");
         addEntities(creatures, 3.0, 3, 6, "piglin");
         addEntities(creatures, 3.0, 2, 4, "iron_golem");
 
-        addEntities(waterCreatures, 6.0, 3, 10, "squid", "cod", "salmon", "pufferfish", "turtle", "tropical_fish");
+        addEntities(waterCreatures, 6.0, 6, 20, "squid", "glow_squid", "dolphin", "cod", "salmon", "pufferfish", "turtle", "tropical_fish", "axolotl", "tadpole");
 
+        addEntities(waterMobs, 6.0, 3, 10, "drowned");
         addEntities(waterMobs, 6.0, 3, 10, "guardian");
         addEntities(waterMobs, 5.0, 1, 1, "pbspecial_elder_guardian");
 
         addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_wolf_tamed");
         addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_cat_tamed");
+        addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_parrot_tamed");
 
         ArrayListExtensions<Block> planks = new ArrayListExtensions<>();
         ArrayListExtensions<Block> glass = new ArrayListExtensions<>();

@@ -22,6 +22,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Creeper;
@@ -209,6 +210,22 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
                 }
 
                 return cat;
+            } else if ("pbspecial_parrot_tamed".equals(entityID)) {
+                Player owner = getPlayer(world, pbEntity);
+
+                Parrot parrot = EntityType.PARROT.create(world);
+
+                assert parrot != null;
+                parrot.setVariant(Parrot.Variant.byId(random.nextInt(5)));
+                parrot.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                EventHooks.onFinalizeSpawn(parrot, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
+
+                if (owner != null) {
+                    parrot.tame(owner);
+                    world.broadcastEntityEvent(parrot, (byte) 7);
+                }
+
+                return parrot;
             } else if (entityID.startsWith("pbspecial_tnt")) {
                 PrimedTnt primedTnt = new PrimedTnt(world, x, y, z, getPlayer(world, pbEntity));
                 primedTnt.setFuse(Integer.parseInt(entityID.substring(13)));
@@ -305,14 +322,14 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
         int[] colors = new int[(random.nextInt(15) != 0) ? 1 : (random.nextInt(2) + 2)];
         for (int i = 0; i < colors.length; i++) {
-            colors[i] = DyeColor.byId(random.nextInt(16)).ordinal();
+            colors[i] = DyeColor.byId(random.nextInt(16)).getFireworkColor();
         }
         fireworkCompound.putIntArray("Colors", colors);
 
         if (random.nextInt(25) == 0) {
             int[] fadeColors = new int[random.nextInt(2) + 1];
             for (int i = 0; i < fadeColors.length; i++) {
-                fadeColors[i] = DyeColor.byId(random.nextInt(16)).ordinal();
+                fadeColors[i] = DyeColor.byId(random.nextInt(16)).getFireworkColor();
             }
             fireworkCompound.putIntArray("FadeColors", fadeColors);
         }
