@@ -47,10 +47,8 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
     }
 
     @Override
-    public void generateOnSurface(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, BlockPos pos, double range, int pass)
-    {
-        if (world instanceof ServerLevel)
-        {
+    public void generateOnSurface(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, BlockPos pos, double range, int pass) {
+        if (!world.isClientSide()) {
             int randomX = pos.getX() - (pos.getX() % blockSize);
             int randomZ = pos.getZ() - (pos.getZ() % blockSize);
             Random usedRandom = new Random(new Random(randomX).nextLong() ^ new Random(randomZ).nextLong());
@@ -65,13 +63,19 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
             List<Player> entityList = world.getEntitiesOfClass(Player.class, new AABB(pos.getX() - 2.0, minEffectY - 4, pos.getZ() - 3.0, pos.getX() + 4.0, maxEffectY + 4, pos.getZ() + 4.0));
 
             if (entityList.isEmpty()) {
-                BlockState[] states = new BlockState[towerSize];
-
-                for (int y = 0; y < towerSize; y++)
-                    states[y] = world.getBlockState(pos.above(towerMinY));
-
-                for (int y = 0; y < towerSize; y++)
-                    setBlockSafe(world, pos.above(towerMinY), states[y]);
+                BlockState blockState = null;
+                BlockPos pos1 = pos.immutable();
+                while (blockState == null) {
+                    BlockState state = world.getBlockState(pos1);
+                    if(state.isAir()) {
+                        pos1 = pos1.below();
+                        continue;
+                    }
+                    blockState = state;
+                }
+                for (int y = 0; y < towerSize; y++) {
+                    setBlockSafe(world, new BlockPos(pos.getX(), towerMinY + y, pos.getZ()), blockState);
+                }
             }
         }
     }

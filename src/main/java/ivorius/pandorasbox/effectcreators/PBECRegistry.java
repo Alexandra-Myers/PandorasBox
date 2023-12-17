@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.*;
@@ -186,7 +187,7 @@ public class PBECRegistry
     {
         if (effect != null && !world.isClientSide())
         {
-            PandorasBoxEntity entityPandorasBox = Registry.Box.get().create(world);
+            PandorasBoxEntity pandorasBox = Registry.Box.get().create(world);
 
             if(pos == null) {
                 pos = new BlockPos(
@@ -198,21 +199,23 @@ public class PBECRegistry
                 pos = pos.above();
             }
 
-            assert entityPandorasBox != null;
+            assert pandorasBox != null;
 
-            entityPandorasBox.setBoxEffect(effect);
-            entityPandorasBox.setTimeBoxWaiting(40);
-            entityPandorasBox.moveTo(pos, entity.getYRot() + 180.0f, 0.0f);
+            pandorasBox.setBoxEffect(effect);
+            pandorasBox.setTimeBoxWaiting(40);
+            pandorasBox.moveTo(pos, entity.getYRot() + 180.0f, 0.0f);
 
             if (floatAway) {
-                entityPandorasBox.beginFloatingAway();
+                pandorasBox.beginFloatingAway();
             } else {
-                entityPandorasBox.beginFloatingUp();
+                pandorasBox.beginFloatingUp();
             }
 
-            world.addFreshEntity(entityPandorasBox);
+            if (entity instanceof Player player) pandorasBox.setBoxOwner(player);
 
-            return entityPandorasBox;
+            world.addFreshEntity(pandorasBox);
+
+            return pandorasBox;
         }
 
         return null;

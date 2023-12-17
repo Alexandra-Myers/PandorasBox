@@ -58,7 +58,7 @@ public class PBECSpawnExploMobs implements PBEffectCreator
         for (int i = 0; i < number; i++)
         {
             entitiesToSpawn[i] = new String[2];
-            entitiesToSpawn[i][0] = (invisible ? "pbspecial_invisibleTnt" : "pbspecial_tnt") + this.fuseTime.getValue(random);
+            entitiesToSpawn[i][0] = (invisible ? "pbspecial_invisible_tnt" : "pbspecial_tnt") + this.fuseTime.getValue(random);
             entitiesToSpawn[i][1] = entity.entityID;
         }
 

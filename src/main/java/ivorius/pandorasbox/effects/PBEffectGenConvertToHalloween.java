@@ -62,7 +62,7 @@ public class PBEffectGenConvertToHalloween extends PBEffectGenerate
                         }
                         else if (b == 2)
                         {
-                            setBlockSafe(world, pos, Blocks.PUMPKIN.defaultBlockState());
+                            setBlockSafe(world, pos, Blocks.CARVED_PUMPKIN.defaultBlockState());
                         }
                         else if (b == 3)
                         {

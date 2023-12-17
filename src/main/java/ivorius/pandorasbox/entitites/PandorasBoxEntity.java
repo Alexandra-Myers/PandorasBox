@@ -29,11 +29,15 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityAdditionalSpawnData;
 import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by lukas on 30.03.14.
@@ -74,6 +78,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
     protected float scaleInProgress = 1.0f;
     private static final EntityDataAccessor<PBEffect> DATA_EFFECT_ID = SynchedEntityData.defineId(PandorasBoxEntity.class, PBEFFECT_SERIALIZER);
+    private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.OPTIONAL_UUID);
 
     protected Vec3 effectCenter = new Vec3(0, 0, 0);
 
@@ -155,6 +160,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     protected void defineSynchedData() {
         this.getEntityData().define(BOX_DEATH_TICKS, -1);
         this.getEntityData().define(DATA_EFFECT_ID, new PBECDuplicateBox(new IConstant(PBEffectDuplicateBox.MODE_BOX_IN_BOX), new DConstant(0.5)).constructEffect(this.level(), this.getX(), this.getY(), this.getZ(), this.random));
+        this.getEntityData().define(DATA_OWNER_UUID, Optional.empty());
     }
 
     @Override
@@ -316,6 +322,17 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
         boxEffect = ensureNotNull(PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true));
         entityData.set(DATA_EFFECT_ID, boxEffect);
+    }
+
+    public void setBoxOwner(Player player) {
+        if (player == null) return;
+        entityData.set(DATA_OWNER_UUID, Optional.of(player.getUUID()));
+    }
+
+    public Player getBoxOwner() {
+        if (entityData.get(DATA_OWNER_UUID).isEmpty())
+            return null;
+        return level().getPlayerByUUID(entityData.get(DATA_OWNER_UUID).get());
     }
 
     public void startFadingOut()

@@ -66,10 +66,8 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
         }
     }
 
-    public void generateStructure(Level world, PandorasBoxEntity entity, RandomSource random, Structure structure, BlockPos pos, float newRatio, float prevRatio)
-    {
-        if (world instanceof ServerLevel)
-        {
+    public void generateStructure(Level world, PandorasBoxEntity entity, RandomSource random, Structure structure, BlockPos pos, float newRatio, float prevRatio) {
+        if (world instanceof ServerLevel) {
             StructureTarget structureTarget = (StructureTarget) structure;
 
             double newRange = newRatio * targetSize;
@@ -77,24 +75,19 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
 
             int requiredRange = Mth.ceil(newRange);
 
-            for (int xP = -requiredRange; xP <= requiredRange; xP++)
-            {
-                for (int zP = -requiredRange; zP <= requiredRange; zP++)
-                {
+            for (int xP = -requiredRange; xP <= requiredRange; xP++) {
+                for (int zP = -requiredRange; zP <= requiredRange; zP++) {
                     double dist = Mth.sqrt(xP * xP + zP * zP);
 
-                    if (dist < newRange)
-                    {
-                        if (dist >= prevRange)
-                        {
+                    if (dist < newRange) {
+                        if (dist >= prevRange) {
                             ArrayListExtensions<Block> terracottas = new ArrayListExtensions<>();
                             terracottas.addAll(PandorasBox.stained_terracotta);
                             setBlockSafe(world, new BlockPos(structureTarget.x + xP, structureTarget.y, structureTarget.z + zP), terracottas.get(structureTarget.colors[Mth.floor(dist)]).defaultBlockState());
 
                             double nextDist = Mth.sqrt((xP * xP + 3 * 3) + (zP * zP + 3 * 3));
 
-                            if (nextDist >= targetSize && random.nextDouble() < entityDensity)
-                            {
+                            if (nextDist >= targetSize && random.nextDouble() < entityDensity) {
                                 Entity newEntity = PBEffectSpawnEntityIDList.createEntity(world, entity, random, entityToSpawn, structureTarget.x + xP + 0.5, structureTarget.y + 1.5, structureTarget.z + zP + 0.5);
                                 assert newEntity != null;
                                 world.addFreshEntity(newEntity);

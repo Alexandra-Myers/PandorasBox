@@ -71,7 +71,8 @@ public abstract class PBEffect
 
     public static Player getPlayer(Level world, PandorasBoxEntity box)
     {
-        return getRandomNearbyPlayer(world, box); // We don't know the owner :/
+        Player player = box.getBoxOwner();
+        return player == null ? getRandomNearbyPlayer(world, box) : player;
     }
 
     public static boolean isBlockAnyOf(Block block, Block... blocks)
@@ -95,16 +96,9 @@ public abstract class PBEffect
         return false;
     }
 
-    public static Entity lazilySpawnEntity(Level world, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos)
-    {
-        if (random.nextFloat() < chance && !world.isClientSide())
-        {
-            Entity entity = PBEffectSpawnEntityIDList.createEntity(world, box, random, entityID, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-
-            if (entity != null)
-            {
-                return entity;
-            }
+    public static Entity lazilySpawnEntity(Level world, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos) {
+        if (random.nextFloat() < chance && !world.isClientSide()) {
+            return PBEffectSpawnEntityIDList.createEntity(world, box, random, entityID, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         }
 
         return null;
