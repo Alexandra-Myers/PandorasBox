@@ -63,18 +63,9 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
             List<Player> entityList = world.getEntitiesOfClass(Player.class, new AABB(pos.getX() - 2.0, minEffectY - 4, pos.getZ() - 3.0, pos.getX() + 4.0, maxEffectY + 4, pos.getZ() + 4.0));
 
             if (entityList.isEmpty()) {
-                BlockState blockState = null;
-                BlockPos pos1 = pos.immutable();
-                while (blockState == null) {
-                    BlockState state = world.getBlockState(pos1);
-                    if(state.isAir()) {
-                        pos1 = pos1.below();
-                        continue;
-                    }
-                    blockState = state;
-                }
                 for (int y = 0; y < towerSize; y++) {
-                    setBlockSafe(world, new BlockPos(pos.getX(), towerMinY + y, pos.getZ()), blockState);
+                    BlockPos newPos = new BlockPos(pos.getX(), towerMinY, pos.getZ());
+                    setBlockSafe(world, newPos.above(y), world.getBlockState(newPos.above(pos.getY() - towerMinY)));
                 }
             }
         }
