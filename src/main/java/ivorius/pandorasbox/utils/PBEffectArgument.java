@@ -15,9 +15,12 @@ import ivorius.pandorasbox.random.IConstant;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 public class PBEffectArgument implements ArgumentType<PBEffectCreator> {
+    private static final Collection<String> EXAMPLES = Arrays.asList("cityscape", "minecraft:in_the_end");
 
     public static PBEffectArgument effect() {
         return new PBEffectArgument();
@@ -34,6 +37,11 @@ public class PBEffectArgument implements ArgumentType<PBEffectCreator> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggestResource(PBECRegistry.getAllIDsAsRL().asIterable(), builder);
+        return SharedSuggestionProvider.suggestResource(PBECRegistry.getAllIDsAsRL(), builder);
+    }
+
+    @Override
+    public Collection<String> getExamples() {
+        return EXAMPLES;
     }
 }

@@ -14,37 +14,30 @@ import java.util.*;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectRegistry
-{
+public class PBEffectRegistry {
     private static Hashtable<String, Class<? extends PBEffect>> registeredEffects = new Hashtable<>();
 
-    public static Class<? extends PBEffect> getEffect(String id)
-    {
+    public static Class<? extends PBEffect> getEffect(String id) {
         return registeredEffects.get(id);
     }
     public static final List<ResourceLocation> resourceLocationList = new ArrayList<>();
 
-    public static void register(Class<? extends PBEffect> effect, String id)
-    {
+    public static void register(Class<? extends PBEffect> effect, String id) {
         id = id.toLowerCase();
         resourceLocationList.add(new ResourceLocation(PandorasBox.MOD_ID, id));
         registeredEffects.put(id, effect);
     }
 
-    public static Set<String> getAllEffectIDs()
-    {
+    public static Set<String> getAllEffectIDs() {
         return registeredEffects.keySet();
     }
 
-    public static Collection<Class<? extends PBEffect>> getAllEffects()
-    {
+    public static Collection<Class<? extends PBEffect>> getAllEffects() {
         return registeredEffects.values();
     }
 
-    public static void writeEffect(PBEffect effect, CompoundTag compound)
-    {
-        if (effect != null)
-        {
+    public static void writeEffect(PBEffect effect, CompoundTag compound) {
+        if (effect != null) {
             compound.putString("pbEffectID", effect.getEffectID());
             CompoundTag pbEffectCompound = new CompoundTag();
             effect.writeToNBT(pbEffectCompound);
@@ -52,50 +45,39 @@ public class PBEffectRegistry
         }
     }
 
-    public static PBEffect loadEffect(CompoundTag compound)
-    {
+    public static PBEffect loadEffect(CompoundTag compound) {
         return loadEffect(compound.getString("pbEffectID"), compound.getCompound("pbEffectCompound"));
     }
 
-    public static PBEffect loadEffect(String id, CompoundTag compound)
-    {
+    public static PBEffect loadEffect(String id, CompoundTag compound) {
         Class<? extends PBEffect> clazz = getEffect(id);
 
         PBEffect effect = null;
 
-        if (clazz != null)
-        {
-            try
-            {
+        if (clazz != null) {
+            try {
                 effect = clazz.newInstance();
             }
-            catch (InstantiationException | IllegalAccessException e)
-            {
+            catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
 
-        if (effect != null && compound != null)
-        {
+        if (effect != null && compound != null) {
             effect.readFromNBT(compound);
             return effect;
-        }
-        else
-        {
+        } else {
             System.err.println("Pandoras Box: Could not load effect with id '" + id + "'!");
         }
 
         return null;
     }
 
-    public static String getEffectID(PBEffect effect)
-    {
+    public static String getEffectID(PBEffect effect) {
         Class<? extends PBEffect> clazz = effect.getClass();
 
-        for (String id : registeredEffects.keySet())
-        {
-            if (registeredEffects.get(id).equals(clazz))
-            {
+        for (String id : registeredEffects.keySet()) {
+            if (registeredEffects.get(id).equals(clazz)) {
                 return id;
             }
         }

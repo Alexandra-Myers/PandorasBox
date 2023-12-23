@@ -1,10 +1,10 @@
 package ivorius.pandorasbox.init;
 
 import com.mojang.serialization.Codec;
-import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.block.PandorasBoxBlock;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.effects.PBEffect;
+import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.items.PandorasBoxItem;
 import ivorius.pandorasbox.utils.PBEffectArgument;
@@ -13,6 +13,7 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -31,29 +32,32 @@ import static ivorius.pandorasbox.PandorasBox.MOD_ID;
 
 public class Registry {
 
-    private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLM = DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MOD_ID);
+    private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLM = DeferredRegister.create(NeoForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MOD_ID);
     private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MOD_ID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, MOD_ID);
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, MOD_ID);
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, MOD_ID);
     private static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(BuiltInRegistries.FEATURE, MOD_ID);
     private static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENTS = DeferredRegister.create(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, MOD_ID);
-    private static final DeferredRegister<EntityDataSerializer<?>> SERIALIZERS = DeferredRegister.create(NeoForgeRegistries.Keys.ENTITY_DATA_SERIALIZERS, MOD_ID);
-//    private static final DeferredRegister<Structure<?>> STRUCTURES = DeferredRegister.create(BuiltInRegistries.STRUCTURE_FEATURES, MOD_ID);
+    private static final DeferredRegister<EntityDataSerializer<?>> SERIALIZERS = DeferredRegister.create(NeoForgeRegistries.ENTITY_DATA_SERIALIZERS, MOD_ID);
 
     public static void init(IEventBus bus) {
+        GLM.register(bus);
+        SERIALIZERS.register(bus);
         FEATURES.register(bus);
         BLOCKS.register(bus);
         ITEMS.register(bus);
         TILES.register(bus);
         ENTITIES.register(bus);
-        SERIALIZERS.register(bus);
         ARGUMENTS.register(bus);
-//        STRUCTURES.register(bus);
     }
-    public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<PBEffect>> PBEFFECTSERIALIZER = SERIALIZERS.register("box_effect", () -> PandorasBoxEntity.PBEFFECT_SERIALIZER);
-//    public static final DeferredHolder<Structure<VillageConfig>> SHRINE_STRUCTURE = STRUCTURES.register("shrine", () -> new SurfaceStructure(VillageConfig.CODEC));
-//    public static final JigsawPattern START = JigsawPatternRegistry.register(new JigsawPattern(new ResourceLocation("pandorasbox:shrine/start_pool"), new ResourceLocation("empty"), ImmutableList.of(Pair.of(JigsawPiece.single("pandorasbox:shrine", ProcessorLists.EMPTY), 1), Pair.of(JigsawPiece.single("pandorasbox:shrine_small", ProcessorLists.EMPTY), 100)), JigsawPattern.PlacementBehaviour.RIGID));
+    public static final DeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<PBEffect>> PBEFFECTSERIALIZER = SERIALIZERS.register("box_effect", () -> EntityDataSerializer.simple((friendlyByteBuf, pbEffect) -> {
+        CompoundTag compound = new CompoundTag();
+        CompoundTag effectCompound = new CompoundTag();
+        PBEffectRegistry.writeEffect(pbEffect, effectCompound);
+        compound.put("boxEffect", effectCompound);
+        friendlyByteBuf.writeNbt(compound);
+    }, friendlyByteBuf -> PBEffectRegistry.loadEffect(friendlyByteBuf.readNbt().getCompound("boxEffect"))));
 
     private static final DeferredHolder<Codec<? extends IGlobalLootModifier>, Codec<PandoraLootModifier>> PANDORA = GLM.register("pandora", PandoraLootModifier.CODEC);
     public static final DeferredHolder<Block, PandorasBoxBlock> PB = BLOCKS.register("pandoras_box", PandorasBoxBlock::new);
