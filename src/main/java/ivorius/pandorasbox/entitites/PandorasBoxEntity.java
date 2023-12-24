@@ -12,7 +12,6 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.init.Registry;
-import ivorius.pandorasbox.network.PartialUpdateHandler;
 import ivorius.pandorasbox.random.DConstant;
 import ivorius.pandorasbox.random.IConstant;
 import net.minecraft.core.particles.ParticleTypes;
@@ -21,10 +20,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -43,8 +40,7 @@ import java.util.UUID;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnData, PartialUpdateHandler
-{
+public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnData {
     public static final float BOX_UPSCALE_SPEED = 0.02f;
 
     private static final EntityDataAccessor<Integer> BOX_DEATH_TICKS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
@@ -260,6 +256,17 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         entityData.set(DATA_EFFECT_ID, boxEffect);
     }
 
+    public void setBoxOwnerUUID(UUID uuid) {
+        if (uuid == null) return;
+        entityData.set(DATA_OWNER_UUID, Optional.of(uuid));
+    }
+
+    public UUID getBoxOwnerUUID() {
+        if (entityData.get(DATA_OWNER_UUID).isEmpty())
+            return null;
+        return entityData.get(DATA_OWNER_UUID).get();
+    }
+
     public void setBoxOwner(Player player) {
         if (player == null) return;
         entityData.set(DATA_OWNER_UUID, Optional.of(player.getUUID()));
@@ -349,6 +356,8 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
 
     public void readBoxData(CompoundTag compound) {
         setBoxEffect(PBEffectRegistry.loadEffect(compound.getCompound("boxEffect")));
+        if (compound.contains("ownerUUID"))
+            setBoxOwnerUUID(compound.getUUID("ownerUUID"));
 
         effectTicksExisted = compound.getInt("effectTicksExisted");
         timeBoxWaiting = compound.getInt("timeBoxWaiting");
@@ -367,6 +376,9 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         CompoundTag effectCompound = new CompoundTag();
         PBEffectRegistry.writeEffect(getBoxEffect(), effectCompound);
         compound.put("boxEffect", effectCompound);
+        UUID uuid = getBoxOwnerUUID();
+        if (uuid != null)
+            compound.putUUID("ownerUUID", uuid);
 
         compound.putInt("effectTicksExisted", effectTicksExisted);
         compound.putInt("timeBoxWaiting", timeBoxWaiting);
@@ -378,25 +390,6 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         compound.putDouble("effectCenterX", effectCenter.x);
         compound.putDouble("effectCenterY", effectCenter.y);
         compound.putDouble("effectCenterZ", effectCenter.z);
-    }
-
-    @Override
-    public void writeUpdateData(FriendlyByteBuf buffer, String context) {
-        if (context.equals("boxEffect")) {
-            CompoundTag compound = new CompoundTag();
-            writeBoxData(compound);
-            buffer.writeNbt(compound);
-        }
-    }
-
-    @Override
-    public void readUpdateData(FriendlyByteBuf buffer, String context) {
-        if (context.equals("boxEffect")) {
-            CompoundTag compound = buffer.readNbt();
-
-            if (compound != null)
-                readBoxData(compound);
-        }
     }
 
     @Override

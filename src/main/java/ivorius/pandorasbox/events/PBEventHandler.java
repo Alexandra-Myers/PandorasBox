@@ -1,6 +1,5 @@
 package ivorius.pandorasbox.events;
 
-import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.commands.CommandPandorasBox;
 import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
