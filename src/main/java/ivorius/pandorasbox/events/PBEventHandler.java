@@ -1,11 +1,15 @@
 package ivorius.pandorasbox.events;
 
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.commands.CommandPandorasBox;
 import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -22,8 +26,10 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static ivorius.pandorasbox.PandorasBox.*;
@@ -57,6 +63,11 @@ public class PBEventHandler
     @SubscribeEvent
     public void serverInit(ServerStartedEvent event) {
         initPB();
+        for (Map.Entry<ResourceKey<EntityDataSerializer<?>>, EntityDataSerializer<?>> entry : NeoForgeRegistries.ENTITY_DATA_SERIALIZERS.entrySet()) {
+            int id = NeoForgeRegistries.ENTITY_DATA_SERIALIZERS.getId(entry.getValue());
+            ResourceLocation rl = NeoForgeRegistries.ENTITY_DATA_SERIALIZERS.getKey(entry.getValue());
+            logger.info("Resource Location: " + rl.toString() + " Id: " + id);
+        }
     }
     @SubscribeEvent
     public void datapackReload(OnDatapackSyncEvent event) {

@@ -21,21 +21,14 @@ import java.util.Map;
 
 import static ivorius.pandorasbox.PandorasBox.logger;
 
-@Mod.EventBusSubscriber(modid = PandorasBox.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class PBClientEventHandler {
+@Mod.EventBusSubscriber(modid = PandorasBox.MOD_ID, value = Dist.CLIENT)
+public class PBClientForgeEventHandler {
     @SubscribeEvent
-    public static void modelLayerLocationInit(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(PandorasBoxModel.LAYER_LOCATION, PandorasBoxModel::createBodyLayer);
-    }
-    @SubscribeEvent
-    public static void entityRendererInit(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(Registry.Box.get(), PandorasBoxRenderer::new);
-        PandorasBoxBlockEntityRenderer.register(event);
-    }
-    @SubscribeEvent
-    public static void addPB(BuildCreativeModeTabContentsEvent event) {
-        if(event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(Registry.PB.get());
+    public static void clientTest(ClientPlayerNetworkEvent.LoggingIn networkEvent) {
+        for (Map.Entry<ResourceKey<EntityDataSerializer<?>>, EntityDataSerializer<?>> entry : NeoForgeRegistries.ENTITY_DATA_SERIALIZERS.entrySet()) {
+            int id = NeoForgeRegistries.ENTITY_DATA_SERIALIZERS.getId(entry.getValue());
+            ResourceLocation rl = NeoForgeRegistries.ENTITY_DATA_SERIALIZERS.getKey(entry.getValue());
+            logger.info("Resource Location: " + rl.toString() + " Id: " + id);
         }
     }
 }
