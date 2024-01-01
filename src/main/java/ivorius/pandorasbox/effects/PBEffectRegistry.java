@@ -5,35 +5,18 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.PandorasBox;
+import ivorius.pandorasbox.init.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.*;
+import java.util.Objects;
 
 /**
  * Created by lukas on 30.03.14.
  */
 public class PBEffectRegistry {
-    private static Hashtable<String, Class<? extends PBEffect>> registeredEffects = new Hashtable<>();
-
     public static Class<? extends PBEffect> getEffect(String id) {
-        return registeredEffects.get(id);
-    }
-    public static final List<ResourceLocation> resourceLocationList = new ArrayList<>();
-
-    public static void register(Class<? extends PBEffect> effect, String id) {
-        id = id.toLowerCase();
-        resourceLocationList.add(new ResourceLocation(PandorasBox.MOD_ID, id));
-        registeredEffects.put(id, effect);
-    }
-
-    public static Set<String> getAllEffectIDs() {
-        return registeredEffects.keySet();
-    }
-
-    public static Collection<Class<? extends PBEffect>> getAllEffects() {
-        return registeredEffects.values();
+        return Registry.BOX_EFFECT_REGISTRY.get(new ResourceLocation(id));
     }
 
     public static void writeEffect(PBEffect effect, CompoundTag compound) {
@@ -57,8 +40,7 @@ public class PBEffectRegistry {
         if (clazz != null) {
             try {
                 effect = clazz.newInstance();
-            }
-            catch (InstantiationException | IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
@@ -74,14 +56,6 @@ public class PBEffectRegistry {
     }
 
     public static String getEffectID(PBEffect effect) {
-        Class<? extends PBEffect> clazz = effect.getClass();
-
-        for (String id : registeredEffects.keySet()) {
-            if (registeredEffects.get(id).equals(clazz)) {
-                return id;
-            }
-        }
-
-        return null;
+        return Objects.requireNonNull(Registry.BOX_EFFECT_REGISTRY.getKey(effect.getClass())).toString();
     }
 }

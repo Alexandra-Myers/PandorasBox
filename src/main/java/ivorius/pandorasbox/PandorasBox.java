@@ -6,19 +6,16 @@
 package ivorius.pandorasbox;
 
 import ivorius.pandorasbox.client.ClientProxy;
-import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.events.PBEventHandler;
 import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.server.ServerProxy;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
@@ -27,19 +24,11 @@ import org.apache.logging.log4j.Logger;
 import java.util.function.Supplier;
 
 @Mod(PandorasBox.MOD_ID)
-public class PandorasBox
-{
-    public static final String NAME = "Pandora's Box";
+public class PandorasBox {
     public static final String MOD_ID = "pandorasbox";
-    public static final String VERSION = "2.3.6.2-1.20.2";
-
     public static PandorasBox instance;
 
     public static PBProxy proxy = runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
-
-    public static String filePathTexturesFull = "pandorasbox:textures/mod/";
-    public static String filePathTextures = "textures/mod/";
-    public static String basePath = "pandorasbox:";
     public static Logger logger  = LogManager.getLogger();
 
     public final IEventBus EVENT_BUS;
@@ -74,9 +63,7 @@ public class PandorasBox
         CONFIG = new PBConfig();
     }
 
-    public void preInit(final FMLCommonSetupEvent event)
-    {
-        PBEffects.registerEffects();
+    public void preInit(final FMLCommonSetupEvent event) {
         LOLIPOP = Registry.LOLIPOP.get();
         COLOURFUL_TREE = Registry.COLOURFUL_TREE.get();
         RAINBOW = Registry.RAINBOW.get();

@@ -10,6 +10,7 @@ import ivorius.pandorasbox.effectcreators.PBECDuplicateBox;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
 import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
+import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.random.DConstant;
 import ivorius.pandorasbox.random.IConstant;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -32,12 +33,12 @@ public class PBEffectArgument implements ArgumentType<PBEffectCreator> {
     @Override
     public PBEffectCreator parse(StringReader reader) throws CommandSyntaxException {
         ResourceLocation resourcelocation = ResourceLocation.read(reader);
-        return PBECRegistry.getEffectCreators().getOrDefault(resourcelocation, new PBECDuplicateBox(new IConstant(PBEffectDuplicateBox.MODE_BOX_IN_BOX), new DConstant(0.5)));
+        return Registry.EFFECT_HOLDER_REGISTRY.get(resourcelocation).effectCreator;
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggestResource(PBECRegistry.getAllIDsAsRL(), builder);
+        return SharedSuggestionProvider.suggestResource(Registry.EFFECT_HOLDER_REGISTRY.keySet(), builder);
     }
 
     @Override

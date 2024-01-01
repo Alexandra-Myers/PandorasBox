@@ -35,95 +35,68 @@ import java.util.Collection;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenConvertToChristmas extends PBEffectGenerate
-{
+public class PBEffectGenConvertToChristmas extends PBEffectGenerate {
     public PBEffectGenConvertToChristmas() {}
-    public PBEffectGenConvertToChristmas(int time, double range, int unifiedSeed)
-    {
+    public PBEffectGenConvertToChristmas(int time, double range, int unifiedSeed) {
         super(time, range, 2, unifiedSeed);
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
-    {
-        if (world instanceof ServerLevel serverLevel)
-        {
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
+        if (world instanceof ServerLevel serverLevel) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
 
-            if (pass == 0)
-            {
-                if (isBlockAnyOf(block, Blocks.WATER))
-                {
+            if (pass == 0) {
+                if (isBlockAnyOf(block, Blocks.WATER)) {
                     setBlockSafe(world, pos, Blocks.ICE.defaultBlockState());
-                }
-                else if (blockState.isAir())
-                {
+                } else if (blockState.isAir()) {
                     boolean setSnow = true;
 
                     BlockPos posBelow = pos.below();
-                    if (world.loadedAndEntityCanStandOn(posBelow, entity))
-                    {
-                        if (random.nextInt(10 * 10) == 0)
-                        {
+                    if (world.loadedAndEntityCanStandOn(posBelow, entity)) {
+                        if (random.nextInt(10 * 10) == 0) {
                             setBlockSafe(world, pos, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.Plane.HORIZONTAL.getRandomDirection(world.random)));
-                            ChestBlockEntity tileentitychest = (ChestBlockEntity) world.getBlockEntity(pos);
+                            ChestBlockEntity chestBlockEntity = (ChestBlockEntity) world.getBlockEntity(pos);
 
-                            if (tileentitychest != null)
-                            {
+                            if (chestBlockEntity != null) {
                                 Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.blocksAndItems;
                                 RandomizedItemStack chestContent = WeightedSelector.selectItem(random, itemSelection);
                                 ItemStack stack = chestContent.itemStack.copy();
                                 stack.setCount(chestContent.min + random.nextInt(chestContent.max - chestContent.min + 1));
 
-                                tileentitychest.setItem(world.random.nextInt(tileentitychest.getContainerSize()), stack);
+                                chestBlockEntity.setItem(world.random.nextInt(chestBlockEntity.getContainerSize()), stack);
                             }
 
                             setSnow = false;
-                        }
-                        else if (random.nextInt(10 * 10) == 0)
-                        {
+                        } else if (random.nextInt(10 * 10) == 0) {
                             setBlockSafe(world, pos, Blocks.REDSTONE_LAMP.defaultBlockState());
                             setBlockSafe(world, posBelow, Blocks.REDSTONE_BLOCK.defaultBlockState());
                             setSnow = false;
-                        }
-                        else if (random.nextInt(10 * 10) == 0)
-                        {
+                        } else if (random.nextInt(10 * 10) == 0) {
                             setBlockSafe(world, pos, Blocks.CAKE.defaultBlockState());
                             setSnow = false;
-                        }
-                        else if (random.nextInt(10 * 10) == 0)
-                        {
+                        } else if (random.nextInt(10 * 10) == 0) {
                             ItemEntity entityItem = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.COOKIE));
                             entityItem.setPickUpDelay(20);
                             world.addFreshEntity(entityItem);
                         }
                     }
 
-                    if (setSnow && Blocks.SNOW.defaultBlockState().canSurvive(world, pos))
-                    {
+                    if (setSnow && Blocks.SNOW.defaultBlockState().canSurvive(world, pos)) {
                         setBlockSafe(world, pos, Blocks.SNOW.defaultBlockState());
                     }
-                }
-                else if (block == Blocks.FIRE || block == Blocks.SOUL_FIRE)
-                {
+                } else if (block == Blocks.FIRE || block == Blocks.SOUL_FIRE) {
                     setBlockToAirSafe(world, pos);
-                }
-                else if ((block == Blocks.LAVA && !blockState.getValue(LiquidBlock.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK)
-                {
+                } else if ((block == Blocks.LAVA && !blockState.getValue(LiquidBlock.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK) {
                     setBlockSafe(world, pos, Blocks.COBBLESTONE.defaultBlockState());
-                }
-                else if (block == Blocks.LAVA)
-                {
+                } else if (block == Blocks.LAVA) {
                     setBlockSafe(world, pos, Blocks.OBSIDIAN.defaultBlockState());
                 }
-            }
-            else
-            {
+            } else {
                 Entity santa = lazilySpawnEntity(world, entity, random, "zombie", 1.0f / (150 * 150), pos);
                 Entity snowGolem = lazilySpawnEntity(world, entity, random, "snow_golem", 1.0f / (20 * 20), pos);
-                if (canSpawnEntity(world, blockState, pos, santa))
-                {
+                if (canSpawnEntity(world, blockState, pos, santa)) {
                     ItemStack helmet = new ItemStack(Items.LEATHER_HELMET);
                     ((DyeableArmorItem) helmet.getItem()).setColor(helmet, 0xff0000);
                     ItemStack chestPlate = new ItemStack(Items.LEATHER_CHESTPLATE);

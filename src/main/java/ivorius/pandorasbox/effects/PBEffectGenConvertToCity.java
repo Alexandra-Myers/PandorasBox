@@ -11,25 +11,28 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.math.IvMathHelper;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.PBNBTHelper;
-import ivorius.pandorasbox.weighted.WeightedEntity;
+import ivorius.pandorasbox.utils.RandomizedItemStack;
+import ivorius.pandorasbox.weighted.WeightedSelector;
+import ivorius.pandorasbox.weighted.WeightedSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -201,6 +204,38 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                 }
                 return;
             }
+            if ((IvMathHelper.compareOffsets(currentPos.getX(), originX, width - 1) && currentPos.getZ() == originZ)) {
+                setBlockSafe(world, currentPos.above(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.fromDelta(currentPos.getX() - originX, 0, 0)));
+                ChestBlockEntity chestBlockEntity = (ChestBlockEntity) world.getBlockEntity(currentPos.above());
+
+                if (chestBlockEntity != null) {
+                    Collection<WeightedSet> sets = PandorasBoxHelper.equipmentSets;
+                    Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.items;
+                    if (world.random.nextFloat() > 0.05) {
+                        for (int i = 0; i < world.random.nextInt(5) + 2; i++) {
+                            RandomizedItemStack chestContent = WeightedSelector.selectItem(world.random, itemSelection);
+                            ItemStack stack = chestContent.itemStack.copy();
+                            stack.setCount(chestContent.min + world.random.nextInt(chestContent.max - chestContent.min + 1));
+                            int slot = world.random.nextInt(chestBlockEntity.getContainerSize());
+                            while (!chestBlockEntity.getItem(slot).isEmpty())
+                                slot = world.random.nextInt(chestBlockEntity.getContainerSize());
+
+                            chestBlockEntity.setItem(slot, stack);
+                        }
+                    } else {
+                        WeightedSet chestContent = WeightedSelector.selectItem(world.random, sets);
+                        int amount = world.random.nextInt(chestContent.set.length - 2) + 3;
+                        for (int i = 0; i < amount; i++) {
+                            ItemStack stack = chestContent.set[i];
+                            int slot = world.random.nextInt(chestBlockEntity.getContainerSize());
+                            while (!chestBlockEntity.getItem(slot).isEmpty())
+                                slot = world.random.nextInt(chestBlockEntity.getContainerSize());
+
+                            chestBlockEntity.setItem(slot, stack);
+                        }
+                    }
+                }
+            }
             if (IvMathHelper.compareOffsets(currentPos.getX(), originX, width - 1) || IvMathHelper.compareOffsets(currentPos.getZ(), originZ, width - 1)) {
                 setBlockSafe(world, currentPos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
                 return;
@@ -225,7 +260,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                 setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
             else
                 setBlockSafe(serverLevel, currentPos, Blocks.WHITE_CONCRETE.defaultBlockState());
-        } else
+        } else if (!world.getBlockState(currentPos).is(Blocks.CHEST))
             setBlockToAirSafe(world, currentPos);
 
     }

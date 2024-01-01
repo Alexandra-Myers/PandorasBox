@@ -40,7 +40,12 @@ public class PBECConvertToCity implements PBEffectCreator
         double range = this.range.getValue(random);
         int time = Mth.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        WeightedEntity[] entitySelection = PandorasBoxHelper.getRandomEntityList(random, entityIDs);
+        Collection<WeightedEntity> toChoose = new ArrayList<>();
+        entityIDs.forEach(weightedEntity -> {
+            if (!weightedEntity.entityID.startsWith("pbspecial"))
+                toChoose.add(weightedEntity);
+        });
+        WeightedEntity[] entitySelection = PandorasBoxHelper.getRandomEntityList(random, toChoose);
         List<EntityType<?>> entities = new ArrayList<>();
         for (WeightedEntity entity : entitySelection) {
             String entityID = StringConverter.convertCamelCase(entity.entityID);

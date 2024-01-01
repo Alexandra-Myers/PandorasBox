@@ -19,6 +19,7 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
@@ -53,18 +54,14 @@ public class PandorasBoxHelper
 
     public static List<WeightedBlock> heavyBlocks = new ArrayList<>();
 
-    public static void addEntities(List<WeightedEntity> list, double weight, int minNumber, int maxNumber, String... entities)
-    {
-        for (String s : entities)
-        {
+    public static void addEntities(List<WeightedEntity> list, double weight, int minNumber, int maxNumber, String... entities) {
+        for (String s : entities) {
             list.add(new WeightedEntity(weight, s, minNumber, maxNumber));
         }
     }
 
-    public static void addBlocks(double weight, Block... blocks)
-    {
-        for (Block block : blocks)
-        {
+    public static void addBlocks(double weight, Block... blocks) {
+        for (Block block : blocks) {
             PandorasBoxHelper.blocks.add(new WeightedBlock(weight, block));
 
             Item item = block.asItem();
@@ -72,10 +69,8 @@ public class PandorasBoxHelper
                 addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(new ItemStack(item)), weight));
         }
     }
-    public static void addBlocks(double weight, List<Block> blocks)
-    {
-        for (Block block : blocks)
-        {
+    public static void addBlocks(double weight, List<Block> blocks) {
+        for (Block block : blocks) {
             PandorasBoxHelper.blocks.add(new WeightedBlock(weight, block));
 
             Item item = block.asItem();
@@ -84,62 +79,44 @@ public class PandorasBoxHelper
         }
     }
 
-    public static void addBlocks(List<WeightedBlock> list, double weight, Block... blocks)
-    {
-        for (Block block : blocks)
-        {
+    public static void addBlocks(List<WeightedBlock> list, double weight, Block... blocks) {
+        for (Block block : blocks) {
             list.add(new WeightedBlock(weight, block));
         }
     }
 
-    public static void addItem(RandomizedItemStack RandomizedItemStack)
-    {
+    public static void addItem(RandomizedItemStack RandomizedItemStack) {
         items.add(RandomizedItemStack);
         blocksAndItems.add(RandomizedItemStack);
     }
 
-    public static void addItems(double weight, Object... items)
-    {
-        for (Object object : items)
-        {
-            if (object instanceof Item item)
-            {
+    public static void addItems(double weight, Object... items) {
+        for (Object object : items) {
+            if (object instanceof Item item) {
                 addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(new ItemStack(item)), weight));
-            }
-            else if (object instanceof ItemStack itemStack)
-            {
+            } else if (object instanceof ItemStack itemStack) {
                 addItem(new RandomizedItemStack(itemStack, 1, itemStack.getItem().getMaxStackSize(itemStack), weight));
             }
         }
     }
 
-    public static void addItemsMinMax(double weight, int min, int max, Object... items)
-    {
-        for (Object object : items)
-        {
-            if (object instanceof Item item)
-            {
+    public static void addItemsMinMax(double weight, int min, int max, Object... items) {
+        for (Object object : items) {
+            if (object instanceof Item item) {
                 addItem(new RandomizedItemStack(item, min, max, weight));
-            }
-            else if (object instanceof ItemStack itemStack)
-            {
+            } else if (object instanceof ItemStack itemStack) {
                 addItem(new RandomizedItemStack(itemStack, min, max, weight));
             }
         }
     }
 
-    public static void addEquipmentSet(double weight, Object... items)
-    {
+    public static void addEquipmentSet(double weight, Object... items) {
         ItemStack[] set = new ItemStack[items.length];
 
-        for (int i = 0; i < set.length; i++)
-        {
-            if (items[i] instanceof Item item)
-            {
+        for (int i = 0; i < set.length; i++) {
+            if (items[i] instanceof Item item) {
                 set[i] = new ItemStack(item);
-            }
-            else if (items[i] instanceof ItemStack itemStack)
-            {
+            } else if (items[i] instanceof ItemStack itemStack) {
                 set[i] = itemStack;
             }
         }
@@ -147,56 +124,41 @@ public class PandorasBoxHelper
         equipmentSets.add(new WeightedSet(weight, set));
     }
 
-    public static void addPotions(List<WeightedPotion> list, double weight, int minStrength, int maxStrength, int minDuration, int maxDuration, MobEffect... potions)
-    {
-        for (MobEffect effect : potions)
-        {
+    public static void addPotions(List<WeightedPotion> list, double weight, int minStrength, int maxStrength, int minDuration, int maxDuration, MobEffect... potions) {
+        for (MobEffect effect : potions) {
             list.add(new WeightedPotion(weight, effect, minStrength, maxStrength, minDuration, maxDuration));
         }
     }
 
-    public static void addEnchantableArmor(double weight, Object... items)
-    {
-        for (Object object : items)
-        {
-            if (object instanceof Item item)
-            {
+    public static void addEnchantableArmor(double weight, Object... items) {
+        for (Object object : items) {
+            if (object instanceof Item item) {
                 enchantableArmorList.add(new RandomizedItemStack(item, 1, 1, weight));
-            }
-            else if (object instanceof ItemStack itemStack)
-            {
+            } else if (object instanceof ItemStack itemStack) {
                 enchantableArmorList.add(new RandomizedItemStack(itemStack, 1, 1, weight));
             }
         }
     }
 
-    public static void addEnchantableTools(double weight, Object... items)
-    {
-        for (Object object : items)
-        {
-            if (object instanceof Item item)
-            {
+    public static void addEnchantableTools(double weight, Object... items) {
+        for (Object object : items) {
+            if (object instanceof Item item) {
                 enchantableToolList.add(new RandomizedItemStack(item, 1, 1, weight));
-            }
-            else if (object instanceof ItemStack itemStack)
-            {
+            } else if (object instanceof ItemStack itemStack) {
                 enchantableToolList.add(new RandomizedItemStack(itemStack, 1, 1, weight));
             }
         }
     }
 
-    public static void addEquipmentForLevel(Item base, int level, ItemStack stack)
-    {
+    public static void addEquipmentForLevel(Item base, int level, ItemStack stack) {
         if (!equipmentForLevels.containsKey(base))
             equipmentForLevels.put(base, new Hashtable<>());
 
         equipmentForLevels.get(base).put(level, stack);
     }
 
-    public static void addEquipmentLevelsInOrder(Item base, Object... items)
-    {
-        for (int i = 0; i < items.length; i++)
-        {
+    public static void addEquipmentLevelsInOrder(Item base, Object... items) {
+        for (int i = 0; i < items.length; i++) {
             Object object = items[i];
 
             if (object instanceof Item)
@@ -206,27 +168,12 @@ public class PandorasBoxHelper
         }
     }
 
-    public static void addAllRandomizableBlockProperties(List<Block> blocks)
-    {
+    public static void addAllRandomizableBlockProperties(List<Block> blocks) {
         for (Block block : blocks)
             randomizableBlockProperties.putAll(block, block.defaultBlockState().getProperties());
     }
 
-    public static void addRandomizableBlockProperty(Block[] blocks, Property... properties)
-    {
-        for (Block block : blocks)
-            for (Property property : properties)
-                randomizableBlockProperties.put(block, property);
-    }
-
-    public static void addRandomizableBlockProperty(Block block, Property... properties)
-    {
-        for (Property property : properties)
-            randomizableBlockProperties.put(block, property);
-    }
-
-    public static void initialize()
-    {
+    public static void initialize() {
         mobs = new ArrayList<>();
         creatures = new ArrayList<>();
         waterCreatures = new ArrayList<>();
@@ -249,7 +196,7 @@ public class PandorasBoxHelper
         addEntities(landMobs, 10.0, 2, 5, "skeleton");
         addEntities(landMobs, 10.0, 2, 5, "pillager");
         addEntities(landMobs, 7.5, 2, 5, "stray");
-        addEntities(landMobs, 5.0, 2, 5, "pbspecial_wither_skeleton");
+        addEntities(landMobs, 5.0, 2, 5, "wither_skeleton");
         addEntities(landMobs, 10.0, 2, 8, "creeper");
         addEntities(landMobs, 6.0, 2, 8, "slime");
         addEntities(landMobs, 6.0, 2, 8, "zombified_piglin");
@@ -260,13 +207,13 @@ public class PandorasBoxHelper
         addEntities(landMobs, 5.0, 2, 6, "magma_cube");
         addEntities(landMobs, 4.0, 2, 8, "vindicator");
         addEntities(landMobs, 4.0, 2, 4, "zoglin");
-        addEntities(landMobs, 4.0, 1, 2, "ravager");
         addEntities(landMobs, 4.0, 2, 4, "witch");
         addEntities(landMobs, 4.0, 10, 20, "endermite");
         addEntities(landMobs, 5.0, 2, 6, "pbspecial_angry_wolf");
         addEntities(landMobs, 4.0, 2, 5, "pbspecial_charged_creeper");
         addEntities(landMobs, 3.0, 1, 1, "evoker");
         addEntities(landMobs, 2.0, 2, 3, "piglin_brute");
+        addEntities(landMobs, 1.0, 1, 1, "ravager");
         mobs.addAll(landMobs);
         addEntities(mobs, 1.0, 1, 1, "wither");
         addEntities(mobs, 4.0, 2, 5, "blaze");
@@ -300,7 +247,7 @@ public class PandorasBoxHelper
 
         addEntities(waterMobs, 6.0, 3, 10, "drowned");
         addEntities(waterMobs, 6.0, 3, 10, "guardian");
-        addEntities(waterMobs, 5.0, 1, 1, "pbspecial_elder_guardian");
+        addEntities(waterMobs, 5.0, 1, 1, "elder_guardian");
 
         addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_wolf_tamed");
         addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_cat_tamed");
@@ -332,15 +279,12 @@ public class PandorasBoxHelper
         misc.addAll(Items.LAVA_BUCKET, Items.MILK_BUCKET, Items.WATER_BUCKET, Items.FLINT_AND_STEEL, Items.PAINTING, Items.FLOWER_POT, Items.MINECART, Items.CAULDRON, Items.BRUSH);
         for(Item item : BuiltInRegistries.ITEM.stream().toList()) {
             ItemStack stack = new ItemStack(item);
-            if(stack.is(ItemTags.BOATS) || stack.is(ItemTags.BEDS)) {
+            if(stack.is(ItemTags.BOATS) || stack.is(ItemTags.BEDS))
                 misc.add(item);
-            }
-            if(stack.is(ItemTags.MUSIC_DISCS)) {
+            if(stack.is(ItemTags.MUSIC_DISCS))
                 records.add(item);
-            }
-            if(item instanceof DyeItem) {
+            if(item instanceof DyeItem)
                 dyes.add(item);
-            }
         }
 
         addBlocks(40.0, planks);
@@ -386,11 +330,9 @@ public class PandorasBoxHelper
         addEquipmentSet(8.0, Items.LEATHER_HELMET, Items.IRON_HOE, new ItemStack(Items.WHEAT_SEEDS, 32), new ItemStack(Items.PUMPKIN_SEEDS, 4), new ItemStack(Items.MELON_SEEDS, 4), new ItemStack(Items.BLUE_DYE, 8), new ItemStack(Items.DIRT, 32), Items.WATER_BUCKET, Items.WATER_BUCKET);
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.DIAMOND_AXE, new ItemStack(Items.COOKED_BEEF, 16));
         addEquipmentSet(6.0, Items.TURTLE_HELMET, Items.IRON_BOOTS, Items.TRIDENT, Items.IRON_SWORD, new ItemStack(Items.BREAD, 48));
-        for(Block block : PandorasBox.wool) {
-            if(RandomSource.create().nextDouble() > 0.8) {
+        for(Block block : PandorasBox.wool)
+            if(RandomSource.create().nextDouble() > 0.8)
                 addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
-            }
-        }
 
         addEquipmentLevelsInOrder(Items.WOODEN_SWORD, Items.WOODEN_SWORD, Items.GOLDEN_SWORD, Items.STONE_SWORD, Items.IRON_SWORD, Items.DIAMOND_SWORD, Items.NETHERITE_SWORD);
         addEquipmentLevelsInOrder(Items.WOODEN_AXE, Items.WOODEN_AXE, Items.GOLDEN_AXE, Items.STONE_AXE, Items.IRON_AXE, Items.DIAMOND_AXE, Items.NETHERITE_AXE);
@@ -417,13 +359,11 @@ public class PandorasBoxHelper
         );
     }
 
-    public static int getRandomUnifiedSeed(RandomSource random)
-    {
+    public static int getRandomUnifiedSeed(RandomSource random) {
         return Math.abs(random.nextInt());
     }
 
-    private static <T> T randomElement(Collection<T> collection, RandomSource random)
-    {
+    private static <T> T randomElement(Collection<T> collection, RandomSource random) {
         int num = random.nextInt(collection.size());
         int i = 0;
         for (T t : collection)
@@ -432,13 +372,13 @@ public class PandorasBoxHelper
         throw new InternalError();
     }
 
-    public static BlockState getRandomBlockState(RandomSource rand, Block block, int unified)
-    {
+    public static BlockState getRandomBlockState(RandomSource rand, Block block, int unified) {
         BlockState state = block.defaultBlockState();
 
         Collection<Property<?>> randomizableProperties = randomizableBlockProperties.get(block);
-        if (randomizableProperties != null)
-        {
+        if (randomizableProperties != null) {
+            if (rand.nextFloat() > 0.25)
+                randomizableProperties.remove(BlockStateProperties.WATERLOGGED);
             if (unified >= 0)
                 rand = RandomSource.create(unified ^ rand.nextInt(256));
 
@@ -449,15 +389,13 @@ public class PandorasBoxHelper
         return state;
     }
 
-    public static Block[] getRandomBlockList(RandomSource rand, Collection<WeightedBlock> selection)
-    {
+    public static Block[] getRandomBlockList(RandomSource rand, Collection<WeightedBlock> selection) {
         int number = 1;
         while (number < 10 && rand.nextFloat() < 0.7f)
             number++;
 
         int[] weights = new int[number];
-        for (int i = 0; i < number; i++)
-        {
+        for (int i = 0; i < number; i++) {
             weights[i] = 1;
 
             while (weights[i] < 10 && rand.nextFloat() < 0.7f)
@@ -471,12 +409,10 @@ public class PandorasBoxHelper
         Block[] blocks = new Block[total];
         int blockIndex = 0;
 
-        for (int i = 0; i < number; i++)
-        {
+        for (int i = 0; i < number; i++) {
             Block block = WeightedSelector.selectItem(rand, selection).block;
 
-            for (int j = 0; j < weights[i]; j++)
-            {
+            for (int j = 0; j < weights[i]; j++) {
                 blocks[blockIndex] = block;
                 blockIndex++;
             }
@@ -485,16 +421,14 @@ public class PandorasBoxHelper
         return blocks;
     }
 
-    public static Block getRandomBlock(RandomSource rand, Collection<WeightedBlock> randomBlockList)
-    {
+    public static Block getRandomBlock(RandomSource rand, Collection<WeightedBlock> randomBlockList) {
         if (randomBlockList != null && randomBlockList.size() > 0)
             return WeightedSelector.selectItem(rand, randomBlockList).block;
 
         return WeightedSelector.selectItem(rand, blocks).block;
     }
 
-    public static WeightedEntity[] getRandomEntityList(RandomSource rand, Collection<WeightedEntity> selection)
-    {
+    public static WeightedEntity[] getRandomEntityList(RandomSource rand, Collection<WeightedEntity> selection) {
         WeightedEntity[] entities = new WeightedEntity[rand.nextInt(5) + 1];
 
         for (int i = 0; i < entities.length; i++)
@@ -503,27 +437,22 @@ public class PandorasBoxHelper
         return entities;
     }
 
-    public static WeightedEntity getRandomEntityFromList(RandomSource rand, Collection<WeightedEntity> entityList)
-    {
+    public static WeightedEntity getRandomEntityFromList(RandomSource rand, Collection<WeightedEntity> entityList) {
         return WeightedSelector.selectItem(rand, entityList);
     }
 
-    public static ItemStack getRandomWeaponItemForLevel(RandomSource random, int level)
-    {
+    public static ItemStack getRandomWeaponItemForLevel(RandomSource random, int level) {
         Set<Item> itemSet = equipmentForLevels.keySet();
         Item[] itemArray = itemSet.toArray(new Item[itemSet.size()]);
 
         return getWeaponItemForLevel(itemArray[random.nextInt(itemArray.length)], level);
     }
 
-    public static ItemStack getWeaponItemForLevel(Item baseItem, int level)
-    {
+    public static ItemStack getWeaponItemForLevel(Item baseItem, int level) {
         Hashtable<Integer, ItemStack> levels = equipmentForLevels.get(baseItem);
 
-        if (levels != null)
-        {
-            while (level > 0)
-            {
+        if (levels != null) {
+            while (level > 0) {
                 if (levels.containsKey(level))
                     return levels.get(level);
 

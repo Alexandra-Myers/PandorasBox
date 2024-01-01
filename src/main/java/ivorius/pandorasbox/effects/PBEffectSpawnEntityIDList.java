@@ -257,20 +257,6 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
                 creeper.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
                 return creeper;
-            } else if ("pbspecial_wither_skeleton".equals(entityID)) {
-                WitherSkeleton skeleton = EntityType.WITHER_SKELETON.create(world);
-                assert skeleton != null;
-                EventHooks.onFinalizeSpawn(skeleton, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
-                skeleton.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-
-                return skeleton;
-            } else if ("pbspecial_elder_guardian".equals(entityID)) {
-                ElderGuardian entity = EntityType.ELDER_GUARDIAN.create(world);
-                assert entity != null;
-                EventHooks.onFinalizeSpawn(entity, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
-                entity.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-
-                return entity;
             }
             entityID = StringConverter.convertCamelCase(entityID);
 

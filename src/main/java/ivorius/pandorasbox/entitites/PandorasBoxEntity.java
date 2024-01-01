@@ -6,14 +6,10 @@
 package ivorius.pandorasbox.entitites;
 
 import ivorius.pandorasbox.PandorasBox;
-import ivorius.pandorasbox.effectcreators.PBECDuplicateBox;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.init.Registry;
-import ivorius.pandorasbox.random.DConstant;
-import ivorius.pandorasbox.random.IConstant;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -64,11 +60,6 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         super(p_i50172_1_, p_i50172_2_);
     }
 
-    public int getTimeBoxWaiting()
-    {
-        return timeBoxWaiting;
-    }
-
     @Override
     public boolean canCollideWith(@NotNull Entity p_241849_1_) {
         return false;
@@ -82,32 +73,8 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         return effectTicksExisted;
     }
 
-    public void setEffectTicksExisted(int effectTicksExisted) {
-        this.effectTicksExisted = effectTicksExisted;
-    }
-
-    public boolean canGenerateMoreEffectsAfterwards() {
-        return canGenerateMoreEffectsAfterwards;
-    }
-
     public void setCanGenerateMoreEffectsAfterwards(boolean canGenerateMoreEffectsAfterwards) {
         this.canGenerateMoreEffectsAfterwards = canGenerateMoreEffectsAfterwards;
-    }
-
-    public boolean floatUp() {
-        return floatUp;
-    }
-
-    public void setFloatUp(boolean floatUp) {
-        this.floatUp = floatUp;
-    }
-
-    public float getFloatAwayProgress() {
-        return floatAwayProgress;
-    }
-
-    public void setFloatAwayProgress(float floatAwayProgress) {
-        this.floatAwayProgress = floatAwayProgress;
     }
 
     public Vec3 getEffectCenter() {
@@ -125,7 +92,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     @Override
     protected void defineSynchedData() {
         this.getEntityData().define(BOX_DEATH_TICKS, -1);
-        this.getEntityData().define(DATA_EFFECT_ID, new PBECDuplicateBox(new IConstant(PBEffectDuplicateBox.MODE_BOX_IN_BOX), new DConstant(0.5)).constructEffect(this.level(), this.getX(), this.getY(), this.getZ(), this.random));
+        this.getEntityData().define(DATA_EFFECT_ID, Registry.MATRYOSHKA.get().effectCreator.constructEffect(this.level(), this.getX(), this.getY(), this.getZ(), this.random));
         this.getEntityData().define(DATA_OWNER_UUID, Optional.empty());
     }
 

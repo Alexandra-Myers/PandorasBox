@@ -5,15 +5,13 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import ivorius.pandorasbox.PandorasBox;
+import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectMulti;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.utils.StringConverter;
-import ivorius.pandorasbox.utils.WrappedBiMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -23,7 +21,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Created by lukas on 30.03.14.
@@ -31,56 +28,26 @@ import java.util.stream.Stream;
 public class PBECRegistry
 {
     public static final int MAX_DELAY_IN_MULTIEFFECT = 60;
+    private static final List<EffectHolder> fixedChanceCreators = new ArrayList<>();
+    private static final List<EffectHolder> goodCreators = new ArrayList<>();
+    private static final List<EffectHolder> badCreators = new ArrayList<>();
 
-    private static final ArrayList<String> goodCreators = new ArrayList<>();
-    private static final ArrayList<String> badCreators = new ArrayList<>();
-
-    private static final Map<String, Float> fixedChanceCreators = new HashMap<>();
-
-    private static final WrappedBiMap<ResourceLocation, PBEffectCreator> effectCreators = new WrappedBiMap<>(HashBiMap.create());
-
-    public static void register(PBEffectCreator creator, String id, boolean good) {
-        id = StringConverter.convertCamelCase(id);
-        (good ? goodCreators : badCreators).add(id);
-
+    public static void register(PBEffectCreator creator, String id) {
         PandorasBox.logger.info("Effect Name: " + id);
-        effectCreators.put(new ResourceLocation(id), creator);
-    }
+        EffectHolder holder = Registry.EFFECT_HOLDER_REGISTRY.get(new ResourceLocation(id));
+        holder.defineEffectCreator(creator);
+        if (!holder.canBeGoodOrBad())
+            fixedChanceCreators.add(holder);
+        else if (holder.isGood())
+            goodCreators.add(holder);
+        else
+            badCreators.add(holder);
 
-    public static void register(PBEffectCreator creator, String id, float fixedChance) {
-        id = StringConverter.convertCamelCase(id);
-        fixedChanceCreators.put(id, fixedChance);
-        effectCreators.put(new ResourceLocation(id), creator);
-    }
-
-    public static String getID(PBEffectCreator creator) {
-        return effectCreators.inverse().get(creator).toString();
-    }
-
-    public static PBEffectCreator effectCreatorWithName(String name) {
-        name = StringConverter.convertCamelCase(name);
-        return effectCreators.get(new ResourceLocation(name));
-    }
-    public static BiMap<ResourceLocation, PBEffectCreator> getEffectCreators() {
-        return (BiMap<ResourceLocation, PBEffectCreator>) effectCreators.map();
-    }
-
-    public static boolean hasEffect(String name) {
-        name = StringConverter.convertCamelCase(name);
-        return effectCreators.containsKey(new ResourceLocation(name));
-    }
-
-    public static boolean isEffectGood(String name) {
-        return goodCreators.contains(name);
-    }
-
-    public static boolean isEffectBad(String name) {
-        return badCreators.contains(name);
     }
 
     public static PBEffectCreator randomEffectCreatorOfType(RandomSource random, boolean good) {
-        ArrayList<String> list = good ? goodCreators : badCreators;
-        return effectCreators.get(new ResourceLocation(list.get(random.nextInt(list.size()))));
+        List<EffectHolder> list = good ? goodCreators : badCreators;
+        return list.get(random.nextInt(list.size())).effectCreator;
     }
 
     public static PBEffect createEffect(Level world, RandomSource random, double x, double y, double z, PBEffectCreator creator) {
@@ -97,9 +64,9 @@ public class PBECRegistry
         do {
             PBEffectCreator creator = null;
 
-            for (String fixedChanceCreator : fixedChanceCreators.keySet()) {
-                if (random.nextFloat() < fixedChanceCreators.get(fixedChanceCreator)) {
-                    creator = effectCreators.get(new ResourceLocation(fixedChanceCreator));
+            for (EffectHolder fixedChanceCreator : fixedChanceCreators) {
+                if (random.nextFloat() < fixedChanceCreator.fixedChance()) {
+                    creator = fixedChanceCreator.effectCreator;
                     break;
                 }
             }
@@ -186,24 +153,10 @@ public class PBECRegistry
 
         return null;
     }
-
-    public static Set<String> getAllIDs() {
-        Set<String> set = new HashSet<>();
-        effectCreators.keySet().forEach((location) -> set.add(location.toString()));
-        return set;
-    }
-    public static Stream<ResourceLocation> getAllIDsAsRL() {
-        return effectCreators.keySet().stream();
-    }
     public static boolean isAnyNull(Object... objects) {
         for(Object object : objects) {
             if(object == null) return true;
         }
         return false;
-    }
-
-    public static String[] getIDArray() {
-        Set<String> allIDs = getAllIDs();
-        return allIDs.toArray(new String[allIDs.size()]);
     }
 }

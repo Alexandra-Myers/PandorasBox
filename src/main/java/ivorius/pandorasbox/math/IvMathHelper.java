@@ -148,4 +148,12 @@ public class IvMathHelper
     public static boolean compareOffsets(double base, double origin, double offset) {
         return base == origin + offset || base == origin - offset;
     }
+
+    public static boolean isBetween(int base, int origin, int offset) {
+        boolean bl = false;
+        for (int i = origin - offset; i < origin + offset; i++) {
+            bl |= base == i;
+        }
+        return bl;
+    }
 }

@@ -28,36 +28,29 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
     }
     @Override
     public void buildStructure(Level world, PandorasBoxEntity entity, BlockPos currentPos, RandomSource random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
+        int relativeHeight = currentPos.getY() - originY;
+        double relative = (double) relativeHeight / height;
         boolean bl = Mth.ceil(length * 0.5) >= 2;
         boolean bl1 = Mth.ceil(width * 0.5) >= 2;
         int portalXAxis = bl ? Mth.ceil(length * 0.5) : 2;
         int portalZAxis = bl1 ? Mth.ceil(width * 0.5) : 2;
-        if (currentPos.getY() >= startingYOffset + originY
-                && currentPos.getY() < originY + height
-                && axis == Direction.Axis.X
-                && (IvMathHelper.compareOffsets(currentPos.getX(), originX, portalXAxis)
-                    || ((currentPos.getY() == originY + startingYOffset || currentPos.getY() == originY + height - 1)
-                    && (currentPos.getX() <= originX + portalXAxis && currentPos.getX() >= originX - portalXAxis)))) {
-            if(random.nextDouble() > 0.25) {
+        if ((currentPos.getY() == originY || relative == Math.ceil(relative)) && IvMathHelper.isBetween(currentPos.getX(), originX, portalXAxis) && axis == Direction.Axis.X) {
+            if (random.nextDouble() > 0.25) {
                 if(random.nextDouble() > 0.75) {
                     setBlockSafe(world, currentPos, Blocks.CRYING_OBSIDIAN.defaultBlockState());
                 } else {
                     setBlockSafe(world, currentPos, Blocks.OBSIDIAN.defaultBlockState());
                 }
             }
-        } else if (currentPos.getY() >= startingYOffset + originY
-                && currentPos.getY() < originY + height
-                && axis == Direction.Axis.Z
-                && (IvMathHelper.compareOffsets(currentPos.getZ(), originZ, portalZAxis)
-                    || ((currentPos.getY() == originY + startingYOffset || currentPos.getY() == originY + height - 1)
-                    && (currentPos.getZ() <= originZ + portalZAxis && currentPos.getZ() >= originZ - portalZAxis)))) {
-            if(random.nextDouble() > 0.25) {
+        } else if ((currentPos.getY() == originY || relative == Math.ceil(relative)) && IvMathHelper.isBetween(currentPos.getZ(), originZ, portalZAxis) && axis == Direction.Axis.Z) {
+            if (random.nextDouble() > 0.25) {
                 if(random.nextDouble() > 0.75) {
                     setBlockSafe(world, currentPos, Blocks.CRYING_OBSIDIAN.defaultBlockState());
                 } else {
                     setBlockSafe(world, currentPos, Blocks.OBSIDIAN.defaultBlockState());
                 }
             }
-        }
+        } else
+            setBlockToAirSafe(world, currentPos);
     }
 }
