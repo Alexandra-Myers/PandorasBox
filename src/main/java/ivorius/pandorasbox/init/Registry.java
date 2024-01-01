@@ -106,8 +106,8 @@ public class Registry {
         makePositiveOrNegative("dirty_trick", false);
         makePositiveOrNegative("water_pool", true);
         makePositiveOrNegative("lava_pool", false);
-//        makePositiveOrNegative("gateway_to_hell_x", false);
-//        makePositiveOrNegative("gateway_to_hell_z", false);
+        makePositiveOrNegative("gateway_to_hell_x", false);
+        makePositiveOrNegative("gateway_to_hell_z", false);
         makePositiveOrNegative("height_noise", false);
         makePositiveOrNegative("mad_geometry", false);
         makePositiveOrNegative("madder_geometry", false);

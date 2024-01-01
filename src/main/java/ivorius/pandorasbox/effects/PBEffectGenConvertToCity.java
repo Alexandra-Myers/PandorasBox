@@ -205,7 +205,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                 return;
             }
             if ((IvMathHelper.compareOffsets(currentPos.getX(), originX, width - 1) && currentPos.getZ() == originZ)) {
-                setBlockSafe(world, currentPos.above(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.fromDelta(currentPos.getX() - originX, 0, 0)));
+                setBlockSafe(world, currentPos.above(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.fromDelta(originX - currentPos.getX(), 0, 0)));
                 ChestBlockEntity chestBlockEntity = (ChestBlockEntity) world.getBlockEntity(currentPos.above());
 
                 if (chestBlockEntity != null) {

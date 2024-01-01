@@ -63,7 +63,7 @@ public class PBEventHandler
         if(event.getPlayer() != null) return;
         initPB();
     }
-    public void initPB() {
+    public static void initPB() {
         logs = new ArrayListExtensions<>();
         leaves = new ArrayListExtensions<>();
         flowers = new ArrayListExtensions<>();
