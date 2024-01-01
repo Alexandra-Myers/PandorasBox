@@ -37,8 +37,8 @@ public class PBEffects {
         PBECRegistry.register(new PBECReplace(new DLinear(40.0, 120.0), new Block[]{Blocks.WATER, Blocks.LAVA}, List.of(new WeightedBlock(100, Blocks.AIR)), new ZConstant(false)), "dryness");
         PBECRegistry.register(new PBECSpawnTNT(new ILinear(20, 100), new ILinear(5, 50), new ILinear(20, 1000), new ValueThrow(new DLinear(0.2, 2.0), new DLinear(0.5, 5.0)), new ValueSpawn(new DLinear(5.0, 50.0), new DConstant(0.0))), "tntsplosion");
         PBECRegistry.register(new PBECMulti(new PBECSpawnManySameItems(new ILinear(10, 30), PandorasBoxHelper.blocksAndItems), 0, new PBECSpawnTNT(new ILinear(20, 60), new ILinear(1, 10), new ILinear(20, 60), new ValueThrow(new DLinear(0.2, 0.5), new DLinear(0.3, 0.5)), new ValueSpawn(new DLinear(3.0, 10.0), new DConstant(0.0))), 60), "dirty_trick");
-        PBECRegistry.register(new PBECPool(new ILinear(5, 15), new ILinear(5, 10), new ILinear(5, 15), Blocks.WATER, PandorasBoxHelper.blocks), "water_pool");
-        PBECRegistry.register(new PBECPool(new ILinear(5, 15), new ILinear(5, 10), new ILinear(5, 15), Blocks.LAVA, PandorasBoxHelper.blocks), "lava_pool");
+        PBECRegistry.register(new PBECPool(new DLinear(10.0, 30.0), Blocks.WATER, PandorasBoxHelper.blocks), "water_pool");
+        PBECRegistry.register(new PBECPool(new DLinear(10.0, 30.0), Blocks.LAVA, PandorasBoxHelper.blocks), "lava_pool");
         ArrayList<ArrayListExtensions<WeightedBlock>> blockArrayList = new ArrayList<>();
         ArrayListExtensions<WeightedBlock> stoneBricks = new ArrayListExtensions<>();
         stoneBricks.addAll(new WeightedBlock(100, Blocks.STONE_BRICKS), new WeightedBlock(90, Blocks.CRACKED_STONE_BRICKS), new WeightedBlock(50, Blocks.MOSSY_STONE_BRICKS), new WeightedBlock(10, Blocks.CHISELED_STONE_BRICKS));

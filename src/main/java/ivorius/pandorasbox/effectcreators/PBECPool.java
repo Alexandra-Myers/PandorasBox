@@ -8,6 +8,7 @@ package ivorius.pandorasbox.effectcreators;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenPool;
+import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.util.Mth;
@@ -22,12 +23,12 @@ import java.util.Collection;
  */
 public class PBECPool implements PBEffectCreator
 {
-    public IValue range;
+    public DValue range;
 
     public Block block;
     public Collection<WeightedBlock> platformBlocks;
 
-    public PBECPool(IValue range, Block block, Collection<WeightedBlock> platformBlocks)
+    public PBECPool(DValue range, Block block, Collection<WeightedBlock> platformBlocks)
     {
         this.range = range;
         this.block = block;
