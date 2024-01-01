@@ -11,7 +11,7 @@ import static ivorius.pandorasbox.events.PBEventHandler.initPB;
 @Mod.EventBusSubscriber(modid = PandorasBox.MOD_ID, value = Dist.CLIENT)
 public class ForgeClientEventHandler {
     @SubscribeEvent
-    public void clientLogin(ClientPlayerNetworkEvent.LoggingIn event) {
+    public static void clientLogin(ClientPlayerNetworkEvent.LoggingIn event) {
         initPB();
     }
 }
