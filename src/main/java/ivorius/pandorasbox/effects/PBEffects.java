@@ -89,7 +89,7 @@ public class PBEffects {
         PBECRegistry.register(new PBECCover(new DLinear(10.0, 15.0), new ZConstant(false), List.of(new WeightedBlock(100, Blocks.AIR))), "make_thin");
         PBECRegistry.register(new PBECCover(new DLinear(10.0, 15.0), new ZChance(0.5), PandorasBoxHelper.blocks), "cover");
         PBECRegistry.register(new PBECTargets(new ILinear(40, 100), new DLinear(10.0, 50.0), new DLinear(6.0, 16.0), new DLinear(0.2, 0.5), PandorasBoxHelper.mobs), "target");
-        PBECRegistry.register(new PBECSpawnArmy(new ILinear(1, 3), new ILinear(0, 5), Arrays.asList(new WeightedEntity(100, "zombie", 5, 10), new WeightedEntity(80, "skeleton", 4, 7), new WeightedEntity(40, "pbspecial_wither_skeleton", 5, 10))), "armored_army");
+        PBECRegistry.register(new PBECSpawnArmy(new ILinear(1, 3), new ILinear(0, 5), Arrays.asList(new WeightedEntity(100, "zombie", 5, 10), new WeightedEntity(80, "skeleton", 4, 7), new WeightedEntity(40, "wither_skeleton", 5, 10))), "armored_army");
         PBECRegistry.register(new PBECSpawnArmy(new ILinear(1, 3), new IConstant(0), PandorasBoxHelper.mobs), "army");
         PBECRegistry.register(new PBECSpawnEntities(new ILinear(20, 40), new IWeighted(1, 100, 2, 20, 3, 5), new IConstant(1), new ILinear(2, 6), new ILinear(2, 10), new IConstant(1), PandorasBoxHelper.mobs), "boss");
         PBECRegistry.register(new PBECConvertToIce(new DLinear(10.0, 80.0)), "ice_age");
