@@ -54,7 +54,7 @@ public class PBECRuinedPortal implements PBEffectCreator
         int rangeStartY = this.rangeStartY.getValue(random);
         int rangeZ = this.rangeZ.getValue(random);
         rangeY += rangeStartY;
-        int time = 3 * (rangeX * rangeY * rangeZ) + 10;
+        int time = 6 * (rangeX * rangeY * rangeZ) + 50;
 
         ArrayListExtensions<WeightedBlock> bricks = WeightedSelector.selectWeightless(random, this.bricks, this.bricks.size());
 

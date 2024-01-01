@@ -10,6 +10,7 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenPool;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.weighted.WeightedBlock;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -21,18 +22,14 @@ import java.util.Collection;
  */
 public class PBECPool implements PBEffectCreator
 {
-    public IValue rangeX;
-    public IValue rangeY;
-    public IValue rangeZ;
+    public IValue range;
 
     public Block block;
     public Collection<WeightedBlock> platformBlocks;
 
-    public PBECPool(IValue rangeX, IValue rangeY, IValue rangeZ, Block block, Collection<WeightedBlock> platformBlocks)
+    public PBECPool(IValue range, Block block, Collection<WeightedBlock> platformBlocks)
     {
-        this.rangeX = rangeX;
-        this.rangeY = rangeY;
-        this.rangeZ = rangeZ;
+        this.range = range;
         this.block = block;
         this.platformBlocks = platformBlocks;
     }
@@ -40,14 +37,12 @@ public class PBECPool implements PBEffectCreator
     @Override
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
-        int rangeX = this.rangeX.getValue(random);
-        int rangeY = this.rangeY.getValue(random);
-        int rangeZ = this.rangeZ.getValue(random);
-        int time = 6 * (rangeX * rangeY * rangeZ) + 50;
+        double range = this.range.getValue(random);
+        int time = Mth.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
         Block platformBlock = PandorasBoxHelper.getRandomBlock(random, platformBlocks);
 
-        return new PBEffectGenPool(time, rangeX, rangeZ, rangeY, rangeY, PandorasBoxHelper.getRandomUnifiedSeed(random), block, platformBlock);
+        return new PBEffectGenPool(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), block, platformBlock);
     }
 
     @Override

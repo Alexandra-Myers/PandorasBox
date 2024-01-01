@@ -50,6 +50,9 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
                     blockPos.move(0, -1, 0);
                     state = world.getBlockState(blockPos);
                 }
+                while (!world.getBlockState(blockPos.above()).isAir()) {
+                    blockPos.move(0, 1, 0);
+                }
             }
             blockPos.move(0, -startingYOffset, 0);
             x = blockPos.getX() - length;

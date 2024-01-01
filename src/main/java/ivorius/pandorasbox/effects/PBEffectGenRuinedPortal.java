@@ -34,22 +34,42 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
         boolean bl1 = Mth.ceil(width * 0.5) >= 2;
         int portalXAxis = bl ? Mth.ceil(length * 0.5) : 2;
         int portalZAxis = bl1 ? Mth.ceil(width * 0.5) : 2;
-        if ((currentPos.getY() == originY || relative == Math.ceil(relative)) && IvMathHelper.isBetween(currentPos.getX(), originX, portalXAxis) && axis == Direction.Axis.X) {
-            if (random.nextDouble() > 0.25) {
+        if ((currentPos.getY() == originY || relative == Math.ceil(relative)) && IvMathHelper.isBetween(currentPos.getX(), originX, portalXAxis) && axis == Direction.Axis.X  && currentPos.getZ() == originZ) {
+            if (random.nextDouble() > 0.15) {
                 if(random.nextDouble() > 0.75) {
                     setBlockSafe(world, currentPos, Blocks.CRYING_OBSIDIAN.defaultBlockState());
                 } else {
                     setBlockSafe(world, currentPos, Blocks.OBSIDIAN.defaultBlockState());
                 }
-            }
-        } else if ((currentPos.getY() == originY || relative == Math.ceil(relative)) && IvMathHelper.isBetween(currentPos.getZ(), originZ, portalZAxis) && axis == Direction.Axis.Z) {
-            if (random.nextDouble() > 0.25) {
+            } else
+                setBlockToAirSafe(world, currentPos);
+        } else if ((currentPos.getY() == originY || relative == Math.ceil(relative)) && IvMathHelper.isBetween(currentPos.getZ(), originZ, portalZAxis) && axis == Direction.Axis.Z  && currentPos.getX() == originX) {
+            if (random.nextDouble() > 0.15) {
                 if(random.nextDouble() > 0.75) {
                     setBlockSafe(world, currentPos, Blocks.CRYING_OBSIDIAN.defaultBlockState());
                 } else {
                     setBlockSafe(world, currentPos, Blocks.OBSIDIAN.defaultBlockState());
                 }
-            }
+            } else
+                setBlockToAirSafe(world, currentPos);
+        } else if (IvMathHelper.isBetween(currentPos.getY(), Mth.floor(originY + height * 0.5), Mth.ceil(height * 0.5)) && IvMathHelper.compareOffsets(currentPos.getX(), originX, portalXAxis) && axis == Direction.Axis.X  && currentPos.getZ() == originZ) {
+            if (random.nextDouble() > 0.15) {
+                if(random.nextDouble() > 0.75) {
+                    setBlockSafe(world, currentPos, Blocks.CRYING_OBSIDIAN.defaultBlockState());
+                } else {
+                    setBlockSafe(world, currentPos, Blocks.OBSIDIAN.defaultBlockState());
+                }
+            } else
+                setBlockToAirSafe(world, currentPos);
+        } else if (IvMathHelper.isBetween(currentPos.getY(), Mth.floor(originY + height * 0.5), Mth.ceil(height * 0.5)) && IvMathHelper.compareOffsets(currentPos.getZ(), originZ, portalZAxis) && axis == Direction.Axis.Z  && currentPos.getX() == originX) {
+            if (random.nextDouble() > 0.15) {
+                if(random.nextDouble() > 0.75) {
+                    setBlockSafe(world, currentPos, Blocks.CRYING_OBSIDIAN.defaultBlockState());
+                } else {
+                    setBlockSafe(world, currentPos, Blocks.OBSIDIAN.defaultBlockState());
+                }
+            } else
+                setBlockToAirSafe(world, currentPos);
         } else
             setBlockToAirSafe(world, currentPos);
     }
