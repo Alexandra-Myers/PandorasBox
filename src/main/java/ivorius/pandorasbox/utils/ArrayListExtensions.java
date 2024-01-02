@@ -6,6 +6,15 @@ import java.util.Collection;
 
 @SuppressWarnings("unused")
 public class ArrayListExtensions<T> extends ArrayList<T> {
+    public ArrayListExtensions() {
+        super();
+    }
+    public ArrayListExtensions(int initialCapacity) {
+        super(initialCapacity);
+    }
+    public ArrayListExtensions(Collection<? extends T> c) {
+        super(c);
+    }
     @SafeVarargs
     public final boolean addAll(T... entries) {
         return addAll(Arrays.asList(entries));

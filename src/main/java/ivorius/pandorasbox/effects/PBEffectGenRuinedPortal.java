@@ -3,14 +3,18 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.math.IvMathHelper;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
+import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+
+import java.util.Collections;
 
 public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
     public ArrayListExtensions<WeightedBlock> bricks = new ArrayListExtensions<>();
@@ -72,5 +76,27 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
                 setBlockToAirSafe(world, currentPos);
         } else
             setBlockToAirSafe(world, currentPos);
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag compound) {
+        super.writeToNBT(compound);
+        compound.putString("axis", axis == Direction.Axis.X ? "x" : "z");
+        PBNBTHelper.writeNBTRandomizedStacks("loot", loot.toArray(new RandomizedItemStack[]{}), compound);
+        PBNBTHelper.writeNBTWeightedBlocks("bricks", bricks.toArray(new WeightedBlock[]{}), compound);
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag compound) {
+        super.readFromNBT(compound);
+        axis = compound.getString("axis").equals("x") ? Direction.Axis.X : Direction.Axis.Z;
+
+        RandomizedItemStack[] randomizedItemStacks = PBNBTHelper.readNBTRandomizedStacks("loot", compound);
+        loot = new ArrayListExtensions<>(randomizedItemStacks.length);
+        Collections.addAll(loot, randomizedItemStacks);
+
+        WeightedBlock[] bricks = PBNBTHelper.readNBTWeightedBlocks("bricks", compound);
+        this.bricks = new ArrayListExtensions<>(bricks.length);
+        Collections.addAll(this.bricks, bricks);
     }
 }
