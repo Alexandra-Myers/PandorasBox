@@ -5,11 +5,8 @@
 
 package ivorius.pandorasbox.items;
 
-import ivorius.pandorasbox.client.rendering.PBBlockEntityWIthoutLevelRenderer;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,10 +19,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Consumer;
 
 public class PandorasBoxItem extends BlockItem
 {
@@ -45,16 +39,6 @@ public class PandorasBoxItem extends BlockItem
     }
     public @NotNull InteractionResult useOn(@NotNull UseOnContext p_40581_) {
         return this.place(new BlockPlaceContext(p_40581_));
-    }
-    @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
-
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return new PBBlockEntityWIthoutLevelRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-            }
-        });
     }
 
     public static PandorasBoxEntity executeRandomEffect(Level world, Player entity, BlockPos pos, boolean floatAway) {

@@ -3,6 +3,10 @@
   "package": "ivorius.pandorasbox.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ServerEntityMixin"
+  ],
+  "client": [
+    "client.RendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

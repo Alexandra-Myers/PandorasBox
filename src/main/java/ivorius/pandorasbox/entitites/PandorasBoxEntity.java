@@ -11,14 +11,19 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.init.DataSerializerInit;
 import ivorius.pandorasbox.init.PBEffectInit;
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketType;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -303,7 +308,9 @@ public class PandorasBoxEntity extends Entity {
 
     @Override
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
+        CompoundTag compoundTag = new CompoundTag();
+        writeBoxData(compoundTag);
+        return new CustomAddEntityPacket((ClientboundAddEntityPacket) super.getAddEntityPacket(), compoundTag);
     }
 
     @Override
@@ -357,19 +364,40 @@ public class PandorasBoxEntity extends Entity {
         compound.putDouble("effectCenterY", effectCenter.y);
         compound.putDouble("effectCenterZ", effectCenter.z);
     }
+    public record CustomAddEntityPacket(ClientboundAddEntityPacket originalPacket, CompoundTag additionalData) implements FabricPacket, Packet<ClientGamePacketListener> {
+        public static final PacketType<CustomAddEntityPacket> TYPE = PacketType.create(new ResourceLocation(PandorasBox.MOD_ID, "custom_add_entity"), CustomAddEntityPacket::new);
 
-    @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-        CompoundTag compound = new CompoundTag();
-        writeBoxData(compound);
-        buffer.writeNbt(compound);
-    }
+        public CustomAddEntityPacket(FriendlyByteBuf friendlyByteBuf) {
+            this(new ClientboundAddEntityPacket(friendlyByteBuf), friendlyByteBuf.readNbt());
+        }
 
-    @Override
-    public void readSpawnData(FriendlyByteBuf additionalData) {
-        CompoundTag compound = additionalData.readNbt();
+        public void write(FriendlyByteBuf friendlyByteBuf) {
+            originalPacket.write(friendlyByteBuf);
+            friendlyByteBuf.writeNbt(additionalData);
+        }
 
-        if (compound != null)
-            readBoxData(compound);
+        /**
+         * Returns the packet type of this packet.
+         *
+         * <p>Implementations should store the packet type instance in a {@code static final}
+         * field and return that here, instead of creating a new instance.
+         *
+         * @return the type of this packet
+         */
+        @Override
+        public PacketType<?> getType() {
+            return TYPE;
+        }
+
+        @Override
+        public void handle(ClientGamePacketListener packetListener) {
+            originalPacket.handle(packetListener);
+            if (packetListener instanceof ClientPacketListener clientPacketListener) {
+                Entity entity = clientPacketListener.getLevel().getEntity(originalPacket.getId());
+                if (entity instanceof PandorasBoxEntity pandorasBoxEntity) {
+                    pandorasBoxEntity.readBoxData(additionalData);
+                }
+            }
+        }
     }
 }

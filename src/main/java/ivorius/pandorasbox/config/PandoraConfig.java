@@ -7,11 +7,12 @@ import net.minecraft.ReportedException;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PandoraConfig extends AtlasConfig {
-	public Map<ResourceLocation, ResourceLocation> configuredTables = new HashMap<>();
+	public Map<ResourceLocation, ResourceLocation> configuredTables;
 	public DoubleHolder boxLongevity;
 	public DoubleHolder boxIntensity;
 	public DoubleHolder goodEffectChance;
@@ -19,6 +20,12 @@ public class PandoraConfig extends AtlasConfig {
 	public PandoraConfig() {
 		super(new ResourceLocation(PandorasBox.MOD_ID, "pandoras-box"));
 	}
+
+	@Override
+	protected InputStream getDefaultedConfig() {
+		return Thread.currentThread().getContextClassLoader().getResourceAsStream(name.getPath() + ".json");
+	}
+
 	@Override
 	public void loadExtra() {
 		if (!configJsonObject.has("tables"))
@@ -67,6 +74,8 @@ public class PandoraConfig extends AtlasConfig {
 		boxIntensity = createInRange("box_intensity", 1.0, 0, 10);
 		goodEffectChance = createInRange("good_effect_chance", 0.49, 0, 10);
 		maxEffectsPerBox = createInRange("max_effects_per_box", 3, 1, 100);
+		configuredTables = new HashMap<>();
+
 	}
 
 	@Override

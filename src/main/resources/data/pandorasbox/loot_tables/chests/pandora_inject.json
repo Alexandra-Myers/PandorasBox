@@ -18,12 +18,7 @@
             }
           ],
           "name": "pandorasbox:pandoras_box",
-          "weight": 5
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
+          "weight": 15
         }
       ]
     }

@@ -6,6 +6,7 @@ import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRendererExplosion;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderingRegistry;
 import ivorius.pandorasbox.effects.PBEffectExplode;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.BlockEntityInit;
 import ivorius.pandorasbox.init.EntityInit;
 import net.fabricmc.api.ClientModInitializer;
@@ -31,5 +32,6 @@ public class PandorasBoxClient implements ClientModInitializer {
         PBEffectRenderingRegistry.registerRenderer(PBEffectExplode.class, new PBEffectRendererExplosion());
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> initPB());
         ClientPlayNetworking.registerGlobalReceiver(PandorasBox.AtlasConfigPacket.TYPE, (packet, player, responseSender) -> logger.info("Loading config details from buffer. Config: " + packet.config().name.toString()));
+        ClientPlayNetworking.registerGlobalReceiver(PandorasBoxEntity.CustomAddEntityPacket.TYPE, (packet, player, responseSender) -> packet.handle(player.connection));
     }
 }

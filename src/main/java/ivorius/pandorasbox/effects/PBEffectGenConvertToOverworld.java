@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
@@ -39,11 +40,14 @@ public class PBEffectGenConvertToOverworld extends PBEffectGenerate
 
             ArrayListExtensions<Block> grass = new ArrayListExtensions<>();
             grass.addAll(Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
+            ArrayListExtensions<Block> solid = new ArrayListExtensions<>();
+            solid.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.DEEPSLATE, Blocks.TUFF, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SOUL_SAND, Blocks.SAND, Blocks.RED_SAND, Blocks.MYCELIUM, Blocks.DIRT, Blocks.MOSS_BLOCK);
+            solid.addAll(PandorasBox.terracotta, PandorasBox.stained_terracotta);
 
             if (pass == 0) {
                 if (isBlockAnyOf(block, Blocks.SNOW, Blocks.SNOW_BLOCK)) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.DEEPSLATE, Blocks.TUFF, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SOUL_SAND, Blocks.SAND, Blocks.RED_SAND, Blocks.MYCELIUM, Blocks.DIRT, Blocks.MOSS_BLOCK)) {
+                } else if (isBlockAnyOf(block, solid)) {
                     BlockPos posUp = pos.above();
                     if (world.getBlockState(posUp).getBlock() == Blocks.AIR) {
                         setBlockSafe(world, pos, Blocks.GRASS_BLOCK.defaultBlockState());

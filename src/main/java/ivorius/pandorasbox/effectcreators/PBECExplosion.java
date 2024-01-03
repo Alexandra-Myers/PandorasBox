@@ -21,12 +21,14 @@ public class PBECExplosion implements PBEffectCreator
     public IValue time;
     public DValue explosionRadius;
     public ZValue burning;
+    public Level.ExplosionInteraction explosionInteraction;
 
-    public PBECExplosion(IValue time, DValue explosionRadius, ZValue burning)
+    public PBECExplosion(IValue time, DValue explosionRadius, ZValue burning, Level.ExplosionInteraction interactionType)
     {
         this.time = time;
         this.explosionRadius = explosionRadius;
         this.burning = burning;
+        explosionInteraction = interactionType;
     }
 
     @Override
@@ -36,8 +38,7 @@ public class PBECExplosion implements PBEffectCreator
         double explosionRadius = this.explosionRadius.getValue(random);
         boolean burning = this.burning.getValue(random);
 
-        PBEffectExplode effect = new PBEffectExplode(time, (float) explosionRadius, burning);
-        return effect;
+        return new PBEffectExplode(time, (float) explosionRadius, burning, explosionInteraction);
     }
 
     @Override

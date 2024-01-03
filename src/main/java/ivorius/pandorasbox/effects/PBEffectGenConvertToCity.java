@@ -60,9 +60,12 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                 ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
                 blocks.addAll(Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
                 blocks.addAll(PandorasBox.flowers);
+                ArrayListExtensions<Block> solid = new ArrayListExtensions<>();
+                solid.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.RED_SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DEEPSLATE, Blocks.TUFF);
+                solid.addAll(PandorasBox.terracotta, PandorasBox.stained_terracotta);
                 if (isBlockAnyOf(block, blocks)) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.RED_SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DEEPSLATE, Blocks.TUFF)) {
+                } else if (isBlockAnyOf(block, solid)) {
                     if (world.getBlockState(pos.above()).getBlock() == Blocks.AIR) {
                         if (world.random.nextInt(144) == 0) {
                             for (int i = 0; i < 4; i++) {
@@ -211,7 +214,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                 if (chestBlockEntity != null) {
                     Collection<WeightedSet> sets = PandorasBoxHelper.equipmentSets;
                     Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.items;
-                    if (world.random.nextFloat() > 0.05) {
+                    if (world.random.nextFloat() > 0.25) {
                         for (int i = 0; i < world.random.nextInt(5) + 2; i++) {
                             RandomizedItemStack chestContent = WeightedSelector.selectItem(world.random, itemSelection);
                             ItemStack stack = chestContent.itemStack.copy();

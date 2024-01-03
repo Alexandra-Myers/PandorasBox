@@ -17,13 +17,11 @@ public class RandomizedItemStack implements WeightedSelector.Item
 
     public double weight;
 
-    public RandomizedItemStack(Item item, int min, int max, double weight)
-    {
-        this(new ItemStack(item, 1, new CompoundTag()), min, max, weight);
+    public RandomizedItemStack(Item item, int min, int max, double weight) {
+        this(new ItemStack(item, 1), min, max, weight);
     }
 
-    public RandomizedItemStack(ItemStack itemStack, int min, int max, double weight)
-    {
+    public RandomizedItemStack(ItemStack itemStack, int min, int max, double weight) {
         this.itemStack = itemStack;
         this.min = min;
         this.max = max;

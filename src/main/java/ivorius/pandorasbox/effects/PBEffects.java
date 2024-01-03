@@ -3,14 +3,13 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effectcreators.*;
 import ivorius.pandorasbox.random.*;
-import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedEntity;
 import ivorius.pandorasbox.weighted.WeightedPotion;
-import net.minecraft.core.Direction;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -95,7 +94,8 @@ public class PBEffects {
         PBECRegistry.register(new PBECConvertToIce(new DLinear(10.0, 80.0)), "ice_age");
         PBECRegistry.register(new PBECTeleportEntities(0.1f, new ILinear(5, 100), new DLinear(10.0, 80.0), new DLinear(10.0, 100.0), new IConstant(1)), "telerandom");
         PBECRegistry.register(new PBECTeleportEntities(0.5f, new ILinear(5, 200), new DLinear(10.0, 80.0), new DLinear(0.5, 5.0), new ILinear(5, 20)), "crazyport");
-        PBECRegistry.register(new PBECExplosion(new ILinear(50, 120), new DGaussian(1.0, 8.0), new ZChance(0.3)), "thing_go_boom");
+        PBECRegistry.register(new PBECExplosion(new ILinear(50, 120), new DGaussian(2.0, 10.0), new ZChance(0.3), Level.ExplosionInteraction.TNT), "thing_go_boom");
+        PBECRegistry.register(new PBECMulti(new PBECExplosion(new ILinear(10, 30), new DConstant(200.0), new ZConstant(true), Level.ExplosionInteraction.BLOCK), 0, new PBECConvertToLifeless(new DGaussian(75.0, 100.0)), 20, new PBECSpawnEntities(new ILinear(20, 100), new ILinear(4, 20), new IConstant(1), new IConstant(0), new IConstant(0), new IConstant(0), PandorasBoxHelper.mobs), 20), "apocalyptic_boom");
         PBECRegistry.register(new PBECSpawnBlocks(new ILinear(50, 120), new ILinear(0, 2), Arrays.asList(new WeightedBlock(1, Blocks.TNT), new WeightedBlock(1, Blocks.REDSTONE_BLOCK)), null, new ValueSpawn(new DLinear(5.0, 10.0), new DConstant(150.0))).setShuffleBlocks(false), "danger_call");
 
         PBECRegistry.register(new PBECSpawnEntities(new ILinear(20, 100), new ILinear(4, 20), new IConstant(1), new IWeighted(0, 100, 2, 50, 3, 30), new IConstant(0), new IConstant(0), PandorasBoxHelper.creatures), "animals");

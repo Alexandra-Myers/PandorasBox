@@ -66,6 +66,8 @@ public abstract class PBEffect
     public static Player getRandomNearbyPlayer(Level world, PandorasBoxEntity box)
     {
         List<Player> players = world.getEntitiesOfClass(Player.class, box.getBoundingBox().expandTowards(30.0, 30.0, 30.0));
+        if (players.isEmpty())
+            return null;
         return players.get(box.getRandom().nextInt(players.size()));
     }
 

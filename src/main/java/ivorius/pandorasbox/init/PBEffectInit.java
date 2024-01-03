@@ -66,6 +66,7 @@ public class PBEffectInit {
         makePositiveOrNegative("telerandom", false);
         makePositiveOrNegative("crazyport", false);
         makePositiveOrNegative("thing_go_boom", false);
+        makePositiveOrNegative("apocalyptic_boom", false);
         makePositiveOrNegative("danger_call", false);
         makePositiveOrNegative("animals", true);
         makePositiveOrNegative("animal_towers", true);

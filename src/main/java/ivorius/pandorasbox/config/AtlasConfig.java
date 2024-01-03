@@ -26,6 +26,8 @@ public abstract class AtlasConfig {
 
     final Path configFolderPath;
 
+    File configFolder;
+
     File configFile;
 
     JsonElement configJsonElement;
@@ -44,7 +46,14 @@ public abstract class AtlasConfig {
         doubleValues = new ArrayList<>();
         defineConfigHolders();
         this.name = name;
-        configFolderPath = FabricLoader.getInstance().getConfigDir().getFileName();
+        configFolderPath = Path.of(FabricLoader.getInstance().getConfigDir().getFileName() + "/" + name.getNamespace());
+        if (!Files.exists(configFolderPath))
+            try {
+                Files.createDirectory(configFolderPath);
+            } catch (IOException e) {
+                throw new ReportedException(new CrashReport("Failed to create config directory for config " + name, e));
+            }
+        configFolder = configFolderPath.toFile();
 
         load();
         configs.put(name, this);
@@ -69,15 +78,15 @@ public abstract class AtlasConfig {
         return element.get(name).getAsBoolean();
     }
     public final void load() {
-        configFile = new File(configFolderPath.toAbsolutePath() + "/" + name.getNamespace() + "/" + name.getPath() + ".json");
+        configFile = new File(configFolderPath.toAbsolutePath() + "/" + name.getPath() + ".json");
         if (!configFile.exists()) {
             try {
                 configFile.createNewFile();
-                InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(name.getPath() + ".json");
+                InputStream inputStream = getDefaultedConfig();
                 Files.write(configFile.toPath(), inputStream.readAllBytes());
                 inputStream.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new ReportedException(new CrashReport("Failed to create config file for config " + name, e));
             }
         }
 
@@ -107,6 +116,7 @@ public abstract class AtlasConfig {
     }
 
     protected abstract void loadExtra();
+    protected abstract InputStream getDefaultedConfig();
     public AtlasConfig loadFromNetwork(FriendlyByteBuf buf) {
         enumValues.forEach(enumHolder -> enumHolder.readFromBuf(buf));
         stringValues.forEach(stringHolder -> stringHolder.readFromBuf(buf));

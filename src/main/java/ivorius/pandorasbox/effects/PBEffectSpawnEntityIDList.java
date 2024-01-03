@@ -26,8 +26,6 @@ import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.ElderGuardian;
-import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.player.Player;
@@ -38,7 +36,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.event.EventHooks;
 
 /**
  * Created by lukas on 30.03.14.
@@ -185,7 +182,8 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
                 assert wolf != null;
                 wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                EventHooks.onFinalizeSpawn(wolf, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
+                wolf.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
+
 
                 if (owner != null) {
                     wolf.getNavigation().stop();
@@ -202,7 +200,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
 
                 assert cat != null;
                 cat.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                EventHooks.onFinalizeSpawn(cat, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
+                cat.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
 
                 if (owner != null) {
                     cat.tame(owner);
@@ -218,7 +216,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
                 assert parrot != null;
                 parrot.setVariant(Parrot.Variant.byId(random.nextInt(5)));
                 parrot.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                EventHooks.onFinalizeSpawn(parrot, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
+                parrot.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
 
                 if (owner != null) {
                     parrot.tame(owner);
@@ -245,7 +243,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             } else if ("pbspecial_angry_wolf".equals(entityID)) {
                 Wolf wolf = EntityType.WOLF.create(world);
                 assert wolf != null;
-                EventHooks.onFinalizeSpawn(wolf, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
+                wolf.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
                 wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 wolf.setTarget(world.getNearestPlayer(x, y, z, 40.0, false));
 
@@ -253,7 +251,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             } else if ("pbspecial_charged_creeper".equals(entityID)) {
                 Creeper creeper = EntityType.CREEPER.create(world);
                 assert creeper != null;
-                EventHooks.onFinalizeSpawn(creeper, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
+                creeper.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
                 creeper.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
                 return creeper;
@@ -272,7 +270,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             if(entity1 instanceof Hoglin hoglin)
                 hoglin.setImmuneToZombification(true);
             if (entity1 instanceof Mob mob)
-                EventHooks.onFinalizeSpawn(mob, (ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
+                mob.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null, null);
 
             return entity1;
         } catch (Exception ex) {

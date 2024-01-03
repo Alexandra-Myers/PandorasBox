@@ -45,11 +45,14 @@ public class PBEffectGenConvertToMushroom extends PBEffectGenerate
             blocks.addAll(PandorasBox.logs, PandorasBox.leaves, PandorasBox.flowers);
 
             blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
+            ArrayListExtensions<Block> solid = new ArrayListExtensions<>();
+            solid.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.TUFF, Blocks.DEEPSLATE, Blocks.RED_SANDSTONE, Blocks.SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SOUL_SAND, Blocks.SAND, Blocks.RED_SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK);
+            solid.addAll(PandorasBox.terracotta, PandorasBox.stained_terracotta);
 
             if (pass == 0) {
                 if (isBlockAnyOf(block, blocks)) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.TUFF, Blocks.DEEPSLATE, Blocks.RED_SANDSTONE, Blocks.SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SOUL_SAND, Blocks.SAND, Blocks.RED_SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK)) {
+                } else if (isBlockAnyOf(block, solid)) {
                     BlockPos posUp = pos.above();
 
                     if (world.getBlockState(posUp).isAir()) {
