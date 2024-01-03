@@ -2,7 +2,8 @@ package ivorius.pandorasbox.client.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
-import ivorius.pandorasbox.init.Registry;
+import ivorius.pandorasbox.init.BlockInit;
+import ivorius.pandorasbox.init.Init;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -14,13 +15,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class PBBlockEntityWIthoutLevelRenderer extends BlockEntityWithoutLevelRenderer {
-    private final PandorasBoxBlockEntity chest = new PandorasBoxBlockEntity(BlockPos.ZERO, Registry.PB.get().defaultBlockState());
+    private final PandorasBoxBlockEntity chest = new PandorasBoxBlockEntity(BlockPos.ZERO, BlockInit.PB.defaultBlockState());
     private final BlockEntityRenderDispatcher blockEntityRenderDispatcher;
-    private final EntityModelSet entityModelSet;
     public PBBlockEntityWIthoutLevelRenderer(BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_) {
         super(p_172550_, p_172551_);
         this.blockEntityRenderDispatcher = p_172550_;
-        this.entityModelSet = p_172551_;
     }
 
     @Override
@@ -30,7 +29,7 @@ public class PBBlockEntityWIthoutLevelRenderer extends BlockEntityWithoutLevelRe
             Block block = ((BlockItem) item).getBlock();
             BlockState blockstate = block.defaultBlockState();
             BlockEntity blockentity;
-            if (blockstate.is(Registry.PB.get())) {
+            if (blockstate.is(BlockInit.PB)) {
                 blockentity = this.chest;
                 this.blockEntityRenderDispatcher.renderItem(blockentity, p_108832_, p_108833_, p_108834_, p_108835_);
             }

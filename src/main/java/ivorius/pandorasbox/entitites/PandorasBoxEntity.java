@@ -9,7 +9,8 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
-import ivorius.pandorasbox.init.Registry;
+import ivorius.pandorasbox.init.DataSerializerInit;
+import ivorius.pandorasbox.init.PBEffectInit;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,8 +27,6 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityAdditionalSpawnData;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -36,7 +35,7 @@ import java.util.UUID;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnData {
+public class PandorasBoxEntity extends Entity {
     public static final float BOX_UPSCALE_SPEED = 0.02f;
 
     private static final EntityDataAccessor<Integer> BOX_DEATH_TICKS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
@@ -51,7 +50,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     protected float floatAwayProgress = -1.0f;
 
     protected float scaleInProgress = 1.0f;
-    private static final EntityDataAccessor<PBEffect> DATA_EFFECT_ID = SynchedEntityData.defineId(PandorasBoxEntity.class, Registry.PBEFFECTSERIALIZER.get());
+    private static final EntityDataAccessor<PBEffect> DATA_EFFECT_ID = SynchedEntityData.defineId(PandorasBoxEntity.class, DataSerializerInit.PBEFFECTSERIALIZER);
     private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.OPTIONAL_UUID);
 
     protected Vec3 effectCenter = new Vec3(0, 0, 0);
@@ -92,7 +91,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     @Override
     protected void defineSynchedData() {
         this.getEntityData().define(BOX_DEATH_TICKS, -1);
-        this.getEntityData().define(DATA_EFFECT_ID, Registry.MATRYOSHKA.get().effectCreator.constructEffect(this.level(), this.getX(), this.getY(), this.getZ(), this.random));
+        this.getEntityData().define(DATA_EFFECT_ID, PBEffectInit.MATRYOSHKA.effectCreator.constructEffect(this.level(), this.getX(), this.getY(), this.getZ(), this.random));
         this.getEntityData().define(DATA_OWNER_UUID, Optional.empty());
     }
 

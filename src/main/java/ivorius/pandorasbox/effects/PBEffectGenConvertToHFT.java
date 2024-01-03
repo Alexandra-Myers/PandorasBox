@@ -7,6 +7,7 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.FeatureInit;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
 import net.minecraft.core.BlockPos;
@@ -65,12 +66,12 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate
                         lolliColors[i] = random.nextInt(16);
                     }
 
-                    AccessibleTreeFeature treeFeature = (AccessibleTreeFeature) PandorasBox.instance.RAINBOW;
+                    AccessibleTreeFeature treeFeature = (AccessibleTreeFeature) FeatureInit.RAINBOW;
 
                     if (random.nextFloat() > 0.5) {
-                        treeFeature = (AccessibleTreeFeature) PandorasBox.instance.LOLIPOP;
+                        treeFeature = (AccessibleTreeFeature) FeatureInit.LOLIPOP;
                     } else if (random.nextFloat() > 0.4) {
-                        treeFeature = (AccessibleTreeFeature) PandorasBox.instance.COLOURFUL_TREE;
+                        treeFeature = (AccessibleTreeFeature) FeatureInit.COLOURFUL_TREE;
                     }
                     treeFeature.setMetas(lolliColors);
                     treeFeature.setSoil(placeBlock);

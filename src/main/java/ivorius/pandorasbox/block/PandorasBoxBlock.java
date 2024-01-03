@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.block;
 
-import ivorius.pandorasbox.init.Registry;
+import ivorius.pandorasbox.init.BlockEntityInit;
 import ivorius.pandorasbox.items.PandorasBoxItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,8 +32,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 15.04.14.
@@ -77,7 +75,7 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public void setPlacedBy(Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity livingEntity, @NotNull ItemStack itemStack) {
+    public void setPlacedBy(Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, LivingEntity livingEntity, @NotNull ItemStack itemStack) {
         worldIn.setBlock(pos, this.defaultBlockState().setValue(DIRECTION, livingEntity.getDirection().getOpposite()), 2);
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
@@ -120,6 +118,6 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     @org.jetbrains.annotations.Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos p_153215_, @NotNull BlockState p_153216_) {
-        return Registry.TEPB.get().create(p_153215_, p_153216_);
+        return BlockEntityInit.BEPB.create(p_153215_, p_153216_);
     }
 }

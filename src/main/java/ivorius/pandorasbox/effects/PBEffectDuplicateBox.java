@@ -2,7 +2,8 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import ivorius.pandorasbox.init.Registry;
+import ivorius.pandorasbox.init.EntityInit;
+import ivorius.pandorasbox.init.Init;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -37,12 +38,10 @@ public class PBEffectDuplicateBox extends PBEffectNormal
     }
 
     @Override
-    public void setUpEffect(Level world, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random)
-    {
-        if (world instanceof ServerLevel)
-        {
+    public void setUpEffect(Level world, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random) {
+        if (!world.isClientSide) {
             PBEffect effect = PBECRegistry.createRandomEffect(world, random, box.getX(), box.getY(), box.getZ(), true);
-            PandorasBoxEntity newBox = Registry.Box.get().create(world);
+            PandorasBoxEntity newBox = EntityInit.Box.create(world);
 
             assert newBox != null;
 
@@ -59,22 +58,19 @@ public class PBEffectDuplicateBox extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio)
-    {
+    public void doEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
 
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
+    public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
 
         compound.putInt("spawnMode", spawnMode);
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
-    {
+    public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
 
         spawnMode = compound.getInt("spawnMode");

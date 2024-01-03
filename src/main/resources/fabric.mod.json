@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "pandorasbox",
+  "version": "${version}",
+  "name": "Pandora's Box",
+  "description": "Adds Pandora's Box to the game. What does it do? There's only one way to find out...",
+  "authors": [
+    "Ivorius",
+    "Alexandra"
+  ],
+  "contact": {
+    "homepage": "http://ivorius.de/",
+    "sources": "https://github.com/Alexandra-Myers/PandorasBox/"
+  },
+  "license": "MIT",
+  "icon": "assets/pandorasbox/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "ivorius.pandorasbox.PandorasBox"
+    ],
+    "client": [
+      "ivorius.pandorasbox.PandorasBoxClient"
+    ]
+  },
+  "mixins": [
+    "pandorasbox.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "~1.20.2",
+    "java": ">=17",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

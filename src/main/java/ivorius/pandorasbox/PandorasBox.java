@@ -5,37 +5,41 @@
 
 package ivorius.pandorasbox;
 
-import ivorius.pandorasbox.client.ClientProxy;
-import ivorius.pandorasbox.events.PBEventHandler;
-import ivorius.pandorasbox.init.Registry;
-import ivorius.pandorasbox.server.ServerProxy;
+import ivorius.pandorasbox.commands.CommandPandorasBox;
+import ivorius.pandorasbox.config.AtlasConfig;
+import ivorius.pandorasbox.effects.PBEffects;
+import ivorius.pandorasbox.init.Init;
+import ivorius.pandorasbox.init.ItemInit;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
+import ivorius.pandorasbox.config.PandoraConfig;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketType;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.fml.loading.FMLEnvironment;
+import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.StainedGlassBlock;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.function.Supplier;
+import java.util.List;
+import java.util.Objects;
 
-@Mod(PandorasBox.MOD_ID)
-public class PandorasBox {
+public class PandorasBox implements ModInitializer {
     public static final String MOD_ID = "pandorasbox";
-    public static PandorasBox instance;
-
-    public static PBProxy proxy = runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
     public static Logger logger  = LogManager.getLogger();
-
-    public final IEventBus EVENT_BUS;
-    public Feature<TreeConfiguration> LOLIPOP;
-    public Feature<TreeConfiguration> COLOURFUL_TREE;
-    public Feature<TreeConfiguration> RAINBOW;
-    public Feature<TreeConfiguration> MEGA_JUNGLE;
     public static ArrayListExtensions<Block> logs;
     public static ArrayListExtensions<Block> leaves;
     public static ArrayListExtensions<Block> flowers;
@@ -48,37 +52,121 @@ public class PandorasBox {
     public static ArrayListExtensions<Block> stained_glass;
     public static ArrayListExtensions<Block> saplings;
     public static ArrayListExtensions<Block> pots;
-    public static PBConfig CONFIG;
-
-    public static PBEventHandler fmlEventHandler;
-    public PandorasBox() {
-        // Register the setup method for modloading
-        initConfig();
-        EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
-        Registry.init(EVENT_BUS);
-        EVENT_BUS.addListener(this::preInit);
-        instance = this;
-    }
+    public static PandoraConfig CONFIG;
     public static void initConfig() {
-        CONFIG = new PBConfig();
+        CONFIG = new PandoraConfig();
     }
 
-    public void preInit(final FMLCommonSetupEvent event) {
-        LOLIPOP = Registry.LOLIPOP.get();
-        COLOURFUL_TREE = Registry.COLOURFUL_TREE.get();
-        RAINBOW = Registry.RAINBOW.get();
-        MEGA_JUNGLE = Registry.MEGA_JUNGLE.get();
+    /**
+     * Runs the mod initializer.
+     */
+    @Override
+    public void onInitialize() {
+        initConfig();
+        Init.init();
+        Event<ItemGroupEvents.ModifyEntries> event = ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS);
+        event.register(entries -> entries.accept(ItemInit.PBI));
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> initPB());
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> initPB());
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> new CommandPandorasBox(dispatcher));
+        LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+            if (!CONFIG.configuredTables.containsKey(id))
+                return;
 
-        fmlEventHandler = new PBEventHandler();
-        fmlEventHandler.register();
-        proxy.preInit();
+            LootTable table = lootManager.getLootTable(CONFIG.configuredTables.get(id));
 
-        proxy.load();
+            if (table != LootTable.EMPTY) {
+                tableBuilder.pools(table.pools);
+            }
+        });
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> AtlasConfig.configs.forEach((resourceLocation, config) -> {
+            ServerPlayNetworking.send(handler.player, new AtlasConfigPacket(config));
+            logger.info("Config packet for config " + resourceLocation.toString() + " sent to client.");
+        }));
     }
-    public static <T> T runForDist(Supplier<Supplier<T>> clientTarget, Supplier<Supplier<T>> serverTarget) {
-        return switch (FMLEnvironment.dist) {
-            case CLIENT -> clientTarget.get().get();
-            case DEDICATED_SERVER -> serverTarget.get().get();
-        };
+    public static void initPB() {
+        logs = new ArrayListExtensions<>();
+        leaves = new ArrayListExtensions<>();
+        flowers = new ArrayListExtensions<>();
+        wool = new ArrayListExtensions<>();
+        slabs = new ArrayListExtensions<>();
+        bricks = new ArrayListExtensions<>();
+        terracotta = new ArrayListExtensions<>();
+        stained_terracotta = new ArrayListExtensions<>();
+        planks = new ArrayListExtensions<>();
+        stained_glass = new ArrayListExtensions<>();
+        saplings = new ArrayListExtensions<>();
+        pots = new ArrayListExtensions<>();
+        List<Block> blocks = BuiltInRegistries.BLOCK.stream().toList();
+        for (Block block : blocks) {
+            if (block.defaultBlockState().is(BlockTags.LOGS)) {
+                logs.add(block);
+            }
+            if (block.defaultBlockState().is(BlockTags.LEAVES)) {
+                leaves.add(block);
+            }
+            if (block.defaultBlockState().is(BlockTags.SMALL_FLOWERS)) {
+                flowers.add(block);
+            }
+            if (block.defaultBlockState().is(BlockTags.WOOL)) {
+                wool.add(block);
+            }
+            if (block.defaultBlockState().is(BlockTags.SLABS)) {
+                slabs.add(block);
+            }
+            if (block.defaultBlockState().is(BlockTags.STONE_BRICKS)) {
+                bricks.add(block);
+            }
+            if (Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(block)).getPath().endsWith("terracotta")) {
+                terracotta.add(block);
+            }
+            if (Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(block)).getPath().endsWith("_terracotta")) {
+                stained_terracotta.add(block);
+            }
+            if (block.defaultBlockState().is(BlockTags.PLANKS)) {
+                planks.add(block);
+            }
+            if (block instanceof StainedGlassBlock) {
+                stained_glass.add(block);
+            }
+            if (block instanceof SaplingBlock) {
+                saplings.add(block);
+            }
+            if (block.defaultBlockState().is(BlockTags.FLOWER_POTS)) {
+                pots.add(block);
+            }
+        }
+        PBEffects.registerEffectCreators();
+    }
+    public record AtlasConfigPacket(AtlasConfig config) implements FabricPacket {
+        public static final PacketType<AtlasConfigPacket> TYPE = PacketType.create(new ResourceLocation("atlaslib:atlas_config"), AtlasConfigPacket::new);
+
+        public AtlasConfigPacket(FriendlyByteBuf buf) {
+            this(AtlasConfig.staticLoadFromNetwork(buf));
+        }
+
+        /**
+         * Writes the contents of this packet to the buffer.
+         *
+         * @param buf the output buffer
+         */
+        @Override
+        public void write(FriendlyByteBuf buf) {
+            buf.writeResourceLocation(config.name);
+            config.saveToNetwork(buf);
+        }
+
+        /**
+         * Returns the packet type of this packet.
+         *
+         * <p>Implementations should store the packet type instance in a {@code static final}
+         * field and return that here, instead of creating a new instance.
+         *
+         * @return the type of this packet
+         */
+        @Override
+        public PacketType<?> getType() {
+            return TYPE;
+        }
     }
 }

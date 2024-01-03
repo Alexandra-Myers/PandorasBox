@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.init.Registry;
+import ivorius.pandorasbox.init.Init;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 public class PBEffectRegistry {
     public static Class<? extends PBEffect> getEffect(String id) {
-        return Registry.BOX_EFFECT_REGISTRY.get(new ResourceLocation(id));
+        return Init.BOX_EFFECT_REGISTRY.get(new ResourceLocation(id));
     }
 
     public static void writeEffect(PBEffect effect, CompoundTag compound) {
@@ -56,6 +56,6 @@ public class PBEffectRegistry {
     }
 
     public static String getEffectID(PBEffect effect) {
-        return Objects.requireNonNull(Registry.BOX_EFFECT_REGISTRY.getKey(effect.getClass())).toString();
+        return Objects.requireNonNull(Init.BOX_EFFECT_REGISTRY.getKey(effect.getClass())).toString();
     }
 }

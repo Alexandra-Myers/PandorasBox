@@ -10,8 +10,8 @@ import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectMulti;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import ivorius.pandorasbox.init.Registry;
-import ivorius.pandorasbox.utils.StringConverter;
+import ivorius.pandorasbox.init.EntityInit;
+import ivorius.pandorasbox.init.Init;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -34,7 +34,7 @@ public class PBECRegistry
 
     public static void register(PBEffectCreator creator, String id) {
         PandorasBox.logger.info("Effect Name: " + id);
-        EffectHolder holder = Registry.EFFECT_HOLDER_REGISTRY.get(new ResourceLocation(id));
+        EffectHolder holder = Init.EFFECT_HOLDER_REGISTRY.get(new ResourceLocation(id));
         holder.defineEffectCreator(creator);
         if (!holder.canBeGoodOrBad())
             fixedChanceCreators.add(holder);
@@ -121,7 +121,7 @@ public class PBECRegistry
 
     public static PandorasBoxEntity spawnPandorasBox(Level world, PBEffect effect, Entity entity, BlockPos pos, boolean floatAway) {
         if (effect != null && !world.isClientSide()) {
-            PandorasBoxEntity pandorasBox = Registry.Box.get().create(world);
+            PandorasBoxEntity pandorasBox = EntityInit.Box.create(world);
 
             if(pos == null) {
                 pos = new BlockPos(

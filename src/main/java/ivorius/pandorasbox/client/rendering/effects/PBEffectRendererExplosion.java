@@ -8,13 +8,10 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 /**
  * Created by lukas on 05.12.14.
  */
-public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplode>
-{
+public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplode> {
     @Override
-    public void renderBox(PandorasBoxEntity entity, PBEffectExplode effect, float partialTicks, PoseStack matrixStack, VertexConsumer consumer)
-    {
-        if (!entity.isInvisible())
-        {
+    public void renderBox(PandorasBoxEntity entity, PBEffectExplode effect, float partialTicks, PoseStack matrixStack, VertexConsumer consumer) {
+        if (!entity.isInvisible()) {
             int lightColor = effect.burning ? 0xff0088 : 0xdd3377;
 
             float timePassed = (float) entity.getEffectTicksExisted() / (float) effect.maxTicksAlive;

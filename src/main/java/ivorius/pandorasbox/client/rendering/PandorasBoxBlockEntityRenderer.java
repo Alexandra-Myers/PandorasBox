@@ -5,22 +5,17 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
-import ivorius.pandorasbox.init.Registry;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
 public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<PandorasBoxBlockEntity> {
     public static final ResourceLocation texture = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
     public final PandorasBoxBlockEntityModel model;
     public PandorasBoxBlockEntityRenderer(BlockEntityRendererProvider.Context p_i226006_1_) {
         model = new PandorasBoxBlockEntityModel(p_i226006_1_.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
-    }
-    public static void register(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(Registry.TEPB.get(), PandorasBoxBlockEntityRenderer::new);
     }
 
     @Override

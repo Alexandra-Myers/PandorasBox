@@ -6,13 +6,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import ivorius.pandorasbox.effectcreators.PBECDuplicateBox;
-import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
-import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
-import ivorius.pandorasbox.init.Registry;
-import ivorius.pandorasbox.random.DConstant;
-import ivorius.pandorasbox.random.IConstant;
+import ivorius.pandorasbox.init.Init;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.resources.ResourceLocation;
 
@@ -33,12 +28,12 @@ public class PBEffectArgument implements ArgumentType<PBEffectCreator> {
     @Override
     public PBEffectCreator parse(StringReader reader) throws CommandSyntaxException {
         ResourceLocation resourcelocation = ResourceLocation.read(reader);
-        return Registry.EFFECT_HOLDER_REGISTRY.get(resourcelocation).effectCreator;
+        return Init.EFFECT_HOLDER_REGISTRY.get(resourcelocation).effectCreator;
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggestResource(Registry.EFFECT_HOLDER_REGISTRY.keySet(), builder);
+        return SharedSuggestionProvider.suggestResource(Init.EFFECT_HOLDER_REGISTRY.keySet(), builder);
     }
 
     @Override

@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBox;
+import ivorius.pandorasbox.init.FeatureInit;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
@@ -39,7 +40,7 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator<MegaTreeFea
     public ArrayListExtensions<MegaTreeFeature> initializeGens()
     {
         ArrayListExtensions<MegaTreeFeature> trees = new ArrayListExtensions<>();
-        trees.add(treeJungle, (MegaTreeFeature) PandorasBox.instance.MEGA_JUNGLE);
+        trees.add(treeJungle, (MegaTreeFeature) FeatureInit.MEGA_JUNGLE);
         trees.get(treeJungle).setLeaves(leafBlock.defaultBlockState());
         trees.get(treeJungle).setTrunk(trunkBlock.defaultBlockState());
         return trees;

@@ -7,7 +7,8 @@ package ivorius.pandorasbox;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import ivorius.pandorasbox.init.Registry;
+import ivorius.pandorasbox.init.Init;
+import ivorius.pandorasbox.init.ItemInit;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.*;
@@ -66,7 +67,7 @@ public class PandorasBoxHelper
 
             Item item = block.asItem();
             if (item != null)
-                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(new ItemStack(item)), weight));
+                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(), weight));
         }
     }
     public static void addBlocks(double weight, List<Block> blocks) {
@@ -75,7 +76,7 @@ public class PandorasBoxHelper
 
             Item item = block.asItem();
             if (item != null)
-                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(new ItemStack(item)), weight));
+                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(), weight));
         }
     }
 
@@ -93,9 +94,9 @@ public class PandorasBoxHelper
     public static void addItems(double weight, Object... items) {
         for (Object object : items) {
             if (object instanceof Item item) {
-                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(new ItemStack(item)), weight));
+                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(), weight));
             } else if (object instanceof ItemStack itemStack) {
-                addItem(new RandomizedItemStack(itemStack, 1, itemStack.getItem().getMaxStackSize(itemStack), weight));
+                addItem(new RandomizedItemStack(itemStack, 1, itemStack.getMaxStackSize(), weight));
             }
         }
     }
@@ -300,7 +301,7 @@ public class PandorasBoxHelper
         addBlocks(5.0, Blocks.DRAGON_EGG, Blocks.REDSTONE_LAMP, Blocks.SEA_LANTERN, Blocks.SNOW, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.HAY_BLOCK, Blocks.OBSIDIAN, Blocks.MELON, Blocks.CHISELED_BOOKSHELF);
 
         addItems(10.0, Items.COAL, Items.GUNPOWDER, Items.WHEAT, Items.SADDLE, Items.REDSTONE, Items.BONE, Items.MELON, Items.CLAY_BALL, Items.BOOK, Items.GOLD_NUGGET, Items.POTATO, Items.BUCKET, Items.STICK, Items.STRING, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.WHEAT_SEEDS, Items.SNOWBALL, Items.SUGAR, Items.FISHING_ROD, Items.NETHER_STAR, Items.NETHER_WART, Items.FLINT, Items.EGG, Items.BRICK, Items.PAPER, Items.TORCH);
-        addItems(10.0, Registry.PBI.get());
+        addItems(10.0, ItemInit.PBI);
         addItems(10.0, Items.CHICKEN, Items.COOKED_CHICKEN, Items.BEEF, Items.PUMPKIN_PIE, Items.COOKED_BEEF, Items.MUSHROOM_STEW, Items.ROTTEN_FLESH, Items.CARROT, Items.PORKCHOP, Items.COOKED_PORKCHOP, Items.APPLE, Items.CAKE, Items.BREAD, Items.COOKIE, Items.COD, Items.COOKED_COD, Items.SALMON, Items.COOKED_SALMON, Items.PUFFERFISH, Items.MUTTON, Items.COOKED_MUTTON, Items.RABBIT, Items.RABBIT_FOOT, Items.RABBIT_HIDE, Items.RABBIT_STEW, Items.COOKED_RABBIT, Items.HONEY_BOTTLE, Items.SWEET_BERRIES);
         addItems(8.0,  misc);
         addItems(8.0, Items.NAME_TAG);
