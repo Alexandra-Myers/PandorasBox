@@ -20,35 +20,30 @@ import java.util.List;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECSpawnItemSet implements PBEffectCreator
-{
+public class PBECSpawnItemSet implements PBEffectCreator {
     public IValue ticksPerItem;
     public List<WeightedSet> items;
     public ValueThrow valueThrow;
     public ValueSpawn valueSpawn;
 
-    public PBECSpawnItemSet(IValue ticksPerItem, List<WeightedSet> items, ValueThrow valueThrow, ValueSpawn valueSpawn)
-    {
+    public PBECSpawnItemSet(IValue ticksPerItem, List<WeightedSet> items, ValueThrow valueThrow, ValueSpawn valueSpawn) {
         this.ticksPerItem = ticksPerItem;
         this.items = items;
         this.valueThrow = valueThrow;
         this.valueSpawn = valueSpawn;
     }
 
-    public PBECSpawnItemSet(IValue ticksPerItem, List<WeightedSet> items)
-    {
+    public PBECSpawnItemSet(IValue ticksPerItem, List<WeightedSet> items) {
         this(ticksPerItem, items, PBECSpawnItems.defaultThrow(), null);
     }
 
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int ticksPerItem = this.ticksPerItem.getValue(random);
 
         ItemStack[] itemSet = WeightedSelector.selectItem(random, items).set;
         ItemStack[] stacks = new ItemStack[itemSet.length];
-        for (int i = 0; i < itemSet.length; i++)
-        {
+        for (int i = 0; i < itemSet.length; i++) {
             stacks[i] = itemSet[i].copy();
         }
 

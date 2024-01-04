@@ -39,13 +39,13 @@ public class IvRenderHelper {
                 float o = randomSource.nextFloat() * 20.0F + 5.0F + m * 10.0F;
                 float p = randomSource.nextFloat() * 2.0F + 1.0F + m * 2.0F;
                 Matrix4f matrix4f = poseStack.last().pose();
-                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha));
+                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha));
                 vertex(vertexConsumer, matrix4f, r, g, b, o, p);
                 vertex1(vertexConsumer, matrix4f, r, g, b, o, p);
-                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha));
+                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha));
                 vertex1(vertexConsumer, matrix4f, r, g, b, o, p);
                 vertex2(vertexConsumer, matrix4f, r, g, b, o, p);
-                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha));
+                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha));
                 vertex2(vertexConsumer, matrix4f, r, g, b, o, p);
                 vertex(vertexConsumer, matrix4f, r, g, b, o, p);
             }

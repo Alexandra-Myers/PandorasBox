@@ -43,15 +43,13 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
     public List<EntityType<?>> mobsToSpawn;
     public PBEffectGenConvertToCity() {}
 
-    public PBEffectGenConvertToCity(int time, double range, int unifiedSeed, List<EntityType<?>> mobs)
-    {
+    public PBEffectGenConvertToCity(int time, double range, int unifiedSeed, List<EntityType<?>> mobs) {
         super(time, range, 2, unifiedSeed);
         mobsToSpawn = mobs;
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
-    {
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if (world instanceof ServerLevel serverLevel) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
@@ -61,11 +59,10 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                 blocks.addAll(Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
                 blocks.addAll(PandorasBox.flowers);
                 ArrayListExtensions<Block> solid = new ArrayListExtensions<>();
-                solid.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.RED_SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DEEPSLATE, Blocks.TUFF);
                 solid.addAll(PandorasBox.terracotta, PandorasBox.stained_terracotta);
                 if (isBlockAnyOf(block, blocks)) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, solid)) {
+                } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.RED_SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DEEPSLATE, Blocks.TUFF)) {
                     if (world.getBlockState(pos.above()).getBlock() == Blocks.AIR) {
                         if (world.random.nextInt(144) == 0) {
                             for (int i = 0; i < 4; i++) {
@@ -178,7 +175,9 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                             setBlockSafe(world, pos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
                     } else
                         setBlockSafe(world, pos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
-                } else if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.LAVA, Blocks.ICE))
+                } else if (isBlockAnyOf(block, solid))
+                    setBlockSafe(world, pos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
+                else if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.LAVA, Blocks.ICE))
                     setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
 
                 if (isBlockAnyOf(block, Blocks.LAVA))
@@ -214,7 +213,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                 if (chestBlockEntity != null) {
                     Collection<WeightedSet> sets = PandorasBoxHelper.equipmentSets;
                     Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.items;
-                    if (world.random.nextFloat() > 0.25) {
+                    if (world.random.nextFloat() > 0.05) {
                         for (int i = 0; i < world.random.nextInt(5) + 2; i++) {
                             RandomizedItemStack chestContent = WeightedSelector.selectItem(world.random, itemSelection);
                             ItemStack stack = chestContent.itemStack.copy();
@@ -226,10 +225,12 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                             chestBlockEntity.setItem(slot, stack);
                         }
                     } else {
-                        WeightedSet chestContent = WeightedSelector.selectItem(world.random, sets);
-                        int amount = world.random.nextInt(chestContent.set.length - 2) + 3;
-                        for (int i = 0; i < amount; i++) {
-                            ItemStack stack = chestContent.set[i];
+                        ItemStack[] itemSet = WeightedSelector.selectItem(world.random, sets).set;
+                        ItemStack[] chestContent = new ItemStack[itemSet.length];
+                        for (int i = 0; i < itemSet.length; i++) {
+                            chestContent[i] = itemSet[i].copy();
+                        }
+                        for (ItemStack stack : chestContent) {
                             int slot = world.random.nextInt(chestBlockEntity.getContainerSize());
                             while (!chestBlockEntity.getItem(slot).isEmpty())
                                 slot = world.random.nextInt(chestBlockEntity.getContainerSize());

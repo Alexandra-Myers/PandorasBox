@@ -37,8 +37,6 @@ public class PandorasBoxRenderer<T extends PandorasBoxEntity> extends EntityRend
     public PandorasBoxModel model;
     public ResourceLocation texture = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
 
-//    public ResourceLocation model;
-
     public PandorasBoxRenderer(EntityRendererProvider.Context renderManager)
     {
         super(renderManager);
