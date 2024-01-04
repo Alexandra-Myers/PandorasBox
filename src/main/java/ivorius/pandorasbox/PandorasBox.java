@@ -66,8 +66,14 @@ public class PandorasBox implements ModInitializer {
         Init.init();
         Event<ItemGroupEvents.ModifyEntries> event = ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS);
         event.register(entries -> entries.accept(ItemInit.PBI));
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> initPB());
-        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> initPB());
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            AtlasConfig.configs.forEach((resourceLocation, config) -> config.load());
+            initPB();
+        });
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
+            AtlasConfig.configs.forEach((resourceLocation, config) -> config.load());
+            initPB();
+        });
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> new CommandPandorasBox(dispatcher));
         LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
             if (!CONFIG.configuredTables.containsKey(id))
