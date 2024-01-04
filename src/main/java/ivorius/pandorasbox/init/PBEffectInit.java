@@ -6,8 +6,8 @@ import ivorius.pandorasbox.effects.*;
 import static ivorius.pandorasbox.init.Init.*;
 
 public class PBEffectInit {
-    public static final FixedChanceEffectHolder MATRYOSHKA = makeFixedChance("matryoshka", 0.02);
     static {
+        makeFixedChance("matryoshka", 0.02);
         makePositiveOrNegative("mobs", false);
         makePositiveOrNegative("mob_towers", false);
         makePositiveOrNegative("megaton", false);
@@ -66,7 +66,7 @@ public class PBEffectInit {
         makePositiveOrNegative("telerandom", false);
         makePositiveOrNegative("crazyport", false);
         makePositiveOrNegative("thing_go_boom", false);
-        makePositiveOrNegative("apocalyptic_boom", false);
+        makePositiveOrNegativeFixedChance("apocalyptic_boom", 0.004, false);
         makePositiveOrNegative("danger_call", false);
         makePositiveOrNegative("animals", true);
         makePositiveOrNegative("animal_towers", true);

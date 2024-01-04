@@ -2,6 +2,7 @@ package ivorius.pandorasbox.init;
 
 import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.effectholder.FixedChanceEffectHolder;
+import ivorius.pandorasbox.effectholder.FixedChancePositiveOrNegativeEffectHolder;
 import ivorius.pandorasbox.effectholder.PositiveOrNegativeEffectHolder;
 import ivorius.pandorasbox.effects.*;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
@@ -17,6 +18,9 @@ public class Init {
     public static final Registry<Class<? extends PBEffect>> BOX_EFFECT_REGISTRY = FabricRegistryBuilder.createDefaulted(BOX_EFFECT_REGISTRY_KEY, new ResourceLocation("duplicate_box")).attribute(RegistryAttribute.SYNCED).buildAndRegister();
     public static FixedChanceEffectHolder makeFixedChance(String name, double fixedChance) {
         return Registry.register(EFFECT_HOLDER_REGISTRY, ResourceKey.create(EFFECT_HOLDER_REGISTRY.key(), new ResourceLocation(name)), new FixedChanceEffectHolder(fixedChance));
+    }
+    public static FixedChancePositiveOrNegativeEffectHolder makePositiveOrNegativeFixedChance(String name, double fixedChance, boolean good) {
+        return Registry.register(EFFECT_HOLDER_REGISTRY, ResourceKey.create(EFFECT_HOLDER_REGISTRY.key(), new ResourceLocation(name)), new FixedChancePositiveOrNegativeEffectHolder(fixedChance, good));
     }
     public static PositiveOrNegativeEffectHolder makePositiveOrNegative(String name, boolean good) {
         return Registry.register(EFFECT_HOLDER_REGISTRY, ResourceKey.create(EFFECT_HOLDER_REGISTRY.key(), new ResourceLocation(name)), new PositiveOrNegativeEffectHolder(good));
