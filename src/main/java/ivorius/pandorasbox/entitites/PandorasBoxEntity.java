@@ -311,6 +311,10 @@ public class PandorasBoxEntity extends Entity {
 
     @Override
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return null;
+    }
+
+    public FabricPacket getCustomAddEntityPacket() {
         CompoundTag compoundTag = new CompoundTag();
         writeBoxData(compoundTag);
         return new CustomAddEntityPacket((ClientboundAddEntityPacket) super.getAddEntityPacket(), compoundTag);
@@ -367,13 +371,14 @@ public class PandorasBoxEntity extends Entity {
         compound.putDouble("effectCenterY", effectCenter.y);
         compound.putDouble("effectCenterZ", effectCenter.z);
     }
-    public record CustomAddEntityPacket(ClientboundAddEntityPacket originalPacket, CompoundTag additionalData) implements FabricPacket, Packet<ClientGamePacketListener> {
+    public record CustomAddEntityPacket(ClientboundAddEntityPacket originalPacket, CompoundTag additionalData) implements FabricPacket {
         public static final PacketType<CustomAddEntityPacket> TYPE = PacketType.create(new ResourceLocation(PandorasBox.MOD_ID, "custom_add_entity"), CustomAddEntityPacket::new);
 
         public CustomAddEntityPacket(FriendlyByteBuf friendlyByteBuf) {
             this(new ClientboundAddEntityPacket(friendlyByteBuf), friendlyByteBuf.readNbt());
         }
 
+        @Override
         public void write(FriendlyByteBuf friendlyByteBuf) {
             originalPacket.write(friendlyByteBuf);
             friendlyByteBuf.writeNbt(additionalData);
@@ -392,7 +397,6 @@ public class PandorasBoxEntity extends Entity {
             return TYPE;
         }
 
-        @Override
         public void handle(ClientGamePacketListener packetListener) {
             originalPacket.handle(packetListener);
             if (packetListener instanceof ClientPacketListener clientPacketListener) {
