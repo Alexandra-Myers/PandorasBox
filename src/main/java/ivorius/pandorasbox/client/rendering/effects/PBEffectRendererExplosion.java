@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplode> {
     @Override
     public void renderBox(PandorasBoxEntity entity, PBEffectExplode effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer) {
-        int lightColor = effect.burning ? 0xff0088 : 0xdd3377;
+        int lightColor = effect.burning ? 0xff0088 : 0xbb3399;
 
         float timePassed = Math.min((float) entity.getEffectTicksExisted() / (float) effect.maxTicksAlive, 1F);
         timePassed *= timePassed;

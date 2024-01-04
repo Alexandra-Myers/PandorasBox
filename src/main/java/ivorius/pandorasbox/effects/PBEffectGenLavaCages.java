@@ -13,6 +13,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -30,8 +31,7 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     public Integer wallDist = null;
     public PBEffectGenLavaCages() {}
 
-    public PBEffectGenLavaCages(int time, double range, int unifiedSeed, Block lavaBlock, Block cageBlock, Block fillBlock, Block floorBlock)
-    {
+    public PBEffectGenLavaCages(int time, double range, int unifiedSeed, Block lavaBlock, Block cageBlock, Block fillBlock, Block floorBlock) {
         super(time, range, 1, unifiedSeed);
 
         this.lavaBlock = lavaBlock;
@@ -41,22 +41,18 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
-    {
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if(heightOffset == null) {
             heightOffset = random.nextInt(10) + 2;
         }
         if(wallDist == null) {
             wallDist = random.nextInt(5) + 2;
         }
-        if (!world.isClientSide())
-        {
-            if (!world.loadedAndEntityCanStandOn(pos, entity))
-            {
+        if (!world.isClientSide()) {
+            if (!world.loadedAndEntityCanStandOn(pos, entity)) {
                 List<Player> outerList = world.getEntitiesOfClass(Player.class, BlockPositions.expandToAABB(pos, 3.5, 3.5, 3.5));
 
-                if (outerList.size() > 0)
-                {
+                if (outerList.size() > 0) {
                     for(Player player : outerList) {
                         int playerY = player.blockPosition().getY();
                         int playerX = player.blockPosition().getX();
@@ -73,6 +69,8 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
         }
     }
     public void createFloorOrCeil(Level world, int originX, int y, int originZ, int offset) {
+        if (floorBlock == null)
+            floorBlock = Blocks.OBSIDIAN;
         for (int x = originX - offset; x <= originX + offset; x++) {
             for(int z = originZ - offset; z <= originZ + offset; z++) {
                 setBlockVaryingUnsafeSrc(world, new BlockPos(x, y, z), floorBlock, unifiedSeed);
@@ -103,8 +101,7 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
+    public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
 
         if (lavaBlock != null)
@@ -113,15 +110,17 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
             compound.putString("fillBlock", PBNBTHelper.storeBlockString(fillBlock));
 
         compound.putString("cageBlock", PBNBTHelper.storeBlockString(cageBlock));
+
+        compound.putString("floorBlock", PBNBTHelper.storeBlockString(floorBlock));
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
-    {
+    public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
 
         lavaBlock = PBNBTHelper.getBlock(compound.getString("lavaBlock"));
         fillBlock = PBNBTHelper.getBlock(compound.getString("fillBlock"));
         cageBlock = PBNBTHelper.getBlock(compound.getString("cageBlock"));
+        floorBlock = PBNBTHelper.getBlock(compound.getString("floorBlock"));
     }
 }

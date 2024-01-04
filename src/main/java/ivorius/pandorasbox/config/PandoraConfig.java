@@ -72,7 +72,7 @@ public class PandoraConfig extends AtlasConfig {
 	public void defineConfigHolders() {
 		boxLongevity = createInRange("box_longevity", 0.2, 0, 1);
 		boxIntensity = createInRange("box_intensity", 1.0, 0, 10);
-		goodEffectChance = createInRange("good_effect_chance", 0.49, 0, 10);
+		goodEffectChance = createInRange("good_effect_chance", 0.49, 0, 1);
 		maxEffectsPerBox = createInRange("max_effects_per_box", 3, 1, 100);
 		configuredTables = new HashMap<>();
 
