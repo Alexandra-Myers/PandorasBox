@@ -26,6 +26,7 @@
   "mixins": [
     "pandorasbox.mixins.json"
   ],
+  "accessWidener": "pandorasbox.accesswidener",
   "depends": {
     "fabricloader": ">=0.15.0",
     "minecraft": "~1.20.2",
