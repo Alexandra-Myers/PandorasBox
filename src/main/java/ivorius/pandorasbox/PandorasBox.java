@@ -74,7 +74,7 @@ public class PandorasBox implements ModInitializer {
                 return;
 
             LootTable table = lootManager.getLootTable(CONFIG.configuredTables.get(id));
-            logger.info("Original Table: " + id.toString() + " Injected Table" + CONFIG.configuredTables.get(id).toString());
+            logger.info("Original Table: " + id.toString() + " Injected Table: " + CONFIG.configuredTables.get(id).toString());
 
             if (table != LootTable.EMPTY) {
                 tableBuilder.pools(table.pools);

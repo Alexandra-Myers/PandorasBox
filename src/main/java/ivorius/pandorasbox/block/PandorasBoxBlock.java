@@ -80,7 +80,7 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
         if (tileEntity instanceof PandorasBoxBlockEntity)
-            ((PandorasBoxBlockEntity) tileEntity).setRotationYaw(livingEntity.yBodyRot + 180);
+            ((PandorasBoxBlockEntity) tileEntity).setRotationYaw(livingEntity.getYRot() + 180);
         super.setPlacedBy(worldIn, pos, state, livingEntity, itemStack);
     }
 

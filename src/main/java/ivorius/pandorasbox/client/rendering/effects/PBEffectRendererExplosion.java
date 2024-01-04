@@ -4,27 +4,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import ivorius.pandorasbox.effects.PBEffectExplode;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import net.minecraft.client.renderer.MultiBufferSource;
 
 /**
  * Created by lukas on 05.12.14.
  */
 public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplode> {
     @Override
-    public void renderBox(PandorasBoxEntity entity, PBEffectExplode effect, float partialTicks, PoseStack matrixStack, VertexConsumer consumer) {
-        if (!entity.isInvisible()) {
-            int lightColor = effect.burning ? 0xff0088 : 0xdd3377;
+    public void renderBox(PandorasBoxEntity entity, PBEffectExplode effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer) {
+        int lightColor = effect.burning ? 0xff0088 : 0xdd3377;
 
-            float timePassed = (float) entity.getEffectTicksExisted() / (float) effect.maxTicksAlive;
-            timePassed *= timePassed;
-            timePassed *= timePassed;
+        float timePassed = Math.min((float) entity.getEffectTicksExisted() / (float) effect.maxTicksAlive, 1F);
+        timePassed *= timePassed;
+        timePassed *= timePassed;
 
-            float scale = (timePassed * 0.3f) * effect.explosionRadius * 0.3f;
-
-            matrixStack.pushPose();
-            matrixStack.translate(0.0f, 0.2f, 0.0f);
-            matrixStack.scale(scale, scale, scale);
-            IvRenderHelper.renderLights(entity.tickCount + partialTicks, lightColor, timePassed, 10, matrixStack, consumer);
-            matrixStack.popPose();
-        }
+        float scale = (timePassed * 0.3f) * effect.explosionRadius * 0.3f;
+        IvRenderHelper.renderLights(entity.tickCount + partialTicks, scale, lightColor, timePassed * 255F, 10, poseStack, multiBufferSource);
     }
 }

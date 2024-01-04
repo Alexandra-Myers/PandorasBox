@@ -13,19 +13,16 @@ import net.minecraft.world.level.Level;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECMulti implements PBEffectCreator
-{
+public class PBECMulti implements PBEffectCreator {
     public PBEffectCreator[] effects;
     public int[] delays;
 
-    public PBECMulti(PBEffectCreator[] effects, int[] delays)
-    {
+    public PBECMulti(PBEffectCreator[] effects, int[] delays) {
         this.effects = effects;
         this.delays = delays;
     }
 
-    public PBECMulti(Object... effectsAndDelays)
-    {
+    public PBECMulti(Object... effectsAndDelays) {
         this.effects = new PBEffectCreator[effectsAndDelays.length / 2];
         this.delays = new int[this.effects.length];
 

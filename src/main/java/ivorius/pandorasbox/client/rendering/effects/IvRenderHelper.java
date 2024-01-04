@@ -1,61 +1,69 @@
 package ivorius.pandorasbox.client.rendering.effects;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import org.joml.Quaternionf;
-import org.lwjgl.opengl.GL11;
-
-import java.util.Random;
+import com.mojang.math.Axis;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.RandomSource;
+import org.joml.Matrix4f;
 
 public class IvRenderHelper {
+    public static final float width = 2.5f;
 
-    public static void renderLights(float ticks, int color, float alpha, int number, PoseStack matrixStack, VertexConsumer consumer)
-    {
-        float width = 2.5f;
-
-        float r = (float)(color >> 16 & 255) / 255.0F;
-        float g = (float)(color >> 8 & 255) / 255.0F;
-        float b = (float)(color & 255) / 255.0F;
-
-        BufferBuilder renderer = RenderSystem.renderThreadTesselator().getBuilder();
-
+    public static void renderLights(float ticks, float scale, int color, float alpha, int number, PoseStack poseStack, MultiBufferSource multiBufferSource) {
+        int r = color >> 16 & 255;
+        int g = color >> 8 & 255;
+        int b = color & 255;
         float usedTicks = ticks / 200.0F;
+        float m = Math.min(usedTicks > 0.8F ? (usedTicks - 0.8F) / 0.2F : 0.0F, 1.0F);
+        RandomSource randomSource = RandomSource.create(432L);
+        VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.lightning());
+        poseStack.pushPose();
+        poseStack.translate(0.0, 1.0, 0.0);
+        poseStack.scale(scale, scale, scale);
 
-        Random random = new Random(432L);
-
-        for (int var7 = 0; (float) var7 < number; ++var7)
-        {
-            float xLogFunc = (((float) var7 / number * 28493.0f + ticks) / 10.0f) % 20.0f;
-            if (xLogFunc > 10.0f)
-            {
+        for(int n = 0; n < number; ++n) {
+            float xLogFunc = (((float) n / number * 28493.0f + ticks) / 10.0f) % 20.0f;
+            if (xLogFunc > 10.0f) {
                 xLogFunc = 20.0f - xLogFunc;
             }
 
             float lightAlpha = 1.0f / (1.0f + (float) Math.pow(2.71828f, -0.8f * xLogFunc) * ((1.0f / 0.01f) - 1.0f));
-
-            if (lightAlpha > 0.01f)
-            {
-                matrixStack.mulPose(new Quaternionf(1.0F, 0.0F, 0.0F, random.nextFloat() * 360.0F));
-                matrixStack.mulPose(new Quaternionf(0.0F, 1.0F, 0.0F, random.nextFloat() * 360.0F));
-                matrixStack.mulPose(new Quaternionf(0.0F, 0.0F, 1.0F, random.nextFloat() * 360.0F));
-                matrixStack.mulPose(new Quaternionf(1.0F, 0.0F, 0.0F, random.nextFloat() * 360.0F));
-                matrixStack.mulPose(new Quaternionf(0.0F, 1.0F, 0.0F, random.nextFloat() * 360.0F));
-                matrixStack.mulPose(new Quaternionf(0.0F, 0.0F, 1.0F, random.nextFloat() * 360.0F + usedTicks * 90.0F));
-                renderer.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-                float var8 = random.nextFloat() * 20.0F + 5.0F;
-                float var9 = random.nextFloat() * 2.0F + 1.0F;
-                renderer.vertex(0.0D, 0.0D, 0.0D).color(r, g, b, alpha * lightAlpha).endVertex();
-                renderer.vertex(-width * (double) var9, var8, (-0.5F * var9)).color(r, g, b, 0).endVertex();
-                renderer.vertex(width * (double) var9, var8, (-0.5F * var9)).color(r, g, b, 0).endVertex();
-                renderer.vertex(0.0D, var8, (var9)).color(r, g, b, 0).endVertex();
-                renderer.vertex(-width * (double) var9, var8, (-0.5F * var9)).color(r, g, b, 0).endVertex();
-                RenderSystem.renderThreadTesselator().end();
+            if (lightAlpha > 0.01f) {
+                poseStack.mulPose(Axis.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+                poseStack.mulPose(Axis.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F + usedTicks * 90.0F));
+                float o = randomSource.nextFloat() * 20.0F + 5.0F + m * 10.0F;
+                float p = randomSource.nextFloat() * 2.0F + 1.0F + m * 2.0F;
+                Matrix4f matrix4f = poseStack.last().pose();
+                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha));
+                vertex(vertexConsumer, matrix4f, r, g, b, o, p);
+                vertex1(vertexConsumer, matrix4f, r, g, b, o, p);
+                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha));
+                vertex1(vertexConsumer, matrix4f, r, g, b, o, p);
+                vertex2(vertexConsumer, matrix4f, r, g, b, o, p);
+                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha));
+                vertex2(vertexConsumer, matrix4f, r, g, b, o, p);
+                vertex(vertexConsumer, matrix4f, r, g, b, o, p);
             }
         }
-        RenderSystem.depthMask(true);
-        RenderSystem.disableCull();
-        RenderSystem.disableBlend();
-        consumer.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        poseStack.popPose();
+    }
+    private static void baseVertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, int r, int g, int b, int alpha) {
+        vertexConsumer.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(r, g, b, alpha).endVertex();
+    }
+    private static void vertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, int r, int g, int b, float y, float x) {
+        vertexConsumer.vertex(matrix4f, -width * x, y, -0.5F * x).color(r, g, b, 0).endVertex();
+    }
+
+    private static void vertex1(VertexConsumer vertexConsumer, Matrix4f matrix4f, int r, int g, int b, float y, float x) {
+        vertexConsumer.vertex(matrix4f, width * x, y, -0.5F * x).color(r, g, b, 0).endVertex();
+    }
+
+    private static void vertex2(VertexConsumer vertexConsumer, Matrix4f matrix4f, int r, int g, int b, float y, float x) {
+        vertexConsumer.vertex(matrix4f, 0.0F, y, x).color(r, g, b, 0).endVertex();
     }
 }
