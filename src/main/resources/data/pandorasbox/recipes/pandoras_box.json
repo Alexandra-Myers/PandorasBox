@@ -10,13 +10,13 @@
       "tag": "minecraft:planks"
     },
     "G": {
-      "item": "minecraft:gold_ingot"
+      "tag": "c:ingots/gold"
     },
     "R": {
       "item": "minecraft:redstone"
     },
     "O": {
-      "item": "minecraft:ender_pearl"
+      "tag": "c:ender_pearls"
     }
   },
   "result": {
