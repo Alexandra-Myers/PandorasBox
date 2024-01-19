@@ -49,8 +49,6 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     protected int effectTicksExisted;
     protected boolean canGenerateMoreEffectsAfterwards = true;
 
-    protected PBEffect boxEffect;
-
     protected boolean floatUp = false;
     protected float floatAwayProgress = -1.0f;
 
@@ -223,8 +221,7 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         effectTicksExisted = 0;
         timeBoxWaiting = random.nextInt(40);
 
-        boxEffect = ensureNotNull(PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true));
-        entityData.set(DATA_EFFECT_ID, boxEffect);
+        entityData.set(DATA_EFFECT_ID, ensureNotNull(PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true)));
     }
 
     public void setBoxOwnerUUID(UUID uuid) {
@@ -277,11 +274,10 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
     }
 
     public void setBoxEffect(PBEffect effect) {
-        boxEffect = ensureNotNull(effect);
-        entityData.set(DATA_EFFECT_ID, boxEffect);
+        entityData.set(DATA_EFFECT_ID, ensureNotNull(effect));
     }
     public PBEffect ensureNotNull(PBEffect input) {
-        while(input == null) {
+        while (input == null) {
             input = PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true);
         }
         return input;

@@ -26,8 +26,6 @@ import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.ElderGuardian;
-import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.player.Player;
@@ -43,8 +41,7 @@ import net.neoforged.neoforge.event.EventHooks;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
-{
+public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities {
     public String[][] entityIDs;
 
     public int nameEntities;
@@ -87,9 +84,8 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         for (String entityID : entityTower) {
             Entity newEntity = createEntity(world, pbEntity, random, entityID, x, y, z);
 
-            if (newEntity instanceof LivingEntity) {
+            if (newEntity instanceof LivingEntity)
                 randomizeEntity(random, pbEntity.getId(), (LivingEntity) newEntity, nameEntities, equipLevel, buffLevel);
-            }
 
             if (previousEntity != null) {
                 world.addFreshEntity(previousEntity);
@@ -100,9 +96,8 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
             previousEntity = newEntity;
         }
 
-        if (previousEntity != null) {
+        if (previousEntity != null)
             world.addFreshEntity(previousEntity);
-        }
 
         return previousEntity;
     }
@@ -111,11 +106,10 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities
         if (nameEntities == 1) {
             entityLiving.setCustomName(PandorasBoxEntityNamer.getRandomName(random));
             entityLiving.setCustomNameVisible(true);
-        } else if (nameEntities == 2) {
+        } else if (nameEntities == 2)
             entityLiving.setCustomName(PandorasBoxEntityNamer.getRandomCasualName(random));
-        } else if (nameEntities == 3) {
+        else if (nameEntities == 3)
             entityLiving.setCustomName(PandorasBoxEntityNamer.getRandomCasualName(RandomSource.create(namingSeed)));
-        }
 
         if (equipLevel > 0) {
             float itemChancePerSlot = 1.0f - (0.5f / equipLevel);

@@ -14,19 +14,20 @@ import ivorius.pandorasbox.utils.PBEffectArgument;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerPlayer;
 
 public class CommandPandorasBox {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("pandora")
                 .requires(cs->cs.hasPermission(2)) //permission
+                .executes(ctx -> createBox(ctx.getSource().getPlayerOrException(), null, false))
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(ctx -> createBox(EntityArgument.getPlayer(ctx, "player"), null, false)).then(Commands.argument("effect", PBEffectArgument.effect())
                                 .executes(ctx -> createBox(EntityArgument.getPlayer(ctx, "player"), PBEffectArgument.getEffect(ctx, "effect"), false)).then(Commands.argument("invisible", BoolArgumentType.bool())
                                         .executes(ctx -> createBox(EntityArgument.getPlayer(ctx, "player"), PBEffectArgument.getEffect(ctx, "effect"), BoolArgumentType.getBool(ctx, "invisible")))))
                 ));
     }
-    public static int createBox(Entity player, PBEffectCreator effectCreator, boolean bool) {
+    public static int createBox(ServerPlayer player, PBEffectCreator effectCreator, boolean bool) {
         PandorasBoxEntity box;
 
         if (effectCreator != null) {
