@@ -44,15 +44,13 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     private int timesFeatureBMade = 0;
     public PBEffectGenConvertToNether() {}
 
-    public PBEffectGenConvertToNether(int time, double range, int unifiedSeed, String biome)
-    {
+    public PBEffectGenConvertToNether(int time, double range, int unifiedSeed, String biome) {
         super(time, range, 2, unifiedSeed);
         this.biome = biome;
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
-    {
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if(world instanceof ServerLevel serverLevel) {
             switch (biome) {
                 case "wastes" -> createWastes(serverLevel, entity, effectCenter, random, pass, pos);

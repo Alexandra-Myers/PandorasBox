@@ -5,10 +5,12 @@
 
 package ivorius.pandorasbox;
 
-import ivorius.pandorasbox.client.ClientProxy;
+import ivorius.pandorasbox.client.rendering.effects.PBEffectRendererExplosion;
+import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderingRegistry;
+import ivorius.pandorasbox.config.PandoraConfig;
+import ivorius.pandorasbox.effects.PBEffectExplode;
 import ivorius.pandorasbox.events.PBEventHandler;
 import ivorius.pandorasbox.init.Registry;
-import ivorius.pandorasbox.server.ServerProxy;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -23,14 +25,13 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.function.Supplier;
 
+import static net.neoforged.api.distmarker.Dist.CLIENT;
+
 @Mod(PandorasBox.MOD_ID)
 public class PandorasBox {
     public static final String MOD_ID = "pandorasbox";
     public static PandorasBox instance;
-
-    public static PBProxy proxy = runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
     public static Logger logger  = LogManager.getLogger();
-
     public final IEventBus EVENT_BUS;
     public Feature<TreeConfiguration> LOLIPOP;
     public Feature<TreeConfiguration> COLOURFUL_TREE;
@@ -48,19 +49,14 @@ public class PandorasBox {
     public static ArrayListExtensions<Block> stained_glass;
     public static ArrayListExtensions<Block> saplings;
     public static ArrayListExtensions<Block> pots;
-    public static PBConfig CONFIG;
-
-    public static PBEventHandler fmlEventHandler;
+    public static PandoraConfig CONFIG;
     public PandorasBox() {
         // Register the setup method for modloading
-        initConfig();
+        CONFIG = new PandoraConfig();
         EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
         Registry.init(EVENT_BUS);
         EVENT_BUS.addListener(this::preInit);
         instance = this;
-    }
-    public static void initConfig() {
-        CONFIG = new PBConfig();
     }
 
     public void preInit(final FMLCommonSetupEvent event) {
@@ -69,16 +65,11 @@ public class PandorasBox {
         RAINBOW = Registry.RAINBOW.get();
         MEGA_JUNGLE = Registry.MEGA_JUNGLE.get();
 
-        fmlEventHandler = new PBEventHandler();
-        fmlEventHandler.register();
-        proxy.preInit();
-
-        proxy.load();
+        new PBEventHandler().register();
+        runOnClient(() -> () -> PBEffectRenderingRegistry.registerRenderer(PBEffectExplode.class, new PBEffectRendererExplosion()));
     }
-    public static <T> T runForDist(Supplier<Supplier<T>> clientTarget, Supplier<Supplier<T>> serverTarget) {
-        return switch (FMLEnvironment.dist) {
-            case CLIENT -> clientTarget.get().get();
-            case DEDICATED_SERVER -> serverTarget.get().get();
-        };
+    public static void runOnClient(Supplier<Runnable> clientTarget) {
+        if (FMLEnvironment.dist == CLIENT)
+            clientTarget.get().run();
     }
 }

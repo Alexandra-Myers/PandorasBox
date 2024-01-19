@@ -1,11 +1,15 @@
 package ivorius.pandorasbox.events;
 
 import ivorius.pandorasbox.commands.CommandPandorasBox;
+import ivorius.pandorasbox.config.AtlasConfig;
 import ivorius.pandorasbox.effects.PBEffects;
+import ivorius.pandorasbox.networking.AtlasConfigPacket;
+import ivorius.pandorasbox.networking.PacketRegistration;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -20,8 +24,10 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,8 +37,7 @@ import static ivorius.pandorasbox.PandorasBox.*;
 /**
  * Created by lukas on 29.07.14.
  */
-public class PBEventHandler
-{
+public class PBEventHandler {
     public void register()
     {
         NeoForge.EVENT_BUS.register(this);
@@ -54,13 +59,28 @@ public class PBEventHandler
                     new BlockHitResult(new Vec3(frontPos.getX() + 0.5 + direction.getStepX() * 0.5, frontPos.getY() + 0.5 + direction.getStepY() * 0.5, frontPos.getZ() + 0.5 + direction.getStepZ() * 0.5), direction, frontPos, false)));
         }
     }
+
+
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            logger.info("Sending server config values to client");
+            for (AtlasConfig atlasConfig : AtlasConfig.configs.values())
+                PacketRegistration.MAIN.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new AtlasConfigPacket(atlasConfig));
+        }
+    }
     @SubscribeEvent
     public void serverInit(ServerStartedEvent event) {
+        AtlasConfig.configs.forEach((resourceLocation, config) -> config.load());
         initPB();
     }
     @SubscribeEvent
     public void datapackReload(OnDatapackSyncEvent event) {
         if(event.getPlayer() != null) return;
+        AtlasConfig.configs.forEach((resourceLocation, config) -> {
+            config.load();
+            PacketRegistration.MAIN.send(PacketDistributor.ALL.noArg(), new AtlasConfigPacket(config));
+        });
         initPB();
     }
     public static void initPB() {

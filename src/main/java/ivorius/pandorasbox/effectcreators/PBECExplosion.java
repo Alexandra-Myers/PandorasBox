@@ -16,33 +16,29 @@ import net.minecraft.world.level.Level;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECExplosion implements PBEffectCreator
-{
+public class PBECExplosion implements PBEffectCreator {
     public IValue time;
     public DValue explosionRadius;
     public ZValue burning;
+    public Level.ExplosionInteraction explosionInteraction;
 
-    public PBECExplosion(IValue time, DValue explosionRadius, ZValue burning)
-    {
+    public PBECExplosion(IValue time, DValue explosionRadius, ZValue burning, Level.ExplosionInteraction interactionType) {
         this.time = time;
         this.explosionRadius = explosionRadius;
         this.burning = burning;
     }
 
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int time = this.time.getValue(random);
         double explosionRadius = this.explosionRadius.getValue(random);
         boolean burning = this.burning.getValue(random);
 
-        PBEffectExplode effect = new PBEffectExplode(time, (float) explosionRadius, burning);
-        return effect;
+        return new PBEffectExplode(time, (float) explosionRadius, burning, explosionInteraction);
     }
 
     @Override
-    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
-    {
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random) {
         return 0.5f;
     }
 }

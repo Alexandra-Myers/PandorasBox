@@ -10,21 +10,18 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Created by lukas on 31.03.14.
  */
-public class WeightedSet implements WeightedSelector.Item
-{
+public class WeightedSet implements WeightedSelector.Item {
     public double weight;
 
     public ItemStack[] set;
 
-    public WeightedSet(double weight, ItemStack[] set)
-    {
+    public WeightedSet(double weight, ItemStack[] set) {
         this.weight = weight;
         this.set = set;
     }
 
     @Override
-    public double weight()
-    {
+    public double weight() {
         return weight;
     }
 }

@@ -5,6 +5,7 @@ import ivorius.pandorasbox.block.PandorasBoxBlock;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.effectholder.FixedChanceEffectHolder;
+import ivorius.pandorasbox.effectholder.FixedChancePositiveOrNegativeEffectHolder;
 import ivorius.pandorasbox.effectholder.PositiveOrNegativeEffectHolder;
 import ivorius.pandorasbox.effects.*;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
@@ -47,7 +48,6 @@ public class Registry {
 
     public static final net.minecraft.core.Registry<Class<? extends PBEffect>> BOX_EFFECT_REGISTRY =
             BOX_EFFECTS.makeRegistry(builder -> builder.defaultKey(new ResourceLocation("duplicate_box")));
-    private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLM = DeferredRegister.create(NeoForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MOD_ID);
     private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MOD_ID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, MOD_ID);
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, MOD_ID);
@@ -55,6 +55,12 @@ public class Registry {
     private static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(BuiltInRegistries.FEATURE, MOD_ID);
     private static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENTS = DeferredRegister.create(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, MOD_ID);
     private static final DeferredRegister<EntityDataSerializer<?>> SERIALIZERS = DeferredRegister.create(NeoForgeRegistries.ENTITY_DATA_SERIALIZERS, MOD_ID);
+    public static DeferredHolder<EffectHolder, FixedChanceEffectHolder> makeFixedChance(String name, double fixedChance) {
+        return EFFECT_HOLDERS.register(name, () -> new FixedChanceEffectHolder(fixedChance));
+    }
+    public static DeferredHolder<EffectHolder, FixedChancePositiveOrNegativeEffectHolder> makePositiveOrNegativeFixedChance(String name, double fixedChance, boolean good) {
+        return EFFECT_HOLDERS.register(name, () -> new FixedChancePositiveOrNegativeEffectHolder(fixedChance, good));
+    }
     public static DeferredHolder<EffectHolder, PositiveOrNegativeEffectHolder> makePositiveOrNegative(String name, boolean good) {
         return EFFECT_HOLDERS.register(name, () -> new PositiveOrNegativeEffectHolder(good));
     }
@@ -63,7 +69,6 @@ public class Registry {
     }
 
     public static void init(IEventBus bus) {
-        GLM.register(bus);
         SERIALIZERS.register(bus);
         FEATURES.register(bus);
         BLOCKS.register(bus);
@@ -81,8 +86,6 @@ public class Registry {
         compound.put("boxEffect", effectCompound);
         friendlyByteBuf.writeNbt(compound);
     }, friendlyByteBuf -> PBEffectRegistry.loadEffect(friendlyByteBuf.readNbt().getCompound("boxEffect"))));
-
-    private static final DeferredHolder<Codec<? extends IGlobalLootModifier>, Codec<PandoraLootModifier>> PANDORA = GLM.register("pandora", PandoraLootModifier.CODEC);
     public static final DeferredHolder<Block, PandorasBoxBlock> PB = BLOCKS.register("pandoras_box", PandorasBoxBlock::new);
     public static final DeferredHolder<Item, PandorasBoxItem> PBI = ITEMS.register("pandoras_box", () -> new PandorasBoxItem(PB.get(), new Item.Properties()));
     public static final DeferredHolder<EntityType<?>, EntityType<PandorasBoxEntity>> Box = ENTITIES.register("pandoras_box", () -> EntityType.Builder.of(PandorasBoxEntity::new, MobCategory.MISC).fireImmune().noSummon().sized(0.6f, 0.6f).build("pandoras_box"));
@@ -92,8 +95,9 @@ public class Registry {
     public static final DeferredHolder<Feature<?>, Feature<TreeConfiguration>> RAINBOW = FEATURES.register("rainbow", () -> new WorldGenRainbow(TreeConfiguration.CODEC, 20));
     public static final DeferredHolder<ArgumentTypeInfo<?, ?>, SingletonArgumentInfo<PBEffectArgument>> PBEFFECTARGUMENT = ARGUMENTS.register("pbeffect", () -> ArgumentTypeInfos.registerByClass(PBEffectArgument.class, SingletonArgumentInfo.contextFree(PBEffectArgument::effect)));
     public static final DeferredHolder<Feature<?>, Feature<TreeConfiguration>> MEGA_JUNGLE = FEATURES.register("mega_jungle", () -> new WorldGenMegaJungleCustom(TreeConfiguration.CODEC, 20));
-    public static final DeferredHolder<EffectHolder, FixedChanceEffectHolder> MATRYOSHKA = EFFECT_HOLDERS.register("matryoshka", () -> new FixedChanceEffectHolder(0.02));
     static {
+        makeFixedChance("matryoshka", 0.02);
+
         makePositiveOrNegative("mobs", false);
         makePositiveOrNegative("mob_towers", false);
         makePositiveOrNegative("megaton", false);
@@ -152,6 +156,7 @@ public class Registry {
         makePositiveOrNegative("telerandom", false);
         makePositiveOrNegative("crazyport", false);
         makePositiveOrNegative("thing_go_boom", false);
+        makePositiveOrNegativeFixedChance("apocalyptic_boom", 0.004, false);
         makePositiveOrNegative("danger_call", false);
         makePositiveOrNegative("animals", true);
         makePositiveOrNegative("animal_towers", true);

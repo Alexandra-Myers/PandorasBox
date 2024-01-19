@@ -36,7 +36,7 @@ public class PBECRegistry
         PandorasBox.logger.info("Effect Name: " + id);
         EffectHolder holder = Registry.EFFECT_HOLDER_REGISTRY.get(new ResourceLocation(id));
         holder.defineEffectCreator(creator);
-        if (!holder.canBeGoodOrBad())
+        if (holder.fixedChance() != -1)
             fixedChanceCreators.add(holder);
         else if (holder.isGood())
             goodCreators.add(holder);
@@ -60,17 +60,19 @@ public class PBECRegistry
     public static PBEffect createRandomEffect(Level world, RandomSource random, double x, double y, double z, boolean multi) {
         float currentMinChance = 1.0f;
         ArrayList<PBEffect> effects = new ArrayList<>();
+        boolean bl = world.getDifficulty().equals(Difficulty.PEACEFUL);
 
         do {
             PBEffectCreator creator = null;
 
             for (EffectHolder fixedChanceCreator : fixedChanceCreators) {
-                if (random.nextFloat() < fixedChanceCreator.fixedChance()) {
+                if (random.nextDouble() < fixedChanceCreator.fixedChance()) {
+                    if (fixedChanceCreator.canBeGoodOrBad() && !fixedChanceCreator.isGood() && bl)
+                        continue;
                     creator = fixedChanceCreator.effectCreator;
                     break;
                 }
             }
-            boolean bl = world.getDifficulty().equals(Difficulty.PEACEFUL);
 
             if (creator == null)
                 creator = randomEffectCreatorOfType(random, random.nextFloat() < PandorasBox.CONFIG.goodEffectChance.get() || bl);

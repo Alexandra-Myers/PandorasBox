@@ -43,8 +43,7 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public PandorasBoxBlock()
-    {
+    public PandorasBoxBlock() {
         super(Block.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(0.5f));
         registerDefaultState(stateDefinition.any().setValue(DIRECTION, Direction.NORTH).setValue(WATERLOGGED, false));
     }

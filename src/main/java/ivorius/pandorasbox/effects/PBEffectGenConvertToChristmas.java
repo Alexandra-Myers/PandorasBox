@@ -55,7 +55,7 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate {
 
                     BlockPos posBelow = pos.below();
                     if (world.loadedAndEntityCanStandOn(posBelow, entity)) {
-                        if (random.nextInt(10 * 10) == 0) {
+                        if (random.nextInt(100) == 0) {
                             setBlockSafe(world, pos, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.Plane.HORIZONTAL.getRandomDirection(world.random)));
                             ChestBlockEntity chestBlockEntity = (ChestBlockEntity) world.getBlockEntity(pos);
 
@@ -69,14 +69,14 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate {
                             }
 
                             setSnow = false;
-                        } else if (random.nextInt(10 * 10) == 0) {
+                        } else if (random.nextInt(100) == 0) {
                             setBlockSafe(world, pos, Blocks.REDSTONE_LAMP.defaultBlockState());
                             setBlockSafe(world, posBelow, Blocks.REDSTONE_BLOCK.defaultBlockState());
                             setSnow = false;
-                        } else if (random.nextInt(10 * 10) == 0) {
+                        } else if (random.nextInt(100) == 0) {
                             setBlockSafe(world, pos, Blocks.CAKE.defaultBlockState());
                             setSnow = false;
-                        } else if (random.nextInt(10 * 10) == 0) {
+                        } else if (random.nextInt(100) == 0) {
                             ItemEntity entityItem = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.COOKIE));
                             entityItem.setPickUpDelay(20);
                             world.addFreshEntity(entityItem);

@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -20,39 +21,19 @@ import javax.annotation.Nullable;
 /**
  * Created by lukas on 15.04.14.
  */
-public class PandorasBoxBlockEntity extends BlockEntity
-{
+public class PandorasBoxBlockEntity extends BlockEntity {
     private float rotationYaw;
 
     public PandorasBoxBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(Registry.TEPB.get(), p_155229_, p_155230_);
     }
 
-    public static float rotationFromFacing(Direction facing)
-    {
-        return facing.toYRot();
+    public void setRotationYaw(float rotationYaw) {
+        this.rotationYaw = Mth.wrapDegrees(rotationYaw);
     }
 
-    public void setRotationYaw(float rotationYaw)
-    {
-        this.rotationYaw = rotationYaw;
-    }
-
-    public float getRotationYaw()
-    {
+    public float getRotationYaw() {
         return rotationYaw;
-    }
-
-    public float getBaseRotationYaw()
-    {
-        BlockState state = this.getBlockState();
-        return rotationFromFacing(state.getBlock() instanceof PandorasBoxBlock ? state.getValue(PandorasBoxBlock.DIRECTION) : Direction.NORTH);
-    }
-
-    public float getFinalRotationYaw()
-    {
-        if(getRotationYaw() - getBaseRotationYaw() > 90) return getBaseRotationYaw();
-        return getRotationYaw();
     }
 
     @Override

@@ -60,6 +60,8 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                 ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
                 blocks.addAll(Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
                 blocks.addAll(PandorasBox.flowers);
+                ArrayListExtensions<Block> solid = new ArrayListExtensions<>();
+                solid.addAll(PandorasBox.terracotta, PandorasBox.stained_terracotta);
                 if (isBlockAnyOf(block, blocks)) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.RED_SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DEEPSLATE, Blocks.TUFF)) {
@@ -175,7 +177,9 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                             setBlockSafe(world, pos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
                     } else
                         setBlockSafe(world, pos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
-                } else if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.LAVA, Blocks.ICE))
+                } else if (isBlockAnyOf(block, solid))
+                    setBlockSafe(world, pos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
+                else if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.LAVA, Blocks.ICE))
                     setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
 
                 if (isBlockAnyOf(block, Blocks.LAVA))
@@ -223,10 +227,12 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                             chestBlockEntity.setItem(slot, stack);
                         }
                     } else {
-                        WeightedSet chestContent = WeightedSelector.selectItem(world.random, sets);
-                        int amount = world.random.nextInt(chestContent.set.length - 2) + 3;
-                        for (int i = 0; i < amount; i++) {
-                            ItemStack stack = chestContent.set[i];
+                        ItemStack[] itemSet = WeightedSelector.selectItem(world.random, sets).set;
+                        ItemStack[] chestContent = new ItemStack[itemSet.length];
+                        for (int i = 0; i < itemSet.length; i++) {
+                            chestContent[i] = itemSet[i].copy();
+                        }
+                        for (ItemStack stack : chestContent) {
                             int slot = world.random.nextInt(chestBlockEntity.getContainerSize());
                             while (!chestBlockEntity.getItem(slot).isEmpty())
                                 slot = world.random.nextInt(chestBlockEntity.getContainerSize());
