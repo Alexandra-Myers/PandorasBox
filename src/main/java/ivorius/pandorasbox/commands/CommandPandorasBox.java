@@ -29,20 +29,16 @@ public class CommandPandorasBox {
     public static int createBox(Entity player, PBEffectCreator effectCreator, boolean bool) {
         PandorasBoxEntity box;
 
-        if (effectCreator != null)
-        {
+        if (effectCreator != null) {
             box = PBECRegistry.spawnPandorasBox(player.level(), player.getCommandSenderWorld().random, effectCreator, player);
 
             if (box != null)
                 box.setCanGenerateMoreEffectsAfterwards(false);
-        }
-        else
+        } else
             box = PBECRegistry.spawnPandorasBox(player.level(), player.getCommandSenderWorld().random, true, player);
 
-        if (box != null)
-        {
-            if (bool)
-            {
+        if (box != null) {
+            if (bool) {
                 box.setInvisible(true);
                 box.stopFloating();
             }

@@ -15,7 +15,6 @@ import net.minecraft.world.level.Level;
 public interface PBEffectCreator
 {
     default PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
-
         return new PBEffectDuplicateBox(0);
     }
 

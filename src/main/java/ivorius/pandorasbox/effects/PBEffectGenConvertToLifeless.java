@@ -15,7 +15,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
+
+import static net.minecraft.world.level.block.Block.dropResources;
 
 /**
  * Created by lukas on 30.03.14.
@@ -32,7 +39,8 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate
     @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if(world instanceof ServerLevel serverLevel) {
-            Block block = world.getBlockState(pos).getBlock();
+            BlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
 
             if (pass == 0) {
                 ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -47,7 +55,21 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate
                 weird.addAll(PandorasBox.wool);
                 blocks.addAll(PandorasBox.flowers);
                 hmm.addAll(PandorasBox.stained_terracotta);
-                if (isBlockAnyOf(block, Blocks.ICE, Blocks.WATER, Blocks.LAVA, Blocks.SNOW, Blocks.SNOW_BLOCK)) {
+                FluidState fluidstate = world.getFluidState(pos);
+                if (fluidstate.canHydrate(world, pos, Blocks.SPONGE.defaultBlockState(), BlockPos.containing(effectCenter))) {
+                    if (block instanceof BucketPickup bucketpickup && !bucketpickup.pickupBlock(getPlayer(world, entity), world, pos, state).isEmpty()) return;
+
+                    if (!(state.getBlock() instanceof LiquidBlock)) {
+                        if (!state.is(Blocks.KELP)
+                                && !state.is(Blocks.KELP_PLANT)
+                                && !state.is(Blocks.SEAGRASS)
+                                && !state.is(Blocks.TALL_SEAGRASS)) return;
+
+                        BlockEntity blockentity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
+                        dropResources(state, world, pos, blockentity);
+                    }
+                    setBlockToAirSafe(world, pos);
+                } else if (isBlockAnyOf(block, Blocks.ICE, Blocks.WATER, Blocks.LAVA, Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.POWDER_SNOW)) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, iCTWTGASTB)) {
                     setBlockToAirSafe(world, pos);

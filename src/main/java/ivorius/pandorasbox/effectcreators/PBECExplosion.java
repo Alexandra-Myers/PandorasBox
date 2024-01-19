@@ -26,6 +26,7 @@ public class PBECExplosion implements PBEffectCreator {
         this.time = time;
         this.explosionRadius = explosionRadius;
         this.burning = burning;
+        this.explosionInteraction = interactionType;
     }
 
     @Override

@@ -14,9 +14,15 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
+
+import static net.minecraft.world.level.block.Block.dropResources;
 
 /**
  * Created by lukas on 30.03.14.
@@ -41,8 +47,24 @@ public class PBEffectGenReplace extends PBEffectGenerate {
             Block prevBlock = prevState.getBlock();
             boolean replace = false;
             for (Block block : blocksToReplace) {
-                if (block == Blocks.WATER && prevState.hasProperty(BlockStateProperties.WATERLOGGED) && prevState.getValue(BlockStateProperties.WATERLOGGED))
-                    prevState.setValue(BlockStateProperties.WATERLOGGED, false);
+                if (block == Blocks.WATER) {
+                    FluidState fluidstate = world.getFluidState(pos);
+                    if (fluidstate.canHydrate(world, pos, Blocks.SPONGE.defaultBlockState(), BlockPos.containing(effectCenter))) {
+                        if (prevBlock instanceof BucketPickup bucketpickup && !bucketpickup.pickupBlock(getPlayer(world, entity), world, pos, prevState).isEmpty()) break;
+
+                        if (!(prevState.getBlock() instanceof LiquidBlock)) {
+                            if (!prevState.is(Blocks.KELP)
+                                    && !prevState.is(Blocks.KELP_PLANT)
+                                    && !prevState.is(Blocks.SEAGRASS)
+                                    && !prevState.is(Blocks.TALL_SEAGRASS)) continue;
+
+                            BlockEntity blockentity = prevState.hasBlockEntity() ? world.getBlockEntity(pos) : null;
+                            dropResources(prevState, world, pos, blockentity);
+                        }
+                        replace = true;
+                        break;
+                    }
+                }
                 if (prevBlock == block) {
                     replace = true;
                     break;
