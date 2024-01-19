@@ -6,26 +6,17 @@ import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.networking.AtlasConfigPacket;
 import ivorius.pandorasbox.networking.PacketRegistration;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.StainedGlassBlock;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -44,7 +35,7 @@ public class PBEventHandler {
 
     @SubscribeEvent
     public void onCommandRegister(RegisterCommandsEvent evt) {
-        new CommandPandorasBox(evt.getDispatcher());
+        CommandPandorasBox.register(evt.getDispatcher());
     }
 
     @SubscribeEvent

@@ -16,13 +16,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.world.entity.Entity;
 
-public class CommandPandorasBox
-{
-
-    public CommandPandorasBox(CommandDispatcher<CommandSourceStack> dispatcher) {
-        register(dispatcher);
-    }
-    static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+public class CommandPandorasBox {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("pandora")
                 .requires(cs->cs.hasPermission(2)) //permission
                 .then(Commands.argument("player", EntityArgument.player())
