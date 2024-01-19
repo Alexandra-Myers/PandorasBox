@@ -38,8 +38,7 @@ import static ivorius.pandorasbox.PandorasBox.*;
  * Created by lukas on 29.07.14.
  */
 public class PBEventHandler {
-    public void register()
-    {
+    public void register() {
         NeoForge.EVENT_BUS.register(this);
     }
 
@@ -47,19 +46,6 @@ public class PBEventHandler {
     public void onCommandRegister(RegisterCommandsEvent evt) {
         new CommandPandorasBox(evt.getDispatcher());
     }
-    @SubscribeEvent
-    public void onPlayerInteractAir(PlayerInteractEvent.RightClickEmpty event) {
-        ItemStack stack = event.getItemStack();
-        Item item = stack.getItem();
-        if(item instanceof BlockItem) {
-            BlockPos pos = event.getEntity().blockPosition();
-            Direction direction = event.getEntity().getDirection();
-            BlockPos frontPos = getPosInFront(pos, direction);
-            ((BlockItem) item).place(new BlockPlaceContext(event.getEntity(), event.getHand(), stack,
-                    new BlockHitResult(new Vec3(frontPos.getX() + 0.5 + direction.getStepX() * 0.5, frontPos.getY() + 0.5 + direction.getStepY() * 0.5, frontPos.getZ() + 0.5 + direction.getStepZ() * 0.5), direction, frontPos, false)));
-        }
-    }
-
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -136,14 +122,5 @@ public class PBEventHandler {
             }
         }
         PBEffects.registerEffectCreators();
-    }
-    public BlockPos getPosInFront(BlockPos pos, Direction direction) {
-        return switch (direction) {
-            case WEST -> pos.west();
-            case EAST -> pos.east();
-            case NORTH -> pos.north();
-            case SOUTH -> pos.south();
-            default -> pos;
-        };
     }
 }

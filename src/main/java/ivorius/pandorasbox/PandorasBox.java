@@ -11,6 +11,7 @@ import ivorius.pandorasbox.config.PandoraConfig;
 import ivorius.pandorasbox.effects.PBEffectExplode;
 import ivorius.pandorasbox.events.PBEventHandler;
 import ivorius.pandorasbox.init.Registry;
+import ivorius.pandorasbox.networking.PacketRegistration;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -67,6 +68,7 @@ public class PandorasBox {
 
         new PBEventHandler().register();
         runOnClient(() -> () -> PBEffectRenderingRegistry.registerRenderer(PBEffectExplode.class, new PBEffectRendererExplosion()));
+        new PacketRegistration().init();
     }
     public static void runOnClient(Supplier<Runnable> clientTarget) {
         if (FMLEnvironment.dist == CLIENT)
