@@ -20,8 +20,7 @@ import java.util.Random;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECLavaCage implements PBEffectCreator
-{
+public class PBECLavaCage implements PBEffectCreator {
     public DValue range;
 
     public Block lavaBlock;
@@ -29,8 +28,7 @@ public class PBECLavaCage implements PBEffectCreator
     public Collection<WeightedBlock> cageBlocks;
     public Collection<WeightedBlock> floorBlocks;
 
-    public PBECLavaCage(DValue range, Block lavaBlock, Block fillBlock, Collection<WeightedBlock> cageBlocks, Collection<WeightedBlock> floorBlocks)
-    {
+    public PBECLavaCage(DValue range, Block lavaBlock, Block fillBlock, Collection<WeightedBlock> cageBlocks, Collection<WeightedBlock> floorBlocks) {
         this.range = range;
         this.lavaBlock = lavaBlock;
         this.fillBlock = fillBlock;
@@ -39,21 +37,18 @@ public class PBECLavaCage implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
-    {
+    public PBEffect constructEffect(World world, double x, double y, double z, Random random) {
         double range = this.range.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
         Block cageBlock = PandorasBoxHelper.getRandomBlock(random, cageBlocks);
         Block floorBlock = PandorasBoxHelper.getRandomBlock(random, floorBlocks);
 
-        PBEffectGenLavaCages genLavaCages = new PBEffectGenLavaCages(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), lavaBlock, cageBlock, fillBlock, floorBlock);
-        return genLavaCages;
+        return new PBEffectGenLavaCages(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), lavaBlock, cageBlock, fillBlock, floorBlock);
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
-    {
+    public float chanceForMoreEffects(World world, double x, double y, double z, Random random) {
         return 0.1f;
     }
 }

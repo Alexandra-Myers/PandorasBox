@@ -8,26 +8,21 @@ import java.util.Map;
 /**
  * Created by lukas on 05.12.14.
  */
-public class PBEffectRenderingRegistry
-{
+public class PBEffectRenderingRegistry {
     private static final Map<Class, PBEffectRenderer> renderers = new HashMap<>();
 
-    public static <E extends PBEffect> void registerRenderer(Class clazz, PBEffectRenderer<E> renderer)
-    {
+    public static <E extends PBEffect> void registerRenderer(Class clazz, PBEffectRenderer<E> renderer) {
         renderers.put(clazz, renderer);
     }
 
-    public static PBEffectRenderer rendererForEffect(PBEffect effect)
-    {
+    public static PBEffectRenderer rendererForEffect(PBEffect effect) {
         Class currClass = effect.getClass();
 
-        do
-        {
+        do {
             PBEffectRenderer renderer = renderers.get(currClass);
             if (renderer != null)
                 return renderer;
-        }
-        while ((currClass = currClass.getSuperclass()) != null);
+        } while ((currClass = currClass.getSuperclass()) != null);
 
         return null;
     }

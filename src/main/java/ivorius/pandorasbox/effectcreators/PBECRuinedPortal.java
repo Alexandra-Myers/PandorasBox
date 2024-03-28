@@ -23,8 +23,7 @@ import java.util.Random;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECRuinedPortal implements PBEffectCreator
-{
+public class PBECRuinedPortal implements PBEffectCreator {
     public IValue rangeX;
     public IValue rangeY;
     public IValue rangeZ;
@@ -35,8 +34,7 @@ public class PBECRuinedPortal implements PBEffectCreator
     public final ArrayListExtensions<RandomizedItemStack> loot;
     public final Direction.Axis axis;
 
-    public PBECRuinedPortal(IValue rangeX, IValue rangeY, IValue rangeZ, IValue rangeStartY, Collection<ArrayListExtensions<WeightedBlock>> brickSet, ArrayListExtensions<RandomizedItemStack> loot, Direction.Axis axis)
-    {
+    public PBECRuinedPortal(IValue rangeX, IValue rangeY, IValue rangeZ, IValue rangeStartY, Collection<ArrayListExtensions<WeightedBlock>> brickSet, ArrayListExtensions<RandomizedItemStack> loot, Direction.Axis axis) {
         this.rangeX = rangeX;
         this.rangeY = rangeY;
         this.rangeZ = rangeZ;
@@ -47,14 +45,13 @@ public class PBECRuinedPortal implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
-    {
+    public PBEffect constructEffect(World world, double x, double y, double z, Random random) {
         int rangeX = this.rangeX.getValue(random);
         int rangeY = this.rangeY.getValue(random);
         int rangeStartY = this.rangeStartY.getValue(random);
         int rangeZ = this.rangeZ.getValue(random);
         rangeY += rangeStartY;
-        int time = 3 * (rangeX * rangeY * rangeZ) + 10;
+        int time = 6 * (rangeX * rangeY * rangeZ) + 50;
 
         ArrayListExtensions<WeightedBlock> bricks = WeightedSelector.selectWeightless(random, this.bricks, this.bricks.size());
 

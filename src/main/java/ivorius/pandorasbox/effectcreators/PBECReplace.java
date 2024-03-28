@@ -26,8 +26,7 @@ import java.util.Random;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECReplace implements PBEffectCreator
-{
+public class PBECReplace implements PBEffectCreator {
     public DValue range;
 
     public Block[] srcBlocks;
@@ -35,8 +34,7 @@ public class PBECReplace implements PBEffectCreator
 
     public ZValue takeRandomNearbyBlocks;
 
-    public PBECReplace(DValue range, Block[] srcBlocks, Collection<WeightedBlock> destBlocks, ZValue takeRandomNearbyBlocks)
-    {
+    public PBECReplace(DValue range, Block[] srcBlocks, Collection<WeightedBlock> destBlocks, ZValue takeRandomNearbyBlocks) {
         this.range = range;
         this.srcBlocks = srcBlocks;
         this.destBlocks = destBlocks;
@@ -44,8 +42,7 @@ public class PBECReplace implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
-    {
+    public PBEffect constructEffect(World world, double x, double y, double z, Random random) {
         double range = this.range.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
@@ -56,15 +53,11 @@ public class PBECReplace implements PBEffectCreator
 
         Block[] srcSelection = new Block[0];
 
-        if (takeRandomNearbyBlocks)
-        {
+        if (takeRandomNearbyBlocks) {
             List<WeightedBlock> nearbyBlocks = new ArrayList<>();
-            for (int xP = -5; xP <= 5; xP++)
-            {
-                for (int yP = -5; yP <= 5; yP++)
-                {
-                    for (int zP = -5; zP <= 5; zP++)
-                    {
+            for (int xP = -5; xP <= 5; xP++) {
+                for (int yP = -5; yP <= 5; yP++) {
+                    for (int zP = -5; zP <= 5; zP++) {
                         BlockState block = world.getBlockState(new BlockPos(baseX + xP, baseY + yP, baseZ + zP));
 
                         if (block.getMaterial() != Material.AIR)
@@ -74,25 +67,20 @@ public class PBECReplace implements PBEffectCreator
                 }
             }
 
-            if (nearbyBlocks.size() > 0)
-            {
+            if (nearbyBlocks.size() > 0) {
                 srcSelection = PandorasBoxHelper.getRandomBlockList(random, nearbyBlocks);
             }
-        }
-        else
-        {
+        } else {
             srcSelection = srcBlocks.clone();
         }
 
         Block[] destSelection = PandorasBoxHelper.getRandomBlockList(random, destBlocks);
 
-        PBEffectGenReplace genReplace = new PBEffectGenReplace(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), destSelection, srcSelection);
-        return genReplace;
+        return new PBEffectGenReplace(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), destSelection, srcSelection);
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
-    {
+    public float chanceForMoreEffects(World world, double x, double y, double z, Random random) {
         return 0.1f;
     }
 }

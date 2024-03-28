@@ -24,27 +24,23 @@ public class PBEffectEntitiesBuff extends PBEffectEntityBased
     public EffectInstance[] effects;
     public PBEffectEntitiesBuff() {}
 
-    public PBEffectEntitiesBuff(int maxTicksAlive, double range, EffectInstance[] effects)
-    {
+    public PBEffectEntitiesBuff(int maxTicksAlive, double range, EffectInstance[] effects) {
         super(maxTicksAlive, range);
 
         this.effects = effects;
     }
 
     @Override
-    public void affectEntity(World world, PandorasBoxEntity box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength)
-    {
-        for (EffectInstance effect : effects)
-        {
+    public void affectEntity(World world, PandorasBoxEntity box, Random random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
+        for (EffectInstance effect : effects) {
             int prevDuration = MathHelper.floor(prevRatio * strength * effect.getDuration());
             int newDuration = MathHelper.floor(newRatio * strength * effect.getDuration());
             int duration = newDuration - prevDuration;
 
-            if (duration > 0)
-            {
+            if (duration > 0) {
                 EffectInstance effectInstance = new EffectInstance(effect.getEffect(), duration, effect.getAmplifier(), effect.isAmbient(), effect.isVisible());
                 Potion curEffect = new Potion(effectInstance);
-                addPotionEffectDuration(entity, curEffect);
+                combinedEffectDuration(entity, curEffect);
             }
         }
     }

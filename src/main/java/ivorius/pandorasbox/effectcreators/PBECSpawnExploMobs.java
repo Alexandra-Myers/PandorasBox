@@ -19,8 +19,7 @@ import java.util.Random;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECSpawnExploMobs implements PBEffectCreator
-{
+public class PBECSpawnExploMobs implements PBEffectCreator {
     public IValue time;
     public IValue number;
     public IValue fuseTime;
@@ -30,8 +29,7 @@ public class PBECSpawnExploMobs implements PBEffectCreator
     public ValueThrow valueThrow;
     public ValueSpawn valueSpawn;
 
-    public PBECSpawnExploMobs(IValue time, IValue number, IValue fuseTime, IValue nameEntities, Collection<WeightedEntity> entityIDs, ValueThrow valueThrow, ValueSpawn valueSpawn)
-    {
+    public PBECSpawnExploMobs(IValue time, IValue number, IValue fuseTime, IValue nameEntities, Collection<WeightedEntity> entityIDs, ValueThrow valueThrow, ValueSpawn valueSpawn) {
         this.time = time;
         this.number = number;
         this.fuseTime = fuseTime;
@@ -41,24 +39,21 @@ public class PBECSpawnExploMobs implements PBEffectCreator
         this.valueSpawn = valueSpawn;
     }
 
-    public PBECSpawnExploMobs(IValue time, IValue number, IValue fuseTime, IValue nameEntities, Collection<WeightedEntity> entityIDs)
-    {
+    public PBECSpawnExploMobs(IValue time, IValue number, IValue fuseTime, IValue nameEntities, Collection<WeightedEntity> entityIDs) {
         this(time, number, fuseTime, nameEntities, entityIDs, PBECSpawnEntities.defaultThrow(), PBECSpawnEntities.defaultSpawn());
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
-    {
+    public PBEffect constructEffect(World world, double x, double y, double z, Random random) {
         int time = this.time.getValue(random);
         int number = this.number.getValue(random);
         WeightedEntity entity = PandorasBoxHelper.getRandomEntityFromList(random, entityIDs);
         boolean invisible = random.nextBoolean();
 
         String[][] entitiesToSpawn = new String[number][];
-        for (int i = 0; i < number; i++)
-        {
+        for (int i = 0; i < number; i++) {
             entitiesToSpawn[i] = new String[2];
-            entitiesToSpawn[i][0] = (invisible ? "pbspecial_invisibleTnt" : "pbspecial_tnt") + this.fuseTime.getValue(random);
+            entitiesToSpawn[i][0] = (invisible ? "pbspecial_invisible_tnt" : "pbspecial_tnt") + this.fuseTime.getValue(random);
             entitiesToSpawn[i][1] = entity.entityID;
         }
 

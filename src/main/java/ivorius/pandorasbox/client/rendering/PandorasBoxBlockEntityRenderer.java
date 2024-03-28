@@ -25,10 +25,10 @@ public class PandorasBoxBlockEntityRenderer extends TileEntityRenderer<PandorasB
 
         feet = new ModelRenderer(32, 32, 0, 0);
         feet.setPos(0.0F, 1.0F, 0.0F);
-        feet.texOffs(0, 14).addBox(-3.0F, 22.0F, 2.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
-        feet.texOffs(4, 14).addBox(2.0F, 22.0F, 2.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
-        feet.texOffs(4, 16).addBox(2.0F, 22.0F, -3.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
-        feet.texOffs(0, 16).addBox(-3.0F, 22.0F, -3.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        feet.texOffs(0, 14).addBox(-3.5F, 22.0F, 2.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        feet.texOffs(4, 14).addBox(2.5F, 22.0F, 2.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        feet.texOffs(4, 16).addBox(2.5F, 22.0F, -3.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        feet.texOffs(0, 16).addBox(-3.5F, 22.0F, -3.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
 
         body = new ModelRenderer(32, 32, 0, 0);
         body.setPos(0.0F, 24.0F, 0.0F);
@@ -67,7 +67,7 @@ public class PandorasBoxBlockEntityRenderer extends TileEntityRenderer<PandorasB
         IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.entitySolid(texture));
         matrixStack.translate(0.5f, 1.5f, 0.5f);
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0f));
-        float yRot = blockEntity.getFinalRotationYaw();
+        float yRot = blockEntity.getRotationYaw();
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
         renderAll(matrixStack, builder, p_225616_5_, p_225616_6_);
     }

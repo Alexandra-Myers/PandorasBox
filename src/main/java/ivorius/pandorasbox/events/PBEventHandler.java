@@ -7,19 +7,10 @@ import ivorius.pandorasbox.utils.ArrayListExtensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.StainedGlassBlock;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -31,28 +22,14 @@ import static ivorius.pandorasbox.PandorasBox.*;
  * Created by lukas on 29.07.14.
  */
 @Mod.EventBusSubscriber(modid = PandorasBox.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class PBEventHandler
-{
-    public void register()
-    {
+public class PBEventHandler {
+    public void register() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
     public void onCommandRegister(RegisterCommandsEvent evt) {
-        new CommandPandorasBox(evt.getDispatcher());
-    }
-    @SubscribeEvent
-    public void onPlayerInteractAir(PlayerInteractEvent.RightClickEmpty event) {
-        ItemStack stack = event.getItemStack();
-        Item item = stack.getItem();
-        if(item instanceof BlockItem) {
-            BlockPos pos = event.getPlayer().blockPosition();
-            Direction direction = event.getPlayer().getDirection();
-            BlockPos frontPos = getPosInFront(pos, direction);
-            ((BlockItem) item).place(new BlockItemUseContext(event.getPlayer(), event.getHand(), stack,
-                    new BlockRayTraceResult(new Vector3d(frontPos.getX() + 0.5 + direction.getStepX() * 0.5, frontPos.getY() + 0.5 + direction.getStepY() * 0.5, frontPos.getZ() + 0.5 + direction.getStepZ() * 0.5), direction, frontPos, false)));
-        }
+        CommandPandorasBox.register(evt.getDispatcher());
     }
     @SubscribeEvent
     public void serverInit(FMLServerStartedEvent event) {
@@ -63,7 +40,7 @@ public class PBEventHandler
         if(event.getPlayer() != null) return;
         initPB();
     }
-    public void initPB() {
+    public static void initPB() {
         logs = new ArrayListExtensions<>();
         leaves = new ArrayListExtensions<>();
         flowers = new ArrayListExtensions<>();
@@ -115,19 +92,5 @@ public class PBEventHandler
             }
         }
         PBEffects.registerEffectCreators();
-    }
-    public BlockPos getPosInFront(BlockPos pos, Direction direction) {
-        switch (direction) {
-            case WEST:
-                return pos.west();
-            case EAST:
-                return pos.east();
-            case NORTH:
-                return pos.north();
-            case SOUTH:
-                return pos.south();
-            default:
-                return pos;
-        }
     }
 }

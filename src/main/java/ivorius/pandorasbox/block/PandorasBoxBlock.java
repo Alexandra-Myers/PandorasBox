@@ -34,13 +34,11 @@ import javax.annotation.Nullable;
 /**
  * Created by lukas on 15.04.14.
  */
-public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWaterLoggable
-{
+public class PandorasBoxBlock extends Block implements ITileEntityProvider, IWaterLoggable {
     public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public PandorasBoxBlock()
-    {
+    public PandorasBoxBlock() {
         super(Block.Properties.of(Material.WOOD).strength(0.5f));
         registerDefaultState(stateDefinition.any().setValue(DIRECTION, Direction.NORTH).setValue(WATERLOGGED, false));
     }

@@ -31,10 +31,10 @@ public class PandorasBoxModel extends SegmentedModel<ArrowEntity> {
 
         feet = new ModelRenderer(this);
         feet.setPos(0.0F, 1.0F, 0.0F);
-        feet.texOffs(0, 14).addBox(-3.0F, 22.0F, 2.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
-        feet.texOffs(4, 14).addBox(2.0F, 22.0F, 2.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
-        feet.texOffs(4, 16).addBox(2.0F, 22.0F, -3.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
-        feet.texOffs(0, 16).addBox(-3.0F, 22.0F, -3.0F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        feet.texOffs(0, 14).addBox(-3.5F, 22.0F, 2.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        feet.texOffs(4, 14).addBox(2.5F, 22.0F, 2.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        feet.texOffs(4, 16).addBox(2.5F, 22.0F, -3.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        feet.texOffs(0, 16).addBox(-3.5F, 22.0F, -3.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
 
         body = new ModelRenderer(this);
         body.setPos(0.0F, 24.0F, 0.0F);

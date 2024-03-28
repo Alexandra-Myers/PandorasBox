@@ -16,42 +16,31 @@ import java.util.Random;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECSetTime implements PBEffectCreator
-{
+public class PBECSetTime implements PBEffectCreator {
     public IValue time;
     public IValue worldTime;
     public ZValue add;
 
-    public PBECSetTime(IValue time, IValue worldTime, ZValue add)
-    {
+    public PBECSetTime(IValue time, IValue worldTime, ZValue add) {
         this.time = time;
         this.worldTime = worldTime;
         this.add = add;
     }
 
     @Override
-    public PBEffect constructEffect(World world, double x, double y, double z, Random random)
-    {
+    public PBEffect constructEffect(World world, double x, double y, double z, Random random) {
         int time = this.time.getValue(random);
         int worldTime = this.worldTime.getValue(random);
         boolean add = this.add.getValue(random);
 
-        if (!add)
-        {
+        if (!add) {
             int currentTime = (int) (world.getGameTime() % 24000);
-            PBEffectSetTime effect = new PBEffectSetTime(time, worldTime - currentTime);
-            return effect;
-        }
-        else
-        {
-            PBEffectSetTime effect = new PBEffectSetTime(time, worldTime);
-            return effect;
-        }
+            return new PBEffectSetTime(time, worldTime - currentTime);
+        } else return new PBEffectSetTime(time, worldTime);
     }
 
     @Override
-    public float chanceForMoreEffects(World world, double x, double y, double z, Random random)
-    {
+    public float chanceForMoreEffects(World world, double x, double y, double z, Random random) {
         return 0.7f;
     }
 }

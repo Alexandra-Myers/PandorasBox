@@ -5,13 +5,14 @@
 
 package ivorius.pandorasbox;
 
-import ivorius.pandorasbox.client.ClientProxy;
 import ivorius.pandorasbox.client.rendering.PandorasBoxBlockEntityRenderer;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
+import ivorius.pandorasbox.client.rendering.effects.PBEffectRendererExplosion;
+import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderingRegistry;
+import ivorius.pandorasbox.effects.PBEffectExplode;
 import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.events.PBEventHandler;
 import ivorius.pandorasbox.init.Registry;
-import ivorius.pandorasbox.server.ServerProxy;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.PBEffectArgument;
 import net.minecraft.block.Block;
@@ -19,6 +20,7 @@ import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -31,21 +33,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(PandorasBox.MOD_ID)
-public class PandorasBox
-{
-    public static final String NAME = "Pandora's Box";
+public class PandorasBox {
     public static final String MOD_ID = "pandorasbox";
-    public static final String VERSION = "2.2.5-1.16.5";
-
     public static PandorasBox instance;
-
-    public static PBProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
-
-    public static String filePathTexturesFull = "pandorasbox:textures/mod/";
-    public static String filePathTextures = "textures/mod/";
-    public static String basePath = "pandorasbox:";
     public static Logger logger  = LogManager.getLogger();
-
     public final IEventBus EVENT_BUS;
     public Feature<BaseTreeFeatureConfig> LOLIPOP;
     public Feature<BaseTreeFeatureConfig> COLOURFUL_TREE;
@@ -83,22 +74,18 @@ public class PandorasBox
     }
 
 
-    public void preInit(final FMLCommonSetupEvent event)
-    {
+    public void preInit(final FMLCommonSetupEvent event) {
         PBEffects.registerEffects();
         LOLIPOP = Registry.LOLIPOP.get();
         COLOURFUL_TREE = Registry.COLOURFUL_TREE.get();
         RAINBOW = Registry.RAINBOW.get();
         MEGA_JUNGLE = Registry.MEGA_JUNGLE.get();
 
-        fmlEventHandler = new PBEventHandler();
-        fmlEventHandler.register();
+        new PBEventHandler().register();
 
         ArgumentTypes.register("pbeffect", PBEffectArgument.class, new ArgumentSerializer<>(PBEffectArgument::effect));
 
-        proxy.preInit();
-
-        proxy.load();
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> PBEffectRenderingRegistry.registerRenderer(PBEffectExplode.class, new PBEffectRendererExplosion()));
     }
     public void clientInit(FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(Registry.Box.get(), PandorasBoxRenderer::new);
