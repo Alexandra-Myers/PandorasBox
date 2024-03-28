@@ -118,8 +118,8 @@ public abstract class PBEffect {
         return !(block.getLightBlock(world, pos) > 0 || world.getBlockState(pos.below()).getLightBlock(world, pos.below()) > 0 || world.getBlockState(pos.below(2)).getLightBlock(world, pos.below(2)) > 0);
     }
 
-    public void combinedEffectDuration(LivingEntity entity, Potion potionEffect) {
-        for (EffectInstance effectInstance : potionEffect.getEffects()) {
+    public void combinedEffectDuration(LivingEntity entity, EffectInstance[] mobEffects) {
+        for (EffectInstance effectInstance : mobEffects) {
             if (effectInstance == null)
                 continue;
             if (entity.canBeAffected(effectInstance)) {

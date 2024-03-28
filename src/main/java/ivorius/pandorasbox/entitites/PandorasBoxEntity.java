@@ -12,7 +12,6 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.effects.Vec3d;
-import ivorius.pandorasbox.network.PartialUpdateHandler;
 import ivorius.pandorasbox.random.DConstant;
 import ivorius.pandorasbox.random.IConstant;
 import net.minecraft.entity.*;
@@ -38,7 +37,7 @@ import java.util.UUID;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnData, PartialUpdateHandler {
+public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnData {
     public static final float BOX_UPSCALE_SPEED = 0.02f;
 
     private static final DataParameter<Integer> BOX_DEATH_TICKS = EntityDataManager.defineId(PandorasBoxEntity.class, DataSerializers.INT);
@@ -370,26 +369,6 @@ public class PandorasBoxEntity extends Entity implements IEntityAdditionalSpawnD
         compound.putDouble("effectCenterX", effectCenter.x);
         compound.putDouble("effectCenterY", effectCenter.y);
         compound.putDouble("effectCenterZ", effectCenter.z);
-    }
-
-    @Override
-    public void writeUpdateData(PacketBuffer buffer, String context) {
-        if (context.equals("boxEffect")) {
-            CompoundNBT compound = new CompoundNBT();
-            writeBoxData(compound);
-            buffer.writeNbt(compound);
-        }
-    }
-
-    @Override
-    public void readUpdateData(PacketBuffer buffer, String context) {
-        if (context.equals("boxEffect")) {
-            CompoundNBT compound = buffer.readNbt();
-
-            if (compound != null) {
-                readBoxData(compound);
-            }
-        }
     }
 
     @Override

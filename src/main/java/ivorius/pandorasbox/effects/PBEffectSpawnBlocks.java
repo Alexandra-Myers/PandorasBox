@@ -18,21 +18,18 @@ import java.util.Random;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectSpawnBlocks extends PBEffectSpawnEntities
-{
+public class PBEffectSpawnBlocks extends PBEffectSpawnEntities {
     public Block[] blocks;
     public PBEffectSpawnBlocks() {}
 
-    public PBEffectSpawnBlocks(int time, Block[] blocks)
-    {
+    public PBEffectSpawnBlocks(int time, Block[] blocks) {
         super(time, blocks.length);
 
         setDoesSpawnFromBox(0.1, 0.4, 0.2, 1.0);
         this.blocks = blocks;
     }
 
-    public PBEffectSpawnBlocks(int time, double range, double shiftY, Block[] blocks)
-    {
+    public PBEffectSpawnBlocks(int time, double range, double shiftY, Block[] blocks) {
         super(time, blocks.length);
 
         setDoesNotSpawnFromBox(range, shiftY);
@@ -40,8 +37,7 @@ public class PBEffectSpawnBlocks extends PBEffectSpawnEntities
     }
 
     @Override
-    public Entity spawnEntity(World world, PandorasBoxEntity entity, Random random, int number, double x, double y, double z)
-    {
+    public Entity spawnEntity(World world, PandorasBoxEntity entity, Random random, int number, double x, double y, double z) {
         if(world.isClientSide()) return null;
         Block block = blocks[number];
         FallingBlockEntity entityFallingBlock = new FallingBlockEntity(world, x, y, z, block.defaultBlockState());

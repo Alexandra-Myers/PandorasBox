@@ -19,8 +19,7 @@ import java.util.Random;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenLavaCages extends PBEffectGenerate
-{
+public class PBEffectGenLavaCages extends PBEffectGenerate {
     public Block lavaBlock;
     public Block fillBlock;
     public Block cageBlock;
@@ -29,8 +28,7 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     public Integer wallDist = null;
     public PBEffectGenLavaCages() {}
 
-    public PBEffectGenLavaCages(int time, double range, int unifiedSeed, Block lavaBlock, Block cageBlock, Block fillBlock, Block floorBlock)
-    {
+    public PBEffectGenLavaCages(int time, double range, int unifiedSeed, Block lavaBlock, Block cageBlock, Block fillBlock, Block floorBlock) {
         super(time, range, 1, unifiedSeed);
 
         this.lavaBlock = lavaBlock;
@@ -40,22 +38,16 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
-    {
-        if(heightOffset == null) {
+    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range) {
+        if(heightOffset == null)
             heightOffset = random.nextInt(10) + 2;
-        }
-        if(wallDist == null) {
+        if(wallDist == null)
             wallDist = random.nextInt(5) + 2;
-        }
-        if (!world.isClientSide())
-        {
-            if (!world.loadedAndEntityCanStandOn(pos, entity))
-            {
+        if (!world.isClientSide()) {
+            if (!world.loadedAndEntityCanStandOn(pos, entity)) {
                 List<PlayerEntity> outerList = world.getEntitiesOfClass(PlayerEntity.class, BlockPositions.expandToAABB(pos, 3.5, 3.5, 3.5));
 
-                if (outerList.size() > 0)
-                {
+                if (!outerList.isEmpty()) {
                     for(PlayerEntity player : outerList) {
                         int playerY = player.blockPosition().getY();
                         int playerX = player.blockPosition().getX();
@@ -102,8 +94,7 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
-    {
+    public void writeToNBT(CompoundNBT compound) {
         super.writeToNBT(compound);
 
         if (lavaBlock != null)
@@ -112,15 +103,16 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
             compound.putString("fillBlock", PBNBTHelper.storeBlockString(fillBlock));
 
         compound.putString("cageBlock", PBNBTHelper.storeBlockString(cageBlock));
+        compound.putString("floorBlock", PBNBTHelper.storeBlockString(floorBlock));
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
-    {
+    public void readFromNBT(CompoundNBT compound) {
         super.readFromNBT(compound);
 
         lavaBlock = PBNBTHelper.getBlock(compound.getString("lavaBlock"));
         fillBlock = PBNBTHelper.getBlock(compound.getString("fillBlock"));
         cageBlock = PBNBTHelper.getBlock(compound.getString("cageBlock"));
+        floorBlock = PBNBTHelper.getBlock(compound.getString("floorBlock"));
     }
 }

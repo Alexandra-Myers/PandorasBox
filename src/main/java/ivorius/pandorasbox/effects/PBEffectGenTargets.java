@@ -16,7 +16,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 import java.util.List;
 import java.util.Random;
@@ -24,16 +23,14 @@ import java.util.Random;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenTargets extends PBEffectGenerateByStructure
-{
+public class PBEffectGenTargets extends PBEffectGenerateByStructure {
     public String entityToSpawn;
     public double range;
     public double targetSize;
     public double entityDensity;
     public PBEffectGenTargets() {}
 
-    public PBEffectGenTargets(int maxTicksAlive, String entityToSpawn, double range, double targetSize, double entityDensity)
-    {
+    public PBEffectGenTargets(int maxTicksAlive, String entityToSpawn, double range, double targetSize, double entityDensity) {
         super(maxTicksAlive);
         this.entityToSpawn = entityToSpawn;
         this.range = range;
@@ -41,13 +38,11 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
         this.entityDensity = entityDensity;
     }
 
-    public void createTargets(World world, double x, double y, double z, Random random)
-    {
+    public void createTargets(World world, double x, double y, double z, Random random) {
         List<PlayerEntity> players = world.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(x - range, y - range, z - range, x + range, y + range, z + range));
         this.structures = new Structure[players.size()];
 
-        for (int i = 0; i < players.size(); i++)
-        {
+        for (int i = 0; i < players.size(); i++) {
             PlayerEntity player = players.get(i);
             StructureTarget structureTarget = new StructureTarget();
             structureTarget.x = MathHelper.floor(player.getX());
@@ -67,10 +62,8 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
     }
 
     @Override
-    public void generateStructure(World world, PandorasBoxEntity entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio)
-    {
-        if (world instanceof ServerWorld)
-        {
+    public void generateStructure(World world, PandorasBoxEntity entity, Random random, Structure structure, BlockPos pos, float newRatio, float prevRatio) {
+        if (!world.isClientSide) {
             StructureTarget structureTarget = (StructureTarget) structure;
 
             double newRange = newRatio * targetSize;
@@ -78,24 +71,19 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
 
             int requiredRange = MathHelper.ceil(newRange);
 
-            for (int xP = -requiredRange; xP <= requiredRange; xP++)
-            {
-                for (int zP = -requiredRange; zP <= requiredRange; zP++)
-                {
+            for (int xP = -requiredRange; xP <= requiredRange; xP++) {
+                for (int zP = -requiredRange; zP <= requiredRange; zP++) {
                     double dist = MathHelper.sqrt(xP * xP + zP * zP);
 
-                    if (dist < newRange)
-                    {
-                        if (dist >= prevRange)
-                        {
+                    if (dist < newRange) {
+                        if (dist >= prevRange) {
                             ArrayListExtensions<Block> terracottas = new ArrayListExtensions<>();
                             terracottas.addAll(PandorasBox.stained_terracotta);
                             setBlockSafe(world, new BlockPos(structureTarget.x + xP, structureTarget.y, structureTarget.z + zP), terracottas.get(structureTarget.colors[MathHelper.floor(dist)]).defaultBlockState());
 
                             double nextDist = MathHelper.sqrt((xP * xP + 3 * 3) + (zP * zP + 3 * 3));
 
-                            if (nextDist >= targetSize && random.nextDouble() < entityDensity)
-                            {
+                            if (nextDist >= targetSize && random.nextDouble() < entityDensity) {
                                 Entity newEntity = PBEffectSpawnEntityIDList.createEntity(world, entity, random, entityToSpawn, structureTarget.x + xP + 0.5, structureTarget.y + 1.5, structureTarget.z + zP + 0.5);
                                 assert newEntity != null;
                                 world.addFreshEntity(newEntity);
@@ -103,12 +91,10 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
                         }
                     }
 
-                    for (int yP = 1; yP <= requiredRange; yP++)
-                    {
+                    for (int yP = 1; yP <= requiredRange; yP++) {
                         double dist3D = MathHelper.sqrt(xP * xP + zP * zP + yP * yP);
 
-                        if (dist3D < newRange && dist3D >= prevRange) // -3 so we have a bit of a height bonus
-                        {
+                        if (dist3D < newRange && dist3D >= prevRange) { // -3 so we have a bit of a height bonus
                             setBlockToAirSafe(world, new BlockPos(structureTarget.x + xP, structureTarget.y, structureTarget.z + zP));
                         }
                     }
@@ -118,8 +104,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
-    {
+    public void writeToNBT(CompoundNBT compound) {
         super.writeToNBT(compound);
 
         compound.putString("entityToSpawn", entityToSpawn);
@@ -129,8 +114,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
-    {
+    public void readFromNBT(CompoundNBT compound) {
         super.readFromNBT(compound);
 
         entityToSpawn = compound.getString("entityToSpawn");
@@ -145,25 +129,21 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
         return new StructureTarget();
     }
 
-    public static class StructureTarget extends Structure
-    {
+    public static class StructureTarget extends Structure {
         public int[] colors;
 
-        public StructureTarget()
-        {
+        public StructureTarget() {
         }
 
         @Override
-        public void writeToNBT(CompoundNBT compound)
-        {
+        public void writeToNBT(CompoundNBT compound) {
             super.writeToNBT(compound);
 
             compound.putIntArray("colors", colors);
         }
 
         @Override
-        public void readFromNBT(CompoundNBT compound)
-        {
+        public void readFromNBT(CompoundNBT compound) {
             super.readFromNBT(compound);
 
             colors = compound.getIntArray("colors");

@@ -9,15 +9,13 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectRandomExplosions extends PBEffectPositionBased
-{
+public class PBEffectRandomExplosions extends PBEffectPositionBased {
     public float minExplosionStrength;
     public float maxExplosionStrength;
     public boolean isFlaming;
@@ -26,8 +24,7 @@ public class PBEffectRandomExplosions extends PBEffectPositionBased
 
     }
 
-    public PBEffectRandomExplosions(int time, int number, double range, float minExplosionStrength, float maxExplosionStrength, boolean isFlaming, boolean isSmoking)
-    {
+    public PBEffectRandomExplosions(int time, int number, double range, float minExplosionStrength, float maxExplosionStrength, boolean isFlaming, boolean isSmoking) {
         super(time, number, range);
         this.minExplosionStrength = minExplosionStrength;
         this.maxExplosionStrength = maxExplosionStrength;
@@ -36,10 +33,8 @@ public class PBEffectRandomExplosions extends PBEffectPositionBased
     }
 
     @Override
-    public void doEffect(World world, PandorasBoxEntity entity, Random random, float newRatio, float prevRatio, double x, double y, double z)
-    {
-        if (world instanceof ServerWorld)
-        {
+    public void doEffect(World world, PandorasBoxEntity entity, Random random, float newRatio, float prevRatio, double x, double y, double z) {
+        if (!world.isClientSide) {
             world.explode(entity, x, y, z, minExplosionStrength + random.nextFloat() * (maxExplosionStrength - minExplosionStrength), isFlaming, Explosion.Mode.BREAK);
         }
     }

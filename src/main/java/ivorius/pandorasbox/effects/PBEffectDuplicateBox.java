@@ -12,8 +12,7 @@ import java.util.Random;
 /**
  * Created by lukas on 03.12.14.
  */
-public class PBEffectDuplicateBox extends PBEffectNormal
-{
+public class PBEffectDuplicateBox extends PBEffectNormal {
     public static final int MODE_BOX_IN_BOX = 0;
 
     public int spawnMode;
@@ -21,26 +20,21 @@ public class PBEffectDuplicateBox extends PBEffectNormal
 
     }
 
-    public static int timeNeededForSpawnMode(int mode)
-    {
-        if (mode == MODE_BOX_IN_BOX) {
+    public static int timeNeededForSpawnMode(int mode) {
+        if (mode == MODE_BOX_IN_BOX)
             return 60;
-        }
 
         return 0;
     }
 
-    public PBEffectDuplicateBox(int spawnMode)
-    {
+    public PBEffectDuplicateBox(int spawnMode) {
         super(timeNeededForSpawnMode(spawnMode));
         this.spawnMode = spawnMode;
     }
 
     @Override
-    public void setUpEffect(World world, PandorasBoxEntity box, Vec3d effectCenter, Random random)
-    {
-        if (world instanceof ServerWorld)
-        {
+    public void setUpEffect(World world, PandorasBoxEntity box, Vec3d effectCenter, Random random) {
+        if (!world.isClientSide) {
             PBEffect effect = PBECRegistry.createRandomEffect(world, random, box.getX(), box.getY(), box.getZ(), true);
             PandorasBoxEntity newBox = Registry.Box.get().create(world);
 
@@ -59,22 +53,19 @@ public class PBEffectDuplicateBox extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
-    {
+    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio) {
 
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
-    {
+    public void writeToNBT(CompoundNBT compound) {
         super.writeToNBT(compound);
 
         compound.putInt("spawnMode", spawnMode);
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
-    {
+    public void readFromNBT(CompoundNBT compound) {
         super.readFromNBT(compound);
 
         spawnMode = compound.getInt("spawnMode");

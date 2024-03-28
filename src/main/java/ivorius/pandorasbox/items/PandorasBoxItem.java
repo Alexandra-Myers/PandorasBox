@@ -8,7 +8,6 @@ package ivorius.pandorasbox.items;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -19,8 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
-public class PandorasBoxItem extends BlockItem
-{
+public class PandorasBoxItem extends BlockItem {
     public PandorasBoxItem(Block block, Item.Properties properties)
     {
         super(block, properties);
@@ -36,10 +34,8 @@ public class PandorasBoxItem extends BlockItem
         return super.use(world, player, hand);
     }
 
-    public static PandorasBoxEntity executeRandomEffect(World world, Entity entity, BlockPos pos, boolean floatAway)
-    {
-//        if(PBECRegistry.isAnyNull(world, entity)) return null;
+    public static PandorasBoxEntity executeRandomEffect(World world, PlayerEntity player, BlockPos pos, boolean floatAway) {
         if(world.isClientSide()) return null;
-        return PBECRegistry.spawnPandorasBox(world, world.random, true, entity, pos, floatAway);
+        return PBECRegistry.spawnPandorasBox(world, world.random, true, player, pos, floatAway);
     }
 }

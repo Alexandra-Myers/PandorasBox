@@ -29,22 +29,19 @@ import static net.minecraft.world.gen.feature.Features.GLOWSTONE_EXTRA;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenConvertToNether extends PBEffectGenerate
-{
+public class PBEffectGenConvertToNether extends PBEffectGenerate {
     private String biome;
     private int timesFeatureAMade = 0;
     private int timesFeatureBMade = 0;
     public PBEffectGenConvertToNether() {}
 
-    public PBEffectGenConvertToNether(int time, double range, int unifiedSeed, String biome)
-    {
+    public PBEffectGenConvertToNether(int time, double range, int unifiedSeed, String biome) {
         super(time, range, 2, unifiedSeed);
         this.biome = biome;
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
-    {
+    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range) {
         if(world instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld) world;
             switch (biome) {
@@ -134,13 +131,11 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 4.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 4.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 boolean success = Features.BROWN_MUSHROOM_NETHER.place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
@@ -149,8 +144,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 boolean success = Features.RED_MUSHROOM_NETHER.place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
@@ -292,25 +286,21 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
                 boolean success = Features.CRIMSON_FUNGI_PLANTED.place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
-        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
                 boolean success = Features.CRIMSON_FOREST_VEGETATION.place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
@@ -381,25 +371,21 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 canSpawnEntity(world, blockState, pos, entity1);
             }
         }
-        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
                 boolean success = Features.WARPED_FUNGI_PLANTED.place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
-        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.getMaterial() == Material.AIR && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
                 boolean success = Features.WARPED_FOREST_VEGETATION.place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
@@ -466,13 +452,11 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < Math.pow(0.8, Math.floor(timesFeatureAMade / 4.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.8, Math.floor(timesFeatureAMade / 4.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 boolean success = Features.SMALL_BASALT_COLUMNS.place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
@@ -481,8 +465,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.getMaterial() == Material.AIR && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 boolean success = Features.LARGE_BASALT_COLUMNS.place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
@@ -503,7 +486,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     @Override
     public void writeToNBT(CompoundNBT compound) {
         super.writeToNBT(compound);
-        if(biome != null) {
+        if (biome != null) {
             compound.putString("biome", biome);
         }
         compound.putInt("featureACount", timesFeatureAMade);

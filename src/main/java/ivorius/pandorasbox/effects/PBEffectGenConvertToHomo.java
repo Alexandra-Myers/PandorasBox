@@ -16,65 +16,48 @@ import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenConvertToHomo extends PBEffectGenerate
-{
+public class PBEffectGenConvertToHomo extends PBEffectGenerate {
     public PBEffectGenConvertToHomo() {}
 
-    public PBEffectGenConvertToHomo(int time, double range, int unifiedSeed)
-    {
+    public PBEffectGenConvertToHomo(int time, double range, int unifiedSeed) {
         super(time, range, 3, unifiedSeed);
     }
 
     @Override
-    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range)
-    {
+    public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
         blocks.addAll(PandorasBox.flowers);
-
-        if (pass == 0)
-        {
-            if (isBlockAnyOf(block, Blocks.SNOW, Blocks.SNOW_BLOCK))
-            {
+        ArrayListExtensions<Block> solid = new ArrayListExtensions<>();
+        solid.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.RED_SAND);
+        solid.addAll(PandorasBox.terracotta, PandorasBox.stained_terracotta);
+        if (pass == 0) {
+            if (isBlockAnyOf(block, Blocks.SNOW, Blocks.SNOW_BLOCK)) {
                 setBlockToAirSafe(world, pos);
-            }
-            else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SAND, Blocks.RED_SAND, Blocks.MYCELIUM, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM))
-            {
-                if (world.getBlockState(pos.above()).isAir(world, pos.above()))
-                {
+            } else if (isBlockAnyOf(block, solid)) {
+                if (world.getBlockState(pos.above()).isAir(world, pos.above())) {
                     setBlockSafe(world, pos, Blocks.GRASS_BLOCK.defaultBlockState());
-                }
-                else
-                {
+                } else {
                     setBlockSafe(world, pos, Blocks.DIRT.defaultBlockState());
                 }
-            }
-            else if (isBlockAnyOf(block, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK))
-            {
+            } else if (isBlockAnyOf(block, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK)) {
                 setBlockToAirSafe(world, pos);
             }
-            if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.ICE, Blocks.LAVA))
-            {
+            if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.ICE, Blocks.LAVA)) {
                 setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
             }
-        }
-        else if (pass == 1)
-        {
-            if (world instanceof ServerWorld)
-            {
-                if (random.nextInt(15 * 15) == 0)
-                {
+        } else if (pass == 1) {
+            if (!world.isClientSide) {
+                if (random.nextInt(15 * 15) == 0) {
                     int[] lolliColors = new int[world.random.nextInt(4) + 1];
-                    for (int i = 0; i < lolliColors.length; i++)
-                    {
+                    for (int i = 0; i < lolliColors.length; i++) {
                         lolliColors[i] = world.random.nextInt(16);
                     }
 
@@ -82,11 +65,8 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
                     treeFeature.setMetas(lolliColors);
                     treeFeature.setSoil(Blocks.GRASS_BLOCK);
                     treeFeature.place(world, random, pos);
-                }
-                else if (blockState.isAir(world, pos) && Blocks.SNOW.defaultBlockState().canSurvive(world, pos))
-                {
-                    if (random.nextInt(3 * 3) == 0)
-                    {
+                } else if (blockState.isAir(world, pos) && Blocks.SNOW.defaultBlockState().canSurvive(world, pos)) {
+                    if (random.nextInt(3 * 3) == 0) {
                         int meta;
                         meta = random.nextInt(10);
 
@@ -94,12 +74,9 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             SheepEntity sheep = (SheepEntity) lazilySpawnEntity(world, entity, random, "sheep", 1.0f / (10 * 10), pos);
-            if (canSpawnEntity(world, blockState, pos, sheep))
-            {
+            if (canSpawnEntity(world, blockState, pos, sheep)) {
                 sheep.setColor(DyeColor.byId(random.nextInt(16)));
             }
         }

@@ -24,12 +24,10 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     public PBEffectGenStructure() {
     }
 
-    public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed)
-    {
+    public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed) {
         this(maxTicksAlive, maxX, maxZ, maxY, startY, unifiedSeed, true);
     }
-    public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed, boolean grounded)
-    {
+    public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed, boolean grounded) {
         super(maxTicksAlive);
         length = maxX;
         width = maxZ;
@@ -49,6 +47,9 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
                 while (state.isAir()) {
                     blockPos.move(0, -1, 0);
                     state = world.getBlockState(blockPos);
+                }
+                while (!world.getBlockState(blockPos.above()).isAir()) {
+                    blockPos.move(0, 1, 0);
                 }
             }
             blockPos.move(0, -startingYOffset, 0);
