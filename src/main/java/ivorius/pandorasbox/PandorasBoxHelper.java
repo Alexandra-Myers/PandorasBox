@@ -61,8 +61,7 @@ public class PandorasBoxHelper {
             PandorasBoxHelper.blocks.add(new WeightedBlock(weight, block));
 
             Item item = block.asItem();
-            if (item != null)
-                addItem(new RandomizedItemStack(item, 1, item.getItemStackLimit(new ItemStack(item)), weight));
+            addItem(new RandomizedItemStack(item, 1, item.getItemStackLimit(new ItemStack(item)), weight));
         }
     }
     public static void addBlocks(double weight, List<Block> blocks) {
@@ -70,8 +69,7 @@ public class PandorasBoxHelper {
             PandorasBoxHelper.blocks.add(new WeightedBlock(weight, block));
 
             Item item = block.asItem();
-            if (item != null)
-                addItem(new RandomizedItemStack(item, 1, item.getItemStackLimit(new ItemStack(item)), weight));
+            addItem(new RandomizedItemStack(item, 1, item.getItemStackLimit(new ItemStack(item)), weight));
         }
     }
 

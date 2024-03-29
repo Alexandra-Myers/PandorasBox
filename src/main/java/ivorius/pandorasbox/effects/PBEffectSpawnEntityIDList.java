@@ -28,12 +28,10 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Random;
@@ -210,7 +208,6 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities {
                 ParrotEntity parrot = EntityType.PARROT.create(world);
 
                 assert parrot != null;
-                parrot.setVariant(random.nextInt(5));
                 parrot.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 parrot.finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(x,y, z)), SpawnReason.COMMAND, null, null);
 
@@ -227,7 +224,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities {
                 return primedTnt;
             } else if (entityID.startsWith("pbspecial_invisible_tnt")) {
                 TNTEntity primedTnt = new TNTEntity(world, x, y, z, getPlayer(world, pbEntity));
-                primedTnt.setFuse(Integer.parseInt(entityID.substring(22)));
+                primedTnt.setFuse(Integer.parseInt(entityID.substring(23)));
                 primedTnt.setInvisible(true);
 
                 return primedTnt;

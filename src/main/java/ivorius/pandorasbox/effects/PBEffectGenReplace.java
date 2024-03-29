@@ -51,7 +51,7 @@ public class PBEffectGenReplace extends PBEffectGenerate {
                     FluidState fluidstate = world.getFluidState(pos);
                     Material material = prevState.getMaterial();
                     if (fluidstate.is(FluidTags.WATER)) {
-                        if (block instanceof IBucketPickupHandler && ((IBucketPickupHandler) block).takeLiquid(world, pos, prevState) != Fluids.EMPTY) return;
+                        if (prevBlock instanceof IBucketPickupHandler && ((IBucketPickupHandler) prevBlock).takeLiquid(world, pos, prevState) != Fluids.EMPTY) return;
 
                         if (material == Material.WATER_PLANT || material == Material.REPLACEABLE_WATER_PLANT) {
                             TileEntity blockentity = prevState.hasTileEntity() ? world.getBlockEntity(pos) : null;

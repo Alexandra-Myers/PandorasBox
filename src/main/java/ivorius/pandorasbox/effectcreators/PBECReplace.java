@@ -67,7 +67,7 @@ public class PBECReplace implements PBEffectCreator {
                 }
             }
 
-            if (nearbyBlocks.size() > 0) {
+            if (!nearbyBlocks.isEmpty()) {
                 srcSelection = PandorasBoxHelper.getRandomBlockList(random, nearbyBlocks);
             }
         } else {
