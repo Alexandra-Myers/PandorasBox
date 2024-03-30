@@ -13,38 +13,31 @@ import net.minecraftforge.common.util.Constants;
 /**
  * Created by lukas on 31.03.14.
  */
-public class PBEffectMulti extends PBEffect
-{
+public class PBEffectMulti extends PBEffect {
     public PBEffect[] effects;
     public int[] delays;
     public PBEffectMulti() {
 
     }
 
-    public PBEffectMulti(PBEffect[] effects, int[] delays)
-    {
+    public PBEffectMulti(PBEffect[] effects, int[] delays) {
         this.effects = effects;
         this.delays = delays;
     }
 
     @Override
-    public void doTick(PandorasBoxEntity entity, Vec3d effectCenter, int ticksAlive)
-    {
-        for (int i = 0; i < effects.length; i++)
-        {
+    public void doTick(PandorasBoxEntity entity, Vec3d effectCenter, int ticksAlive) {
+        for (int i = 0; i < effects.length; i++) {
             int effectTicks = ticksAlive - delays[i];
             effects[i].doTick(entity, effectCenter, effectTicks);
         }
     }
 
     @Override
-    public boolean isDone(PandorasBoxEntity entity, int ticksAlive)
-    {
-        for (int i = 0; i < effects.length; i++)
-        {
+    public boolean isDone(PandorasBoxEntity entity, int ticksAlive) {
+        for (int i = 0; i < effects.length; i++) {
             int effectTicks = ticksAlive - delays[i];
-            if (!effects[i].isDone(entity, effectTicks))
-            {
+            if (!effects[i].isDone(entity, effectTicks)) {
                 return false;
             }
         }
@@ -53,12 +46,10 @@ public class PBEffectMulti extends PBEffect
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
-    {
+    public void writeToNBT(CompoundNBT compound) {
         ListNBT list = new ListNBT();
 
-        for (int i = 0; i < effects.length; i++)
-        {
+        for (int i = 0; i < effects.length; i++) {
             CompoundNBT cmp = new CompoundNBT();
 
             cmp.putInt("delay", delays[i]);
@@ -75,15 +66,13 @@ public class PBEffectMulti extends PBEffect
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
-    {
+    public void readFromNBT(CompoundNBT compound) {
         ListNBT list = compound.getList("effects", Constants.NBT.TAG_COMPOUND);
 
         effects = new PBEffect[list.size()];
         delays = new int[effects.length];
 
-        for (int i = 0; i < effects.length; i++)
-        {
+        for (int i = 0; i < effects.length; i++) {
             CompoundNBT cmp = list.getCompound(i);
 
             delays[i] = cmp.getInt("delay");
@@ -92,12 +81,9 @@ public class PBEffectMulti extends PBEffect
     }
 
     @Override
-    public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity)
-    {
-        for (PBEffect effect : effects)
-        {
-            if (!effect.canGenerateMoreEffectsAfterwards(entity))
-            {
+    public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity) {
+        for (PBEffect effect : effects) {
+            if (!effect.canGenerateMoreEffectsAfterwards(entity)) {
                 return false;
             }
         }

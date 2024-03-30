@@ -10,7 +10,6 @@ import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRendererExplosion;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderingRegistry;
 import ivorius.pandorasbox.effects.PBEffectExplode;
-import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.events.PBEventHandler;
 import ivorius.pandorasbox.init.Registry;
 import ivorius.pandorasbox.utils.ArrayListExtensions;
@@ -55,8 +54,6 @@ public class PandorasBox {
     public static ArrayListExtensions<Block> saplings;
     public static ArrayListExtensions<Block> pots;
     public static PBConfig CONFIG;
-
-    public static PBEventHandler fmlEventHandler;
     public PandorasBox() {
         // Register the setup method for modloading
         initConfig();

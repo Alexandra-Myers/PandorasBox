@@ -24,10 +24,8 @@ public abstract class PBEffectNormal extends PBEffect
         this.maxTicksAlive = maxTicksAlive;
     }
 
-    public float getRatioDone(int ticks)
-    {
-        if (ticks == maxTicksAlive) // Make sure value is exact
-        {
+    public float getRatioDone(int ticks) {
+        if (ticks == maxTicksAlive) { // Make sure value is exact
             return 1.0f;
         }
 
@@ -36,17 +34,14 @@ public abstract class PBEffectNormal extends PBEffect
 
     public abstract void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio);
 
-    public void setUpEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random)
-    {
+    public void setUpEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random) {
     }
 
-    public void finalizeEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random)
-    {
+    public void finalizeEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random) {
     }
 
     @Override
-    public void doTick(PandorasBoxEntity entity, Vec3d effectCenter, int ticksAlive)
-    {
+    public void doTick(PandorasBoxEntity entity, Vec3d effectCenter, int ticksAlive) {
         float prevRatio = getRatioDone(ticksAlive);
         float newRatio = getRatioDone(ticksAlive + 1);
 
@@ -61,26 +56,22 @@ public abstract class PBEffectNormal extends PBEffect
     }
 
     @Override
-    public boolean isDone(PandorasBoxEntity entity, int ticksAlive)
-    {
+    public boolean isDone(PandorasBoxEntity entity, int ticksAlive) {
         return ticksAlive >= maxTicksAlive;
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
-    {
+    public void writeToNBT(CompoundNBT compound) {
         compound.putInt("maxTicksAlive", maxTicksAlive);
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
-    {
+    public void readFromNBT(CompoundNBT compound) {
         maxTicksAlive = compound.getInt("maxTicksAlive");
     }
 
     @Override
-    public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity)
-    {
+    public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity) {
         return true;
     }
 }

@@ -17,45 +17,41 @@ import net.minecraft.block.Block;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
  * Created by lukas on 30.03.14.
  */
 public class PBECRuinedPortal implements PBEffectCreator {
-    public IValue rangeX;
+    public IValue rangeH;
     public IValue rangeY;
-    public IValue rangeZ;
     public IValue rangeStartY;
 
     public Block block;
-    public final Collection<ArrayListExtensions<WeightedBlock>> bricks;
+    public final WeightedBlock[][] bricks;
     public final ArrayListExtensions<RandomizedItemStack> loot;
-    public final Direction.Axis axis;
 
-    public PBECRuinedPortal(IValue rangeX, IValue rangeY, IValue rangeZ, IValue rangeStartY, Collection<ArrayListExtensions<WeightedBlock>> brickSet, ArrayListExtensions<RandomizedItemStack> loot, Direction.Axis axis) {
-        this.rangeX = rangeX;
+    public PBECRuinedPortal(IValue rangeH, IValue rangeY, IValue rangeStartY, WeightedBlock[][] brickSet, ArrayListExtensions<RandomizedItemStack> loot) {
+        this.rangeH = rangeH;
         this.rangeY = rangeY;
-        this.rangeZ = rangeZ;
         this.rangeStartY = rangeStartY;
         this.bricks = brickSet;
         this.loot = loot;
-        this.axis = axis;
     }
 
     @Override
     public PBEffect constructEffect(World world, double x, double y, double z, Random random) {
-        int rangeX = this.rangeX.getValue(random);
+        int rangeH = this.rangeH.getValue(random);
         int rangeY = this.rangeY.getValue(random);
         int rangeStartY = this.rangeStartY.getValue(random);
-        int rangeZ = this.rangeZ.getValue(random);
         rangeY += rangeStartY;
-        int time = 6 * (rangeX * rangeY * rangeZ) + 50;
+        int time = rangeH * rangeH * rangeY;
 
-        ArrayListExtensions<WeightedBlock> bricks = WeightedSelector.selectWeightless(random, this.bricks, this.bricks.size());
+        WeightedBlock[] bricks = WeightedSelector.selectWeightless(random, Arrays.asList(this.bricks), this.bricks.length);
+        Direction.Axis axis = random.nextBoolean() ? Direction.Axis.X : Direction.Axis.Z;
 
-        return new PBEffectGenRuinedPortal(time, rangeX, rangeZ, rangeY, rangeStartY, PandorasBoxHelper.getRandomUnifiedSeed(random), bricks, loot, axis);
+        return new PBEffectGenRuinedPortal(time, rangeH, rangeY, rangeStartY, PandorasBoxHelper.getRandomUnifiedSeed(random), bricks, loot, axis);
     }
 
     @Override

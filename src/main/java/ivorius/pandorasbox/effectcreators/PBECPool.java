@@ -11,6 +11,7 @@ import ivorius.pandorasbox.effects.PBEffectGenPool;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
@@ -37,7 +38,7 @@ public class PBECPool implements PBEffectCreator {
         double range = this.range.getValue(random);
         int time = MathHelper.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        Block platformBlock = PandorasBoxHelper.getRandomBlock(random, platformBlocks);
+        Block platformBlock = platformBlocks.isEmpty() ? Blocks.AIR : PandorasBoxHelper.getRandomBlock(random, platformBlocks);
 
         return new PBEffectGenPool(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), block, platformBlock);
     }

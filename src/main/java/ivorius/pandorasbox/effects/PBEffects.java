@@ -37,17 +37,20 @@ public class PBEffects {
         PBECRegistry.register(new PBECMulti(new PBECSpawnManySameItems(new ILinear(10, 30), PandorasBoxHelper.blocksAndItems), 0, new PBECSpawnTNT(new ILinear(20, 60), new ILinear(1, 10), new ILinear(20, 60), new ValueThrow(new DLinear(0.2, 0.5), new DLinear(0.3, 0.5)), new ValueSpawn(new DLinear(3.0, 10.0), new DConstant(0.0))), 60), "dirty_trick");
         PBECRegistry.register(new PBECPool(new DLinear(10.0, 30.0), Blocks.WATER, PandorasBoxHelper.blocks), "water_pool");
         PBECRegistry.register(new PBECPool(new DLinear(10.0, 30.0), Blocks.LAVA, PandorasBoxHelper.blocks), "lava_pool");
-//        ArrayList<ArrayListExtensions<WeightedBlock>> blockArrayList = new ArrayList<>();
-//        ArrayListExtensions<WeightedBlock> stoneBricks = new ArrayListExtensions<>();
-//        stoneBricks.addAll(new WeightedBlock(100, Blocks.STONE_BRICKS), new WeightedBlock(90, Blocks.CRACKED_STONE_BRICKS), new WeightedBlock(50, Blocks.MOSSY_STONE_BRICKS), new WeightedBlock(10, Blocks.CHISELED_STONE_BRICKS));
-//        ArrayListExtensions<WeightedBlock> blackstoneBricks = new ArrayListExtensions<>();
-//        blackstoneBricks.addAll(new WeightedBlock(100, Blocks.POLISHED_BLACKSTONE_BRICKS), new WeightedBlock(90, Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS), new WeightedBlock(10, Blocks.CHISELED_POLISHED_BLACKSTONE));
-//        blockArrayList.add(blackstoneBricks);
-//        blockArrayList.add(stoneBricks);
-//        ArrayListExtensions<RandomizedItemStack> loot = new ArrayListExtensions<>();
-//        loot.addAll(new RandomizedItemStack(Items.GOLD_NUGGET, 1, 5, 60), new RandomizedItemStack(Items.IRON_NUGGET, 1, 3, 35), new RandomizedItemStack(Items.FLINT, 1, 3, 80), new RandomizedItemStack(Items.FLINT_AND_STEEL, 1, 1, 20), new RandomizedItemStack(Items.OBSIDIAN, 1, 3, 10), new RandomizedItemStack(Items.ENCHANTED_GOLDEN_APPLE, 1, 3, 5), new RandomizedItemStack(Items.GOLDEN_AXE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_SWORD, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_HOE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_PICKAXE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_SHOVEL, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_HELMET, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_CHESTPLATE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_LEGGINGS, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_BOOTS, 1, 1, 20));
-//        PBECRegistry.register(new PBECRuinedPortal(new ILinear(5, 15), new ILinear(5, 10), new ILinear(5, 15), new ILinear(2, 5), blockArrayList, loot, Direction.Axis.X), "gateway_to_hell_x");
-//        PBECRegistry.register(new PBECRuinedPortal(new ILinear(5, 15), new ILinear(5, 10), new ILinear(5, 15), new ILinear(2, 5), blockArrayList, loot, Direction.Axis.Z), "gateway_to_hell_z");
+//        WeightedBlock[][] blockArray = new WeightedBlock[][]{
+//                new WeightedBlock[] { new WeightedBlock(100, Blocks.STONE_BRICKS),
+//                    new WeightedBlock(90, Blocks.CRACKED_STONE_BRICKS),
+//                    new WeightedBlock(10, Blocks.CHISELED_STONE_BRICKS),
+//                    new WeightedBlock(90, Blocks.STONE_BRICK_SLAB),
+//                    new WeightedBlock(90, Blocks.STONE_BRICK_STAIRS) },
+//                new WeightedBlock[] { new WeightedBlock(100, Blocks.POLISHED_BLACKSTONE_BRICKS),
+//                    new WeightedBlock(90, Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS),
+//                    new WeightedBlock(10, Blocks.CHISELED_POLISHED_BLACKSTONE),
+//                    new WeightedBlock(90, Blocks.POLISHED_BLACKSTONE_BRICK_SLAB),
+//                    new WeightedBlock(90, Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS) }
+//        };
+//        ArrayListExtensions<RandomizedItemStack> loot = new ArrayListExtensions<>(Arrays.asList(new RandomizedItemStack(Items.GOLD_NUGGET, 1, 5, 60), new RandomizedItemStack(Items.IRON_NUGGET, 1, 3, 35), new RandomizedItemStack(Items.FLINT, 1, 3, 80), new RandomizedItemStack(Items.FLINT_AND_STEEL, 1, 1, 20), new RandomizedItemStack(Items.OBSIDIAN, 1, 3, 10), new RandomizedItemStack(Items.ENCHANTED_GOLDEN_APPLE, 1, 3, 5), new RandomizedItemStack(Items.GOLDEN_AXE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_SWORD, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_HOE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_PICKAXE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_SHOVEL, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_HELMET, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_CHESTPLATE, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_LEGGINGS, 1, 1, 20), new RandomizedItemStack(Items.GOLDEN_BOOTS, 1, 1, 20)));
+//        PBECRegistry.register(new PBECMulti(new PBECRuinedPortal(new ILinear(5, 15), new ILinear(5, 10), new ILinear(2, 5), blockArray, loot), 80, new PBECConvertToNether(new DLinear(20.0, 40.0), new DGaussian(0.01, 0.15), "wastes"), 30, new PBECPool(new DLinear(5.0, 10.0), Blocks.LAVA, Collections.singletonList(new WeightedBlock(1, Blocks.AIR))), 0), "gateway_to_hell");
         PBECRegistry.register(new PBECHeightNoise(new DLinear(8.0, 30.0), new ILinear(-16, 16), new ILinear(1, 32), new ILinear(1, 8)), "height_noise");
         PBECRegistry.register(new PBECRandomShapes(new DLinear(40.0, 150.0), new DLinear(2.0, 5.0), new ILinear(3, 10), PandorasBoxHelper.blocks, new ZConstant(true)), "mad_geometry");
         PBECRegistry.register(new PBECRandomShapes(new DLinear(40.0, 150.0), new DLinear(1.0, 3.0), new ILinear(10, 80), PandorasBoxHelper.blocks, new ZConstant(false)), "madder_geometry");
@@ -57,11 +60,11 @@ public class PBEffects {
         PBECRegistry.register(new PBECSpawnLightning(new ILinear(40, 200), new ILinear(6, 40), new DLinear(10.0, 40.0)), "lightning");
         PBECRegistry.register(new PBECConvertToDesert(new DLinear(10.0, 80.0)), "sand_for_dessert");
         PBECRegistry.register(new PBECConvertToEnd(new DLinear(10.0, 80.0)), "in_the_end");
-        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), "wastes"), "hell_on_earth");
-        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), "soul_sand_valley"), "valley_of_souls");
-        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), "deltas"), "deltas_of_destruction");
-        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), "warped"), "forest_of_calm");
-        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), "crimson"), "forest_of_heat");
+        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), new DConstant(0), "wastes"), "hell_on_earth");
+        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), new DConstant(0), "soul_sand_valley"), "valley_of_souls");
+        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), new DConstant(0), "deltas"), "deltas_of_destruction");
+        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), new DConstant(0), "warped"), "forest_of_calm");
+        PBECRegistry.register(new PBECConvertToNether(new DLinear(10.0, 80.0), new DConstant(0), "crimson"), "forest_of_heat");
         PBECRegistry.register(new PBECConvertToLifeless(new DLinear(20.0, 80.0)), "lifeless");
         PBECRegistry.register(new PBECSpawnEntities(new ILinear(20, 100), new ILinear(20, 200), new IConstant(1), new IConstant(0), new IConstant(0), new IConstant(0), Collections.singletonList(new WeightedEntity(100, "arrow", 1, 1)), new ValueThrow(new DLinear(0.05, 0.5), new DLinear(0.3, 0.8)), null), "trapped_tribe");
         PBECRegistry.register(new PBECBuffEntities(new ILinear(60, 20 * 30), new IWeighted(1, 100, 2, 80, 3, 50), new DLinear(8.0, 25.0), 0.2f, PandorasBoxHelper.debuffs), "buffed_down");

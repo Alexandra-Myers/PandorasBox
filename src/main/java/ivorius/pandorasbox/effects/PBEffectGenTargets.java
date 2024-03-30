@@ -52,8 +52,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure {
             structureTarget.structureLength = 0.5f + random.nextFloat() * 0.2f;
 
             structureTarget.colors = new int[MathHelper.ceil(targetSize) * 2];
-            for (int j = 0; j < structureTarget.colors.length; j++)
-            {
+            for (int j = 0; j < structureTarget.colors.length; j++) {
                 structureTarget.colors[j] = random.nextInt(16);
             }
 
@@ -124,8 +123,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure {
     }
 
     @Override
-    public StructureTarget createStructure()
-    {
+    public StructureTarget createStructure() {
         return new StructureTarget();
     }
 

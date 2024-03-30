@@ -25,18 +25,15 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
     public boolean spreadSquared = true;
     public boolean easeInOut = true;
 
-    public PBEffectRangeBased(int maxTicksAlive, double range, int passes)
-    {
+    public PBEffectRangeBased(int maxTicksAlive, double range, int passes) {
         super(maxTicksAlive);
         this.range = range;
         this.passes = passes;
     }
 
     @Override
-    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio)
-    {
-        for (int i = 0; i < passes; i++)
-        {
+    public void doEffect(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, float prevRatio, float newRatio) {
+        for (int i = 0; i < passes; i++) {
             double prevRange = getRange(prevRatio, i);
             double newRange = getRange(newRatio, i);
 
@@ -44,8 +41,7 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
         }
     }
 
-    private double getRange(double ratio, int pass)
-    {
+    protected double getRange(double ratio, int pass) {
         if (spreadSquared)
             ratio = Math.sqrt(ratio);
         if (easeInOut)
@@ -60,8 +56,7 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
     public abstract void generateInRange(World world, PandorasBoxEntity entity, Random random, Vec3d effectCenter, double prevRange, double newRange, int pass);
 
     @Override
-    public void writeToNBT(CompoundNBT compound)
-    {
+    public void writeToNBT(CompoundNBT compound) {
         super.writeToNBT(compound);
 
         compound.putDouble("range", range);
@@ -71,8 +66,7 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound)
-    {
+    public void readFromNBT(CompoundNBT compound) {
         super.readFromNBT(compound);
 
         range = compound.getDouble("range");

@@ -125,11 +125,17 @@ public class IvMathHelper {
         return base == origin + offset || base == origin - offset;
     }
 
-    public static boolean isBetween(int base, int origin, int offset) {
+    private static boolean isBetween(int base, int origin, int offset, boolean inclusive) {
         boolean bl = false;
-        for (int i = origin - offset; i < origin + offset; i++) {
+        for (int i = origin - offset + (inclusive ? 0 : 1); inclusive ? i <= origin + offset : i < origin + offset; i++) {
             bl |= base == i;
         }
         return bl;
+    }
+    public static boolean isBetween(int base, int origin, int offset) {
+        return isBetween(base, origin, offset, false);
+    }
+    public static boolean isBetweenInclusive(int base, int origin, int offset) {
+        return isBetween(base, origin, offset, true);
     }
 }

@@ -10,14 +10,12 @@ import net.minecraft.block.Block;
 /**
  * Created by lukas on 31.03.14.
  */
-public class WeightedBlock implements WeightedSelector.Item
-{
+public class WeightedBlock implements WeightedSelector.Item {
     public double weight;
 
     public Block block;
 
-    public WeightedBlock(double weight, Block block)
-    {
+    public WeightedBlock(double weight, Block block) {
         this.weight = weight;
         this.block = block;
     }

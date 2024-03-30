@@ -31,44 +31,47 @@ import static net.minecraft.world.gen.feature.Features.GLOWSTONE_EXTRA;
  */
 public class PBEffectGenConvertToNether extends PBEffectGenerate {
     private String biome;
+    private double discardNetherrackChance;
     private int timesFeatureAMade = 0;
     private int timesFeatureBMade = 0;
     public PBEffectGenConvertToNether() {}
 
-    public PBEffectGenConvertToNether(int time, double range, int unifiedSeed, String biome) {
+    public PBEffectGenConvertToNether(int time, double range, double discardChance, int unifiedSeed, String biome) {
         super(time, range, 2, unifiedSeed);
+        this.discardNetherrackChance = discardChance;
         this.biome = biome;
     }
 
     @Override
     public void generateOnBlock(World world, PandorasBoxEntity entity, Vec3d effectCenter, Random random, int pass, BlockPos pos, double range) {
-        if(world instanceof ServerWorld) {
+        if (world instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld) world;
+            float newRatio = getRatioDone(entity.getEffectTicksExisted() + 1);
             switch (biome) {
                 case "wastes": {
-                    createWastes(serverWorld, entity, random, pass, pos);
+                    createWastes(serverWorld, entity, random, pass, newRatio, pos);
                     break;
                 }
                 case "soul_sand_valley": {
-                    createSoul(serverWorld, entity, random, pass, pos);
+                    createSoul(serverWorld, entity, random, pass, newRatio, pos);
                     break;
                 }
                 case "crimson": {
-                    createCrimson(serverWorld, entity, random, pass, pos);
+                    createCrimson(serverWorld, entity, random, pass, newRatio, pos);
                     break;
                 }
                 case "warped": {
-                    createWarped(serverWorld, entity, random, pass, pos);
+                    createWarped(serverWorld, entity, random, pass, newRatio, pos);
                     break;
                 }
                 case "deltas": {
-                    createDeltas(serverWorld, entity, random, pass, pos);
+                    createDeltas(serverWorld, entity, random, pass, newRatio, pos);
                     break;
                 }
             }
         }
     }
-    public void createWastes(ServerWorld world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+    public void createWastes(ServerWorld world, PandorasBoxEntity entity, Random random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -79,7 +82,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
         misc.addAll(PandorasBox.terracotta);
 
         if (pass == 0) {
-            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+            if (random.nextDouble() < (discardNetherrackChance / 100) * Math.pow(1 + (discardNetherrackChance * 2), newRatio * 100)) {
+                return;
+            } else if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
                 Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
@@ -140,7 +145,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
                 if(success) timesFeatureAMade++;
             }
         }
-        if(random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 4.0))) {
+        if (random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 4.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
@@ -150,7 +155,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             }
         }
     }
-    public void createSoul(ServerWorld world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+    public void createSoul(ServerWorld world, PandorasBoxEntity entity, Random random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -161,6 +166,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
         misc.addAll(PandorasBox.terracotta);
 
         if (pass == 0) {
+            if (random.nextDouble() < (discardNetherrackChance / 100) * Math.pow(1 + (discardNetherrackChance * 2), newRatio * 100)) return;
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
                 Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
@@ -215,7 +221,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             }
         }
     }
-    public void createCrimson(ServerWorld world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+    public void createCrimson(ServerWorld world, PandorasBoxEntity entity, Random random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -229,7 +235,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
         blocks.removeAll(Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM, Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM);
 
         if (pass == 0) {
-            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+            if (random.nextDouble() < (discardNetherrackChance / 100) * Math.pow(1 + (discardNetherrackChance * 2), newRatio * 100)) {
+                return;
+            } else if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
                 Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
@@ -307,7 +315,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             }
         }
     }
-    public void createWarped(ServerWorld world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+    public void createWarped(ServerWorld world, PandorasBoxEntity entity, Random random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -321,7 +329,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
         blocks.removeAll(Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM, Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM);
 
         if (pass == 0) {
-            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+            if (random.nextDouble() < (discardNetherrackChance / 100) * Math.pow(1 + (discardNetherrackChance * 2), newRatio * 100)) {
+                return;
+            } else if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
                 Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
@@ -392,7 +402,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             }
         }
     }
-    public void createDeltas(ServerWorld world, PandorasBoxEntity entity, Random random, int pass, BlockPos pos) {
+    public void createDeltas(ServerWorld world, PandorasBoxEntity entity, Random random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -403,7 +413,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
         misc.addAll(PandorasBox.terracotta);
 
         if (pass == 0) {
-            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+            if (random.nextDouble() < (discardNetherrackChance / 100) * Math.pow(1 + (discardNetherrackChance * 2), newRatio * 100)) {
+                return;
+            } else if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
                 Optional<Integer> integer = blockState.getOptionalValue(FlowingFluidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
@@ -479,6 +491,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
     public void readFromNBT(CompoundNBT compound) {
         super.readFromNBT(compound);
         biome = compound.getString("biome");
+        discardNetherrackChance = compound.getDouble("discardNetherrackChance");
         timesFeatureAMade = compound.getInt("featureACount");
         timesFeatureBMade = compound.getInt("featureBCount");
     }
@@ -489,6 +502,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
         if (biome != null) {
             compound.putString("biome", biome);
         }
+        compound.putDouble("discardNetherrackChance", discardNetherrackChance);
         compound.putInt("featureACount", timesFeatureAMade);
         compound.putInt("featureBCount", timesFeatureBMade);
     }
