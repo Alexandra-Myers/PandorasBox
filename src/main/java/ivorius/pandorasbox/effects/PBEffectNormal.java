@@ -14,20 +14,16 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffectNormal extends PBEffect
-{
+public abstract class PBEffectNormal extends PBEffect {
     public int maxTicksAlive;
     public PBEffectNormal() {}
 
-    public PBEffectNormal(int maxTicksAlive)
-    {
+    public PBEffectNormal(int maxTicksAlive) {
         this.maxTicksAlive = maxTicksAlive;
     }
 
-    public float getRatioDone(int ticks)
-    {
-        if (ticks == maxTicksAlive) // Make sure value is exact
-        {
+    public float getRatioDone(int ticks) {
+        if (ticks == maxTicksAlive) { // Make sure value is exact
             return 1.0f;
         }
 
@@ -36,17 +32,14 @@ public abstract class PBEffectNormal extends PBEffect
 
     public abstract void doEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio);
 
-    public void setUpEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random)
-    {
+    public void setUpEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random) {
     }
 
-    public void finalizeEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random)
-    {
+    public void finalizeEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random) {
     }
 
     @Override
-    public void doTick(PandorasBoxEntity entity, Vec3 effectCenter, int ticksAlive)
-    {
+    public void doTick(PandorasBoxEntity entity, Vec3 effectCenter, int ticksAlive) {
         float prevRatio = getRatioDone(ticksAlive);
         float newRatio = getRatioDone(ticksAlive + 1);
 
@@ -61,26 +54,22 @@ public abstract class PBEffectNormal extends PBEffect
     }
 
     @Override
-    public boolean isDone(PandorasBoxEntity entity, int ticksAlive)
-    {
+    public boolean isDone(PandorasBoxEntity entity, int ticksAlive) {
         return ticksAlive >= maxTicksAlive;
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
+    public void writeToNBT(CompoundTag compound) {
         compound.putInt("maxTicksAlive", maxTicksAlive);
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
-    {
+    public void readFromNBT(CompoundTag compound) {
         maxTicksAlive = compound.getInt("maxTicksAlive");
     }
 
     @Override
-    public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity)
-    {
+    public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity) {
         return true;
     }
 }

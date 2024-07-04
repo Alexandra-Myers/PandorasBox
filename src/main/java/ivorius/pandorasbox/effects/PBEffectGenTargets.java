@@ -24,16 +24,14 @@ import java.util.List;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenTargets extends PBEffectGenerateByStructure
-{
+public class PBEffectGenTargets extends PBEffectGenerateByStructure {
     public String entityToSpawn;
     public double range;
     public double targetSize;
     public double entityDensity;
     public PBEffectGenTargets() {}
 
-    public PBEffectGenTargets(int maxTicksAlive, String entityToSpawn, double range, double targetSize, double entityDensity)
-    {
+    public PBEffectGenTargets(int maxTicksAlive, String entityToSpawn, double range, double targetSize, double entityDensity) {
         super(maxTicksAlive);
         this.entityToSpawn = entityToSpawn;
         this.range = range;
@@ -41,13 +39,11 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
         this.entityDensity = entityDensity;
     }
 
-    public void createTargets(Level world, double x, double y, double z, RandomSource random)
-    {
+    public void createTargets(Level world, double x, double y, double z, RandomSource random) {
         List<Player> players = world.getEntitiesOfClass(Player.class, new AABB(x - range, y - range, z - range, x + range, y + range, z + range));
         this.structures = new Structure[players.size()];
 
-        for (int i = 0; i < players.size(); i++)
-        {
+        for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
             StructureTarget structureTarget = new StructureTarget();
             structureTarget.x = Mth.floor(player.getX());
@@ -57,8 +53,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
             structureTarget.structureLength = 0.5f + random.nextFloat() * 0.2f;
 
             structureTarget.colors = new int[Mth.ceil(targetSize) * 2];
-            for (int j = 0; j < structureTarget.colors.length; j++)
-            {
+            for (int j = 0; j < structureTarget.colors.length; j++) {
                 structureTarget.colors[j] = random.nextInt(16);
             }
 
@@ -95,12 +90,10 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
                         }
                     }
 
-                    for (int yP = 1; yP <= requiredRange; yP++)
-                    {
+                    for (int yP = 1; yP <= requiredRange; yP++) {
                         double dist3D = Mth.sqrt(xP * xP + zP * zP + yP * yP);
 
-                        if (dist3D < newRange && dist3D >= prevRange) // -3 so we have a bit of a height bonus
-                        {
+                        if (dist3D < newRange && dist3D >= prevRange) { // -3 so we have a bit of a height bonus
                             setBlockToAirSafe(world, new BlockPos(structureTarget.x + xP, structureTarget.y, structureTarget.z + zP));
                         }
                     }
@@ -110,8 +103,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
+    public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
 
         compound.putString("entityToSpawn", entityToSpawn);
@@ -121,8 +113,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
-    {
+    public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
 
         entityToSpawn = compound.getString("entityToSpawn");
@@ -132,30 +123,25 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure
     }
 
     @Override
-    public StructureTarget createStructure()
-    {
+    public StructureTarget createStructure() {
         return new StructureTarget();
     }
 
-    public static class StructureTarget extends Structure
-    {
+    public static class StructureTarget extends Structure {
         public int[] colors;
 
-        public StructureTarget()
-        {
+        public StructureTarget() {
         }
 
         @Override
-        public void writeToNBT(CompoundTag compound)
-        {
+        public void writeToNBT(CompoundTag compound) {
             super.writeToNBT(compound);
 
             compound.putIntArray("colors", colors);
         }
 
         @Override
-        public void readFromNBT(CompoundTag compound)
-        {
+        public void readFromNBT(CompoundTag compound) {
             super.readFromNBT(compound);
 
             colors = compound.getIntArray("colors");

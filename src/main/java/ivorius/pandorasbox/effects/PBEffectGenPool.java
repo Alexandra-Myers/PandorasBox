@@ -36,7 +36,7 @@ public class PBEffectGenPool extends PBEffectGenerate {
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if (!world.isClientSide && !world.getBlockState(pos).isAir()) {
             boolean setPlatform = false;
-            if (platformBlock != null) {
+            if (platformBlock != null && !platformBlock.defaultBlockState().isAir()) {
                 List<LivingEntity> livingEntities = world.getEntitiesOfClass(LivingEntity.class, BlockPositions.expandToAABB(pos, 2.5, 2.5, 2.5));
 
                 if (!livingEntities.isEmpty())

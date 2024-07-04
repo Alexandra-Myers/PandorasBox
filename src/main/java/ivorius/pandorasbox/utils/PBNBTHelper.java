@@ -17,8 +17,7 @@ import net.minecraft.world.level.block.Block;
 /**
  * Created by lukas on 03.02.15.
  */
-public class PBNBTHelper
-{
+public class PBNBTHelper {
     public static byte readByte(CompoundTag compound, String key, byte defaultValue) {
         return compound != null && compound.contains(key, 1)
                 ? compound.getByte(key)
@@ -277,9 +276,10 @@ public class PBNBTHelper
             ListTag listTag = compound.getList(id, 8);
             WeightedBlock[] blocks = new WeightedBlock[listTag.size()];
 
-            for (int i = 0; i < blocks.length; i += 2) {
-                Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(listTag.getString(i)));
-                double weight = listTag.getDouble(i + 1);
+            for (int i = 0; i < blocks.length; i++) {
+                CompoundTag compoundNBT = listTag.getCompound(i);
+                Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(compoundNBT.getString("block")));
+                double weight = compoundNBT.getDouble("weight");
                 blocks[i] = new WeightedBlock(weight, block);
             }
 
@@ -294,8 +294,10 @@ public class PBNBTHelper
             ListTag listTag = new ListTag();
 
             for (WeightedBlock b : blocks) {
-                listTag.add(StringTag.valueOf(PBNBTHelper.storeBlockString(b.block)));
-                listTag.add(DoubleTag.valueOf(b.weight));
+                CompoundTag compoundNBT = new CompoundTag();
+                compoundNBT.putString("block", PBNBTHelper.storeBlockString(b.block));
+                compoundNBT.putDouble("weight", b.weight);
+                listTag.add(compoundNBT);
             }
 
             compound.put(id, listTag);
@@ -335,7 +337,7 @@ public class PBNBTHelper
                 if (compoundTag.contains("max"))
                     max = compoundTag.getInt("max");
                 if (compoundTag.contains("weight"))
-                    max = compoundTag.getInt("weight");
+                    weight = compoundTag.getInt("weight");
                 itemStacks[i] = new RandomizedItemStack(stack, min, max, weight);
             }
 

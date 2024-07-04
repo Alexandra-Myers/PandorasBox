@@ -40,31 +40,34 @@ import static net.minecraft.data.worldgen.features.TreeFeatures.WARPED_FUNGUS_PL
 public class PBEffectGenConvertToNether extends PBEffectGenerate
 {
     private String biome;
+    private double discardNetherrackChance;
     private int timesFeatureAMade = 0;
     private int timesFeatureBMade = 0;
     public PBEffectGenConvertToNether() {}
 
-    public PBEffectGenConvertToNether(int time, double range, int unifiedSeed, String biome) {
+    public PBEffectGenConvertToNether(int time, double range, double discardChance, int unifiedSeed, String biome) {
         super(time, range, 2, unifiedSeed);
+        this.discardNetherrackChance = discardChance;
         this.biome = biome;
     }
 
     @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if(world instanceof ServerLevel serverLevel) {
+            float newRatio = getRatioDone(entity.getEffectTicksExisted() + 1);
             switch (biome) {
-                case "wastes" -> createWastes(serverLevel, entity, effectCenter, random, pass, pos);
-                case "soul_sand_valley" -> createSoul(serverLevel, entity, effectCenter, random, pass, pos);
-                case "crimson" -> createCrimson(serverLevel, entity, effectCenter, random, pass, pos);
-                case "warped" -> createWarped(serverLevel, entity, effectCenter, random, pass, pos);
-                case "deltas" -> createDeltas(serverLevel, entity, effectCenter, random, pass, pos);
+                case "wastes" -> createWastes(serverLevel, entity, effectCenter, random, pass, newRatio, pos);
+                case "soul_sand_valley" -> createSoul(serverLevel, entity, effectCenter, random, pass, newRatio, pos);
+                case "crimson" -> createCrimson(serverLevel, entity, effectCenter, random, pass, newRatio, pos);
+                case "warped" -> createWarped(serverLevel, entity, effectCenter, random, pass, newRatio, pos);
+                case "deltas" -> createDeltas(serverLevel, entity, effectCenter, random, pass, newRatio, pos);
             }
         }
     }
     public static BiomeResolver makeResolver(Holder<Biome> biomeHolder) {
         return (x, y, z, climateSampler) -> biomeHolder;
     }
-    public void createWastes(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos) {
+    public void createWastes(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -75,7 +78,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         misc.addAll(PandorasBox.terracotta);
 
         if (pass == 0) {
-            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+            if (random.nextDouble() < (discardNetherrackChance / 100) * Math.pow(1 + (discardNetherrackChance * 2), newRatio * 100)) {
+                return;
+            } else if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
                 Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
@@ -127,24 +132,21 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 4.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 4.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(VegetationFeatures.PATCH_BROWN_MUSHROOM)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
-        if(random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 4.0))) {
+        if (random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 4.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(VegetationFeatures.PATCH_RED_MUSHROOM)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
@@ -152,7 +154,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         }
         changeBiome(Biomes.NETHER_WASTES, pass, effectCenter, world);
     }
-    public void createSoul(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos) {
+    public void createSoul(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -163,6 +165,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         misc.addAll(PandorasBox.terracotta);
 
         if (pass == 0) {
+            if (random.nextDouble() < (discardNetherrackChance / 100) * Math.pow(1 + (discardNetherrackChance * 2), newRatio * 100)) return;
             if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
                 Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
@@ -248,7 +251,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         Objects.requireNonNull(configuredFeatureRegistry.get(GLOWSTONE_EXTRA)).place(world, world.getChunkSource().getGenerator(), random, pos);
     }
 
-    public void createCrimson(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos) {
+    public void createCrimson(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -262,7 +265,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         blocks.removeAll(Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM, Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM);
 
         if (pass == 0) {
-            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+            if (random.nextDouble() < (discardNetherrackChance / 100) * Math.pow(1 + (discardNetherrackChance * 2), newRatio * 100)) {
+                return;
+            } else if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
                 Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
@@ -319,26 +324,22 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
                 boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(CRIMSON_FUNGUS_PLANTED)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
-        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
                 boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(CRIMSON_FOREST_VEGETATION)).place(world, world.getChunkSource().getGenerator(), random, pos);
@@ -347,7 +348,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         }
         changeBiome(Biomes.CRIMSON_FOREST, pass, effectCenter, world);
     }
-    public void createWarped(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos) {
+    public void createWarped(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -361,7 +362,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         blocks.removeAll(Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM, Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM);
 
         if (pass == 0) {
-            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+            if (random.nextDouble() < (discardNetherrackChance / 100) * Math.pow(1 + (discardNetherrackChance * 2), newRatio * 100)) {
+                return;
+            } else if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
                 Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
@@ -411,26 +414,22 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 canSpawnEntity(world, blockState, pos, entity1);
             }
         }
-        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.4, Math.floor(timesFeatureAMade / 8.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
                 boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(WARPED_FUNGUS_PLANTED)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
-        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.6, Math.floor(timesFeatureBMade / 10.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.isAir() && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.isAir() && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
                 boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(WARPED_FOREST_VEGETION)).place(world, world.getChunkSource().getGenerator(), random, pos);
@@ -439,7 +438,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         }
         changeBiome(Biomes.WARPED_FOREST, pass, effectCenter, world);
     }
-    public void createDeltas(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos) {
+    public void createDeltas(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -450,7 +449,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
         misc.addAll(PandorasBox.terracotta);
 
         if (pass == 0) {
-            if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
+            if (random.nextDouble() < (discardNetherrackChance / 100) * Math.pow(1 + (discardNetherrackChance * 2), newRatio * 100)) {
+                return;
+            } else if (isBlockAnyOf(block, Blocks.COBBLESTONE, Blocks.ICE, Blocks.WATER, Blocks.OBSIDIAN)) {
                 Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                 BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                 if(integer.isPresent()) {
@@ -499,24 +500,21 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
                 lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
             }
         }
-        if (random.nextDouble() < Math.pow(0.8, Math.floor(timesFeatureAMade / 4.0)))
-        {
+        if (random.nextDouble() < Math.pow(0.8, Math.floor(timesFeatureAMade / 4.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(SMALL_BASALT_COLUMNS)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
-        if(random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 4.0))) {
+        if (random.nextDouble() < Math.pow(0.3, Math.floor(timesFeatureBMade / 4.0))) {
             BlockPos posBelow = pos.below();
             BlockState blockBelowState = world.getBlockState(posBelow);
 
-            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow))
-            {
+            if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
                 Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                 boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(LARGE_BASALT_COLUMNS)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
@@ -529,6 +527,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
         biome = compound.getString("biome");
+        discardNetherrackChance = compound.getDouble("discardNetherrackChance");
         timesFeatureAMade = compound.getInt("featureACount");
         timesFeatureBMade = compound.getInt("featureBCount");
     }
@@ -536,9 +535,10 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate
     @Override
     public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
-        if(biome != null) {
+        if (biome != null) {
             compound.putString("biome", biome);
         }
+        compound.putDouble("discardNetherrackChance", discardNetherrackChance);
         compound.putInt("featureACount", timesFeatureAMade);
         compound.putInt("featureBCount", timesFeatureBMade);
     }

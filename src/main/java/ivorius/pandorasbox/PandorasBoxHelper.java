@@ -174,6 +174,7 @@ public class PandorasBoxHelper
     }
 
     public static void initialize() {
+        landMobs = new ArrayList<>();
         mobs = new ArrayList<>();
         creatures = new ArrayList<>();
         waterCreatures = new ArrayList<>();

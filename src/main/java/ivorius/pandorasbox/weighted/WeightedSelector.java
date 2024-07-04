@@ -9,67 +9,54 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
-public class WeightedSelector
-{
-    public static <T extends Item> double totalWeight(Collection<T> items)
-    {
+public class WeightedSelector {
+    public static <T extends Item> double totalWeight(Collection<T> items) {
         return items.stream().mapToDouble(Item::weight).reduce(0, Double::sum);
     }
 
-    public static <T> double totalWeight(Collection<T> items, final ToDoubleFunction<T> weightFunction)
-    {
+    public static <T> double totalWeight(Collection<T> items, final ToDoubleFunction<T> weightFunction) {
         return items.stream().mapToDouble(weightFunction).reduce(0, Double::sum);
     }
 
-    public static boolean canSelect(Collection<? extends Item> items)
-    {
+    public static boolean canSelect(Collection<? extends Item> items) {
         return items.stream().anyMatch(item -> item.weight() > 0);
     }
 
-    public static <T> boolean canSelect(Collection<T> items, ToDoubleFunction<T> weightFunction)
-    {
+    public static <T> boolean canSelect(Collection<T> items, ToDoubleFunction<T> weightFunction) {
         return items.stream().anyMatch(item -> weightFunction.applyAsDouble(item) > 0);
     }
 
-    public static <T> T selectWeightless(RandomSource rand, Collection<T> items, int counted)
-    {
+    public static <T> T selectWeightless(RandomSource rand, Collection<T> items, int counted) {
         counted = rand.nextInt(counted);
-        for (Iterator<T> iterator = items.iterator(); true; )
-        {
+        for (Iterator<T> iterator = items.iterator(); true; ) {
             T item = iterator.next();
             if (counted-- == 0 || !iterator.hasNext())
                 return item;
         }
     }
 
-    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items)
-    {
+    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items) {
         return selectItem(rand, items, totalWeight(items));
     }
 
-    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items, double totalWeight)
-    {
+    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items, double totalWeight) {
         return selectItem(rand, items, totalWeight, false);
     }
 
-    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items, boolean remove)
-    {
+    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items, boolean remove) {
         return selectItem(rand, items, totalWeight(items), remove);
     }
 
-    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items, double totalWeight, boolean remove)
-    {
-        if (items.size() == 0)
+    public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items, double totalWeight, boolean remove) {
+        if (items.isEmpty())
             throw new IndexOutOfBoundsException();
 
         double random = rand.nextDouble() * totalWeight;
         int counted = 0;
-        for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); counted++)
-        {
+        for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); counted++) {
             T t = iterator.next();
             random -= t.weight();
-            if (random <= 0.0)
-            {
+            if (random <= 0.0) {
                 if (remove)
                     iterator.remove();
                 return t;
@@ -79,34 +66,28 @@ public class WeightedSelector
         return selectWeightless(rand, items, counted);
     }
 
-    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction)
-    {
+    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction) {
         return select(rand, items, weightFunction, totalWeight(items, weightFunction));
     }
 
-    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, double totalWeight)
-    {
+    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, double totalWeight) {
         return select(rand, items, weightFunction, totalWeight, false);
     }
 
-    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, boolean remove)
-    {
+    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, boolean remove) {
         return select(rand, items, weightFunction, totalWeight(items, weightFunction), remove);
     }
 
-    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, double totalWeight, boolean remove)
-    {
-        if (items.size() == 0)
+    public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, double totalWeight, boolean remove) {
+        if (items.isEmpty())
             throw new IndexOutOfBoundsException();
 
         double random = rand.nextDouble() * totalWeight;
         int counted = 0;
-        for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); counted++)
-        {
+        for (Iterator<T> iterator = items.iterator(); iterator.hasNext(); counted++) {
             T t = iterator.next();
             random -= weightFunction.applyAsDouble(t);
-            if (random <= 0.0)
-            {
+            if (random <= 0.0) {
                 if (remove)
                     iterator.remove();
                 return t;
@@ -116,28 +97,23 @@ public class WeightedSelector
         return selectWeightless(rand, items, counted);
     }
 
-    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items)
-    {
+    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items) {
         return selectItem(rand, items).item();
     }
 
-    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, double totalWeight)
-    {
+    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, double totalWeight) {
         return selectItem(rand, items, totalWeight).item();
     }
 
-    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, boolean remove)
-    {
+    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, boolean remove) {
         return selectItem(rand, items, remove).item();
     }
 
-    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, double totalWeight, boolean remove)
-    {
+    public static <T> T select(RandomSource rand, Collection<SimpleItem<T>> items, double totalWeight, boolean remove) {
         return selectItem(rand, items, totalWeight, remove).item();
     }
 
-    public interface Item
-    {
+    public interface Item {
         double weight();
     }
 

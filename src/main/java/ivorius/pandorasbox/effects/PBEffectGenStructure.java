@@ -40,12 +40,14 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     }
     @Override
     public void doEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
-        if(world.isClientSide()) return;
-        world.getBlockState(blockPos);
-        if(!hasAlreadyStarted) {
+        if (world.isClientSide()) return;
+        boolean bl = false;
+        if (!hasAlreadyStarted) {
             blockPos.set(effectCenter.x, effectCenter.y, effectCenter.z);
+            int originY = blockPos.getY();
             BlockState state = world.getBlockState(blockPos);
-            if(grounded) {
+            blockPos.move(0, -startingYOffset, 0);
+            if (grounded) {
                 while (state.isAir()) {
                     blockPos.move(0, -1, 0);
                     state = world.getBlockState(blockPos);
@@ -54,31 +56,36 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
                     blockPos.move(0, 1, 0);
                 }
             }
-            blockPos.move(0, -startingYOffset, 0);
             x = blockPos.getX() - length;
             y = blockPos.getY();
             z = blockPos.getZ() - width;
+            startingYOffset = originY - y;
             hasAlreadyStarted = true;
         }
-        if (y <= blockPos.getY() + height) {
-            if (x <= blockPos.getX() + length) {
-                if (z <= blockPos.getZ() + width) {
-                    buildStructure(world, entity, new BlockPos(x, y, z), random, prevRatio, newRatio, length, width, height, blockPos.getY(), blockPos.getX(), blockPos.getZ());
-                    z++;
+        int i = 0;
+        while (!bl) {
+            i++;
+            if (i >= 40)
+                break;
+            if (y <= blockPos.getY() + height) {
+                if (x <= blockPos.getX() + length) {
+                    if (z <= blockPos.getZ() + width) {
+                        bl = buildStructure(world, entity, new BlockPos(x, y, z), random, prevRatio, newRatio, length, width, height, blockPos.getY(), blockPos.getX(), blockPos.getZ());
+                        z++;
+                    } else {
+                        z = blockPos.getZ() - width;
+                        x++;
+                    }
                 } else {
-                    z = blockPos.getZ() - width;
-                    x++;
+                    x = blockPos.getX() - length;
+                    y++;
                 }
-            } else {
-                x = blockPos.getX() - length;
-                y++;
-            }
+            } else break;
         }
     }
-    public abstract void buildStructure(Level world, PandorasBoxEntity entity, BlockPos currentPos, RandomSource random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ);
+    public abstract boolean buildStructure(Level world, PandorasBoxEntity entity, BlockPos currentPos, RandomSource random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ);
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
+    public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
 
         compound.putInt("length", length);
@@ -96,8 +103,7 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
-    {
+    public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
 
         length = compound.getInt("length");

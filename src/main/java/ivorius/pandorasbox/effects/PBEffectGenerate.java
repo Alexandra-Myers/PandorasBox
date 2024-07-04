@@ -30,14 +30,12 @@ import static ivorius.pandorasbox.effects.PBEffectGenConvertToNether.makeResolve
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffectGenerate extends PBEffectRangeBased
-{
+public abstract class PBEffectGenerate extends PBEffectRangeBased {
     public int unifiedSeed;
     public boolean biomeUnchanged = true;
     public PBEffectGenerate() {}
 
-    public PBEffectGenerate(int time, double range, int passes, int unifiedSeed)
-    {
+    public PBEffectGenerate(int time, double range, int passes, int unifiedSeed) {
         super(time, range, passes);
 
         this.unifiedSeed = unifiedSeed;
@@ -70,24 +68,19 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     }
 
     @Override
-    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass)
-    {
+    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass) {
         int requiredRange = Mth.ceil(newRange);
 
         int baseX = Mth.floor(effectCenter.x);
         int baseY = Mth.floor(effectCenter.y);
         int baseZ = Mth.floor(effectCenter.z);
 
-        for (int x = -requiredRange; x <= requiredRange; x++)
-        {
-            for (int y = -requiredRange; y <= requiredRange; y++)
-            {
-                for (int z = -requiredRange; z <= requiredRange; z++)
-                {
+        for (int x = -requiredRange; x <= requiredRange; x++) {
+            for (int y = -requiredRange; y <= requiredRange; y++) {
+                for (int z = -requiredRange; z <= requiredRange; z++) {
                     double dist = Mth.sqrt(x * x + y * y + z * z);
 
-                    if (dist <= newRange)
-                    {
+                    if (dist <= newRange) {
                         if (dist > prevRange)
                             generateOnBlock(world, entity, effectCenter, random, pass, new BlockPos(baseX + x, baseY + y, baseZ + z), dist);
                         else
@@ -101,16 +94,14 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     public abstract void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range);
 
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
+    public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
         compound.putInt("unifiedSeed", unifiedSeed);
         compound.putBoolean("biomeUnchanged", biomeUnchanged);
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
-    {
+    public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
         unifiedSeed = compound.getInt("unifiedSeed");
         biomeUnchanged = compound.getBoolean("biomeUnchanged");

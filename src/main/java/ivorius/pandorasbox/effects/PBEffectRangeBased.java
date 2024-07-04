@@ -16,8 +16,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Created by lukas on 31.03.14.
  */
-public abstract class PBEffectRangeBased extends PBEffectNormal
-{
+public abstract class PBEffectRangeBased extends PBEffectNormal {
     public double range;
     public int passes;
     public PBEffectRangeBased() {}
@@ -25,18 +24,15 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
     public boolean spreadSquared = true;
     public boolean easeInOut = true;
 
-    public PBEffectRangeBased(int maxTicksAlive, double range, int passes)
-    {
+    public PBEffectRangeBased(int maxTicksAlive, double range, int passes) {
         super(maxTicksAlive);
         this.range = range;
         this.passes = passes;
     }
 
     @Override
-    public void doEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio)
-    {
-        for (int i = 0; i < passes; i++)
-        {
+    public void doEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
+        for (int i = 0; i < passes; i++) {
             double prevRange = getRange(prevRatio, i);
             double newRange = getRange(newRatio, i);
 
@@ -44,8 +40,7 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
         }
     }
 
-    private double getRange(double ratio, int pass)
-    {
+    protected double getRange(double ratio, int pass) {
         if (spreadSquared)
             ratio = Math.sqrt(ratio);
         if (easeInOut)
