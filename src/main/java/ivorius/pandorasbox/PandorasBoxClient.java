@@ -17,7 +17,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
 import static ivorius.pandorasbox.PandorasBox.initPB;
-import static ivorius.pandorasbox.PandorasBox.logger;
 
 public class PandorasBoxClient implements ClientModInitializer {
     /**
@@ -31,7 +30,6 @@ public class PandorasBoxClient implements ClientModInitializer {
         BlockEntityRenderers.register(BlockEntityInit.BEPB, PandorasBoxBlockEntityRenderer::new);
         PBEffectRenderingRegistry.registerRenderer(PBEffectExplode.class, new PBEffectRendererExplosion());
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> initPB());
-        ClientPlayNetworking.registerGlobalReceiver(PandorasBox.AtlasConfigPacket.TYPE, (packet, player, responseSender) -> logger.info("Loading config details from buffer. Config: " + packet.config().name.toString()));
         ClientPlayNetworking.registerGlobalReceiver(PandorasBoxEntity.CustomAddEntityPacket.TYPE, (packet, player, responseSender) -> packet.handle(player.connection));
     }
 }

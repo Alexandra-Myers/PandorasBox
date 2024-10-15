@@ -7,11 +7,12 @@ package ivorius.pandorasbox;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.init.ItemInit;
-import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.*;
+import net.atlas.atlascore.util.ArrayListExtensions;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
@@ -67,7 +68,7 @@ public class PandorasBoxHelper
 
             Item item = block.asItem();
             if (item != null)
-                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(), weight));
+                addItem(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight));
         }
     }
     public static void addBlocks(double weight, List<Block> blocks) {
@@ -76,7 +77,7 @@ public class PandorasBoxHelper
 
             Item item = block.asItem();
             if (item != null)
-                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(), weight));
+                addItem(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight));
         }
     }
 
@@ -94,7 +95,7 @@ public class PandorasBoxHelper
     public static void addItems(double weight, Object... items) {
         for (Object object : items) {
             if (object instanceof Item item) {
-                addItem(new RandomizedItemStack(item, 1, item.getMaxStackSize(), weight));
+                addItem(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight));
             } else if (object instanceof ItemStack itemStack) {
                 addItem(new RandomizedItemStack(itemStack, 1, itemStack.getMaxStackSize(), weight));
             }
@@ -125,9 +126,10 @@ public class PandorasBoxHelper
         equipmentSets.add(new WeightedSet(weight, set));
     }
 
-    public static void addPotions(List<WeightedPotion> list, double weight, int minStrength, int maxStrength, int minDuration, int maxDuration, MobEffect... potions) {
-        for (MobEffect effect : potions) {
-            list.add(new WeightedPotion(weight, effect, minStrength, maxStrength, minDuration, maxDuration));
+    @SafeVarargs
+    public static void addPotions(List<WeightedPotion> list, double weight, int minStrength, int maxStrength, int minDuration, int maxDuration, Holder<MobEffect>... potions) {
+        for (Holder<MobEffect> effect : potions) {
+            list.add(new WeightedPotion(weight, effect.value(), minStrength, maxStrength, minDuration, maxDuration));
         }
     }
 
@@ -282,7 +284,7 @@ public class PandorasBoxHelper
             ItemStack stack = new ItemStack(item);
             if(stack.is(ItemTags.BOATS) || stack.is(ItemTags.BEDS))
                 misc.add(item);
-            if(stack.is(ItemTags.MUSIC_DISCS))
+            if(stack.has(DataComponents.JUKEBOX_PLAYABLE))
                 records.add(item);
             if(item instanceof DyeItem)
                 dyes.add(item);
@@ -423,7 +425,7 @@ public class PandorasBoxHelper
     }
 
     public static Block getRandomBlock(RandomSource rand, Collection<WeightedBlock> randomBlockList) {
-        if (randomBlockList != null && randomBlockList.size() > 0)
+        if (randomBlockList != null && !randomBlockList.isEmpty())
             return WeightedSelector.selectItem(rand, randomBlockList).block;
 
         return WeightedSelector.selectItem(rand, blocks).block;

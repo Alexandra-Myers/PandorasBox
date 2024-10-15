@@ -5,37 +5,30 @@
 
 package ivorius.pandorasbox;
 
-import ivorius.pandorasbox.commands.CommandPandorasBox;
-import ivorius.pandorasbox.config.AtlasConfig;
+import ivorius.pandorasbox.commands.PandoraCommand;
+import ivorius.pandorasbox.config.PandoraConfig;
 import ivorius.pandorasbox.effects.PBEffects;
 import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.init.ItemInit;
-import ivorius.pandorasbox.utils.ArrayListExtensions;
-import ivorius.pandorasbox.config.PandoraConfig;
+import net.atlas.atlascore.util.ArrayListExtensions;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.StainedGlassBlock;
-import net.minecraft.world.level.storage.loot.LootTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class PandorasBox implements ModInitializer {
     public static final String MOD_ID = "pandorasbox";
@@ -66,30 +59,10 @@ public class PandorasBox implements ModInitializer {
         Init.init();
         Event<ItemGroupEvents.ModifyEntries> event = ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS);
         event.register(entries -> entries.accept(ItemInit.PBI));
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            AtlasConfig.configs.forEach((resourceLocation, config) -> config.load());
-            initPB();
-        });
-        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
-            AtlasConfig.configs.forEach((resourceLocation, config) -> config.load());
-            initPB();
-        });
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> new CommandPandorasBox(dispatcher));
-        LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
-            if (!CONFIG.configuredTables.containsKey(id))
-                return;
-
-            LootTable table = lootManager.getLootTable(CONFIG.configuredTables.get(id));
-            logger.info("Original Table: " + id.toString() + " Injected Table: " + CONFIG.configuredTables.get(id).toString());
-
-            if (table != LootTable.EMPTY) {
-                tableBuilder.pools(table.pools);
-            }
-        });
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> AtlasConfig.configs.forEach((resourceLocation, config) -> {
-            ServerPlayNetworking.send(handler.player, new AtlasConfigPacket(config));
-            logger.info("Config packet for config " + resourceLocation.toString() + " sent to client.");
-        }));
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> initPB());
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> initPB());
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> PandoraCommand.register(dispatcher));
+        LootTableEvents.ALL_LOADED.register((resourceManager, registry) -> CONFIG.configuredTables.forEach((base, extra) -> registry.getOptional(base).ifPresent(table -> registry.getOptional(extra).ifPresent(extraTable -> table.pools = Stream.concat(table.pools.stream(), extraTable.pools.stream()).toList()))));
     }
     public static void initPB() {
         logs = new ArrayListExtensions<>();
@@ -144,36 +117,5 @@ public class PandorasBox implements ModInitializer {
             }
         }
         PBEffects.registerEffectCreators();
-    }
-    public record AtlasConfigPacket(AtlasConfig config) implements FabricPacket {
-        public static final PacketType<AtlasConfigPacket> TYPE = PacketType.create(new ResourceLocation("atlaslib:atlas_config"), AtlasConfigPacket::new);
-
-        public AtlasConfigPacket(FriendlyByteBuf buf) {
-            this(AtlasConfig.staticLoadFromNetwork(buf));
-        }
-
-        /**
-         * Writes the contents of this packet to the buffer.
-         *
-         * @param buf the output buffer
-         */
-        @Override
-        public void write(FriendlyByteBuf buf) {
-            buf.writeResourceLocation(config.name);
-            config.saveToNetwork(buf);
-        }
-
-        /**
-         * Returns the packet type of this packet.
-         *
-         * <p>Implementations should store the packet type instance in a {@code static final}
-         * field and return that here, instead of creating a new instance.
-         *
-         * @return the type of this packet
-         */
-        @Override
-        public PacketType<?> getType() {
-            return TYPE;
-        }
     }
 }

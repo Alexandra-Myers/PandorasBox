@@ -15,9 +15,9 @@ public class StringConverter {
             scan:
             {
                 for (firstUpper = 0; firstUpper < len; firstUpper++) {
-                    char c = id.charAt(firstUpper);
+                    int c = id.codePointAt(firstUpper);
                     if (c != Character.toLowerCase(c)) {
-                        String[] split = id.split(String.valueOf(c), 2);
+                        String[] split = id.split(Character.toString(c), 2);
                         id = split[0] + "_" + Character.toLowerCase(c) + split[1];
                         break scan;
                     }
