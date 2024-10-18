@@ -5,11 +5,11 @@
 
 package ivorius.pandorasbox.block;
 
+import com.mojang.serialization.MapCodec;
 import ivorius.pandorasbox.init.BlockEntityInit;
 import ivorius.pandorasbox.items.PandorasBoxItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -19,6 +19,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -36,15 +37,17 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by lukas on 15.04.14.
  */
-public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterloggedBlock
-{
+public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
+    public static final MapCodec<PandorasBoxBlock> CODEC = simpleCodec(PandorasBoxBlock::new);
     public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public PandorasBoxBlock()
-    {
-        super(Block.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(0.5f));
+    public PandorasBoxBlock(BlockBehaviour.Properties properties) {
+        super(properties);
         registerDefaultState(stateDefinition.any().setValue(DIRECTION, Direction.NORTH).setValue(WATERLOGGED, false));
+    }
+    public PandorasBoxBlock() {
+        this(Block.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(0.5f));
     }
 
     public @NotNull BlockState rotate(BlockState p_185499_1_, Rotation p_185499_2_) {
@@ -61,12 +64,17 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult rayTraceResult) {
+    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult rayTraceResult) {
         PandorasBoxItem.executeRandomEffect(worldIn, player, pos, false);
         worldIn.removeBlock(pos, false);
         worldIn.removeBlockEntity(pos);
 
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override

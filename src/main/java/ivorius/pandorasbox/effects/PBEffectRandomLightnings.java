@@ -11,14 +11,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectRandomLightnings extends PBEffectPositionBased
-{
+public class PBEffectRandomLightnings extends PBEffectPositionBased {
     public PBEffectRandomLightnings() {}
 
     public PBEffectRandomLightnings(int time, int number, double range)
@@ -27,14 +25,10 @@ public class PBEffectRandomLightnings extends PBEffectPositionBased
     }
 
     @Override
-    public void doEffect(Level world, PandorasBoxEntity entity, RandomSource random, float newRatio, float prevRatio, double x, double y, double z)
-    {
-        if (world instanceof ServerLevel serverWorld)
-        {
-            LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(world);
-            if(lightningBolt == null) return;
-            lightningBolt.moveTo(Vec3.atBottomCenterOf(BlockPos.containing(x, y, z)));
-            serverWorld.addFreshEntity(lightningBolt);
-        }
+    public void doEffect(ServerLevel serverLevel, PandorasBoxEntity entity, RandomSource random, float newRatio, float prevRatio, double x, double y, double z) {
+        LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(serverLevel);
+        if (lightningBolt == null) return;
+        lightningBolt.moveTo(Vec3.atBottomCenterOf(BlockPos.containing(x, y, z)));
+        serverLevel.addFreshEntity(lightningBolt);
     }
 }

@@ -8,13 +8,15 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -26,71 +28,66 @@ import java.util.List;
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffect
-{
+public abstract class PBEffect {
+    public static final StreamCodec<RegistryFriendlyByteBuf, PBEffect> STREAM_CODEC = StreamCodec.of((registryFriendlyByteBuf, effect) -> {
+        CompoundTag compound = new CompoundTag();
+        CompoundTag effectCompound = new CompoundTag();
+        PBEffectRegistry.writeEffect(effect, effectCompound, registryFriendlyByteBuf.registryAccess());
+        compound.put("boxEffect", effectCompound);
+        registryFriendlyByteBuf.writeNbt(compound);
+    }, registryFriendlyByteBuf -> PBEffectRegistry.loadEffect(registryFriendlyByteBuf.readNbt().getCompound("boxEffect"), registryFriendlyByteBuf.registryAccess()));
     public String getEffectID()
     {
         return PBEffectRegistry.getEffectID(this);
     }
 
-    public static boolean setBlockToAirSafe(Level world, BlockPos pos)
-    {
+    public static boolean setBlockToAirSafe(Level world, BlockPos pos) {
         boolean safeDest = world.getBlockState(pos).isAir() || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
         return safeDest && world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
     }
 
-    public static boolean setBlockSafe(Level world, BlockPos pos, BlockState state)
-    {
+    public static boolean setBlockSafe(Level world, BlockPos pos, BlockState state) {
         boolean safeDest = world.getBlockState(pos).isAir() || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
         boolean safeSrc = state.isAir()|| state.getDestroySpeed(world, pos) >= 0f;
 
         return safeDest && safeSrc && world.setBlockAndUpdate(pos, state);
     }
-    public static boolean setBlockUnsafeSrc(Level world, BlockPos pos, BlockState state)
-    {
+    public static boolean setBlockUnsafeSrc(Level world, BlockPos pos, BlockState state) {
         boolean safeDest = world.getBlockState(pos).isAir() || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
 
         return safeDest && world.setBlockAndUpdate(pos, state);
     }
 
-    public static boolean setBlockVarying(Level world, BlockPos pos, Block block, int unified)
-    {
+    public static boolean setBlockVarying(Level world, BlockPos pos, Block block, int unified) {
         return setBlockSafe(world, pos, PandorasBoxHelper.getRandomBlockState(world.random, block, unified));
     }
 
-    public static boolean setBlockVaryingUnsafeSrc(Level world, BlockPos pos, Block block, int unified)
-    {
+    public static boolean setBlockVaryingUnsafeSrc(Level world, BlockPos pos, Block block, int unified) {
         return setBlockUnsafeSrc(world, pos, PandorasBoxHelper.getRandomBlockState(world.random, block, unified));
     }
 
-    public static Player getRandomNearbyPlayer(Level world, PandorasBoxEntity box)
-    {
+    public static Player getRandomNearbyPlayer(Level world, PandorasBoxEntity box) {
         List<Player> players = world.getEntitiesOfClass(Player.class, box.getBoundingBox().expandTowards(30.0, 30.0, 30.0));
         if (players.isEmpty())
             return null;
         return players.get(box.getRandom().nextInt(players.size()));
     }
 
-    public static Player getPlayer(Level world, PandorasBoxEntity box)
-    {
+    public static Player getPlayer(Level world, PandorasBoxEntity box) {
         Player player = box.getBoxOwner();
         return player == null ? getRandomNearbyPlayer(world, box) : player;
     }
 
-    public static boolean isBlockAnyOf(Block block, Block... blocks)
-    {
-        for (Block block1 : blocks)
-        {
+    public static boolean isBlockAnyOf(Block block, Block... blocks) {
+        for (Block block1 : blocks) {
             if (block == block1)
                 return true;
         }
 
         return false;
     }
-    public static boolean isBlockAnyOf(Block block, List<Block> blocks)
-    {
-        for (Block block1 : blocks)
-        {
+    public static boolean isBlockAnyOf(Block block, List<Block> blocks) {
+        for (Block block1 : blocks) {
             if (block == block1)
                 return true;
         }
@@ -112,8 +109,7 @@ public abstract class PBEffect
         return entity;
     }
 
-    public static boolean canSpawnEntity(Level world, BlockState block, BlockPos pos, Entity entity)
-    {
+    public static boolean canSpawnEntity(Level world, BlockState block, BlockPos pos, Entity entity) {
         if(entity == null) return false;
         if (world.isClientSide())
             return false;
@@ -128,16 +124,14 @@ public abstract class PBEffect
         return false;
     }
 
-    public boolean canSpawnFlyingEntity(Level world, BlockState block, BlockPos pos)
-    {
+    public boolean canSpawnFlyingEntity(Level world, BlockState block, BlockPos pos) {
         if (world.isClientSide())
             return false;
 
         return !(block.getLightBlock(world, pos) > 0 || world.getBlockState(pos.below()).getLightBlock(world, pos.below()) > 0 || world.getBlockState(pos.below(2)).getLightBlock(world, pos.below(2)) > 0);
     }
 
-    public void combinedEffectDuration(LivingEntity entity, MobEffectInstance[] mobEffects)
-    {
+    public void combinedEffectDuration(LivingEntity entity, MobEffectInstance[] mobEffects) {
         for(MobEffectInstance effectInstance : mobEffects) {
             if(effectInstance == null)
                 continue;
@@ -160,9 +154,9 @@ public abstract class PBEffect
 
     public abstract boolean isDone(PandorasBoxEntity entity, int ticksAlive);
 
-    public abstract void writeToNBT(CompoundTag compound);
+    public abstract void writeToNBT(CompoundTag compound, RegistryAccess registryAccess);
 
-    public abstract void readFromNBT(CompoundTag compound);
+    public abstract void readFromNBT(CompoundTag compound, RegistryAccess registryAccess);
 
     public abstract boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity);
 }

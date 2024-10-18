@@ -59,7 +59,7 @@ public class WeightedSelector
 
     public static <T extends Item> T selectItem(RandomSource rand, Collection<T> items, double totalWeight, boolean remove)
     {
-        if (items.size() == 0)
+        if (items.isEmpty())
             throw new IndexOutOfBoundsException();
 
         double random = rand.nextDouble() * totalWeight;
@@ -96,7 +96,7 @@ public class WeightedSelector
 
     public static <T> T select(RandomSource rand, Collection<T> items, final ToDoubleFunction<T> weightFunction, double totalWeight, boolean remove)
     {
-        if (items.size() == 0)
+        if (items.isEmpty())
             throw new IndexOutOfBoundsException();
 
         double random = rand.nextDouble() * totalWeight;

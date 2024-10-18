@@ -7,6 +7,7 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -29,7 +30,7 @@ public abstract class PBEffectGenerate2D extends PBEffectRangeBased
     }
 
     @Override
-    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass)
+    public void generateInRange(Level level, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass)
     {
         int requiredRange = Mth.floor(newRange);
 
@@ -47,7 +48,7 @@ public abstract class PBEffectGenerate2D extends PBEffectRangeBased
                 {
                     if (dist > prevRange)
                     {
-                        generateOnSurface(world, entity, effectCenter, random, new BlockPos(baseX + x, baseY, baseZ + z), dist, pass);
+                        generateOnSurface(level, entity, effectCenter, random, new BlockPos(baseX + x, baseY, baseZ + z), dist, pass);
                     }
                     else
                     {
@@ -61,17 +62,17 @@ public abstract class PBEffectGenerate2D extends PBEffectRangeBased
     public abstract void generateOnSurface(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, BlockPos pos, double distance, int pass);
 
     @Override
-    public void writeToNBT(CompoundTag compound)
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess)
     {
-        super.writeToNBT(compound);
+        super.writeToNBT(compound, registryAccess);
 
         compound.putInt("unifiedSeed", unifiedSeed);
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess)
     {
-        super.readFromNBT(compound);
+        super.readFromNBT(compound, registryAccess);
 
         unifiedSeed = compound.getInt("unifiedSeed");
     }

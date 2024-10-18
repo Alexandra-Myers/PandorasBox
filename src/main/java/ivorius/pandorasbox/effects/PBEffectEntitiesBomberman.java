@@ -6,59 +6,50 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
-import net.minecraft.world.level.Level;
 
 /**
  * Created by lukas on 03.04.14.
  */
-public class PBEffectEntitiesBomberman extends PBEffectEntityBased
-{
+public class PBEffectEntitiesBomberman extends PBEffectEntityBased {
     public PBEffectEntitiesBomberman() {}
     public int bombs;
 
-    public PBEffectEntitiesBomberman(int maxTicksAlive, double range, int bombs)
-    {
+    public PBEffectEntitiesBomberman(int maxTicksAlive, double range, int bombs) {
         super(maxTicksAlive, range);
         this.bombs = bombs;
     }
 
     @Override
-    public void affectEntity(Level world, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength)
-    {
-        if (world instanceof ServerLevel)
-        {
-            int prevBombs = Mth.floor(prevRatio * bombs);
-            int newBombs = Mth.floor(newRatio * bombs);
-            int bombs = newBombs - prevBombs;
+    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
+        int prevBombs = Mth.floor(prevRatio * bombs);
+        int newBombs = Mth.floor(newRatio * bombs);
+        int bombs = newBombs - prevBombs;
 
-            for (int i = 0; i < bombs; i++)
-            {
-                PrimedTnt entitytntprimed = new PrimedTnt(world, entity.getX(), entity.getY(), entity.getZ(), null);
-                entitytntprimed.setFuse(45 + random.nextInt(20));
+        for (int i = 0; i < bombs; i++) {
+            PrimedTnt entitytntprimed = new PrimedTnt(serverLevel, entity.getX(), entity.getY(), entity.getZ(), null);
+            entitytntprimed.setFuse(45 + random.nextInt(20));
 
-                world.addFreshEntity(entitytntprimed);
-            }
+            serverLevel.addFreshEntity(entitytntprimed);
         }
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.writeToNBT(compound, registryAccess);
 
         compound.putInt("bombs", bombs);
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
-    {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.readFromNBT(compound, registryAccess);
 
         bombs = compound.getInt("bombs");
     }

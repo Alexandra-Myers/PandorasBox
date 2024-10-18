@@ -8,6 +8,7 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,7 +37,7 @@ public class PBEffectGenPool extends PBEffectGenerate {
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if (!world.isClientSide && !world.getBlockState(pos).isAir()) {
             boolean setPlatform = false;
-            if (platformBlock != null) {
+            if (platformBlock != null && !platformBlock.defaultBlockState().isAir()) {
                 List<LivingEntity> livingEntities = world.getEntitiesOfClass(LivingEntity.class, BlockPositions.expandToAABB(pos, 2.5, 2.5, 2.5));
 
                 if (!livingEntities.isEmpty())
@@ -51,8 +52,8 @@ public class PBEffectGenPool extends PBEffectGenerate {
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound) {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.writeToNBT(compound, registryAccess);
 
         compound.putString("block", PBNBTHelper.storeBlockString(block));
 
@@ -61,8 +62,8 @@ public class PBEffectGenPool extends PBEffectGenerate {
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound) {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.readFromNBT(compound, registryAccess);
 
         block = PBNBTHelper.getBlock(compound.getString("block"));
         platformBlock = PBNBTHelper.getBlock(compound.getString("platformBlock"));

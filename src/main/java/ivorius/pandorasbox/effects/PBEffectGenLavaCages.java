@@ -8,6 +8,7 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -52,7 +53,7 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
             if (!world.loadedAndEntityCanStandOn(pos, entity)) {
                 List<Player> outerList = world.getEntitiesOfClass(Player.class, BlockPositions.expandToAABB(pos, 3.5, 3.5, 3.5));
 
-                if (outerList.size() > 0) {
+                if (!outerList.isEmpty()) {
                     for(Player player : outerList) {
                         int playerY = player.blockPosition().getY();
                         int playerX = player.blockPosition().getX();
@@ -101,8 +102,8 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound) {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.writeToNBT(compound, registryAccess);
 
         if (lavaBlock != null)
             compound.putString("lavaBlock", PBNBTHelper.storeBlockString(lavaBlock));
@@ -115,8 +116,8 @@ public class PBEffectGenLavaCages extends PBEffectGenerate
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound) {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.readFromNBT(compound, registryAccess);
 
         lavaBlock = PBNBTHelper.getBlock(compound.getString("lavaBlock"));
         fillBlock = PBNBTHelper.getBlock(compound.getString("fillBlock"));

@@ -21,8 +21,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenConvertToIce extends PBEffectGenerate
-{
+public class PBEffectGenConvertToIce extends PBEffectGenerate {
     public PBEffectGenConvertToIce() {}
 
     public PBEffectGenConvertToIce(int time, double range, int unifiedSeed)
@@ -31,36 +30,23 @@ public class PBEffectGenConvertToIce extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
-    {
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if(world instanceof ServerLevel serverLevel) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
 
-            if (pass == 0)
-            {
-                if (isBlockAnyOf(block, Blocks.WATER))
-                {
+            if (pass == 0) {
+                if (isBlockAnyOf(block, Blocks.WATER)) {
                     setBlockSafe(world, pos, Blocks.ICE.defaultBlockState());
-                }
-                else if (blockState.isAir() && Blocks.SNOW.defaultBlockState().canSurvive(world, pos))
-                {
+                } else if (blockState.isAir() && Blocks.SNOW.defaultBlockState().canSurvive(world, pos)) {
                     setBlockSafe(world, pos, Blocks.SNOW.defaultBlockState());
-                }
-                else if (isBlockAnyOf(block, Blocks.FIRE, Blocks.SOUL_FIRE))
-                {
+                } else if (isBlockAnyOf(block, Blocks.FIRE, Blocks.SOUL_FIRE)) {
                     setBlockSafe(world, pos, Blocks.AIR.defaultBlockState());
-                }
-                else if ((block == Blocks.LAVA && !blockState.getValue(LiquidBlock.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK)
-                {
+                } else if ((block == Blocks.LAVA && !blockState.getValue(LiquidBlock.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK) {
                     setBlockSafe(world, pos, Blocks.ICE.defaultBlockState());
-                }
-                else if (block == Blocks.LAVA)
-                {
+                } else if (block == Blocks.LAVA) {
                     setBlockSafe(world, pos, Blocks.PACKED_ICE.defaultBlockState());
-                }
-                else if (world.loadedAndEntityCanStandOn(pos, entity))
-                {
+                } else if (world.loadedAndEntityCanStandOn(pos, entity)) {
                     int mode = random.nextInt(6);
 
                     if (mode == 0)
@@ -70,9 +56,7 @@ public class PBEffectGenConvertToIce extends PBEffectGenerate
                     else if (mode == 2)
                         setBlockSafe(world, pos, Blocks.BLUE_ICE.defaultBlockState());
                 }
-            }
-            else
-            {
+            } else {
                 Entity snowGolem = lazilySpawnEntity(world, entity, random, "snow_golem", 1.0f / (20 * 20), pos);
                 canSpawnEntity(world, blockState, pos, snowGolem);
             }

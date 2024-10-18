@@ -7,7 +7,7 @@ package ivorius.pandorasbox.block;
 
 import ivorius.pandorasbox.init.BlockEntityInit;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
@@ -18,16 +18,11 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by lukas on 15.04.14.
  */
-public class PandorasBoxBlockEntity extends BlockEntity
-{
+public class PandorasBoxBlockEntity extends BlockEntity {
     private float rotationYaw;
 
     public PandorasBoxBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(BlockEntityInit.BEPB, p_155229_, p_155230_);
-    }
-
-    public static float rotationFromFacing(Direction facing) {
-        return facing.toYRot();
     }
 
     public void setRotationYaw(float rotationYaw) {
@@ -40,21 +35,21 @@ public class PandorasBoxBlockEntity extends BlockEntity
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
         compoundTag.putFloat("boxRotationYaw", rotationYaw);
-        super.saveAdditional(compoundTag);
+        super.saveAdditional(compoundTag, provider);
     }
 
     @Override
-    public void load(CompoundTag compoundNBT) {
+    public void loadAdditional(CompoundTag compoundNBT, HolderLookup.Provider provider) {
         rotationYaw = compoundNBT.getFloat("boxRotationYaw");
-        super.load(compoundNBT);
+        super.loadAdditional(compoundNBT, provider);
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = super.getUpdateTag();
-        saveAdditional(compoundTag);
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag compoundTag = super.getUpdateTag(provider);
+        saveAdditional(compoundTag, provider);
         return compoundTag;
     }
 

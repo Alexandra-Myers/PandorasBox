@@ -8,6 +8,7 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -45,17 +46,17 @@ public class PBEffectGenTransform extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound)
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess)
     {
-        super.writeToNBT(compound);
+        super.writeToNBT(compound, registryAccess);
 
         PBNBTHelper.writeNBTBlocks("blocks", blocks, compound);
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess)
     {
-        super.readFromNBT(compound);
+        super.readFromNBT(compound, registryAccess);
 
         blocks = PBNBTHelper.readNBTBlocks("blocks", compound);
     }

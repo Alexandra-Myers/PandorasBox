@@ -3,9 +3,9 @@ package ivorius.pandorasbox.utils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import ivorius.pandorasbox.weighted.WeightedBlock;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
@@ -118,7 +118,7 @@ public class PBNBTHelper
             EntityType<?>[] entities = new EntityType<?>[listTag.size()];
 
             for (int i = 0; i < entities.length; i++)
-                entities[i] = BuiltInRegistries.ENTITY_TYPE.get(new ResourceLocation(listTag.getString(i)));
+                entities[i] = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.tryParse(listTag.getString(i)));
 
             return entities;
         }
@@ -137,12 +137,12 @@ public class PBNBTHelper
         }
     }
 
-    public static ItemStack[] readNBTStacks(String id, CompoundTag compound) {
+    public static ItemStack[] readNBTStacks(String id, CompoundTag compound, RegistryAccess registryAccess) {
         if (compound.contains(id)) {
             ListTag listTag = compound.getList(id, 10);
             ItemStack[] itemStacks = new ItemStack[listTag.size()];
             for (int i = 0; i < itemStacks.length; i++)
-                itemStacks[i] = ItemStack.of(listTag.get(i) instanceof CompoundTag ? (CompoundTag) listTag.get(i) : new CompoundTag());
+                itemStacks[i] = ItemStack.parseOptional(registryAccess, listTag.get(i) instanceof CompoundTag ? (CompoundTag) listTag.get(i) : new CompoundTag());
 
             return itemStacks;
         }
@@ -150,13 +150,13 @@ public class PBNBTHelper
         return null;
     }
 
-    public static void writeNBTStacks(String id, ItemStack[] stacks, CompoundTag compound) {
+    public static void writeNBTStacks(String id, ItemStack[] stacks, CompoundTag compound, RegistryAccess registryAccess) {
         if (stacks != null) {
             ListTag listTag = new ListTag();
 
             for (ItemStack stack : stacks) {
                 CompoundTag compoundTag = new CompoundTag();
-                stack.save(compoundTag);
+                stack.save(registryAccess, compoundTag);
                 listTag.add(compoundTag);
             }
 
@@ -170,7 +170,7 @@ public class PBNBTHelper
             Block[] blocks = new Block[listTag.size()];
 
             for (int i = 0; i < blocks.length; i++)
-                blocks[i] = BuiltInRegistries.BLOCK.get(new ResourceLocation(listTag.getString(i)));
+                blocks[i] = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(listTag.getString(i)));
 
             return blocks;
         }
@@ -227,7 +227,7 @@ public class PBNBTHelper
             ListTag listTag = new ListTag();
 
             for (MobEffectInstance p : potions)
-                listTag.add(p.save(new CompoundTag()));
+                listTag.add(p.save());
 
             compound.put(id, listTag);
         }
@@ -269,7 +269,7 @@ public class PBNBTHelper
     }
 
     public static Block getBlock(String string) {
-        return BuiltInRegistries.BLOCK.get(new ResourceLocation(string));
+        return BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(string));
     }
 
     public static WeightedBlock[] readNBTWeightedBlocks(String id, CompoundTag compound) {
@@ -277,9 +277,10 @@ public class PBNBTHelper
             ListTag listTag = compound.getList(id, 8);
             WeightedBlock[] blocks = new WeightedBlock[listTag.size()];
 
-            for (int i = 0; i < blocks.length; i += 2) {
-                Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(listTag.getString(i)));
-                double weight = listTag.getDouble(i + 1);
+            for (int i = 0; i < blocks.length; i++) {
+                CompoundTag compoundNBT = listTag.getCompound(i);
+                Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(compoundNBT.getString("block")));
+                double weight = compoundNBT.getDouble("weight");
                 blocks[i] = new WeightedBlock(weight, block);
             }
 
@@ -294,22 +295,24 @@ public class PBNBTHelper
             ListTag listTag = new ListTag();
 
             for (WeightedBlock b : blocks) {
-                listTag.add(StringTag.valueOf(PBNBTHelper.storeBlockString(b.block)));
-                listTag.add(DoubleTag.valueOf(b.weight));
+                CompoundTag compoundNBT = new CompoundTag();
+                compoundNBT.putString("block", PBNBTHelper.storeBlockString(b.block));
+                compoundNBT.putDouble("weight", b.weight);
+                listTag.add(compoundNBT);
             }
 
             compound.put(id, listTag);
         }
     }
 
-    public static void writeNBTRandomizedStacks(String id, RandomizedItemStack[] stacks, CompoundTag compound) {
+    public static void writeNBTRandomizedStacks(String id, RandomizedItemStack[] stacks, CompoundTag compound, RegistryAccess registryAccess) {
         if (stacks != null) {
             ListTag listTag = new ListTag();
 
             for (RandomizedItemStack stack : stacks) {
                 CompoundTag compoundTag = new CompoundTag();
                 CompoundTag stackTag = new CompoundTag();
-                stack.itemStack.save(stackTag);
+                stack.itemStack.save(registryAccess, stackTag);
                 compoundTag.put("stack", stackTag);
                 compoundTag.putInt("min", stack.min);
                 compoundTag.putInt("max", stack.max);
@@ -321,13 +324,13 @@ public class PBNBTHelper
         }
     }
 
-    public static RandomizedItemStack[] readNBTRandomizedStacks(String id, CompoundTag compound) {
+    public static RandomizedItemStack[] readNBTRandomizedStacks(String id, CompoundTag compound, RegistryAccess registryAccess) {
         if (compound.contains(id)) {
             ListTag listTag = compound.getList(id, 10);
             RandomizedItemStack[] itemStacks = new RandomizedItemStack[listTag.size()];
             for (int i = 0; i < itemStacks.length; i++) {
                 CompoundTag compoundTag = listTag.get(i) instanceof CompoundTag ? (CompoundTag) listTag.get(i) : new CompoundTag();
-                ItemStack stack = ItemStack.of(compoundTag.getCompound("stack"));
+                ItemStack stack = ItemStack.parseOptional(registryAccess, compoundTag.getCompound("stack"));
                 int min = 1, max = 64;
                 double weight = 0;
                 if (compoundTag.contains("min"))
@@ -335,7 +338,7 @@ public class PBNBTHelper
                 if (compoundTag.contains("max"))
                     max = compoundTag.getInt("max");
                 if (compoundTag.contains("weight"))
-                    max = compoundTag.getInt("weight");
+                    weight = compoundTag.getInt("weight");
                 itemStacks[i] = new RandomizedItemStack(stack, min, max, weight);
             }
 

@@ -6,10 +6,11 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
+import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -27,8 +28,7 @@ import java.util.Optional;
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate
-{
+public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate {
     public boolean requiresSolidGround;
     public double chancePerBlock;
 
@@ -37,8 +37,7 @@ public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate
     public PBEffectGenerateByGenerator() {
     }
 
-    public PBEffectGenerateByGenerator(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags)
-    {
+    public PBEffectGenerateByGenerator(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags) {
         super(time, range, 1, unifiedSeed);
 
         this.requiresSolidGround = requiresSolidGround;
@@ -115,9 +114,9 @@ public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound)
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess)
     {
-        super.writeToNBT(compound);
+        super.writeToNBT(compound, registryAccess);
 
         compound.putBoolean("requiresSolidGround", requiresSolidGround);
         compound.putDouble("chancePerBlock", chancePerBlock);
@@ -125,9 +124,9 @@ public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess)
     {
-        super.readFromNBT(compound);
+        super.readFromNBT(compound, registryAccess);
 
         requiresSolidGround = compound.getBoolean("requiresSolidGround");
         chancePerBlock = compound.getDouble("chancePerBlock");

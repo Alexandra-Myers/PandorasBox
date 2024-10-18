@@ -14,17 +14,15 @@ import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.init.DataSerializerInit;
 import ivorius.pandorasbox.random.DConstant;
 import ivorius.pandorasbox.random.IConstant;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -45,17 +43,12 @@ public class PandorasBoxEntity extends Entity {
     public static final float BOX_UPSCALE_SPEED = 0.02f;
 
     private static final EntityDataAccessor<Integer> BOX_DEATH_TICKS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
-
-    protected int timeBoxWaiting;
-    protected int effectTicksExisted;
-    protected boolean canGenerateMoreEffectsAfterwards = true;
-
-    protected PBEffect boxEffect;
-
-    protected boolean floatUp = false;
-    protected float floatAwayProgress = -1.0f;
-
-    protected float scaleInProgress = 1.0f;
+    private static final EntityDataAccessor<Integer> BOX_WAITING_TIME = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> EFFECT_TICKS_EXISTED = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
+    protected boolean canGenerateMoreEffectsAfterwards;
+    protected boolean floatUp;
+    private static final EntityDataAccessor<Float> FLOAT_PROGRESS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> SCALE_PROGRESS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<PBEffect> DATA_EFFECT_ID = SynchedEntityData.defineId(PandorasBoxEntity.class, DataSerializerInit.PBEFFECTSERIALIZER);
     private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.OPTIONAL_UUID);
 
@@ -63,23 +56,19 @@ public class PandorasBoxEntity extends Entity {
 
     public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> p_i50172_1_, Level p_i50172_2_) {
         super(p_i50172_1_, p_i50172_2_);
+        canGenerateMoreEffectsAfterwards = true;
+        floatUp = false;
+    }
+
+    public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> entityType, Level level, boolean canGenerateMoreEffectsAfterwards, boolean floatUp) {
+        super(entityType, level);
+        this.canGenerateMoreEffectsAfterwards = canGenerateMoreEffectsAfterwards;
+        this.floatUp = floatUp;
     }
 
     @Override
     public boolean canCollideWith(@NotNull Entity p_241849_1_) {
         return false;
-    }
-
-    public void setTimeBoxWaiting(int timeBoxWaiting) {
-        this.timeBoxWaiting = timeBoxWaiting;
-    }
-
-    public int getEffectTicksExisted() {
-        return effectTicksExisted;
-    }
-
-    public void setCanGenerateMoreEffectsAfterwards(boolean canGenerateMoreEffectsAfterwards) {
-        this.canGenerateMoreEffectsAfterwards = canGenerateMoreEffectsAfterwards;
     }
 
     public Vec3 getEffectCenter() {
@@ -90,13 +79,45 @@ public class PandorasBoxEntity extends Entity {
         this.effectCenter = new Vec3(x, y, z);
     }
 
+    public int getBoxWaitingTime() {
+        return entityData.get(BOX_WAITING_TIME);
+    }
+
+    public void setBoxWaitingTime(int amount) {
+        entityData.set(BOX_WAITING_TIME, amount);
+    }
+
+    public int getEffectTicksExisted() {
+        return entityData.get(EFFECT_TICKS_EXISTED);
+    }
+
+    public void setEffectTicksExisted(int amount) {
+        entityData.set(EFFECT_TICKS_EXISTED, amount);
+    }
+
     public float getCurrentScale() {
-        return scaleInProgress;
+        return entityData.get(SCALE_PROGRESS);
+    }
+
+    public void setScale(float amount) {
+        entityData.set(SCALE_PROGRESS, amount);
+    }
+
+    public float getFloatProgress() {
+        return entityData.get(FLOAT_PROGRESS);
+    }
+
+    public void setFloatProgress(float amount) {
+        entityData.set(FLOAT_PROGRESS, amount);
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(BOX_DEATH_TICKS, -1);
+        builder.define(BOX_WAITING_TIME, -1);
+        builder.define(EFFECT_TICKS_EXISTED, -1);
+        builder.define(FLOAT_PROGRESS, -1F);
+        builder.define(SCALE_PROGRESS, 1F);
         builder.define(DATA_EFFECT_ID, new PBECDuplicateBox(new IConstant(PBEffectDuplicateBox.MODE_BOX_IN_BOX), new DConstant(0.5)).constructEffect(this.level(), this.getX(), this.getY(), this.getZ(), this.random));
         builder.define(DATA_OWNER_UUID, Optional.empty());
     }
@@ -105,6 +126,8 @@ public class PandorasBoxEntity extends Entity {
     public void tick() {
         Level level = level();
         super.tick();
+        int timeBoxWaiting = getBoxWaitingTime();
+        int effectTicksExisted = getEffectTicksExisted();
         if (timeBoxWaiting == 0 && getDeathTicks() < 0) {
             PBEffect effect = getBoxEffect();
 
@@ -141,6 +164,7 @@ public class PandorasBoxEntity extends Entity {
             setDeltaMovement(getDeltaMovement().scale(0.95));
         }
 
+        float floatAwayProgress = getFloatProgress();
         if (floatAwayProgress >= 0.0f && floatAwayProgress < 1.0f) {
             float speed = Mth.square(floatAwayProgress - 0.7f);
             if (floatUp) {
@@ -151,15 +175,18 @@ public class PandorasBoxEntity extends Entity {
             }
 
             floatAwayProgress += 0.025f;
+            setFloatProgress(floatAwayProgress);
 
             if (floatAwayProgress > 1.0f)
                 stopFloating();
         }
 
+        float scaleInProgress = getCurrentScale();
         if (scaleInProgress < 1.0f)
             scaleInProgress += BOX_UPSCALE_SPEED;
         if (scaleInProgress > 1.0f)
             scaleInProgress = 1.0f;
+        setScale(scaleInProgress);
 
         this.move(MoverType.SELF, getDeltaMovement());
 
@@ -199,16 +226,20 @@ public class PandorasBoxEntity extends Entity {
                 }
 
                 effectTicksExisted++;
+                setEffectTicksExisted(effectTicksExisted);
             }
-        } else
+        } else {
             timeBoxWaiting--;
+            setBoxWaitingTime(timeBoxWaiting);
+        }
 
-        if (getDeathTicks() >= 0) {
+        int deathTicks = getDeathTicks();
+        if (deathTicks >= 0) {
             if (!level.isClientSide) {
-                if (getDeathTicks() >= 30)
+                if (deathTicks >= 30)
                     remove(RemovalReason.DISCARDED);
             } else {
-                for (int e = 0; e < Math.min(getDeathTicks(), 60); e++) {
+                for (int e = 0; e < Math.min(deathTicks, 60); e++) {
                     double xP = (random.nextDouble() - random.nextDouble()) * 0.5;
                     double yP = (random.nextDouble() - random.nextDouble()) * 0.5;
                     double zP = (random.nextDouble() - random.nextDouble()) * 0.5;
@@ -217,15 +248,15 @@ public class PandorasBoxEntity extends Entity {
                 }
             }
 
-            setDeathTicks(getDeathTicks() + 1);
+            setDeathTicks(deathTicks + 1);
         }
     }
-    public void startNewEffect() {
-        effectTicksExisted = 0;
-        timeBoxWaiting = random.nextInt(40);
 
-        boxEffect = ensureNotNull(PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true));
-        entityData.set(DATA_EFFECT_ID, boxEffect);
+    public void startNewEffect() {
+        setEffectTicksExisted(0);
+        setBoxWaitingTime(random.nextInt(40));
+
+        entityData.set(DATA_EFFECT_ID, ensureNotNull(PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true)));
     }
 
     public void setBoxOwnerUUID(UUID uuid) {
@@ -254,23 +285,17 @@ public class PandorasBoxEntity extends Entity {
         setDeathTicks(0);
     }
 
-    public void beginFloatingAway() {
-        floatAwayProgress = 0.0f;
-        floatUp = false;
-    }
-
-    public void beginFloatingUp() {
-        floatAwayProgress = 0.0f;
-        floatUp = true;
+    public void beginFloating() {
+        setFloatProgress(0);
     }
 
     public void stopFloating() {
-        floatAwayProgress = -1.0f;
-        effectTicksExisted = 0;
+        setFloatProgress(-1);
+        setEffectTicksExisted(0);
     }
 
     public void beginScalingIn() {
-        scaleInProgress = 0.0f;
+        setScale(0);
     }
 
     public PBEffect getBoxEffect() {
@@ -278,11 +303,11 @@ public class PandorasBoxEntity extends Entity {
     }
 
     public void setBoxEffect(PBEffect effect) {
-        boxEffect = ensureNotNull(effect);
-        entityData.set(DATA_EFFECT_ID, boxEffect);
+        entityData.set(DATA_EFFECT_ID, ensureNotNull(effect));
     }
+
     public PBEffect ensureNotNull(PBEffect input) {
-        while(input == null) {
+        while (input == null) {
             input = PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true);
         }
         return input;
@@ -301,21 +326,25 @@ public class PandorasBoxEntity extends Entity {
     }
 
     public float getRatioBoxOpen(float partialTicks) {
-        if (floatAwayProgress >= 0.0f)
-            return Mth.clamp(((floatAwayProgress + partialTicks * 0.025f - 0.5f) * 2.0f), 0.0f, 1.0f);
+        if (getFloatProgress() >= 0.0f)
+            return Mth.clamp(((getFloatProgress() + partialTicks * 0.025f - 0.5f) * 2.0f), 0.0f, 1.0f);
         else
             return 1.0f;
     }
 
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return null;
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
+        int data = canGenerateMoreEffectsAfterwards ? 1 : 0;
+        data <<= 1;
+        data |= floatUp ? 1 : 0;
+        return new ClientboundAddEntityPacket(this, serverEntity, data);
     }
 
-    public FabricPacket getCustomAddEntityPacket() {
-        CompoundTag compoundTag = new CompoundTag();
-        writeBoxData(compoundTag);
-        return new CustomAddEntityPacket((ClientboundAddEntityPacket) super.getAddEntityPacket(), compoundTag);
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket clientboundAddEntityPacket) {
+        super.recreateFromPacket(clientboundAddEntityPacket);
+        canGenerateMoreEffectsAfterwards = (clientboundAddEntityPacket.getData() >> 1) == 1;
+        floatUp = ((clientboundAddEntityPacket.getData() << 31) >>> 31) == 1;
     }
 
     @Override
@@ -333,16 +362,16 @@ public class PandorasBoxEntity extends Entity {
     }
 
     public void readBoxData(CompoundTag compound) {
-        setBoxEffect(PBEffectRegistry.loadEffect(compound.getCompound("boxEffect")));
+        setBoxEffect(PBEffectRegistry.loadEffect(compound.getCompound("boxEffect"), registryAccess()));
         if (compound.contains("ownerUUID"))
             setBoxOwnerUUID(compound.getUUID("ownerUUID"));
 
-        effectTicksExisted = compound.getInt("effectTicksExisted");
-        timeBoxWaiting = compound.getInt("timeBoxWaiting");
+        setEffectTicksExisted(compound.getInt("effectTicksExisted"));
+        setBoxWaitingTime(compound.getInt("timeBoxWaiting"));
         canGenerateMoreEffectsAfterwards = compound.getBoolean("canGenerateMoreEffectsAfterwards");
-        floatAwayProgress = compound.getFloat("floatAwayProgress");
+        setFloatProgress(compound.getFloat("floatAwayProgress"));
         floatUp = compound.getBoolean("floatUp");
-        scaleInProgress = compound.getFloat("scaleInProgress");
+        setScale(compound.getFloat("scaleInProgress"));
 
         if (compound.contains("effectCenterX", 6) && compound.contains("effectCenterY", 6) && compound.contains("effectCenterZ", 6))
             setEffectCenter(compound.getDouble("effectCenterX"), compound.getDouble("effectCenterY"), compound.getDouble("effectCenterZ"));
@@ -352,57 +381,21 @@ public class PandorasBoxEntity extends Entity {
 
     public void writeBoxData(CompoundTag compound) {
         CompoundTag effectCompound = new CompoundTag();
-        PBEffectRegistry.writeEffect(getBoxEffect(), effectCompound);
+        PBEffectRegistry.writeEffect(getBoxEffect(), effectCompound, registryAccess());
         compound.put("boxEffect", effectCompound);
         UUID uuid = getBoxOwnerUUID();
         if (uuid != null)
             compound.putUUID("ownerUUID", uuid);
 
-        compound.putInt("effectTicksExisted", effectTicksExisted);
-        compound.putInt("timeBoxWaiting", timeBoxWaiting);
+        compound.putInt("effectTicksExisted", getEffectTicksExisted());
+        compound.putInt("timeBoxWaiting", getBoxWaitingTime());
         compound.putBoolean("canGenerateMoreEffectsAfterwards", canGenerateMoreEffectsAfterwards);
-        compound.putFloat("floatAwayProgress", floatAwayProgress);
+        compound.putFloat("floatAwayProgress", getFloatProgress());
         compound.putBoolean("floatUp", floatUp);
-        compound.putFloat("scaleInProgress", scaleInProgress);
+        compound.putFloat("scaleInProgress", getCurrentScale());
 
         compound.putDouble("effectCenterX", effectCenter.x);
         compound.putDouble("effectCenterY", effectCenter.y);
         compound.putDouble("effectCenterZ", effectCenter.z);
-    }
-    public record CustomAddEntityPacket(ClientboundAddEntityPacket originalPacket, CompoundTag additionalData) implements FabricPacket {
-        public static final PacketType<CustomAddEntityPacket> TYPE = PacketType.create(new ResourceLocation(PandorasBox.MOD_ID, "custom_add_entity"), CustomAddEntityPacket::new);
-
-        public CustomAddEntityPacket(FriendlyByteBuf friendlyByteBuf) {
-            this(new ClientboundAddEntityPacket(friendlyByteBuf), friendlyByteBuf.readNbt());
-        }
-
-        @Override
-        public void write(FriendlyByteBuf friendlyByteBuf) {
-            originalPacket.write(friendlyByteBuf);
-            friendlyByteBuf.writeNbt(additionalData);
-        }
-
-        /**
-         * Returns the packet type of this packet.
-         *
-         * <p>Implementations should store the packet type instance in a {@code static final}
-         * field and return that here, instead of creating a new instance.
-         *
-         * @return the type of this packet
-         */
-        @Override
-        public PacketType<?> getType() {
-            return TYPE;
-        }
-
-        public void handle(ClientGamePacketListener packetListener) {
-            originalPacket.handle(packetListener);
-            if (packetListener instanceof ClientPacketListener clientPacketListener) {
-                Entity entity = clientPacketListener.getLevel().getEntity(originalPacket.getId());
-                if (entity instanceof PandorasBoxEntity pandorasBoxEntity) {
-                    pandorasBoxEntity.readBoxData(additionalData);
-                }
-            }
-        }
     }
 }

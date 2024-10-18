@@ -6,20 +6,22 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBoxHelper;
-import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
+import ivorius.pandorasbox.weighted.WeightedSelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.DyeableArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
@@ -94,17 +96,17 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate {
                     setBlockSafe(world, pos, Blocks.OBSIDIAN.defaultBlockState());
                 }
             } else {
-                Entity santa = lazilySpawnEntity(world, entity, random, "zombie", 1.0f / (150 * 150), pos);
+                LivingEntity santa = (LivingEntity) lazilySpawnEntity(world, entity, random, "zombie", 1.0f / (150 * 150), pos);
                 Entity snowGolem = lazilySpawnEntity(world, entity, random, "snow_golem", 1.0f / (20 * 20), pos);
                 if (canSpawnEntity(world, blockState, pos, santa)) {
                     ItemStack helmet = new ItemStack(Items.LEATHER_HELMET);
-                    ((DyeableArmorItem) helmet.getItem()).setColor(helmet, 0xff0000);
+                    helmet.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
                     ItemStack chestPlate = new ItemStack(Items.LEATHER_CHESTPLATE);
-                    ((DyeableArmorItem) helmet.getItem()).setColor(helmet, 0xff0000);
+                    chestPlate.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
                     ItemStack leggings = new ItemStack(Items.LEATHER_LEGGINGS);
-                    ((DyeableArmorItem) helmet.getItem()).setColor(helmet, 0xff0000);
+                    leggings.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
                     ItemStack boots = new ItemStack(Items.LEATHER_BOOTS);
-                    ((DyeableArmorItem) helmet.getItem()).setColor(helmet, 0xff0000);
+                    boots.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
 
                     santa.setItemSlot(EquipmentSlot.HEAD, helmet);
                     santa.setItemSlot(EquipmentSlot.CHEST, chestPlate);
@@ -113,7 +115,6 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate {
                     santa.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STICK));
 
                     santa.setCustomName(Component.literal("Hogfather"));
-
                 }
                 canSpawnEntity(world, blockState, pos, snowGolem);
             }

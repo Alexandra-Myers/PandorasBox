@@ -9,12 +9,12 @@ import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenPool;
 import ivorius.pandorasbox.random.DValue;
-import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.Collection;
 
@@ -41,7 +41,7 @@ public class PBECPool implements PBEffectCreator
         double range = this.range.getValue(random);
         int time = Mth.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        Block platformBlock = PandorasBoxHelper.getRandomBlock(random, platformBlocks);
+        Block platformBlock = platformBlocks.isEmpty() ? Blocks.AIR : PandorasBoxHelper.getRandomBlock(random, platformBlocks);
 
         return new PBEffectGenPool(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), block, platformBlock);
     }

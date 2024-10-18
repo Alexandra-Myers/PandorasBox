@@ -41,8 +41,8 @@ public class PandorasBoxItem extends BlockItem
         return this.place(new BlockPlaceContext(p_40581_));
     }
 
-    public static PandorasBoxEntity executeRandomEffect(Level world, Player entity, BlockPos pos, boolean floatAway) {
+    public static PandorasBoxEntity executeRandomEffect(Level world, Player player, BlockPos pos, boolean floatAway) {
         if(world.isClientSide()) return null;
-        return PBECRegistry.spawnPandorasBox(world, world.random, true, entity, pos, floatAway);
+        return PBECRegistry.spawnPandorasBox(world, world.random, true, player, pos, floatAway);
     }
 }

@@ -22,6 +22,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -35,10 +37,9 @@ import static com.mojang.math.Axis.YP;
 @Environment(EnvType.CLIENT)
 public class PandorasBoxRenderer<T extends PandorasBoxEntity> extends EntityRenderer<T> {
     public PandorasBoxModel model;
-    public ResourceLocation texture = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
+    public ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
 
-    public PandorasBoxRenderer(EntityRendererProvider.Context renderManager)
-    {
+    public PandorasBoxRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager);
 
         model = new PandorasBoxModel(renderManager.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
@@ -63,11 +64,11 @@ public class PandorasBoxRenderer<T extends PandorasBoxEntity> extends EntityRend
 
             poseStack.translate(0.0f, 1.5f, 0.0f);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
-            Arrow emptyEntity = new Arrow(entity.level(), entity.getX(), entity.getY(), entity.getZ());
+            Arrow emptyEntity = new Arrow(entity.level(), entity.getX(), entity.getY(), entity.getZ(), new ItemStack(Items.ARROW), null);
             emptyEntity.setXRot(entity.getRatioBoxOpen(partialTicks) * 120.0f / 180.0f * 3.1415926f);
             int i = OverlayTexture.NO_OVERLAY;
             model.setupAnim(emptyEntity, 0, 0, partialTicks, 0, 0);
-            model.renderToBuffer(poseStack, consumer, packedLightIn, i,1,1, 1, 1);
+            model.renderToBuffer(poseStack, consumer, packedLightIn, i, 0xFFFFFFFF);
             if (!effect.isDone(entity, entity.getEffectTicksExisted()) && entity.getDeathTicks() < 0) {
                 if(effect instanceof PBEffectMulti pbEffectMulti)
                     Arrays.stream(pbEffectMulti.effects).toList().forEach(pbEffect -> {

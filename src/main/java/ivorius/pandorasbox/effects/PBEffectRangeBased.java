@@ -7,6 +7,7 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.math.IvMathHelper;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -16,8 +17,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Created by lukas on 31.03.14.
  */
-public abstract class PBEffectRangeBased extends PBEffectNormal
-{
+public abstract class PBEffectRangeBased extends PBEffectNormal {
     public double range;
     public int passes;
     public PBEffectRangeBased() {}
@@ -25,27 +25,23 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
     public boolean spreadSquared = true;
     public boolean easeInOut = true;
 
-    public PBEffectRangeBased(int maxTicksAlive, double range, int passes)
-    {
+    public PBEffectRangeBased(int maxTicksAlive, double range, int passes) {
         super(maxTicksAlive);
         this.range = range;
         this.passes = passes;
     }
 
     @Override
-    public void doEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio)
-    {
-        for (int i = 0; i < passes; i++)
-        {
+    public void doEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
+        for (int i = 0; i < passes; i++) {
             double prevRange = getRange(prevRatio, i);
             double newRange = getRange(newRatio, i);
 
-            generateInRange(world, entity, random, effectCenter, prevRange, newRange, i);
+            generateInRange(level, entity, random, effectCenter, prevRange, newRange, i);
         }
     }
 
-    private double getRange(double ratio, int pass)
-    {
+    private double getRange(double ratio, int pass) {
         if (spreadSquared)
             ratio = Math.sqrt(ratio);
         if (easeInOut)
@@ -57,12 +53,11 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
         return Mth.clamp(tempRange, 0.0, range);
     }
 
-    public abstract void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass);
+    public abstract void generateInRange(Level level, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass);
 
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.writeToNBT(compound, registryAccess);
 
         compound.putDouble("range", range);
         compound.putInt("passes", passes);
@@ -71,9 +66,9 @@ public abstract class PBEffectRangeBased extends PBEffectNormal
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess)
     {
-        super.readFromNBT(compound);
+        super.readFromNBT(compound, registryAccess);
 
         range = compound.getDouble("range");
         passes = compound.getInt("passes");

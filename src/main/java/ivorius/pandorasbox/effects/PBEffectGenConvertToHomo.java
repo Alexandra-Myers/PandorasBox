@@ -8,8 +8,8 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.FeatureInit;
-import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
+import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -25,8 +25,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenConvertToHomo extends PBEffectGenerate
-{
+public class PBEffectGenConvertToHomo extends PBEffectGenerate {
     public PBEffectGenConvertToHomo() {}
 
     public PBEffectGenConvertToHomo(int time, double range, int unifiedSeed)
@@ -35,8 +34,7 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
-    {
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if(world instanceof ServerLevel serverLevel) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();

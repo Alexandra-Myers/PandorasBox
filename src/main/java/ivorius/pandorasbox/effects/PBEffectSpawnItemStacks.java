@@ -7,6 +7,7 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -45,16 +46,16 @@ public class PBEffectSpawnItemStacks extends PBEffectSpawnEntities {
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound) {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.writeToNBT(compound, registryAccess);
 
-        PBNBTHelper.writeNBTStacks("stacks", stacks, compound);
+        PBNBTHelper.writeNBTStacks("stacks", stacks, compound, registryAccess);
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound) {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.readFromNBT(compound, registryAccess);
 
-        stacks = PBNBTHelper.readNBTStacks("stacks", compound);
+        stacks = PBNBTHelper.readNBTStacks("stacks", compound, registryAccess);
     }
 }

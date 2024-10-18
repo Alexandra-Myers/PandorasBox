@@ -16,24 +16,24 @@ import net.minecraft.world.level.Level;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECConvertToNether implements PBEffectCreator
-{
+public class PBECConvertToNether implements PBEffectCreator {
     public DValue range;
+    public DValue chanceToDiscardNetherrack;
     public String biome;
 
-    public PBECConvertToNether(DValue range, String biome)
-    {
+    public PBECConvertToNether(DValue range, DValue chanceToDiscardNetherrack, String biome) {
         this.range = range;
+        this.chanceToDiscardNetherrack = chanceToDiscardNetherrack;
         this.biome = biome;
     }
 
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         double range = this.range.getValue(random);
         int time = Mth.floor((random.nextDouble() * 7.0 + 3.0) * range);
+        double discardChance = chanceToDiscardNetherrack.getValue(random);
 
-        return new PBEffectGenConvertToNether(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), biome);
+        return new PBEffectGenConvertToNether(time, range, discardChance, PandorasBoxHelper.getRandomUnifiedSeed(random), biome);
     }
 
     @Override

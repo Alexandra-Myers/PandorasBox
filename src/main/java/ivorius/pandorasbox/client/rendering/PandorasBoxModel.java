@@ -14,6 +14,7 @@ package ivorius.pandorasbox.client.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -25,7 +26,7 @@ import net.minecraft.world.entity.projectile.Arrow;
 import org.jetbrains.annotations.NotNull;
 
 public class PandorasBoxModel extends EntityModel<Arrow> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("pandorasbox", "pandoras_box"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandoras_box"), "main");
     private final ModelPart feet;
     private final ModelPart body;
     private final ModelPart joint;
@@ -72,10 +73,10 @@ public class PandorasBoxModel extends EntityModel<Arrow> {
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        feet.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        joint.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        top.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int rgba) {
+        feet.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
+        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
+        joint.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
+        top.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
     }
 }

@@ -29,7 +29,7 @@
   "accessWidener": "pandorasbox.accesswidener",
   "depends": {
     "fabricloader": ">=0.16.0",
-    "atlas-core": ">=1.1.1",
+    "atlas-core": ">=1.1.1-1.21.1",
     "minecraft": ">=1.21",
     "java": ">=21",
     "fabric-api": "*"

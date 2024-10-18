@@ -2,6 +2,7 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -24,12 +25,10 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     public PBEffectGenStructure() {
     }
 
-    public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed)
-    {
+    public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed) {
         this(maxTicksAlive, maxX, maxZ, maxY, startY, unifiedSeed, true);
     }
-    public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed, boolean grounded)
-    {
+    public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed, boolean grounded) {
         super(maxTicksAlive);
         length = maxX;
         width = maxZ;
@@ -38,48 +37,56 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
         this.grounded = grounded;
         this.unifiedSeed = unifiedSeed;
     }
+
     @Override
-    public void doEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
-        if(world.isClientSide()) return;
-        world.getBlockState(blockPos);
-        if(!hasAlreadyStarted) {
+    public void doEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
+        if (level.isClientSide()) return;
+        boolean bl = false;
+        if (!hasAlreadyStarted) {
             blockPos.set(effectCenter.x, effectCenter.y, effectCenter.z);
-            BlockState state = world.getBlockState(blockPos);
-            if(grounded) {
+            int originY = blockPos.getY();
+            BlockState state = level.getBlockState(blockPos);
+            blockPos.move(0, -startingYOffset, 0);
+            if (grounded) {
                 while (state.isAir()) {
                     blockPos.move(0, -1, 0);
-                    state = world.getBlockState(blockPos);
+                    state = level.getBlockState(blockPos);
                 }
-                while (!world.getBlockState(blockPos.above()).isAir()) {
+                while (!level.getBlockState(blockPos.above()).isAir()) {
                     blockPos.move(0, 1, 0);
                 }
             }
-            blockPos.move(0, -startingYOffset, 0);
             x = blockPos.getX() - length;
             y = blockPos.getY();
             z = blockPos.getZ() - width;
+            startingYOffset = originY - y;
             hasAlreadyStarted = true;
         }
-        if (y <= blockPos.getY() + height) {
-            if (x <= blockPos.getX() + length) {
-                if (z <= blockPos.getZ() + width) {
-                    buildStructure(world, entity, new BlockPos(x, y, z), random, prevRatio, newRatio, length, width, height, blockPos.getY(), blockPos.getX(), blockPos.getZ());
-                    z++;
+        int i = 0;
+        while (!bl) {
+            i++;
+            if (i >= 40)
+                break;
+            if (y <= blockPos.getY() + height) {
+                if (x <= blockPos.getX() + length) {
+                    if (z <= blockPos.getZ() + width) {
+                        bl = buildStructure(level, entity, new BlockPos(x, y, z), random, prevRatio, newRatio, length, width, height, blockPos.getY(), blockPos.getX(), blockPos.getZ());
+                        z++;
+                    } else {
+                        z = blockPos.getZ() - width;
+                        x++;
+                    }
                 } else {
-                    z = blockPos.getZ() - width;
-                    x++;
+                    x = blockPos.getX() - length;
+                    y++;
                 }
-            } else {
-                x = blockPos.getX() - length;
-                y++;
-            }
+            } else break;
         }
     }
-    public abstract void buildStructure(Level world, PandorasBoxEntity entity, BlockPos currentPos, RandomSource random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ);
+    public abstract boolean buildStructure(Level level, PandorasBoxEntity entity, BlockPos currentPos, RandomSource random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ);
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.writeToNBT(compound, registryAccess);
 
         compound.putInt("length", length);
         compound.putInt("width", width);
@@ -96,9 +103,8 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
-    {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.readFromNBT(compound, registryAccess);
 
         length = compound.getInt("length");
         width = compound.getInt("width");

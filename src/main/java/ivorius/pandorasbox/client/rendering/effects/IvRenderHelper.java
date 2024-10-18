@@ -53,17 +53,17 @@ public class IvRenderHelper {
         poseStack.popPose();
     }
     private static void baseVertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, int r, int g, int b, int alpha) {
-        vertexConsumer.vertex(matrix4f, 0.0F, 0.0F, 0.0F).color(r, g, b, alpha).endVertex();
+        vertexConsumer.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(r, g, b, alpha);
     }
     private static void vertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, int r, int g, int b, float y, float x) {
-        vertexConsumer.vertex(matrix4f, -width * x, y, -0.5F * x).color(r, g, b, 0).endVertex();
+        vertexConsumer.addVertex(matrix4f, -width * x, y, -0.5F * x).setColor(r, g, b, 0);
     }
 
     private static void vertex1(VertexConsumer vertexConsumer, Matrix4f matrix4f, int r, int g, int b, float y, float x) {
-        vertexConsumer.vertex(matrix4f, width * x, y, -0.5F * x).color(r, g, b, 0).endVertex();
+        vertexConsumer.addVertex(matrix4f, width * x, y, -0.5F * x).setColor(r, g, b, 0);
     }
 
     private static void vertex2(VertexConsumer vertexConsumer, Matrix4f matrix4f, int r, int g, int b, float y, float x) {
-        vertexConsumer.vertex(matrix4f, 0.0F, y, x).color(r, g, b, 0).endVertex();
+        vertexConsumer.addVertex(matrix4f, 0.0F, y, x).setColor(r, g, b, 0);
     }
 }

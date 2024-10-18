@@ -11,7 +11,6 @@ import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -22,8 +21,7 @@ import java.util.Collection;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
-{
+public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure {
     public PBEffectGenCreativeTowers() {}
 
     public PBEffectGenCreativeTowers(int maxTicksAlive)
@@ -31,8 +29,7 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
         super(maxTicksAlive);
     }
 
-    public void createRandomStructures(RandomSource random, int number, double range, Collection<WeightedBlock> blocks)
-    {
+    public void createRandomStructures(RandomSource random, int number, double range, Collection<WeightedBlock> blocks) {
         this.structures = new Structure[number];
         for (int i = 0; i < number; i++)
         {
@@ -43,22 +40,17 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
     }
 
     @Override
-    public void generateStructure(Level world, PandorasBoxEntity entity, RandomSource random, Structure structure, BlockPos pos, float newRatio, float prevRatio)
-    {
-        if (world instanceof ServerLevel)
-        {
-            StructureCreativeTower structureCreativeTower = (StructureCreativeTower) structure;
+    public void generateStructure(Level level, PandorasBoxEntity entity, RandomSource random, Structure structure, BlockPos pos, float newRatio, float prevRatio) {
+        StructureCreativeTower structureCreativeTower = (StructureCreativeTower) structure;
 
-            int towerHeight = world.getMaxBuildHeight();
-            int newY = Mth.floor(towerHeight * newRatio);
-            int prevY = Mth.floor(towerHeight * prevRatio);
+        int towerHeight = level.getMaxBuildHeight();
+        int newY = Mth.floor(towerHeight * newRatio);
+        int prevY = Mth.floor(towerHeight * prevRatio);
 
-            for (int towerY = prevY; towerY < newY; towerY++)
-            {
-                Block block = structureCreativeTower.blocks[random.nextInt(structureCreativeTower.blocks.length)];
+        for (int towerY = prevY; towerY < newY; towerY++) {
+            Block block = structureCreativeTower.blocks[random.nextInt(structureCreativeTower.blocks.length)];
 
-                setBlockVarying(world, new BlockPos(pos.getX() + structure.x, towerY, pos.getZ() + structure.z), block, structure.unifiedSeed);
-            }
+            setBlockVarying(level, new BlockPos(pos.getX() + structure.x, towerY, pos.getZ() + structure.z), block, structure.unifiedSeed);
         }
     }
 
@@ -68,25 +60,21 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure
         return new StructureCreativeTower();
     }
 
-    public static class StructureCreativeTower extends Structure
-    {
+    public static class StructureCreativeTower extends Structure {
         public Block[] blocks;
 
-        public StructureCreativeTower()
-        {
+        public StructureCreativeTower() {
         }
 
         @Override
-        public void writeToNBT(CompoundTag compound)
-        {
+        public void writeToNBT(CompoundTag compound) {
             super.writeToNBT(compound);
 
             PBNBTHelper.writeNBTBlocks("blocks", blocks, compound);
         }
 
         @Override
-        public void readFromNBT(CompoundTag compound)
-        {
+        public void readFromNBT(CompoundTag compound) {
             super.readFromNBT(compound);
 
             blocks = PBNBTHelper.readNBTBlocks("blocks", compound);

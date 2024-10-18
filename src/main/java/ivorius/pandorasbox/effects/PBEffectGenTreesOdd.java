@@ -5,11 +5,11 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.init.FeatureInit;
-import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
+import net.atlas.atlascore.util.ArrayListExtensions;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 
@@ -18,8 +18,7 @@ import java.util.List;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator<MegaTreeFeature>
-{
+public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator<MegaTreeFeature> {
     public static final int treeJungle = 0;
     public PBEffectGenTreesOdd() {
 
@@ -28,8 +27,7 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator<MegaTreeFea
     public Block trunkBlock;
     public Block leafBlock;
 
-    public PBEffectGenTreesOdd(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags, Block trunkBlock, Block leafBlock)
-    {
+    public PBEffectGenTreesOdd(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags, Block trunkBlock, Block leafBlock) {
         super(time, range, unifiedSeed, requiresSolidGround, chancePerBlock, generatorFlags);
         this.trunkBlock = trunkBlock;
         this.leafBlock = leafBlock;
@@ -37,12 +35,11 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator<MegaTreeFea
     }
 
     @Override
-    public ArrayListExtensions<MegaTreeFeature> initializeGens()
-    {
+    public ArrayListExtensions<MegaTreeFeature> initializeGens() {
         ArrayListExtensions<MegaTreeFeature> trees = new ArrayListExtensions<>();
-        trees.add(treeJungle, (MegaTreeFeature) FeatureInit.MEGA_JUNGLE);
-        trees.get(treeJungle).setLeaves(leafBlock.defaultBlockState());
-        trees.get(treeJungle).setTrunk(trunkBlock.defaultBlockState());
+        trees.addFirst((MegaTreeFeature) FeatureInit.MEGA_JUNGLE);
+        trees.getFirst().setLeaves(leafBlock.defaultBlockState());
+        trees.getFirst().setTrunk(trunkBlock.defaultBlockState());
         return trees;
     }
 
@@ -53,18 +50,16 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator<MegaTreeFea
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.writeToNBT(compound, registryAccess);
 
         compound.putString("trunkBlock", PBNBTHelper.storeBlockString(trunkBlock));
         compound.putString("leafBlock", PBNBTHelper.storeBlockString(leafBlock));
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
-    {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.readFromNBT(compound, registryAccess);
 
         trunkBlock = PBNBTHelper.getBlock(compound.getString("trunkBlock"));
         leafBlock = PBNBTHelper.getBlock(compound.getString("leafBlock"));

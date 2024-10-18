@@ -6,10 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.SectionPos;
-import net.minecraft.core.Vec3i;
+import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -19,7 +16,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.Vec3;
 
@@ -70,7 +67,7 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     }
 
     @Override
-    public void generateInRange(Level world, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass)
+    public void generateInRange(Level level, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass)
     {
         int requiredRange = Mth.ceil(newRange);
 
@@ -89,7 +86,7 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
                     if (dist <= newRange)
                     {
                         if (dist > prevRange)
-                            generateOnBlock(world, entity, effectCenter, random, pass, new BlockPos(baseX + x, baseY + y, baseZ + z), dist);
+                            generateOnBlock(level, entity, effectCenter, random, pass, new BlockPos(baseX + x, baseY + y, baseZ + z), dist);
                         else
                             z = -z; // We can skip all blocks in between
                     }
@@ -101,17 +98,17 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     public abstract void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range);
 
     @Override
-    public void writeToNBT(CompoundTag compound)
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess)
     {
-        super.writeToNBT(compound);
+        super.writeToNBT(compound, registryAccess);
         compound.putInt("unifiedSeed", unifiedSeed);
         compound.putBoolean("biomeUnchanged", biomeUnchanged);
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess)
     {
-        super.readFromNBT(compound);
+        super.readFromNBT(compound, registryAccess);
         unifiedSeed = compound.getInt("unifiedSeed");
         biomeUnchanged = compound.getBoolean("biomeUnchanged");
     }

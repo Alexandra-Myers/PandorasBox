@@ -7,7 +7,7 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import ivorius.pandorasbox.utils.ArrayListExtensions;
+import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -24,8 +24,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenConvertToEnd extends PBEffectGenerate
-{
+public class PBEffectGenConvertToEnd extends PBEffectGenerate {
     private int timesFeatureAMade = 0;
     public PBEffectGenConvertToEnd() {}
 
@@ -35,15 +34,14 @@ public class PBEffectGenConvertToEnd extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
-    {
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if(world instanceof ServerLevel serverLevel) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
             ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
             blocks.addAll(Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK);
             ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
-            misc.addAll(Blocks.ICE, Blocks.WATER, Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.VINE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM);
+            misc.addAll(Blocks.ICE, Blocks.WATER, Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.VINE, Blocks.TALL_GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM);
             blocks.addAll(PandorasBox.logs);
             misc.addAll(PandorasBox.leaves, PandorasBox.flowers);
 

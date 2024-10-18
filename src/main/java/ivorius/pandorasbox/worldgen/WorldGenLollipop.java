@@ -7,7 +7,7 @@ package ivorius.pandorasbox.worldgen;
 
 import com.mojang.serialization.Codec;
 import ivorius.pandorasbox.PandorasBox;
-import ivorius.pandorasbox.utils.ArrayListExtensions;
+import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
@@ -17,14 +17,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 
-public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeature
-{
+public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeature {
     public static int[] metas;
     public static Block soil;
     public final int addition;
 
-    public WorldGenLollipop(Codec<TreeConfiguration> configIn, int addition)
-    {
+    public WorldGenLollipop(Codec<TreeConfiguration> configIn, int addition) {
         super(configIn);
         this.addition = addition;
     }

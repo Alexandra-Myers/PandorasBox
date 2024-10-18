@@ -6,7 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import ivorius.pandorasbox.utils.ArrayListExtensions;
+import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -24,56 +24,39 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenConvertToHalloween extends PBEffectGenerate
-{
+public class PBEffectGenConvertToHalloween extends PBEffectGenerate {
     public PBEffectGenConvertToHalloween() {}
-    public PBEffectGenConvertToHalloween(int time, double range, int unifiedSeed)
-    {
+    public PBEffectGenConvertToHalloween(int time, double range, int unifiedSeed) {
         super(time, range, 2, unifiedSeed);
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
-    {
-        if (world instanceof ServerLevel serverLevel)
-        {
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
+        if (world instanceof ServerLevel serverLevel) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
 
-            if (pass == 0)
-            {
+            if (pass == 0) {
                 BlockPos posBelow = pos.below();
                 BlockState blockBelowState = world.getBlockState(posBelow);
 
-                if (Block.isShapeFullBlock(blockBelowState.getBlockSupportShape(world, posBelow)) && blockState.isAir() && block != Blocks.WATER)
-                {
-                    if (random.nextInt(5 * 5) == 0)
-                    {
+                if (Block.isShapeFullBlock(blockBelowState.getBlockSupportShape(world, posBelow)) && blockState.isAir() && block != Blocks.WATER) {
+                    if (random.nextInt(5 * 5) == 0) {
                         int b = world.random.nextInt(7);
 
-                        if (b == 0)
-                        {
+                        if (b == 0) {
                             setBlockSafe(world, posBelow, Blocks.NETHERRACK.defaultBlockState());
                             setBlockSafe(world, pos, Blocks.FIRE.defaultBlockState());
-                        }
-                        else if (b == 1)
-                        {
+                        } else if (b == 1) {
                             setBlockSafe(world, pos, Blocks.JACK_O_LANTERN.defaultBlockState());
-                        }
-                        else if (b == 2)
-                        {
+                        } else if (b == 2) {
                             setBlockSafe(world, pos, Blocks.CARVED_PUMPKIN.defaultBlockState());
-                        }
-                        else if (b == 3)
-                        {
+                        } else if (b == 3) {
                             setBlockSafe(world, posBelow, Blocks.FARMLAND.defaultBlockState());
                             setBlockSafe(world, pos, Blocks.PUMPKIN_STEM.getStateDefinition().getPossibleStates().get(world.random.nextInt(4) + 4));
-                        }
-                        else if (b == 4)
-                        {
+                        } else if (b == 4) {
                             setBlockSafe(world, pos, Blocks.CAKE.defaultBlockState());
-                        }
-                        else if(b == 5) {
+                        } else if(b == 5) {
                             ItemEntity entityItem = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(Items.COOKIE));
                             entityItem.setPickUpDelay(20);
                             world.addFreshEntity(entityItem);
@@ -83,9 +66,7 @@ public class PBEffectGenConvertToHalloween extends PBEffectGenerate
                         }
                     }
                 }
-            }
-            else
-            {
+            } else {
                 ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
                 entities.addAll(
                         lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (20 * 20), pos),

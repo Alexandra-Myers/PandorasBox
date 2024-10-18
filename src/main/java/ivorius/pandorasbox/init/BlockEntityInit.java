@@ -14,7 +14,7 @@ import static ivorius.pandorasbox.init.BlockInit.PB;
 public class BlockEntityInit {
     public static final BlockEntityType<PandorasBoxBlockEntity> BEPB = register("pandoras_box", BlockEntityType.Builder.of(PandorasBoxBlockEntity::new, PB).build(null));
     private static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType<T> blockEntityType) {
-        return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, ResourceKey.create(BuiltInRegistries.BLOCK_ENTITY_TYPE.key(), new ResourceLocation(PandorasBox.MOD_ID, name)), blockEntityType);
+        return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, ResourceKey.create(BuiltInRegistries.BLOCK_ENTITY_TYPE.key(), ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, name)), blockEntityType);
     }
     public static void registerBlockEntities() {
 

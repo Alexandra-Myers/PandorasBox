@@ -9,13 +9,14 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.math.IvMathHelper;
-import ivorius.pandorasbox.utils.ArrayListExtensions;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.pandorasbox.weighted.WeightedSet;
+import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -56,7 +57,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
 
             if (pass == 0) {
                 ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-                blocks.addAll(Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
+                blocks.addAll(Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.TALL_GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
                 blocks.addAll(PandorasBox.flowers);
                 ArrayListExtensions<Block> solid = new ArrayListExtensions<>();
                 solid.addAll(PandorasBox.terracotta, PandorasBox.stained_terracotta);
@@ -295,14 +296,14 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound) {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.writeToNBT(compound, registryAccess);
         PBNBTHelper.writeNBTEntities("entities", mobsToSpawn.toArray(new EntityType[0]), compound);
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound) {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.readFromNBT(compound, registryAccess);
         mobsToSpawn = List.of(Objects.requireNonNull(PBNBTHelper.readNBTEntities("entities", compound)));
     }
 }

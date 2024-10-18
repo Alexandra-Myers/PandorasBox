@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -15,15 +16,13 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Created by lukas on 03.04.14.
  */
-public class PBEffectSetWeather extends PBEffectNormal
-{
+public class PBEffectSetWeather extends PBEffectNormal {
     public boolean rain;
     public boolean thunder;
     public int rainTime;
     public PBEffectSetWeather() {}
 
-    public PBEffectSetWeather(int maxTicksAlive, boolean rain, boolean thunder, int rainTime)
-    {
+    public PBEffectSetWeather(int maxTicksAlive, boolean rain, boolean thunder, int rainTime) {
         super(maxTicksAlive);
         this.rain = rain;
         this.thunder = thunder;
@@ -31,25 +30,22 @@ public class PBEffectSetWeather extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio)
-    {
+    public void doEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
     }
 
     @Override
-    public void finalizeEffect(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random)
-    {
-        if (world.getLevelData() instanceof ServerLevelData worldInfo) {
-            worldInfo.setRainTime(rainTime);
-            worldInfo.setThunderTime(rainTime);
-            worldInfo.setRaining(rain);
-            worldInfo.setThundering(rain && thunder);
+    public void finalizeEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random) {
+        if (level.getLevelData() instanceof ServerLevelData serverLevelData) {
+            serverLevelData.setRainTime(rainTime);
+            serverLevelData.setThunderTime(rainTime);
+            serverLevelData.setRaining(rain);
+            serverLevelData.setThundering(rain && thunder);
         }
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.writeToNBT(compound, registryAccess);
 
         compound.putInt("rainTime", rainTime);
         compound.putBoolean("rain", rain);
@@ -57,9 +53,8 @@ public class PBEffectSetWeather extends PBEffectNormal
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
-    {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.readFromNBT(compound, registryAccess);
 
         rainTime = compound.getInt("rainTime");
         rain = compound.getBoolean("rain");

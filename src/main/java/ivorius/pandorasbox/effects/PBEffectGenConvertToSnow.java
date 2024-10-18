@@ -21,8 +21,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenConvertToSnow extends PBEffectGenerate
-{
+public class PBEffectGenConvertToSnow extends PBEffectGenerate {
     public PBEffectGenConvertToSnow() {}
 
     public PBEffectGenConvertToSnow(int time, double range, int unifiedSeed)
@@ -31,9 +30,8 @@ public class PBEffectGenConvertToSnow extends PBEffectGenerate
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
-    {
-        if(world instanceof ServerLevel serverLevel){
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
+        if(world instanceof ServerLevel serverLevel) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
 

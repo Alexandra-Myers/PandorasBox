@@ -5,7 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.utils.ArrayListExtensions;
+import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
@@ -16,8 +16,7 @@ import static net.minecraft.data.worldgen.features.TreeFeatures.*;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenTrees extends PBEffectGenerateByGenerator<ResourceKey<ConfiguredFeature<?, ?>>>
-{
+public class PBEffectGenTrees extends PBEffectGenerateByGenerator<ResourceKey<ConfiguredFeature<?, ?>>> {
     public PBEffectGenTrees() {}
 
     public static final int treeSmall = 0;
@@ -29,15 +28,13 @@ public class PBEffectGenTrees extends PBEffectGenerateByGenerator<ResourceKey<Co
     public static final int treeTaiga = 6;
     public static final int treeBirch = 7;
 
-    public PBEffectGenTrees(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags)
-    {
+    public PBEffectGenTrees(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags) {
         super(time, range, unifiedSeed, requiresSolidGround, chancePerBlock, generatorFlags);
         treeGens = initializeGens();
     }
 
     @Override
-    public ArrayListExtensions<ResourceKey<ConfiguredFeature<?, ?>>> initializeGens()
-    {
+    public ArrayListExtensions<ResourceKey<ConfiguredFeature<?, ?>>> initializeGens() {
         ArrayListExtensions<ResourceKey<ConfiguredFeature<?, ?>>> trees = new ArrayListExtensions<>();
         trees.add(treeSmall, JUNGLE_BUSH);
         trees.add(treeNormal, OAK);

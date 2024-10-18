@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -18,8 +19,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffectSpawnEntities extends PBEffectNormal
-{
+public abstract class PBEffectSpawnEntities extends PBEffectNormal {
     public int number;
 
     public boolean spawnFromBox;
@@ -31,22 +31,19 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
     public double throwStrengthYMax;
     public PBEffectSpawnEntities() {}
 
-    public PBEffectSpawnEntities(int time, int number)
-    {
+    public PBEffectSpawnEntities(int time, int number) {
         super(time);
 
         this.number = number;
     }
 
-    public void setDoesNotSpawnFromBox(double range, double shiftY)
-    {
+    public void setDoesNotSpawnFromBox(double range, double shiftY) {
         this.spawnFromBox = false;
         this.range = range;
         this.shiftY = shiftY;
     }
 
-    public void setDoesSpawnFromBox(double throwStrengthSideMin, double throwStrengthSideMax, double throwStrengthYMin, double throwStrengthYMax)
-    {
+    public void setDoesSpawnFromBox(double throwStrengthSideMin, double throwStrengthSideMax, double throwStrengthYMin, double throwStrengthYMax) {
         this.spawnFromBox = true;
         this.throwStrengthSideMin = throwStrengthSideMin;
         this.throwStrengthSideMax = throwStrengthSideMax;
@@ -55,37 +52,29 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
     }
 
     @Override
-    public void doEffect(Level world, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio)
-    {
-        if (world instanceof ServerLevel)
-        {
+    public void doEffect(Level level, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
+        if (level instanceof ServerLevel) {
             int prev = getSpawnNumber(prevRatio);
             int toSpawn = getSpawnNumber(newRatio) - prev;
 
-            for (int i = 0; i < toSpawn; i++)
-            {
+            for (int i = 0; i < toSpawn; i++) {
                 double eX;
                 double eY;
                 double eZ;
 
-                if (spawnFromBox)
-                {
+                if (spawnFromBox) {
                     eX = box.getX();
                     eY = box.getY();
                     eZ = box.getZ();
-                }
-                else
-                {
+                } else {
                     eX = box.getX() + (random.nextDouble() - random.nextDouble()) * range;
                     eY = box.getY() + (random.nextDouble() - random.nextDouble()) * 3.0 + shiftY;
                     eZ = box.getZ() + (random.nextDouble() - random.nextDouble()) * range;
                 }
 
-                Entity newEntity = spawnEntity(world, box, random, prev + i, eX, eY, eZ);
-                if (newEntity != null)
-                {
-                    if (spawnFromBox && !(newEntity instanceof LivingEntity))
-                    {
+                Entity newEntity = spawnEntity(level, box, random, prev + i, eX, eY, eZ);
+                if (newEntity != null) {
+                    if (spawnFromBox && !(newEntity instanceof LivingEntity)) {
                         // FIXME Disabled because it causes mobs to sink in the ground on clients (async) >.>
                         float dirSide = random.nextFloat() * 2.0f * 3.1415926f;
                         double throwStrengthSide = throwStrengthSideMin + random.nextDouble() * (throwStrengthSideMax - throwStrengthSideMin);
@@ -100,17 +89,15 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
         }
     }
 
-    private int getSpawnNumber(float ratio)
-    {
+    private int getSpawnNumber(float ratio) {
         return Mth.floor(ratio * number);
     }
 
     public abstract Entity spawnEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, int number, double x, double y, double z);
 
     @Override
-    public void writeToNBT(CompoundTag compound)
-    {
-        super.writeToNBT(compound);
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.writeToNBT(compound, registryAccess);
 
         compound.putInt("number", number);
         compound.putBoolean("spawnFromBox", spawnFromBox);
@@ -123,9 +110,8 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound)
-    {
-        super.readFromNBT(compound);
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
+        super.readFromNBT(compound, registryAccess);
 
         number = compound.getInt("number");
         spawnFromBox = compound.getBoolean("spawnFromBox");

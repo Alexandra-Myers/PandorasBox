@@ -16,7 +16,7 @@ import ivorius.pandorasbox.utils.PBEffectArgument;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerPlayer;
 
 public class PandoraCommand {
 
@@ -41,14 +41,11 @@ public class PandoraCommand {
     public static int createBox(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
         return createBox(commandContext.getSource().getPlayerOrException(), null, false);
     }
-    public static int createBox(Entity player, PBEffectCreator effectCreator, boolean invisible) {
+    public static int createBox(ServerPlayer player, PBEffectCreator effectCreator, boolean invisible) {
         PandorasBoxEntity box;
 
         if (effectCreator != null) {
             box = PBECRegistry.spawnPandorasBox(player.level(), player.getCommandSenderWorld().random, effectCreator, player);
-
-            if (box != null)
-                box.setCanGenerateMoreEffectsAfterwards(false);
         } else
             box = PBECRegistry.spawnPandorasBox(player.level(), player.getCommandSenderWorld().random, true, player);
 
