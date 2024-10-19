@@ -22,10 +22,53 @@ import java.util.List;
  * Created by lukas on 01.12.14.
  */
 public class PBEffects {
+    public static PBEffectCreator[] MELTDOWN_CREATORS = new PBEffectCreator[] {
+            new PBECSpawnLightning(new ILinear(80, 150), new ILinear(10, 48), new DLinear(10.0, 30.0))
+    };
     public static void registerEffectCreators() {
         PandorasBoxHelper.initialize();
 
         PBECRegistry.register(new PBECDuplicateBox(new IConstant(PBEffectDuplicateBox.MODE_BOX_IN_BOX), new DConstant(0.5)), "matryoshka");
+        PBECRegistry.register(new PBECMeltdown(new DLinear(50.0, 150.0), new ILinear(750, 1250)), "rage_of_zeus");
+
+        MELTDOWN_CREATORS = new PBEffectCreator[] {
+                new PBECSpawnLightning(new ILinear(80, 150), new ILinear(10, 48), new DLinear(10.0, 30.0))
+        };
+
+        addAllToMeltdown(new PBECSpawnBlocks(new ILinear(10, 40), new IConstant(1), PandorasBoxHelper.blocks, null, PBECSpawnBlocks.defaultShowerSpawn()),
+                new PBECSpawnBlocks(new ILinear(10, 25), new IConstant(1), PandorasBoxHelper.heavyBlocks, null, PBECSpawnBlocks.defaultShowerSpawn()),
+                new PBECSpawnBlocks(new ILinear(6, 20), new ILinear(2, 5), PandorasBoxHelper.blocks, null, new ValueSpawn(new DConstant(0.0), new DConstant(25.0))),
+                new PBECConvertToEnd(new DLinear(10.0, 15.0)),
+                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), "wastes"),
+                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), "soul_sand_valley"),
+                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), "warped"),
+                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), "crimson"),
+                new PBECWorldSnake(new ILinear(40, 300), new DLinear(5.0, 10.0), new DLinear(0.6, 1.0), new DLinear(1.0, 3.0), PandorasBoxHelper.blocks),
+                new PBECConvertToCity(new DLinear(10.0, 20.0), PandorasBoxHelper.landMobs),
+                new PBECMulti(new PBECConvertToHalloween(new DLinear(10.0, 15.0)), 0, new PBECSetTime(new ILinear(30, 60), new ILinear(15000, 20000), new ZConstant(false)), 0),
+                new PBECMulti(new PBECConvertToChristmas(new DLinear(10.0, 15.0)), 0, new PBECSetTime(new ILinear(30, 60), new ILinear(15000, 20000), new ZConstant(false)), 0),
+                new PBECCrushEntities(new ILinear(50, 125), new DLinear(20.0, 50.0)),
+                new PBECHeightNoise(new DLinear(5.0, 13.0), new ILinear(-16, 16), new ILinear(1, 32), new ILinear(1, 4)),
+                new PBECSpawnTNT(new ILinear(10, 30), new ILinear(15, 50), new ILinear(20, 1000), new ValueThrow(new DLinear(0.2, 2.0), new DLinear(0.5, 5.0)), new ValueSpawn(new DLinear(5.0, 50.0), new DConstant(0.0))),
+                new PBECMulti(new PBECSetTime(new ILinear(10, 20), new ILinear(12000, 24000 * 5), new ZConstant(true)), 0, new PBECSetWeather(new IWeighted(0, 50, 1, 35, 2, 15), new ILinear(100, 12000), new ILinear(10, 15))),
+                new PBECSpawnEntities(new IConstant(5), new IWeighted(2, 100, 3, 20, 4, 5), new IConstant(1), new ILinear(2, 6), new ILinear(2, 10), new IConstant(1), PandorasBoxHelper.mobs),
+                new PBECSpawnItemSet(new ILinear(0, 20), PandorasBoxHelper.equipmentSets),
+                new PBECMulti(new PBECSpawnEnchantedItems(new IConstant(2), new ILinear(0, 15), new IExp(3, 30, 10.0), PandorasBoxHelper.enchantableArmorList, new ZChance(0.8)), 0, new PBECSpawnEnchantedItems(new IConstant(2), new ILinear(0, 15), new IExp(3, 30, 10.0), PandorasBoxHelper.enchantableToolList, new ZChance(0.8)), 0, new PBECSpawnEnchantedItems(new IConstant(1), new ILinear(0, 15), new IExp(3, 30, 10.0), PandorasBoxHelper.items, new ZChance(0.8)), 0),
+                new PBECSpawnEntities(new ILinear(10, 50), new ILinear(10, 110), new IConstant(1), new IConstant(0), new IConstant(0), new IConstant(0), List.of(new WeightedEntity(100, "pbspecial_experience", 1, 1))),
+                new PBECSpawnEntities(new ILinear(10, 100), new ILinear(10, 30), new IConstant(1), new IConstant(0), new IConstant(0), new IConstant(0), List.of(new WeightedEntity(100, "pbspecial_fireworks", 1, 1)), new ValueThrow(new DLinear(0.02, 0.06), new DConstant(0.01)), new ValueSpawn(new DLinear(2.0, 20.0), new DConstant(0.0))),
+                new PBECSpawnExplosions(new ILinear(10, 150), new ILinear(6, 20), new DLinear(10.0, 20.0), new DLinear(3.0, 5.0), new ZChance(0.3), new ZConstant(true)),
+                new PBECConvertToHFT(new DLinear(10.0, 15.0)),
+                new PBECMulti(new PBECConvertToHomo(new DLinear(10.0, 15.0)), 10, new PBECSpawnArmy(new ILinear(1, 4), new IConstant(0), PandorasBoxHelper.creatures)),
+                new PBECMulti(new PBECConvertToIce(new DLinear(10.0, 15.0)), 20, new PBECDome(new ILinear(5, 10), new DGaussian(10.0, 15.0), Arrays.asList(new WeightedBlock(100, Blocks.PACKED_ICE), new WeightedBlock(80, Blocks.ICE), new WeightedBlock(50, Blocks.BLUE_ICE)), Blocks.WATER)),
+                new PBECLavaCage(new DGaussian(10.0, 20.0), null, Blocks.WATER, Collections.singletonList(new WeightedBlock(100, Blocks.IRON_BARS)), Collections.singletonList(new WeightedBlock(100, Blocks.MAGMA_BLOCK))),
+                new PBECBuffEntities(new ILinear(30, 150), new IWeighted(1, 100, 2, 80, 3, 50), new DLinear(8.0, 10.0), 0.0f, PandorasBoxHelper.buffs),
+                new PBECMulti(new PBECConvertToDesert(new DLinear(10.0, 15.0)), 0, new PBECCreativeTowers(new DLinear(10.0, 15.0), new ILinear(4, 10), Arrays.asList(new WeightedBlock(100, Blocks.BAMBOO), new WeightedBlock(50, Blocks.MOSS_BLOCK))), 0),
+                new PBECMulti(new PBECTransform(new DLinear(10.0, 15.0), PandorasBoxHelper.blocks), 0, new PBECGenTrees(new DGaussian(10.0, 20.0), new DLinear(1.0f / (32.0f * 32.0f * 32.0f), 1.0f / (6.0f * 6.0f * 6.0f)), new ZConstant(false), new IFlags(1, PBEffectGenTrees.treeSmall, 1.0, PBEffectGenTrees.treeNormal, 0.5, PBEffectGenTrees.treeBig, 0.5, PBEffectGenTrees.treeComplexNormal, 0.5, PBEffectGenTrees.treeTaiga, 0.5, PBEffectGenTrees.treeBirch, 0.5)), 20),
+                new PBECMulti(new PBECConvertToHeavenly(new DLinear(10.0, 15.0)), 0, new PBECSpawnItemSet(new ILinear(1, 5), PandorasBoxHelper.equipmentSets), 0, new PBECBombpack(new DLinear(10.0, 25.0), new ILinear(15, 100)), 0),
+                new PBECMulti(new PBECConvertToLifeless(new DLinear(10.0, 15.0)), 0, new PBECRandomShapes(new DLinear(10.0, 20.0), new DLinear(2, 5), new ILinear(8, 13), List.of(new WeightedBlock(1, Blocks.STONE), new WeightedBlock(5, Blocks.COBBLESTONE), new WeightedBlock(1, Blocks.DEEPSLATE), new WeightedBlock(1, Blocks.COBBLED_DEEPSLATE)), new ZConstant(true)), 0),
+                new PBECConvertToOverworld(new DLinear(10.0, 15.0)),
+                new PBECMulti(new PBECConvertToMushroom(new DLinear(10.0, 20.0)), 0, new PBECSpawnEntities(new ILinear(10, 50), new ILinear(3, 10), new ILinear(2, 5), new IConstant(0), new IConstant(0), new ILinear(0, 1), PandorasBoxHelper.creatures), 10),
+                new PBECGenTreesOdd(new DGaussian(10.0, 20.0), new DLinear(1.0f / (8.0f * 8.0f), 1.0f / (3.0f * 3.0f)), new ZChance(0.50), new IFlags(1, PBEffectGenTreesOdd.treeJungle, 0.7), PandorasBoxHelper.blocks, PandorasBoxHelper.blocks));
 
         PBECRegistry.register(new PBECSpawnEntities(new ILinear(20, 100), new ILinear(4, 20), new IConstant(1), new IConstant(0), new IConstant(0), new IConstant(0), PandorasBoxHelper.mobs), "mobs");
         PBECRegistry.register(new PBECSpawnEntities(new ILinear(20, 100), new ILinear(2, 6), new ILinear(2, 5), new IConstant(0), new IConstant(0), new IConstant(0), PandorasBoxHelper.mobs), "mob_towers");
@@ -135,5 +178,22 @@ public class PBEffects {
         PBECRegistry.register(new PBECSpawnBlocks(new ILinear(6, 20), new ILinear(5, 20), PandorasBoxHelper.blocks, null, new ValueSpawn(new DConstant(0.0), new DConstant(25.0))), "block_tower");
         PBECRegistry.register(new PBECMulti(new PBECDome(new ILinear(60, 200), new DLinear(10.0, 30.0), List.of(new WeightedBlock(100, Blocks.GLASS)), null), 0, new PBECSpawnEntities(new ILinear(60, 100), new ILinear(4, 20), new IConstant(1), new IConstant(0), new IConstant(0), new IConstant(0), PandorasBoxHelper.creatures), 0), "terrarium");
         PBECRegistry.register(new PBECSpawnArmy(new ILinear(1, 3), new IConstant(0), PandorasBoxHelper.creatures), "animal_farm");
+    }
+
+    public static void addMeltdownCreator(PBEffectCreator pbEffectCreator) {
+        int length = MELTDOWN_CREATORS.length;
+        MELTDOWN_CREATORS = Arrays.copyOf(MELTDOWN_CREATORS, length + 1);
+        MELTDOWN_CREATORS[length] = pbEffectCreator;
+    }
+
+    public static void addAllToMeltdown(PBEffectCreator... pbEffectCreators) {
+        int length = MELTDOWN_CREATORS.length;
+        MELTDOWN_CREATORS = Arrays.copyOf(MELTDOWN_CREATORS, length + pbEffectCreators.length);
+        int i = 0;
+        for (; length < MELTDOWN_CREATORS.length; length++) {
+            if (i > pbEffectCreators.length) break;
+            MELTDOWN_CREATORS[length] = pbEffectCreators[i];
+            i++;
+        }
     }
 }

@@ -40,6 +40,7 @@ public class PandorasBox implements ModInitializer {
     public static ArrayListExtensions<Block> stained_terracotta;
     public static ArrayListExtensions<Block> wool;
     public static ArrayListExtensions<Block> slabs;
+    public static ArrayListExtensions<Block> stairs;
     public static ArrayListExtensions<Block> bricks;
     public static ArrayListExtensions<Block> planks;
     public static ArrayListExtensions<Block> stained_glass;
@@ -70,6 +71,7 @@ public class PandorasBox implements ModInitializer {
         flowers = new ArrayListExtensions<>();
         wool = new ArrayListExtensions<>();
         slabs = new ArrayListExtensions<>();
+        stairs = new ArrayListExtensions<>();
         bricks = new ArrayListExtensions<>();
         terracotta = new ArrayListExtensions<>();
         stained_terracotta = new ArrayListExtensions<>();
@@ -93,6 +95,9 @@ public class PandorasBox implements ModInitializer {
             }
             if (block.defaultBlockState().is(BlockTags.SLABS)) {
                 slabs.add(block);
+            }
+            if (block.defaultBlockState().is(BlockTags.STAIRS)) {
+                stairs.add(block);
             }
             if (block.defaultBlockState().is(BlockTags.STONE_BRICKS)) {
                 bricks.add(block);

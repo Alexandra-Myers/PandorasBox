@@ -51,9 +51,11 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate {
                             setBlockSafe(world, pos.above(1), Blocks.CACTUS.defaultBlockState());
                             setBlockSafe(world, pos.above(2), Blocks.CACTUS.defaultBlockState());
                             setBlockSafe(world, pos.above(3), Blocks.CACTUS.defaultBlockState());
+                        } else if (random.nextInt(75) == 0) {
+                            setBlockSafe(world, pos.above(1), Blocks.DEAD_BUSH.defaultBlockState());
                         }
                     }
-                } else if (isBlockAnyOf(block, misc)){
+                } else if (isBlockAnyOf(block, misc)) {
                     setBlockSafe(world, pos, Blocks.SANDSTONE.defaultBlockState());
                 }
             }

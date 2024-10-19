@@ -7,6 +7,7 @@ import static ivorius.pandorasbox.init.Init.*;
 public class PBEffectInit {
     static {
         makeFixedChance("matryoshka", 0.02);
+        makeFixedChance("rage_of_zeus", 0.001);
         makePositiveOrNegative("mobs", false);
         makePositiveOrNegative("mob_towers", false);
         makePositiveOrNegative("megaton", false);
@@ -19,7 +20,7 @@ public class PBEffectInit {
         makePositiveOrNegative("dirty_trick", false);
         makePositiveOrNegative("water_pool", true);
         makePositiveOrNegative("lava_pool", false);
-//        makePositiveOrNegative("gateway_to_hell", false);
+        makePositiveOrNegative("gateway_to_hell", false);
         makePositiveOrNegative("height_noise", false);
         makePositiveOrNegative("mad_geometry", false);
         makePositiveOrNegative("madder_geometry", false);
@@ -145,6 +146,7 @@ public class PBEffectInit {
         registerBoxEffect(PBEffectEntitiesCreateVoid.class, "entities_gen_void");
         registerBoxEffect(PBEffectEntitiesTeleport.class, "entities_teleport");
         registerBoxEffect(PBEffectDuplicateBox.class, "duplicate_box");
+        registerBoxEffect(PBEffectMeltdown.class, "meltdown");
         registerBoxEffect(PBEffectExplode.class, "explode");
     }
     public static void registerPandora() {

@@ -34,8 +34,6 @@ public class PandoraCommand {
                 .then(Commands.argument("effect", PBEffectArgument.effect())
                         .executes(ctx -> createBox(ctx.getSource().getPlayerOrException(), PBEffectArgument.getEffect(ctx, "effect"), false)).then(Commands.argument("invisible", BoolArgumentType.bool())
                                 .executes(ctx -> createBox(ctx.getSource().getPlayerOrException(), PBEffectArgument.getEffect(ctx, "effect"), BoolArgumentType.getBool(ctx, "invisible")))))
-                .then(Commands.argument("invisible", BoolArgumentType.bool())
-                        .executes(ctx -> createBox(ctx.getSource().getPlayerOrException(), null, BoolArgumentType.getBool(ctx, "invisible"))))
                 .executes(PandoraCommand::createBox));
     }
     public static int createBox(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {

@@ -277,10 +277,10 @@ public class PandorasBoxHelper
                 Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.POWDER_SNOW,
                 Blocks.CHEST, Blocks.ENDER_CHEST, Blocks.TRAPPED_CHEST,
                 Blocks.SPONGE);
-        planks.addAll(PandorasBox.planks, PandorasBox.logs, PandorasBox.leaves, PandorasBox.wool, PandorasBox.slabs, PandorasBox.bricks, PandorasBox.stained_terracotta);
-        randomizable.addAll(PandorasBox.planks, PandorasBox.logs, PandorasBox.leaves, PandorasBox.wool, PandorasBox.slabs, PandorasBox.bricks, PandorasBox.stained_terracotta, PandorasBox.stained_glass, PandorasBox.saplings, PandorasBox.pots);
+        planks.addAll(PandorasBox.stairs, PandorasBox.planks, PandorasBox.logs, PandorasBox.leaves, PandorasBox.wool, PandorasBox.slabs, PandorasBox.bricks, PandorasBox.stained_terracotta);
+        randomizable.addAll(PandorasBox.stairs, PandorasBox.planks, PandorasBox.logs, PandorasBox.leaves, PandorasBox.wool, PandorasBox.slabs, PandorasBox.bricks, PandorasBox.stained_terracotta, PandorasBox.stained_glass, PandorasBox.saplings, PandorasBox.pots);
         glass.addAll(Blocks.SOUL_SAND, Blocks.SOUL_SOIL);
-        glass.addAll(PandorasBox.stained_glass);
+        glass.addAll(randomizable, PandorasBox.stained_glass);
         misc.addAll(Items.LAVA_BUCKET, Items.MILK_BUCKET, Items.WATER_BUCKET, Items.FLINT_AND_STEEL, Items.PAINTING, Items.FLOWER_POT, Items.MINECART, Items.CAULDRON, Items.BRUSH);
         for(Item item : BuiltInRegistries.ITEM.stream().toList()) {
             ItemStack stack = new ItemStack(item);
@@ -294,7 +294,7 @@ public class PandorasBoxHelper
 
         addBlocks(40.0, planks);
         addBlocks(15.0, Blocks.PRISMARINE, Blocks.QUARTZ_BLOCK);
-        addBlocks(10.0, Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE, Blocks.COBBLED_DEEPSLATE, Blocks.NETHERRACK, Blocks.NETHER_BRICKS, Blocks.BRICKS, Blocks.END_STONE, Blocks.END_STONE_BRICKS, Blocks.TERRACOTTA);
+        addBlocks(10.0, Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE, Blocks.COBBLED_DEEPSLATE, Blocks.POLISHED_DEEPSLATE, Blocks.DEEPSLATE_TILES, Blocks.NETHERRACK, Blocks.NETHER_BRICKS, Blocks.BRICKS, Blocks.END_STONE, Blocks.END_STONE_BRICKS, Blocks.TERRACOTTA);
         addBlocks(10.0, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.GRAVEL, Blocks.PUMPKIN, Blocks.CLAY, Blocks.MYCELIUM);
         addBlocks(8.0, glass);
         addBlocks(0.2, Blocks.NETHERITE_BLOCK, Blocks.DIAMOND_BLOCK, Blocks.EMERALD_BLOCK, Blocks.GOLD_BLOCK, Blocks.LODESTONE);
@@ -346,7 +346,7 @@ public class PandorasBoxHelper
         addEquipmentLevelsInOrder(Items.WOODEN_SHOVEL, Items.WOODEN_SHOVEL, Items.GOLDEN_SHOVEL, Items.STONE_SHOVEL, Items.IRON_SHOVEL, Items.DIAMOND_SHOVEL, Items.NETHERITE_SHOVEL);
         addEquipmentLevelsInOrder(Items.WOODEN_HOE, Items.WOODEN_HOE, Items.GOLDEN_HOE, Items.STONE_HOE, Items.IRON_HOE, Items.DIAMOND_HOE, Items.NETHERITE_HOE);
 
-        addPotions(buffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.REGENERATION, MobEffects.MOVEMENT_SPEED, MobEffects.DAMAGE_BOOST, MobEffects.JUMP, MobEffects.DAMAGE_RESISTANCE, MobEffects.WATER_BREATHING, MobEffects.FIRE_RESISTANCE, MobEffects.NIGHT_VISION, MobEffects.INVISIBILITY, MobEffects.ABSORPTION, MobEffects.SLOW_FALLING, MobEffects.DOLPHINS_GRACE);
+        addPotions(buffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.REGENERATION, MobEffects.MOVEMENT_SPEED, MobEffects.DAMAGE_BOOST, MobEffects.JUMP, MobEffects.DAMAGE_RESISTANCE, MobEffects.WATER_BREATHING, MobEffects.FIRE_RESISTANCE, MobEffects.NIGHT_VISION, MobEffects.INVISIBILITY, MobEffects.ABSORPTION, MobEffects.SLOW_FALLING, MobEffects.DOLPHINS_GRACE, MobEffects.INFESTED, MobEffects.OOZING, MobEffects.WEAVING, MobEffects.WIND_CHARGED);
         addPotions(debuffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.BLINDNESS, MobEffects.CONFUSION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN, MobEffects.WEAKNESS, MobEffects.HUNGER, MobEffects.GLOWING);
         addPotions(debuffs, 10.0, 0, 2, 20 * 30, 20 * 60, MobEffects.WITHER, MobEffects.DARKNESS);
 

@@ -51,7 +51,7 @@ public class PBEffectGenReplace extends PBEffectGenerate {
                 if (block == Blocks.WATER) {
                     FluidState fluidstate = level.getFluidState(pos);
                     if (fluidstate.is(FluidTags.WATER)) {
-                        if (block instanceof BucketPickup bucketPickup && !bucketPickup.pickupBlock(null, level, pos, prevState).isEmpty()) continue;
+                        if (prevBlock instanceof BucketPickup bucketPickup && !bucketPickup.pickupBlock(null, level, pos, prevState).isEmpty()) continue;
 
                         if (!(prevState.getBlock() instanceof LiquidBlock)) {
                             if (!prevState.is(Blocks.KELP) && !prevState.is(Blocks.KELP_PLANT) && !prevState.is(Blocks.SEAGRASS) && !prevState.is(Blocks.TALL_SEAGRASS)) continue;

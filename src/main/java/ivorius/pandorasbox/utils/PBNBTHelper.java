@@ -155,6 +155,7 @@ public class PBNBTHelper
             ListTag listTag = new ListTag();
 
             for (ItemStack stack : stacks) {
+                if (stack.isEmpty()) continue;
                 CompoundTag compoundTag = new CompoundTag();
                 stack.save(registryAccess, compoundTag);
                 listTag.add(compoundTag);
@@ -312,6 +313,7 @@ public class PBNBTHelper
             for (RandomizedItemStack stack : stacks) {
                 CompoundTag compoundTag = new CompoundTag();
                 CompoundTag stackTag = new CompoundTag();
+                if (stack.itemStack.isEmpty()) continue;
                 stack.itemStack.save(registryAccess, stackTag);
                 compoundTag.put("stack", stackTag);
                 compoundTag.putInt("min", stack.min);

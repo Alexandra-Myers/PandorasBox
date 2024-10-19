@@ -33,6 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,7 +42,6 @@ import java.util.UUID;
  */
 public class PandorasBoxEntity extends Entity {
     public static final float BOX_UPSCALE_SPEED = 0.02f;
-
     private static final EntityDataAccessor<Integer> BOX_DEATH_TICKS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> BOX_WAITING_TIME = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> EFFECT_TICKS_EXISTED = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
