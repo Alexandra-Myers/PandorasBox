@@ -35,8 +35,8 @@ public class PBEffects {
                 new PBECSpawnLightning(new ILinear(80, 150), new ILinear(10, 48), new DLinear(10.0, 30.0))
         };
 
-        addAllToMeltdown(new PBECSpawnBlocks(new ILinear(10, 40), new IConstant(1), PandorasBoxHelper.blocks, null, PBECSpawnBlocks.defaultShowerSpawn()),
-                new PBECSpawnBlocks(new ILinear(10, 25), new IConstant(1), PandorasBoxHelper.heavyBlocks, null, PBECSpawnBlocks.defaultShowerSpawn()),
+        addAllToMeltdown(new PBECSpawnBlocks(new ILinear(10, 40), new ILinear(3, 5), PandorasBoxHelper.blocks, null, PBECSpawnBlocks.defaultShowerSpawn()),
+                new PBECSpawnBlocks(new ILinear(10, 25), new ILinear(3, 5), PandorasBoxHelper.heavyBlocks, null, PBECSpawnBlocks.defaultShowerSpawn()),
                 new PBECSpawnBlocks(new ILinear(6, 20), new ILinear(2, 5), PandorasBoxHelper.blocks, null, new ValueSpawn(new DConstant(0.0), new DConstant(25.0))),
                 new PBECConvertToEnd(new DLinear(10.0, 15.0)),
                 new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), "wastes"),
@@ -51,9 +51,9 @@ public class PBEffects {
                 new PBECHeightNoise(new DLinear(5.0, 13.0), new ILinear(-16, 16), new ILinear(1, 32), new ILinear(1, 4)),
                 new PBECSpawnTNT(new ILinear(10, 30), new ILinear(15, 50), new ILinear(20, 1000), new ValueThrow(new DLinear(0.2, 2.0), new DLinear(0.5, 5.0)), new ValueSpawn(new DLinear(5.0, 50.0), new DConstant(0.0))),
                 new PBECMulti(new PBECSetTime(new ILinear(10, 20), new ILinear(12000, 24000 * 5), new ZConstant(true)), 0, new PBECSetWeather(new IWeighted(0, 50, 1, 35, 2, 15), new ILinear(100, 12000), new ILinear(10, 15)), 0),
-                new PBECSpawnEntities(new IConstant(5), new IWeighted(2, 100, 3, 20, 4, 5), new IConstant(1), new ILinear(2, 6), new ILinear(2, 10), new IConstant(1), PandorasBoxHelper.mobs),
-                new PBECSpawnItemSet(new ILinear(0, 20), PandorasBoxHelper.equipmentSets),
-                new PBECMulti(new PBECSpawnEnchantedItems(new IConstant(1), new ILinear(0, 15), new IExp(3, 30, 10.0), PandorasBoxHelper.enchantableArmorList, new ZChance(0.8)), 0, new PBECSpawnEnchantedItems(new IConstant(1), new ILinear(0, 15), new IExp(3, 30, 10.0), PandorasBoxHelper.enchantableToolList, new ZChance(0.8)), 0),
+                new PBECSpawnEntities(new ILinear(5, 10), new IWeighted(2, 100, 3, 20, 4, 5), new IConstant(1), new ILinear(2, 6), new ILinear(2, 10), new IConstant(1), PandorasBoxHelper.mobs),
+                new PBECSpawnItemSet(new ILinear(2, 20), PandorasBoxHelper.equipmentSets),
+                new PBECMulti(new PBECSpawnEnchantedItems(new IConstant(1), new ILinear(2, 15), new IExp(3, 30, 10.0), PandorasBoxHelper.enchantableArmorList, new ZChance(0.8)), 0, new PBECSpawnEnchantedItems(new IConstant(1), new ILinear(2, 15), new IExp(3, 30, 10.0), PandorasBoxHelper.enchantableToolList, new ZChance(0.8)), 0),
                 new PBECSpawnEntities(new ILinear(10, 50), new ILinear(10, 110), new IConstant(1), new IConstant(0), new IConstant(0), new IConstant(0), List.of(new WeightedEntity(100, "pbspecial_experience", 1, 1))),
                 new PBECSpawnEntities(new ILinear(10, 100), new ILinear(10, 30), new IConstant(1), new IConstant(0), new IConstant(0), new IConstant(0), List.of(new WeightedEntity(100, "pbspecial_fireworks", 1, 1)), new ValueThrow(new DLinear(0.02, 0.06), new DConstant(0.01)), new ValueSpawn(new DLinear(2.0, 20.0), new DConstant(0.0))),
                 new PBECSpawnExplosions(new ILinear(10, 150), new ILinear(6, 20), new DLinear(10.0, 20.0), new DLinear(3.0, 5.0), new ZChance(0.3), new ZConstant(true)),

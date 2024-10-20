@@ -71,7 +71,7 @@ public final class PBEffectMeltdown extends PBEffect {
             effects[i].doTick(entity, currentCenter, ticksForEffect);
             if (level.isClientSide) {
                 if (ticksForEffect == 0) {
-                    for (int e = 0; e < 100; e++) {
+                    for (int e = 0; e < 300; e++) {
                         double xDir = (random.nextDouble() - random.nextDouble()) * 2.0;
                         double yDir = random.nextDouble() + 2.0;
                         double zDir = (random.nextDouble() - random.nextDouble()) * 2.0;
@@ -81,7 +81,7 @@ public final class PBEffectMeltdown extends PBEffect {
 
                         level.addParticle(ParticleTypes.ENCHANT, currentCenter.x + xP + xDir, currentCenter.y + yDir, currentCenter.z + zP + zDir, -xDir, -yDir, -zDir);
                     }
-                    for (int e = 0; e < 150; e++) {
+                    for (int e = 0; e < 400; e++) {
                         double xP = (random.nextDouble() - random.nextDouble()) * 0.5;
                         double yP = (random.nextDouble() - random.nextDouble()) * 0.5;
                         double zP = (random.nextDouble() - random.nextDouble()) * 0.5;
@@ -137,7 +137,7 @@ public final class PBEffectMeltdown extends PBEffect {
             }
         }
         if (ticksAlive == maxTicksAlive - 1)
-            level.explode(entity, entity.getX(), entity.getY(), entity.getZ(), 15, true, Level.ExplosionInteraction.MOB);
+            level.explode(entity, entity.getX(), entity.getY(), entity.getZ(), 10, true, Level.ExplosionInteraction.MOB);
     }
 
     @Override
