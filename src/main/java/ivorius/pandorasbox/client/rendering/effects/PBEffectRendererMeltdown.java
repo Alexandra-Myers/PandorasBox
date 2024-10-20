@@ -23,13 +23,14 @@ import java.util.List;
 public class PBEffectRendererMeltdown implements PBEffectRenderer<PBEffectMeltdown> {
     public ResourceLocation meltdownTexture1 = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box_unstable_1.png");
     public ResourceLocation meltdownTexture2 = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box_unstable_2.png");
+    public ResourceLocation meltdownTexture3 = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box_unstable_3.png");
 
     @Override
     public void renderBox(PandorasBoxRenderer renderer, PandorasBoxEntity entity, PBEffectMeltdown effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer, int packedLightIn) {
         int lightColor = 0xff6611;
 
         float timePassed = Math.min((float) entity.getEffectTicksExisted() / effect.maxTicksAlive, 1F);
-        if (timePassed >= 0.75) {
+        if (timePassed >= 0.8) {
             timePassed *= timePassed;
             timePassed *= timePassed;
             timePassed *= timePassed * 0.5F;
@@ -63,6 +64,6 @@ public class PBEffectRendererMeltdown implements PBEffectRenderer<PBEffectMeltdo
     }
 
     public ResourceLocation getTextureForProgress(float progress) {
-        return progress >= 0.675 ? meltdownTexture2 : meltdownTexture1;
+        return progress >= 0.75 ? meltdownTexture3 : progress >= 0.35 ? meltdownTexture2 : meltdownTexture1;
     }
 }
