@@ -93,7 +93,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure {
                     double dist3D = Mth.sqrt(xP * xP + zP * zP + yP * yP);
 
                     if (dist3D < newRange && dist3D >= prevRange) // -3 so we have a bit of a height bonus
-                        setBlockToAirSafe(level, new BlockPos(structureTarget.x + xP, structureTarget.y, structureTarget.z + zP));
+                        setBlockToAirSafe(level, new BlockPos(structureTarget.x + xP, structureTarget.y + yP, structureTarget.z + zP));
                 }
             }
         }

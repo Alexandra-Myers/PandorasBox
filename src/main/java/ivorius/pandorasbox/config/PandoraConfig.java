@@ -28,9 +28,10 @@ public class PandoraConfig extends AtlasConfig {
 	public DoubleHolder boxIntensity;
 	public DoubleHolder goodEffectChance;
 	public IntegerHolder maxEffectsPerBox;
-	private Category boxAttr;
+	private Category balancing;
 	public PandoraConfig() {
 		super(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandoras-box"));
+		declareDefaultForMod(PandorasBox.MOD_ID);
 	}
 
 	@Override
@@ -132,16 +133,16 @@ public class PandoraConfig extends AtlasConfig {
 	@Override
 	public void defineConfigHolders() {
 		boxLongevity = createInRange("box_longevity", 0.2, 0, 1);
-		boxLongevity.tieToCategory(boxAttr);
-		boxLongevity.setupTooltip(1);
+		boxLongevity.tieToCategory(balancing);
+		boxLongevity.setupTooltip(2);
 		boxIntensity = createInRange("box_intensity", 1.0, 0, 10);
-		boxIntensity.tieToCategory(boxAttr);
+		boxIntensity.tieToCategory(balancing);
 		boxIntensity.setupTooltip(1);
 		goodEffectChance = createInRange("good_effect_chance", 0.49, 0, 1);
-		goodEffectChance.tieToCategory(boxAttr);
+		goodEffectChance.tieToCategory(balancing);
 		goodEffectChance.setupTooltip(1);
 		maxEffectsPerBox = createInRange("max_effects_per_box", 3, 1, 100, true);
-		maxEffectsPerBox.tieToCategory(boxAttr);
+		maxEffectsPerBox.tieToCategory(balancing);
 		maxEffectsPerBox.setupTooltip(1);
 		configuredTables = new HashMap<>();
 	}
@@ -149,8 +150,8 @@ public class PandoraConfig extends AtlasConfig {
 	@Override
 	public @NotNull List<Category> createCategories() {
 		List<Category> baseCategories = super.createCategories();
-		boxAttr = new Category(this, "box_attributes", new ArrayList<>());
-		baseCategories.add(boxAttr);
+		balancing = new Category(this, "balancing", new ArrayList<>());
+		baseCategories.add(balancing);
 		return baseCategories;
 	}
 

@@ -34,8 +34,7 @@ public class PBECSetWeather implements PBEffectCreator
         int weather = this.weather.getValue(random);
         int rainTime = this.rainTime.getValue(random);
 
-        PBEffectSetWeather effect = new PBEffectSetWeather(time, weather > 0, weather > 1, rainTime);
-        return effect;
+        return new PBEffectSetWeather(time, weather > 0, weather > 1, rainTime);
     }
 
     @Override

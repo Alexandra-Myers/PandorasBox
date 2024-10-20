@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effectcreators;
 
+import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectSpawnItemStacks;
 import ivorius.pandorasbox.random.*;
@@ -22,7 +23,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -33,19 +33,25 @@ public class PBECSpawnItems implements PBEffectCreator {
     public IValue number;
     public IValue ticksPerItem;
     public List<RandomizedItemStack> items;
+    public ZValue canBeFood;
     public ValueThrow valueThrow;
     public ValueSpawn valueSpawn;
 
-    public PBECSpawnItems(IValue number, IValue ticksPerItem, List<RandomizedItemStack> items, ValueThrow valueThrow, ValueSpawn valueSpawn) {
+    public PBECSpawnItems(IValue number, IValue ticksPerItem, List<RandomizedItemStack> items, ZValue canBeFood, ValueThrow valueThrow, ValueSpawn valueSpawn) {
         this.number = number;
         this.ticksPerItem = ticksPerItem;
         this.items = items;
+        this.canBeFood = canBeFood;
         this.valueThrow = valueThrow;
         this.valueSpawn = valueSpawn;
     }
 
+    public PBECSpawnItems(IValue number, IValue ticksPerItem, List<RandomizedItemStack> items, ZValue canBeFood) {
+        this(number, ticksPerItem, items, canBeFood, defaultThrow(), null);
+    }
+
     public PBECSpawnItems(IValue number, IValue ticksPerItem, List<RandomizedItemStack> items) {
-        this(number, ticksPerItem, items, defaultThrow(), null);
+        this(number, ticksPerItem, items, new ZConstant(false), defaultThrow(), null);
     }
 
     public static ValueThrow defaultThrow() {
@@ -73,11 +79,12 @@ public class PBECSpawnItems implements PBEffectCreator {
         throw new RuntimeException("Both spawnRange and throwStrength are null!");
     }
 
-    public static ItemStack[] getItemStacks(RandomSource random, RegistryAccess registryAccess, List<RandomizedItemStack> items, int number, boolean split, boolean mixUp, int enchantLevel, boolean giveNames) {
-        ArrayList<ItemStack> list = new ArrayList<>();
+    public static ItemStack[] getItemStacks(RandomSource random, RegistryAccess registryAccess, List<RandomizedItemStack> items, int number, boolean split, boolean mixUp, int enchantLevel, boolean giveNames, boolean isFood) {
+        ItemStack[] stacks = new ItemStack[number];
         for (int i = 0; i < number; i++) {
             RandomizedItemStack wrcc = mixUp ? WeightedSelector.selectItem(random, items) : items.get(i);
             ItemStack stack = wrcc.itemStack.copy();
+            if (isFood) PandorasBoxHelper.createRandomFoodProperties(stack, random);
             stack.setCount(wrcc.min + random.nextInt(wrcc.max - wrcc.min + 1));
 
             Stream<Holder<Enchantment>> optional = registryAccess.registryOrThrow(Registries.ENCHANTMENT).holders().map(enchantmentReference -> enchantmentReference);
@@ -104,22 +111,23 @@ public class PBECSpawnItems implements PBEffectCreator {
             if (split) {
                 for (int n = 0; n < stack.getCount(); n++) {
                     ItemStack splitStack = stack.split(1);
-                    list.add(splitStack);
+                    stacks[i] = splitStack;
                 }
             } else {
-                list.add(stack);
+                stacks[i] = stack;
             }
         }
 
-        return list.toArray(new ItemStack[list.size()]);
+        return stacks;
     }
 
     @Override
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int number = this.number.getValue(random);
         int ticksPerItem = this.ticksPerItem.getValue(random);
+        boolean isFood = this.canBeFood.getValue(random);
 
-        ItemStack[] stacks = getItemStacks(random, world.registryAccess(), items, number, random.nextInt(3) != 0, true, 0, false);
+        ItemStack[] stacks = getItemStacks(random, world.registryAccess(), items, number, random.nextInt(3) != 0, true, 0, false, isFood);
         return constructEffect(random, stacks, number * ticksPerItem + 1, valueThrow, valueSpawn);
     }
 

@@ -20,8 +20,7 @@ import java.util.Collection;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECLavaCage implements PBEffectCreator
-{
+public class PBECLavaCage implements PBEffectCreator {
     public DValue range;
 
     public Block lavaBlock;

@@ -17,6 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,8 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 
-public class PandorasBoxHelper
-{
+public class PandorasBoxHelper {
     public static List<WeightedEntity> landMobs = new ArrayList<>();
     public static List<WeightedEntity> mobs = new ArrayList<>();
     public static List<WeightedEntity> creatures = new ArrayList<>();
@@ -68,7 +68,7 @@ public class PandorasBoxHelper
 
             Item item = block.asItem();
             if (item != null)
-                addItem(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight));
+                blocksAndItems.add(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight));
         }
     }
     public static void addBlocks(double weight, List<Block> blocks) {
@@ -77,7 +77,7 @@ public class PandorasBoxHelper
 
             Item item = block.asItem();
             if (item != null)
-                addItem(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight));
+                blocksAndItems.add(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight));
         }
     }
 
@@ -264,7 +264,7 @@ public class PandorasBoxHelper
         ArrayListExtensions<Item> misc = new ArrayListExtensions<>();
         ArrayListExtensions<Item> records = new ArrayListExtensions<>();
         ArrayListExtensions<Item> dyes = new ArrayListExtensions<>();
-        glass.addAll(Blocks.COAL_ORE, Blocks.LAPIS_ORE, Blocks.REDSTONE_ORE, Blocks.NETHER_QUARTZ_ORE, Blocks.GLASS);
+        glass.addAll(Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE, Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE, Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE, Blocks.REDSTONE_ORE, Blocks.DEEPSLATE_REDSTONE_ORE, Blocks.NETHER_QUARTZ_ORE, Blocks.GLASS);
         planks.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.DEEPSLATE, Blocks.TUFF, Blocks.SANDSTONE, Blocks.SAND, Blocks.RED_SAND, Blocks.RED_SANDSTONE);
         randomizable.addAll(
                 Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.DEEPSLATE, Blocks.TUFF, Blocks.DIRT, Blocks.SAND, Blocks.RED_SAND, Blocks.STONE_BRICK_STAIRS,
@@ -299,26 +299,28 @@ public class PandorasBoxHelper
         addBlocks(8.0, glass);
         addBlocks(0.2, Blocks.NETHERITE_BLOCK, Blocks.DIAMOND_BLOCK, Blocks.EMERALD_BLOCK, Blocks.GOLD_BLOCK, Blocks.LODESTONE);
         addBlocks(0.3, Blocks.IRON_BLOCK);
-        addBlocks(0.5, Blocks.ANCIENT_DEBRIS, Blocks.DIAMOND_ORE, Blocks.EMERALD_ORE, Blocks.GOLD_ORE);
-        addBlocks(1.0, Blocks.IRON_ORE);
-        addBlocks(2.0, Blocks.TNT, Blocks.GLOWSTONE, Blocks.SHROOMLIGHT, Blocks.COAL_BLOCK, Blocks.LAPIS_BLOCK, Blocks.REDSTONE_BLOCK, Blocks.SLIME_BLOCK, Blocks.SPONGE);
+        addBlocks(0.5, Blocks.ANCIENT_DEBRIS, Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE, Blocks.EMERALD_ORE, Blocks.DEEPSLATE_EMERALD_ORE, Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE, Blocks.NETHER_GOLD_ORE);
+        addBlocks(1.0, Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE);
+        addBlocks(2.0, Blocks.TNT, Blocks.GLOWSTONE, Blocks.SHROOMLIGHT, Blocks.COAL_BLOCK, Blocks.COPPER_BLOCK, Blocks.LAPIS_BLOCK, Blocks.REDSTONE_BLOCK, Blocks.SLIME_BLOCK, Blocks.SPONGE);
         addBlocks(5.0, Blocks.DRAGON_EGG, Blocks.REDSTONE_LAMP, Blocks.SEA_LANTERN, Blocks.SNOW, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.HAY_BLOCK, Blocks.OBSIDIAN, Blocks.MELON, Blocks.CHISELED_BOOKSHELF);
 
-        addItems(10.0, Items.COAL, Items.GUNPOWDER, Items.WHEAT, Items.SADDLE, Items.REDSTONE, Items.BONE, Items.MELON, Items.CLAY_BALL, Items.BOOK, Items.GOLD_NUGGET, Items.POTATO, Items.BUCKET, Items.STICK, Items.STRING, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.WHEAT_SEEDS, Items.SNOWBALL, Items.SUGAR, Items.FISHING_ROD, Items.NETHER_WART, Items.FLINT, Items.EGG, Items.BRICK, Items.PAPER, Items.TORCH);
+        addItems(10.0, Items.COAL, Items.CHARCOAL, Items.COPPER_INGOT, Items.GUNPOWDER, Items.WHEAT, Items.SADDLE, Items.REDSTONE, Items.BONE, Items.FEATHER, Items.MELON_SLICE, Items.CLAY_BALL, Items.BOOK, Items.BOWL, Items.GOLD_NUGGET, Items.POTATO, Items.BUCKET, Items.STICK, Items.STRING, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.SNOWBALL, Items.SUGAR, Items.FISHING_ROD, Items.NETHER_WART, Items.FLINT, Items.EGG, Items.BRICK, Items.PAPER, Items.TORCH, Items.SOUL_TORCH, Items.NETHER_BRICK, Items.BEETROOT);
         addItems(10.0, ItemInit.PBI);
-        addItems(10.0, Items.CHICKEN, Items.COOKED_CHICKEN, Items.BEEF, Items.PUMPKIN_PIE, Items.COOKED_BEEF, Items.MUSHROOM_STEW, Items.ROTTEN_FLESH, Items.CARROT, Items.PORKCHOP, Items.COOKED_PORKCHOP, Items.APPLE, Items.CAKE, Items.BREAD, Items.COOKIE, Items.COD, Items.COOKED_COD, Items.SALMON, Items.COOKED_SALMON, Items.PUFFERFISH, Items.MUTTON, Items.COOKED_MUTTON, Items.RABBIT, Items.RABBIT_FOOT, Items.RABBIT_HIDE, Items.RABBIT_STEW, Items.COOKED_RABBIT, Items.HONEY_BOTTLE, Items.SWEET_BERRIES);
+        addItems(10.0, Items.HONEYCOMB, Items.CHICKEN, Items.COOKED_CHICKEN, Items.BEEF, Items.PUMPKIN_PIE, Items.COOKED_BEEF, Items.MUSHROOM_STEW, Items.ROTTEN_FLESH, Items.CARROT, Items.PORKCHOP, Items.COOKED_PORKCHOP, Items.APPLE, Items.CAKE, Items.BREAD, Items.COOKIE, Items.COD, Items.COOKED_COD, Items.SALMON, Items.COOKED_SALMON, Items.PUFFERFISH, Items.MUTTON, Items.COOKED_MUTTON, Items.RABBIT, Items.RABBIT_FOOT, Items.RABBIT_HIDE, Items.RABBIT_STEW, Items.COOKED_RABBIT, Items.HONEY_BOTTLE, Items.SWEET_BERRIES, Items.GLOW_BERRIES);
         addItems(8.0,  misc);
-        addItems(8.0, Items.NAME_TAG);
-        addItems(6.0, Items.IRON_INGOT, Items.GLOWSTONE_DUST, Items.BLAZE_POWDER, Items.BLAZE_ROD, Items.BREEZE_ROD, Items.CLOCK, Items.GHAST_TEAR, Items.ENDER_EYE, Items.GLISTERING_MELON_SLICE, Items.SPIDER_EYE, Items.FERMENTED_SPIDER_EYE, Items.MAGMA_CREAM, Items.GOLDEN_CARROT);
+        addItems(8.0, Items.NAME_TAG, Items.NAUTILUS_SHELL, Items.LEATHER, Items.INK_SAC, Items.GLOW_INK_SAC, Items.ARMADILLO_SCUTE, Items.LANTERN, Items.SOUL_LANTERN, Items.SUSPICIOUS_STEW, Items.SLIME_BALL, Items.SPYGLASS);
+        addItems(6.0, Items.IRON_INGOT, Items.AMETHYST_SHARD, Items.GLOWSTONE_DUST, Items.BLAZE_POWDER, Items.BLAZE_ROD, Items.WIND_CHARGE, Items.BREEZE_ROD, Items.CLOCK, Items.GHAST_TEAR, Items.ENDER_EYE, Items.GLISTERING_MELON_SLICE, Items.SPIDER_EYE, Items.FERMENTED_SPIDER_EYE, Items.MAGMA_CREAM, Items.GOLDEN_CARROT, Items.TURTLE_SCUTE, Items.PHANTOM_MEMBRANE, Items.COCOA_BEANS);
         addItems(4.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
         addItems(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE);
-        addItems(4.0, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
-        addItems(3.0, Items.IRON_HORSE_ARMOR, Items.GOLDEN_HORSE_ARMOR);
+        addItems(4.0, Items.TURTLE_HELMET, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
+        addItems(4.0, Items.COMPASS, Items.LEAD, Items.CHORUS_FRUIT, Items.HEART_OF_THE_SEA);
+        addItems(3.0, Items.SHIELD, Items.WOLF_ARMOR, Items.LEATHER_HORSE_ARMOR, Items.IRON_HORSE_ARMOR, Items.GOLDEN_HORSE_ARMOR);
         addItems(2.0, Items.DIAMOND_HORSE_ARMOR);
         addItemsMinMax(2.0, 1, 1, Items.NETHER_STAR, Items.BEACON, Items.ANVIL, Items.BREWING_STAND, Items.DISPENSER, Items.ENDER_CHEST, Items.JUKEBOX, Items.ENCHANTING_TABLE);
         addItemsMinMax(5.0, 1, 1, Items.CHEST, Items.BARREL);
         addItems(2.0, Items.DIAMOND, Items.EMERALD, Items.GOLD_INGOT, Items.GOLDEN_APPLE, Items.ENDER_PEARL, Items.PRISMARINE_CRYSTALS, Items.PRISMARINE_SHARD, Items.OMINOUS_BOTTLE);
-        addItems(0.5, Items.NETHERITE_SCRAP, Items.DISC_FRAGMENT_5, Items.ECHO_SHARD, Items.RECOVERY_COMPASS, Items.HEAVY_CORE);
+        addItemsMinMax(0.5, 1, 5, Items.NETHERITE_SCRAP, Items.DISC_FRAGMENT_5, Items.ECHO_SHARD, Items.RECOVERY_COMPASS);
+        addItems(1.0, Items.ELYTRA, Items.DRAGON_BREATH);
         addItems(2.0, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
         addItems(0.2, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS, Items.NETHERITE_SWORD, Items.NETHERITE_PICKAXE, Items.NETHERITE_SHOVEL, Items.NETHERITE_AXE, Items.NETHERITE_HOE);
         addItems(2.0, records);
@@ -335,7 +337,7 @@ public class PandorasBoxHelper
         addEquipmentSet(8.0, Items.LEATHER_HELMET, Items.IRON_HOE, new ItemStack(Items.WHEAT_SEEDS, 32), new ItemStack(Items.PUMPKIN_SEEDS, 4), new ItemStack(Items.MELON_SEEDS, 4), new ItemStack(Items.BLUE_DYE, 8), new ItemStack(Items.DIRT, 32), Items.WATER_BUCKET, Items.WATER_BUCKET);
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.DIAMOND_AXE, new ItemStack(Items.COOKED_BEEF, 16));
         addEquipmentSet(6.0, Items.TURTLE_HELMET, Items.IRON_BOOTS, Items.TRIDENT, Items.IRON_SWORD, new ItemStack(Items.BREAD, 48));
-        addEquipmentSet(1.0, Items.DIAMOND_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.TRIDENT, Items.MACE, Items.IRON_AXE, new ItemStack(Items.COOKED_BEEF, 8));
+        addEquipmentSet(0.1, Items.DIAMOND_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.TRIDENT, Items.MACE, Items.IRON_AXE, new ItemStack(Items.COOKED_BEEF, 8));
         for(Block block : PandorasBox.wool)
             if(RandomSource.create().nextDouble() > 0.8)
                 addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
@@ -356,7 +358,9 @@ public class PandorasBoxHelper
 
         addEnchantableArmor(1.0, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS);
 
-        addEnchantableTools(1.0, Items.NETHERITE_SWORD, Items.NETHERITE_SHOVEL, Items.NETHERITE_PICKAXE, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.TRIDENT, Items.MACE);
+        addEnchantableTools(1.0, Items.NETHERITE_SWORD, Items.NETHERITE_SHOVEL, Items.NETHERITE_PICKAXE, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.TRIDENT);
+
+        addEnchantableTools(0.1, Items.MACE);
 
         addBlocks(heavyBlocks, 10.0, Blocks.ANVIL);
 
@@ -376,6 +380,19 @@ public class PandorasBoxHelper
             if ((i++) == num)
                 return t;
         throw new InternalError();
+    }
+
+    public static void createRandomFoodProperties(ItemStack stack, RandomSource random) {
+        FoodProperties.Builder builder = new FoodProperties.Builder();
+        if (random.nextBoolean()) builder.alwaysEdible();
+        if (random.nextDouble() > 0.7) builder.fast();
+        builder.nutrition(random.nextIntBetweenInclusive(1, 10));
+        builder.saturationModifier((float) (0.9 + (random.nextDouble() - random.nextDouble()) * 0.75));
+        if (random.nextDouble() > 0.95) {
+            List<WeightedPotion>[] posOrNegative = new List[] {buffs, debuffs};
+            builder.effect(WeightedSelector.selectItem(random, posOrNegative[random.nextInt(2)]).build(random), (float) random.nextGaussian());
+        }
+        stack.set(DataComponents.FOOD, builder.build());
     }
 
     public static BlockState getRandomBlockState(RandomSource rand, Block block, int unified) {

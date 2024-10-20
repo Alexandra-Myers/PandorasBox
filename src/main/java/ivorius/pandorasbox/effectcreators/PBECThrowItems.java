@@ -48,10 +48,9 @@ public class PBECThrowItems implements PBEffectCreator
         double deletionChance = this.deletionChancePerThrow.getValue(random);
         int smuggledIn = this.smuggledInItems.getValue(random);
 
-        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), items, smuggledIn, random.nextInt(3) != 0, true, 0, false);
+        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), items, smuggledIn, random.nextInt(3) != 0, true, 0, false, false);
 
-        PBEffectEntitiesThrowItems effect = new PBEffectEntitiesThrowItems(time, range, chancePerItem, deletionChance, stacks);
-        return effect;
+        return new PBEffectEntitiesThrowItems(time, range, chancePerItem, deletionChance, stacks);
     }
 
     @Override

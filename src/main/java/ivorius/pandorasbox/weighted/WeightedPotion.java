@@ -6,7 +6,9 @@
 package ivorius.pandorasbox.weighted;
 
 import net.minecraft.core.Holder;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 
 /**
  * Created by lukas on 31.03.14.
@@ -37,5 +39,11 @@ public class WeightedPotion implements WeightedSelector.Item
     public double weight()
     {
         return weight;
+    }
+
+    public MobEffectInstance build(RandomSource random) {
+        int duration = random.nextInt(maxDuration - minDuration + 1) + minDuration;
+        int strength = random.nextInt(maxStrength - minStrength + 1) + minStrength;
+        return new MobEffectInstance(potion, duration, strength, false, false);
     }
 }

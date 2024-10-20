@@ -22,8 +22,7 @@ import java.util.List;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenLavaCages extends PBEffectGenerate
-{
+public class PBEffectGenLavaCages extends PBEffectGenerate {
     public Block lavaBlock;
     public Block fillBlock;
     public Block cageBlock;

@@ -306,16 +306,18 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities {
     public static FireworkExplosion createRandomFireworkExplosion(RandomSource random) {
         FireworkExplosion.Shape fireworkShape = FireworkExplosion.Shape.byId((random.nextInt(10) != 0) ? 0 : (random.nextInt(4) + 1));
 
-        IntList colors = new IntArrayList((random.nextInt(15) != 0) ? 1 : (random.nextInt(2) + 2));
-        for (int i = 0; i < colors.size(); i++) {
-            colors.set(i, DyeColor.byId(random.nextInt(16)).getFireworkColor());
+        int size = (random.nextInt(15) != 0) ? 1 : (random.nextInt(2) + 2);
+        IntList colors = new IntArrayList(size);
+        for (int i = 0; i < size; i++) {
+            colors.add(i, DyeColor.byId(random.nextInt(16)).getFireworkColor());
         }
 
         IntList fadeColors = IntLists.emptyList();
         if (random.nextInt(25) == 0) {
-            fadeColors = new IntArrayList(random.nextInt(2) + 1);
-            for (int i = 0; i < fadeColors.size(); i++) {
-                fadeColors.set(i, DyeColor.byId(random.nextInt(16)).getFireworkColor());
+            size = random.nextInt(2) + 1;
+            fadeColors = new IntArrayList(size);
+            for (int i = 0; i < size; i++) {
+                fadeColors.add(i, DyeColor.byId(random.nextInt(16)).getFireworkColor());
             }
         }
 

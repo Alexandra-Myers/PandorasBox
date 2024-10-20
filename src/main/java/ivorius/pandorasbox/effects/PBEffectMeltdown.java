@@ -71,20 +71,20 @@ public final class PBEffectMeltdown extends PBEffect {
             effects[i].doTick(entity, currentCenter, ticksForEffect);
             if (level.isClientSide) {
                 if (ticksForEffect == 0) {
-                    for (int e = 0; e < 50; e++) {
-                        double xDir = (random.nextDouble() - random.nextDouble()) * 4.0;
-                        double yDir = random.nextDouble() * 5.0 + 2.0;
-                        double zDir = (random.nextDouble() - random.nextDouble()) * 4.0;
+                    for (int e = 0; e < 100; e++) {
+                        double xDir = (random.nextDouble() - random.nextDouble()) * 2.0;
+                        double yDir = random.nextDouble() + 2.0;
+                        double zDir = (random.nextDouble() - random.nextDouble()) * 2.0;
 
                         double xP = (random.nextDouble() - 0.5) * entity.getBbWidth();
                         double zP = (random.nextDouble() - 0.5) * entity.getBbWidth();
 
                         level.addParticle(ParticleTypes.ENCHANT, currentCenter.x + xP + xDir, currentCenter.y + yDir, currentCenter.z + zP + zDir, -xDir, -yDir, -zDir);
                     }
-                    for (int e = 0; e < 60; e++) {
-                        double xP = (random.nextDouble() * 16D) - 8D;
-                        double yP = (random.nextDouble() * 5D) - 2D;
-                        double zP = (random.nextDouble() * 16D) - 8D;
+                    for (int e = 0; e < 150; e++) {
+                        double xP = (random.nextDouble() - random.nextDouble()) * 0.5;
+                        double yP = (random.nextDouble() - random.nextDouble()) * 0.5;
+                        double zP = (random.nextDouble() - random.nextDouble()) * 0.5;
 
                         double xDir = (random.nextDouble() * 3D) - 1.75D;
                         double yDir = (random.nextDouble() * 3D) - 1.75D;

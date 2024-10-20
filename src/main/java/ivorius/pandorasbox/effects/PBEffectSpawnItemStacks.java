@@ -39,6 +39,7 @@ public class PBEffectSpawnItemStacks extends PBEffectSpawnEntities {
     @Override
     public Entity spawnEntity(Level world, PandorasBoxEntity entity, RandomSource random, int number, double x, double y, double z) {
         if(world.isClientSide()) return null;
+        if (stacks.length == 0) return null;
         ItemEntity entityItem = new ItemEntity(world, x, y, z, stacks[number]);
         entityItem.setPickUpDelay(10);
         world.addFreshEntity(entityItem);

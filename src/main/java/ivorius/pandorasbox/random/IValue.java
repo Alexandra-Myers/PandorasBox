@@ -12,5 +12,5 @@ import net.minecraft.util.RandomSource;
  */
 public interface IValue
 {
-    public int getValue(RandomSource random);
+    int getValue(RandomSource random);
 }

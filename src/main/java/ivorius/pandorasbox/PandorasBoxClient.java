@@ -5,9 +5,11 @@ import ivorius.pandorasbox.client.rendering.PandorasBoxModel;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRendererExplosion;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRendererMeltdown;
+import ivorius.pandorasbox.client.rendering.effects.PBEffectRendererMulti;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderingRegistry;
 import ivorius.pandorasbox.effects.PBEffectExplode;
 import ivorius.pandorasbox.effects.PBEffectMeltdown;
+import ivorius.pandorasbox.effects.PBEffectMulti;
 import ivorius.pandorasbox.init.BlockEntityInit;
 import ivorius.pandorasbox.init.EntityInit;
 import net.fabricmc.api.ClientModInitializer;
@@ -30,6 +32,7 @@ public class PandorasBoxClient implements ClientModInitializer {
         BlockEntityRenderers.register(BlockEntityInit.BEPB, PandorasBoxBlockEntityRenderer::new);
         PBEffectRenderingRegistry.registerRenderer(PBEffectExplode.class, new PBEffectRendererExplosion());
         PBEffectRenderingRegistry.registerRenderer(PBEffectMeltdown.class, new PBEffectRendererMeltdown());
+        PBEffectRenderingRegistry.registerRenderer(PBEffectMulti.class, new PBEffectRendererMulti());
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> initPB());
     }
 }

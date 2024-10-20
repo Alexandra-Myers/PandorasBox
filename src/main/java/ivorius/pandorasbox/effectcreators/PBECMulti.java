@@ -23,6 +23,7 @@ public class PBECMulti implements PBEffectCreator {
     }
 
     public PBECMulti(Object... effectsAndDelays) {
+        if (effectsAndDelays.length % 2 != 0) throw new IllegalStateException("Each effect must be mapped to a delay!");
         this.effects = new PBEffectCreator[effectsAndDelays.length / 2];
         this.delays = new int[this.effects.length];
 

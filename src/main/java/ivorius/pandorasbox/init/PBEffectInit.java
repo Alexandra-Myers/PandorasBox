@@ -7,7 +7,7 @@ import static ivorius.pandorasbox.init.Init.*;
 public class PBEffectInit {
     static {
         makeFixedChance("matryoshka", 0.02);
-        makeFixedChance("rage_of_zeus", 0.001);
+        makePositiveOrNegativeFixedChance("rage_of_zeus", 0.001, false);
         makePositiveOrNegative("mobs", false);
         makePositiveOrNegative("mob_towers", false);
         makePositiveOrNegative("megaton", false);
@@ -71,6 +71,7 @@ public class PBEffectInit {
         makePositiveOrNegative("animal_towers", true);
         makePositiveOrNegative("tamer", true);
         makePositiveOrNegative("items", true);
+        makePositiveOrNegative("is_this_edible", true);
         makePositiveOrNegative("epic_armor", true);
         makePositiveOrNegative("epic_tool", true);
         makePositiveOrNegative("epic_thing", true);

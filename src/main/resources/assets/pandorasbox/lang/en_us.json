@@ -2,7 +2,16 @@
     "entity.pandorasbox.pandoras_box": "Pandora's Box",
     "block.pandorasbox.pandoras_box": "Pandora's Box",
 
-    "pandorasbox.configgui.title": "Pandora's Box",
-    "pandorasbox.configgui.ctgy.balancing": "Balancing",
-    "pandorasbox.configgui.ctgy.balancing.tooltip": "Settings affecting the balance of the mod"
+    "text.config.pandoras-box.title": "Pandora's Box",
+    "text.config.pandoras-box.reset": "Reset",
+    "text.config.pandoras-box.category.balancing": "Balancing",
+    "text.config.pandoras-box.option.box_longevity": "Box Longevity",
+    "text.config.pandoras-box.option.box_longevity.tooltip.0": "The probability that, if the box can continue to generate effects, a new effect would be produced.",
+    "text.config.pandoras-box.option.box_longevity.tooltip.1": "   * Note: The maximum value, or 1, means it will go on indefinitely as long as effects can be produced.",
+    "text.config.pandoras-box.option.box_intensity": "Box Intensity",
+    "text.config.pandoras-box.option.box_intensity.tooltip.0": "Represents the intensity of the box, the higher this is, the more likely it is to produce multiple effects.",
+    "text.config.pandoras-box.option.good_effect_chance": "Good Effect Chance",
+    "text.config.pandoras-box.option.good_effect_chance.tooltip.0": "The probability that a 'good' effect will be chosen.",
+    "text.config.pandoras-box.option.max_effects_per_box": "Maximum Effects Per Box",
+    "text.config.pandoras-box.option.max_effects_per_box.tooltip.0": "The highest amount of effects a box can hold."
 }

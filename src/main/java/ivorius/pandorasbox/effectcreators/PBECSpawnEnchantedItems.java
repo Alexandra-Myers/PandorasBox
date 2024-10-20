@@ -55,7 +55,7 @@ public class PBECSpawnEnchantedItems implements PBEffectCreator
         int ticksPerItem = this.ticksPerItem.getValue(random);
         boolean giveNames = this.giveNames.getValue(random);
 
-        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), items, number, false, true, enchantLevel, giveNames);
+        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), items, number, false, true, enchantLevel, giveNames, false);
 
         for (ItemStack stack : stacks)
             stack.setCount(1);

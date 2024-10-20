@@ -22,16 +22,14 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.projectile.Arrow;
 import org.jetbrains.annotations.NotNull;
 
-public class PandorasBoxModel extends EntityModel<Arrow> {
+public class PandorasBoxModel extends EntityModel<PandorasBoxEntity> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandoras_box"), "main");
     private final ModelPart feet;
     private final ModelPart body;
     private final ModelPart joint;
     private final ModelPart top;
-    public PandorasBoxEntity PBE;
 
     public PandorasBoxModel(ModelPart root) {
         this.feet = root.getChild("feet");
@@ -68,7 +66,7 @@ public class PandorasBoxModel extends EntityModel<Arrow> {
     }
 
     @Override
-    public void setupAnim(Arrow entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(PandorasBoxEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         top.xRot = entity.getXRot();
     }
 

@@ -28,19 +28,19 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.PowerableMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PandorasBoxEntity extends Entity {
+public class PandorasBoxEntity extends Entity implements PowerableMob {
     public static final float BOX_UPSCALE_SPEED = 0.02f;
     private static final EntityDataAccessor<Integer> BOX_DEATH_TICKS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> BOX_WAITING_TIME = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
@@ -397,5 +397,10 @@ public class PandorasBoxEntity extends Entity {
         compound.putDouble("effectCenterX", effectCenter.x);
         compound.putDouble("effectCenterY", effectCenter.y);
         compound.putDouble("effectCenterZ", effectCenter.z);
+    }
+
+    @Override
+    public boolean isPowered() {
+        return true;
     }
 }

@@ -44,8 +44,7 @@ public class PBECDome implements PBEffectCreator
 
         Block domeBlock = PandorasBoxHelper.getRandomBlock(random, domeBlocks);
 
-        PBEffectGenDome gen = new PBEffectGenDome(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), domeBlock, fillBlock);
-        return gen;
+        return new PBEffectGenDome(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), domeBlock, fillBlock);
     }
 
     @Override

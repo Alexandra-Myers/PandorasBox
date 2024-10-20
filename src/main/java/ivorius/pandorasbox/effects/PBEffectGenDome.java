@@ -33,30 +33,21 @@ public class PBEffectGenDome extends PBEffectGenerate2D
     }
 
     @Override
-    public void generateOnSurface(Level world, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, BlockPos pos, double dist, int pass)
-    {
+    public void generateOnSurface(Level world, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, BlockPos pos, double dist, int pass) {
         int domeHeightY = Mth.ceil(range);
 
-        for (int y = -domeHeightY; y <= domeHeightY; y++)
-        {
+        for (int y = -domeHeightY; y <= domeHeightY; y++) {
             BlockPos shiftedPos = pos.above(y);
 
-            if (pass == 0)
-            {
-                if (isSpherePart(shiftedPos.getX() + 0.5, shiftedPos.getY() + 0.5, shiftedPos.getZ() + 0.5, effectCenter.x, effectCenter.y, effectCenter.z, range - 1.5, range))
-                {
-                    if (world.getBlockState(shiftedPos).canSurvive(world, shiftedPos))
-                    {
+            if (pass == 0) {
+                if (isSpherePart(shiftedPos.getX() + 0.5, shiftedPos.getY() + 0.5, shiftedPos.getZ() + 0.5, effectCenter.x, effectCenter.y, effectCenter.z, range - 1.5, range)) {
+                    if (world.getBlockState(shiftedPos).canSurvive(world, shiftedPos)) {
                         setBlockVarying(world, shiftedPos, this.block, unifiedSeed);
                     }
                 }
-            }
-            else if (pass == 1 && fillBlock != null)
-            {
-                if (isSpherePart(shiftedPos.getX() + 0.5, shiftedPos.getY() + 0.5, shiftedPos.getZ() + 0.5, effectCenter.x, effectCenter.y, effectCenter.z, 0.0, range - 1.5))
-                {
-                    if (world.getBlockState(shiftedPos).canSurvive(world, shiftedPos))
-                    {
+            } else if (pass == 1 && fillBlock != null) {
+                if (isSpherePart(shiftedPos.getX() + 0.5, shiftedPos.getY() + 0.5, shiftedPos.getZ() + 0.5, effectCenter.x, effectCenter.y, effectCenter.z, 0.0, range - 1.5)) {
+                    if (world.getBlockState(shiftedPos).canSurvive(world, shiftedPos)) {
                         setBlockVarying(world, shiftedPos, this.fillBlock, unifiedSeed);
                     }
                 }
@@ -91,6 +82,6 @@ public class PBEffectGenDome extends PBEffectGenerate2D
         super.readFromNBT(compound, registryAccess);
 
         block = PBNBTHelper.getBlock(compound.getString("block"));
-        fillBlock = PBNBTHelper.getBlock(compound.getString("fillBlock"));
+        if (compound.contains("fillBlock")) fillBlock = PBNBTHelper.getBlock(compound.getString("fillBlock"));
     }
 }

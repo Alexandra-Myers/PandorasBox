@@ -8,7 +8,6 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -53,7 +52,7 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal {
 
     @Override
     public void doEffect(Level level, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
-        if (level instanceof ServerLevel) {
+        if (!level.isClientSide) {
             int prev = getSpawnNumber(prevRatio);
             int toSpawn = getSpawnNumber(newRatio) - prev;
 
