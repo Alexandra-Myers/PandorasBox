@@ -29,7 +29,7 @@ public class PBEffects {
         PandorasBoxHelper.initialize();
 
         PBECRegistry.register(new PBECDuplicateBox(new IConstant(PBEffectDuplicateBox.MODE_BOX_IN_BOX), new DConstant(0.5)), "matryoshka");
-        PBECRegistry.register(new PBECMeltdown(new DLinear(50.0, 150.0), new ILinear(750, 1250)), "rage_of_zeus");
+        PBECRegistry.register(new PBECMeltdown(new DGaussian(100.0, 175.0), new ILinear(750, 1250)), "rage_of_zeus");
 
         MELTDOWN_CREATORS = new PBEffectCreator[] {
                 new PBECSpawnLightning(new ILinear(80, 150), new ILinear(10, 48), new DLinear(10.0, 30.0))
