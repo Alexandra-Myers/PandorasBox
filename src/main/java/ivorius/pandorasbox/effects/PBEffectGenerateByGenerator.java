@@ -48,20 +48,16 @@ public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate {
     abstract ArrayListExtensions<T> initializeGens();
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range)
-    {
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if(treeGens == null)
             this.treeGens = initializeGens();
-        if (world instanceof ServerLevel serverWorld)
-        {
-            if (random.nextDouble() < chancePerBlock)
-            {
+        if (world instanceof ServerLevel serverWorld) {
+            if (random.nextDouble() < chancePerBlock) {
                 BlockState blockState = world.getBlockState(pos);
                 BlockPos posBelow = pos.below();
                 BlockState blockBelowState = world.getBlockState(posBelow);
 
-                if (blockState.isAir() && (!requiresSolidGround || blockBelowState.isRedstoneConductor(world, posBelow)))
-                {
+                if (blockState.isAir() && (!requiresSolidGround || blockBelowState.isCollisionShapeFullBlock(world, posBelow))) {
                     setBlockSafe(world, posBelow, Blocks.DIRT.defaultBlockState());
 
                     T generator = getRandomGenerator(getGenerators(), generatorFlags, random);

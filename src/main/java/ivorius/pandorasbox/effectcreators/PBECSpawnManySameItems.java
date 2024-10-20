@@ -9,6 +9,7 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ValueSpawn;
 import ivorius.pandorasbox.random.ValueThrow;
+import ivorius.pandorasbox.random.ZValue;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -22,21 +23,23 @@ import java.util.List;
 public class PBECSpawnManySameItems implements PBEffectCreator
 {
     public IValue ticksPerStack;
+    public ZValue spawnsFromEffectCenter;
     public List<RandomizedItemStack> items;
     public ValueThrow valueThrow;
     public ValueSpawn valueSpawn;
 
-    public PBECSpawnManySameItems(IValue ticksPerStack, List<RandomizedItemStack> items, ValueThrow valueThrow, ValueSpawn valueSpawn)
+    public PBECSpawnManySameItems(IValue ticksPerStack, ZValue spawnsFromEffectCenter, List<RandomizedItemStack> items, ValueThrow valueThrow, ValueSpawn valueSpawn)
     {
         this.ticksPerStack = ticksPerStack;
+        this.spawnsFromEffectCenter = spawnsFromEffectCenter;
         this.items = items;
         this.valueThrow = valueThrow;
         this.valueSpawn = valueSpawn;
     }
 
-    public PBECSpawnManySameItems(IValue ticksPerStack, List<RandomizedItemStack> items)
+    public PBECSpawnManySameItems(IValue ticksPerStack, ZValue spawnsFromEffectCenter, List<RandomizedItemStack> items)
     {
-        this(ticksPerStack, items, PBECSpawnItems.defaultThrow(), null);
+        this(ticksPerStack, spawnsFromEffectCenter, items, PBECSpawnItems.defaultThrow(), null);
     }
 
     @Override
@@ -46,7 +49,7 @@ public class PBECSpawnManySameItems implements PBEffectCreator
         int number = random.nextInt(5) + 5;
 
         ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), items, number, true, true, 0, false, false);
-        return PBECSpawnItems.constructEffect(random, stacks, number * ticksPerStack + 1, valueThrow, valueSpawn);
+        return PBECSpawnItems.constructEffect(random, stacks, number * ticksPerStack + 1, valueThrow, valueSpawn, spawnsFromEffectCenter);
     }
 
     @Override

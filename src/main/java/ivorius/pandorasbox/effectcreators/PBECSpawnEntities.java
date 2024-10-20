@@ -19,36 +19,35 @@ import java.util.Collection;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECSpawnEntities implements PBEffectCreator
-{
+public class PBECSpawnEntities implements PBEffectCreator {
     public IValue time;
     public IValue number;
     public IValue entitiesPerTower;
     public IValue nameEntities;
     public IValue equipLevel;
     public IValue buffLevel;
+    public ZValue spawnFromEffectCenter;
 
     public Collection<WeightedEntity> entityIDs;
 
     public ValueThrow valueThrow;
     public ValueSpawn valueSpawn;
 
-    public PBECSpawnEntities(IValue time, IValue number, IValue entitiesPerTower, IValue nameEntities, IValue equipLevel, IValue buffLevel, Collection<WeightedEntity> entityIDs, ValueThrow valueThrow, ValueSpawn valueSpawn)
-    {
+    public PBECSpawnEntities(IValue time, IValue number, IValue entitiesPerTower, IValue nameEntities, IValue equipLevel, IValue buffLevel, ZValue spawnFromEffectCenter, Collection<WeightedEntity> entityIDs, ValueThrow valueThrow, ValueSpawn valueSpawn) {
         this.time = time;
         this.number = number;
         this.entitiesPerTower = entitiesPerTower;
         this.nameEntities = nameEntities;
         this.equipLevel = equipLevel;
         this.buffLevel = buffLevel;
+        this.spawnFromEffectCenter = spawnFromEffectCenter;
         this.entityIDs = entityIDs;
         this.valueThrow = valueThrow;
         this.valueSpawn = valueSpawn;
     }
 
-    public PBECSpawnEntities(IValue time, IValue number, IValue entitiesPerTower, IValue equipLevel, IValue buffLevel, IValue nameEntities, Collection<WeightedEntity> entityIDs)
-    {
-        this(time, number, entitiesPerTower, nameEntities, equipLevel, buffLevel, entityIDs, defaultThrow(), defaultSpawn());
+    public PBECSpawnEntities(IValue time, IValue number, IValue entitiesPerTower, IValue equipLevel, IValue buffLevel, IValue nameEntities, ZValue spawnFromEffectCenter, Collection<WeightedEntity> entityIDs) {
+        this(time, number, entitiesPerTower, nameEntities, equipLevel, buffLevel, spawnFromEffectCenter, entityIDs, defaultThrow(), defaultSpawn());
     }
 
     public static ValueThrow defaultThrow()
@@ -62,8 +61,7 @@ public class PBECSpawnEntities implements PBEffectCreator
     }
 
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int time = this.time.getValue(random);
         int number = this.number.getValue(random);
         int[] towerSize = ValueHelper.getValueRange(entitiesPerTower, random);
@@ -75,38 +73,33 @@ public class PBECSpawnEntities implements PBEffectCreator
         WeightedEntity[] entitySelection = PandorasBoxHelper.getRandomEntityList(random, entityIDs);
 
         String[][] entitiesToSpawn = new String[number][];
-        for (int i = 0; i < number; i++)
-        {
+        for (int i = 0; i < number; i++) {
             entitiesToSpawn[i] = new String[towerSize[0] + random.nextInt(towerSize[1] - towerSize[0] + 1)];
 
-            for (int j = 0; j < entitiesToSpawn[i].length; j++)
-            {
+            for (int j = 0; j < entitiesToSpawn[i].length; j++) {
                 entitiesToSpawn[i][j] = entitySelection[random.nextInt(entitySelection.length)].entityID;
             }
         }
 
-        return constructEffect(random, entitiesToSpawn, time, nameEntities, equipLevel, buffLevel, valueThrow, valueSpawn);
+        return constructEffect(random, entitiesToSpawn, time, nameEntities, equipLevel, buffLevel, spawnFromEffectCenter, valueThrow, valueSpawn);
     }
 
-    public static PBEffect constructEffect(RandomSource random, String[][] entitiesToSpawn, int time, ValueThrow valueThrow, ValueSpawn valueSpawn)
-    {
-        return constructEffect(random, entitiesToSpawn, time, 0, 0, 0, valueThrow, valueSpawn);
+    public static PBEffect constructEffect(RandomSource random, String[][] entitiesToSpawn, int time, ZValue spawnFromEffectCenter, ValueThrow valueThrow, ValueSpawn valueSpawn) {
+        return constructEffect(random, entitiesToSpawn, time, 0, 0, 0, spawnFromEffectCenter, valueThrow, valueSpawn);
     }
 
-    public static PBEffect constructEffect(RandomSource random, String[][] entitiesToSpawn, int time, int nameEntities, int equipLevel, int buffLevel, ValueThrow valueThrow, ValueSpawn valueSpawn)
-    {
+    public static PBEffect constructEffect(RandomSource random, String[][] entitiesToSpawn, int time, int nameEntities, int equipLevel, int buffLevel, ZValue spawnFromEffectCenter, ValueThrow valueThrow, ValueSpawn valueSpawn) {
         boolean canSpawn = valueSpawn != null;
         boolean canThrow = valueThrow != null;
 
-        if (canThrow && (!canSpawn || random.nextBoolean()))
-        {
+        if (canThrow && (!canSpawn || random.nextBoolean())) {
             PBEffectSpawnEntityIDList effect = new PBEffectSpawnEntityIDList(time, entitiesToSpawn, nameEntities, equipLevel, buffLevel);
+            effect.setSpawnsFromBox(!spawnFromEffectCenter.getValue(random));
             setEffectThrow(effect, random, valueThrow);
             return effect;
-        }
-        else if (canSpawn)
-        {
+        } else if (canSpawn) {
             PBEffectSpawnEntityIDList effect = new PBEffectSpawnEntityIDList(time, entitiesToSpawn, nameEntities, equipLevel, buffLevel);
+            effect.setSpawnsFromBox(!spawnFromEffectCenter.getValue(random));
             setEffectSpawn(effect, random, valueSpawn);
             return effect;
         }
@@ -114,18 +107,16 @@ public class PBECSpawnEntities implements PBEffectCreator
         throw new RuntimeException("Both spawnRange and throwStrength are null!");
     }
 
-    public static void setEffectThrow(PBEffectSpawnEntities effect, RandomSource random, ValueThrow valueThrow)
-    {
+    public static void setEffectThrow(PBEffectSpawnEntities effect, RandomSource random, ValueThrow valueThrow) {
         double[] throwX = ValueHelper.getValueRange(valueThrow.throwStrengthSide, random);
         double[] throwY = ValueHelper.getValueRange(valueThrow.throwStrengthY, random);
-        effect.setDoesSpawnFromBox(throwX[0], throwX[1], throwY[0], throwY[1]);
+        effect.setDoesSpawnDirect(throwX[0], throwX[1], throwY[0], throwY[1]);
     }
 
-    public static void setEffectSpawn(PBEffectSpawnEntities effect, RandomSource random, ValueSpawn valueSpawn)
-    {
+    public static void setEffectSpawn(PBEffectSpawnEntities effect, RandomSource random, ValueSpawn valueSpawn) {
         double range = valueSpawn.spawnRange.getValue(random);
         double spawnShift = valueSpawn.spawnShift.getValue(random);
-        effect.setDoesNotSpawnFromBox(range, spawnShift);
+        effect.setDoesNotSpawnDirect(range, spawnShift);
     }
 
     @Override

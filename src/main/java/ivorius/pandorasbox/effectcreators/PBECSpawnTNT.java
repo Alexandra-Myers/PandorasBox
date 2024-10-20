@@ -9,48 +9,46 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ValueSpawn;
 import ivorius.pandorasbox.random.ValueThrow;
+import ivorius.pandorasbox.random.ZValue;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECSpawnTNT implements PBEffectCreator
-{
+public class PBECSpawnTNT implements PBEffectCreator {
     public IValue time;
     public IValue number;
     public IValue fuseTime;
+    public ZValue spawnFromEffectCenter;
 
     public ValueThrow valueThrow;
     public ValueSpawn valueSpawn;
 
-    public PBECSpawnTNT(IValue time, IValue number, IValue fuseTime, ValueThrow valueThrow, ValueSpawn valueSpawn)
-    {
+    public PBECSpawnTNT(IValue time, IValue number, IValue fuseTime, ZValue spawnFromEffectCenter, ValueSpawn valueSpawn, ValueThrow valueThrow) {
         this.time = time;
         this.number = number;
         this.fuseTime = fuseTime;
+        this.spawnFromEffectCenter = spawnFromEffectCenter;
         this.valueThrow = valueThrow;
         this.valueSpawn = valueSpawn;
     }
 
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int time = this.time.getValue(random);
         int number = this.number.getValue(random);
 
         String[][] entitiesToSpawn = new String[number][];
-        for (int i = 0; i < number; i++)
-        {
+        for (int i = 0; i < number; i++) {
             entitiesToSpawn[i] = new String[]{"pbspecial_tnt" + this.fuseTime.getValue(random)};
         }
 
-        return PBECSpawnEntities.constructEffect(random, entitiesToSpawn, time, valueThrow, valueSpawn);
+        return PBECSpawnEntities.constructEffect(random, entitiesToSpawn, time, spawnFromEffectCenter, valueThrow, valueSpawn);
     }
 
     @Override
-    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
-    {
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random) {
         return 0.15f;
     }
 }

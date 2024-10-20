@@ -20,8 +20,8 @@ import net.minecraft.world.phys.Vec3;
  */
 public abstract class PBEffectSpawnEntities extends PBEffectNormal {
     public int number;
-
-    public boolean spawnFromBox;
+    public boolean spawnsFromBox;
+    public boolean spawnDirect;
     public double range;
     public double shiftY;
     public double throwStrengthSideMin;
@@ -36,14 +36,18 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal {
         this.number = number;
     }
 
-    public void setDoesNotSpawnFromBox(double range, double shiftY) {
-        this.spawnFromBox = false;
+    public void setSpawnsFromBox(boolean spawnsFromBox) {
+        this.spawnsFromBox = spawnsFromBox;
+    }
+
+    public void setDoesNotSpawnDirect(double range, double shiftY) {
+        this.spawnDirect = false;
         this.range = range;
         this.shiftY = shiftY;
     }
 
-    public void setDoesSpawnFromBox(double throwStrengthSideMin, double throwStrengthSideMax, double throwStrengthYMin, double throwStrengthYMax) {
-        this.spawnFromBox = true;
+    public void setDoesSpawnDirect(double throwStrengthSideMin, double throwStrengthSideMax, double throwStrengthYMin, double throwStrengthYMax) {
+        this.spawnDirect = true;
         this.throwStrengthSideMin = throwStrengthSideMin;
         this.throwStrengthSideMax = throwStrengthSideMax;
         this.throwStrengthYMin = throwStrengthYMin;
@@ -61,19 +65,23 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal {
                 double eY;
                 double eZ;
 
-                if (spawnFromBox) {
-                    eX = box.getX();
-                    eY = box.getY();
-                    eZ = box.getZ();
+                Vec3 baseVec;
+                if (spawnsFromBox) baseVec = box.position();
+                else baseVec = effectCenter;
+
+                if (spawnDirect) {
+                    eX = baseVec.x;
+                    eY = baseVec.y;
+                    eZ = baseVec.z;
                 } else {
-                    eX = box.getX() + (random.nextDouble() - random.nextDouble()) * range;
-                    eY = box.getY() + (random.nextDouble() - random.nextDouble()) * 3.0 + shiftY;
-                    eZ = box.getZ() + (random.nextDouble() - random.nextDouble()) * range;
+                    eX = baseVec.x + (random.nextDouble() - random.nextDouble()) * range;
+                    eY = baseVec.y + (random.nextDouble() - random.nextDouble()) * 3.0 + shiftY;
+                    eZ = baseVec.z + (random.nextDouble() - random.nextDouble()) * range;
                 }
 
                 Entity newEntity = spawnEntity(level, box, random, prev + i, eX, eY, eZ);
                 if (newEntity != null) {
-                    if (spawnFromBox && !(newEntity instanceof LivingEntity)) {
+                    if (spawnDirect && !(newEntity instanceof LivingEntity)) {
                         // FIXME Disabled because it causes mobs to sink in the ground on clients (async) >.>
                         float dirSide = random.nextFloat() * 2.0f * 3.1415926f;
                         double throwStrengthSide = throwStrengthSideMin + random.nextDouble() * (throwStrengthSideMax - throwStrengthSideMin);
@@ -99,7 +107,8 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal {
         super.writeToNBT(compound, registryAccess);
 
         compound.putInt("number", number);
-        compound.putBoolean("spawnFromBox", spawnFromBox);
+        compound.putBoolean("spawnsFromBox", spawnsFromBox);
+        compound.putBoolean("spawnDirect", spawnDirect);
         compound.putDouble("range", range);
         compound.putDouble("shiftY", shiftY);
         compound.putDouble("throwStrengthSideMin", throwStrengthSideMin);
@@ -113,7 +122,13 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal {
         super.readFromNBT(compound, registryAccess);
 
         number = compound.getInt("number");
-        spawnFromBox = compound.getBoolean("spawnFromBox");
+        if (compound.contains("spawnFromBox")) {
+            spawnsFromBox = true;
+            spawnDirect = compound.getBoolean("spawnFromBox");
+        } else {
+            spawnsFromBox = compound.getBoolean("spawnsFromBox");
+            spawnDirect = compound.getBoolean("spawnDirect");
+        }
         range = compound.getDouble("range");
         shiftY = compound.getDouble("shiftY");
         throwStrengthSideMin = compound.getDouble("throwStrengthSideMin");

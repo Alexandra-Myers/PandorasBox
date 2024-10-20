@@ -38,6 +38,7 @@ public class PBEffectSetWeather extends PBEffectNormal {
         if (level instanceof ServerLevel serverLevel) {
             if (serverLevel.isRaining() && !rain) {
                 serverLevel.setWeatherParameters(rainTime, 0, false, false);
+                return;
             }
             serverLevel.setWeatherParameters(0, rainTime, rain, thunder);
         }

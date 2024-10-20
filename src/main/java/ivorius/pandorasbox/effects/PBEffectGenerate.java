@@ -67,24 +67,19 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     }
 
     @Override
-    public void generateInRange(Level level, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass)
-    {
+    public void generateInRange(Level level, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass) {
         int requiredRange = Mth.ceil(newRange);
 
         int baseX = Mth.floor(effectCenter.x);
         int baseY = Mth.floor(effectCenter.y);
         int baseZ = Mth.floor(effectCenter.z);
 
-        for (int x = -requiredRange; x <= requiredRange; x++)
-        {
-            for (int y = -requiredRange; y <= requiredRange; y++)
-            {
-                for (int z = -requiredRange; z <= requiredRange; z++)
-                {
+        for (int x = -requiredRange; x <= requiredRange; x++) {
+            for (int y = -requiredRange; y <= requiredRange; y++) {
+                for (int z = -requiredRange; z <= requiredRange; z++) {
                     double dist = Mth.sqrt(x * x + y * y + z * z);
 
-                    if (dist <= newRange)
-                    {
+                    if (dist <= newRange) {
                         if (dist > prevRange)
                             generateOnBlock(level, entity, effectCenter, random, pass, new BlockPos(baseX + x, baseY + y, baseZ + z), dist);
                         else

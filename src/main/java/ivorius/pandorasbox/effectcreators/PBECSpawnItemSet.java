@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effectcreators;
 
+import ivorius.pandorasbox.random.ZValue;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.random.IValue;
@@ -23,18 +24,20 @@ import java.util.List;
 public class PBECSpawnItemSet implements PBEffectCreator {
     public IValue ticksPerItem;
     public List<WeightedSet> items;
+    public ZValue spawnsFromEffectCenter;
     public ValueThrow valueThrow;
     public ValueSpawn valueSpawn;
 
-    public PBECSpawnItemSet(IValue ticksPerItem, List<WeightedSet> items, ValueThrow valueThrow, ValueSpawn valueSpawn) {
+    public PBECSpawnItemSet(IValue ticksPerItem, ZValue spawnsFromEffectCenter, List<WeightedSet> items, ValueThrow valueThrow, ValueSpawn valueSpawn) {
         this.ticksPerItem = ticksPerItem;
         this.items = items;
+        this.spawnsFromEffectCenter = spawnsFromEffectCenter;
         this.valueThrow = valueThrow;
         this.valueSpawn = valueSpawn;
     }
 
-    public PBECSpawnItemSet(IValue ticksPerItem, List<WeightedSet> items) {
-        this(ticksPerItem, items, PBECSpawnItems.defaultThrow(), null);
+    public PBECSpawnItemSet(IValue ticksPerItem, ZValue spawnsFromEffectCenter, List<WeightedSet> items) {
+        this(ticksPerItem, spawnsFromEffectCenter, items, PBECSpawnItems.defaultThrow(), null);
     }
 
     @Override
@@ -47,7 +50,7 @@ public class PBECSpawnItemSet implements PBEffectCreator {
             stacks[i] = itemSet[i].copy();
         }
 
-        return PBECSpawnItems.constructEffect(random, stacks, stacks.length * ticksPerItem + 1, valueThrow, valueSpawn);
+        return PBECSpawnItems.constructEffect(random, stacks, stacks.length * ticksPerItem + 1, valueThrow, valueSpawn, spawnsFromEffectCenter);
     }
 
     @Override

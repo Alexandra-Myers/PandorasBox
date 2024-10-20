@@ -23,17 +23,18 @@ public class PBEffectSpawnBlocks extends PBEffectSpawnEntities {
     public Block[] blocks;
     public PBEffectSpawnBlocks() {}
 
-    public PBEffectSpawnBlocks(int time, Block[] blocks) {
+    public PBEffectSpawnBlocks(int time, Block[] blocks, boolean comesFromBox) {
         super(time, blocks.length);
 
-        setDoesSpawnFromBox(0.1, 0.4, 0.2, 1.0);
+        setSpawnsFromBox(comesFromBox);
+        setDoesSpawnDirect(0.1, 0.4, 0.2, 1.0);
         this.blocks = blocks;
     }
 
     public PBEffectSpawnBlocks(int time, double range, double shiftY, Block[] blocks) {
         super(time, blocks.length);
 
-        setDoesNotSpawnFromBox(range, shiftY);
+        setDoesNotSpawnDirect(range, shiftY);
         this.blocks = blocks;
     }
 

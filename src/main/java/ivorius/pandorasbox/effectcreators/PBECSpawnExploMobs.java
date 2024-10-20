@@ -10,6 +10,7 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ValueSpawn;
 import ivorius.pandorasbox.random.ValueThrow;
+import ivorius.pandorasbox.random.ZValue;
 import ivorius.pandorasbox.weighted.WeightedEntity;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -25,25 +26,27 @@ public class PBECSpawnExploMobs implements PBEffectCreator
     public IValue number;
     public IValue fuseTime;
     public IValue nameEntities;
+    public ZValue spawnFromEffectCenter;
     public Collection<WeightedEntity> entityIDs;
 
     public ValueThrow valueThrow;
     public ValueSpawn valueSpawn;
 
-    public PBECSpawnExploMobs(IValue time, IValue number, IValue fuseTime, IValue nameEntities, Collection<WeightedEntity> entityIDs, ValueThrow valueThrow, ValueSpawn valueSpawn)
+    public PBECSpawnExploMobs(IValue time, IValue number, IValue fuseTime, IValue nameEntities, ZValue spawnFromEffectCenter, Collection<WeightedEntity> entityIDs, ValueThrow valueThrow, ValueSpawn valueSpawn)
     {
         this.time = time;
         this.number = number;
         this.fuseTime = fuseTime;
         this.nameEntities = nameEntities;
+        this.spawnFromEffectCenter = spawnFromEffectCenter;
         this.entityIDs = entityIDs;
         this.valueThrow = valueThrow;
         this.valueSpawn = valueSpawn;
     }
 
-    public PBECSpawnExploMobs(IValue time, IValue number, IValue fuseTime, IValue nameEntities, Collection<WeightedEntity> entityIDs)
+    public PBECSpawnExploMobs(IValue time, IValue number, IValue fuseTime, IValue nameEntities, ZValue spawnFromEffectCenter, Collection<WeightedEntity> entityIDs)
     {
-        this(time, number, fuseTime, nameEntities, entityIDs, PBECSpawnEntities.defaultThrow(), PBECSpawnEntities.defaultSpawn());
+        this(time, number, fuseTime, nameEntities, spawnFromEffectCenter, entityIDs, PBECSpawnEntities.defaultThrow(), PBECSpawnEntities.defaultSpawn());
     }
 
     @Override
@@ -64,7 +67,7 @@ public class PBECSpawnExploMobs implements PBEffectCreator
 
         int nameEntities = this.nameEntities.getValue(random);
 
-        return PBECSpawnEntities.constructEffect(random, entitiesToSpawn, time, nameEntities, 0, 0, valueThrow, valueSpawn);
+        return PBECSpawnEntities.constructEffect(random, entitiesToSpawn, time, nameEntities, 0, 0, spawnFromEffectCenter, valueThrow, valueSpawn);
     }
 
     @Override

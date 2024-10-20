@@ -25,14 +25,14 @@ public class PBEffectSpawnItemStacks extends PBEffectSpawnEntities {
     public PBEffectSpawnItemStacks(int time, ItemStack[] stacks) {
         super(time, stacks.length);
 
-        setDoesSpawnFromBox(0.1, 0.4, 0.2, 1.0);
+        setDoesSpawnDirect(0.1, 0.4, 0.2, 1.0);
         this.stacks = stacks;
     }
 
     public PBEffectSpawnItemStacks(int time, double range, double shiftY, ItemStack[] stacks) {
         super(time, stacks.length);
 
-        setDoesNotSpawnFromBox(range, shiftY);
+        setDoesNotSpawnDirect(range, shiftY);
         this.stacks = stacks;
     }
 

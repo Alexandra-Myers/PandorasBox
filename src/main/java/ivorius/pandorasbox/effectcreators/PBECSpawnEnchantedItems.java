@@ -31,7 +31,9 @@ public class PBECSpawnEnchantedItems implements PBEffectCreator
 
     public ZValue giveNames;
 
-    public PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, List<RandomizedItemStack> items, ValueThrow valueThrow, ValueSpawn valueSpawn, ZValue giveNames)
+    public ZValue spawnsFromEffectCenter;
+
+    public PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, List<RandomizedItemStack> items, ValueThrow valueThrow, ValueSpawn valueSpawn, ZValue giveNames, ZValue spawnsFromEffectCenter)
     {
         this.number = number;
         this.ticksPerItem = ticksPerItem;
@@ -40,11 +42,12 @@ public class PBECSpawnEnchantedItems implements PBEffectCreator
         this.valueThrow = valueThrow;
         this.valueSpawn = valueSpawn;
         this.giveNames = giveNames;
+        this.spawnsFromEffectCenter = spawnsFromEffectCenter;
     }
 
-    public PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, List<RandomizedItemStack> items, ZValue giveNames)
+    public PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, List<RandomizedItemStack> items, ZValue giveNames, ZValue spawnsFromEffectCenter)
     {
-        this(number, ticksPerItem, enchantmentLevel, items, PBECSpawnItems.defaultThrow(), null, giveNames);
+        this(number, ticksPerItem, enchantmentLevel, items, PBECSpawnItems.defaultThrow(), null, giveNames, spawnsFromEffectCenter);
     }
 
     @Override
@@ -60,7 +63,7 @@ public class PBECSpawnEnchantedItems implements PBEffectCreator
         for (ItemStack stack : stacks)
             stack.setCount(1);
 
-        return PBECSpawnItems.constructEffect(random, stacks, number * ticksPerItem + 1, valueThrow, valueSpawn);
+        return PBECSpawnItems.constructEffect(random, stacks, number * ticksPerItem + 1, valueThrow, valueSpawn, spawnsFromEffectCenter);
     }
 
     @Override

@@ -126,8 +126,7 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure {
         }
     }
 
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, StructureShape structure, BlockPos pos)
-    {
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, StructureShape structure, BlockPos pos) {
         Block block = structure.blocks[random.nextInt(structure.blocks.length)];
         setBlockVarying(world, pos, block, structure.unifiedSeed);
     }

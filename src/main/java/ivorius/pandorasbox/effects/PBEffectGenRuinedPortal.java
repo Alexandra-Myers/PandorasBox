@@ -43,7 +43,7 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
     }
     @Override
     public boolean buildStructure(Level level, PandorasBoxEntity entity, BlockPos currentPos, RandomSource random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
-        height -= 1;
+        height--;
         int relativeHeight = currentPos.getY() - originY;
         double relative = (double) relativeHeight / height;
         int portalHAxis = Math.max(Mth.ceil(length * 0.5), 2);

@@ -34,24 +34,26 @@ public class PBECSpawnItems implements PBEffectCreator {
     public IValue ticksPerItem;
     public List<RandomizedItemStack> items;
     public ZValue canBeFood;
+    public ZValue spawnsFromEffectCenter;
     public ValueThrow valueThrow;
     public ValueSpawn valueSpawn;
 
-    public PBECSpawnItems(IValue number, IValue ticksPerItem, List<RandomizedItemStack> items, ZValue canBeFood, ValueThrow valueThrow, ValueSpawn valueSpawn) {
+    public PBECSpawnItems(IValue number, IValue ticksPerItem, List<RandomizedItemStack> items, ZValue canBeFood, ZValue spawnsFromEffectCenter, ValueThrow valueThrow, ValueSpawn valueSpawn) {
         this.number = number;
         this.ticksPerItem = ticksPerItem;
         this.items = items;
         this.canBeFood = canBeFood;
+        this.spawnsFromEffectCenter = spawnsFromEffectCenter;
         this.valueThrow = valueThrow;
         this.valueSpawn = valueSpawn;
     }
 
-    public PBECSpawnItems(IValue number, IValue ticksPerItem, List<RandomizedItemStack> items, ZValue canBeFood) {
-        this(number, ticksPerItem, items, canBeFood, defaultThrow(), null);
+    public PBECSpawnItems(IValue number, IValue ticksPerItem, List<RandomizedItemStack> items, ZValue canBeFood, ZValue spawnsFromEffectCenter) {
+        this(number, ticksPerItem, items, canBeFood, spawnsFromEffectCenter, defaultThrow(), null);
     }
 
-    public PBECSpawnItems(IValue number, IValue ticksPerItem, List<RandomizedItemStack> items) {
-        this(number, ticksPerItem, items, new ZConstant(false), defaultThrow(), null);
+    public PBECSpawnItems(IValue number, IValue ticksPerItem, List<RandomizedItemStack> items, ZValue spawnsFromEffectCenter) {
+        this(number, ticksPerItem, items, new ZConstant(false), spawnsFromEffectCenter, defaultThrow(), null);
     }
 
     public static ValueThrow defaultThrow() {
@@ -62,16 +64,18 @@ public class PBECSpawnItems implements PBEffectCreator {
         return new ValueSpawn(new DLinear(5.0, 30.0), new DConstant(150.0));
     }
 
-    public static PBEffect constructEffect(RandomSource random, ItemStack[] stacks, int time, ValueThrow valueThrow, ValueSpawn valueSpawn) {
+    public static PBEffect constructEffect(RandomSource random, ItemStack[] stacks, int time, ValueThrow valueThrow, ValueSpawn valueSpawn, ZValue spawnsFromEffectCenter) {
         boolean canSpawn = valueSpawn != null;
         boolean canThrow = valueThrow != null;
 
         if (canThrow && (!canSpawn || random.nextBoolean())) {
             PBEffectSpawnItemStacks effect = new PBEffectSpawnItemStacks(time, stacks);
+            effect.setSpawnsFromBox(!spawnsFromEffectCenter.getValue(random));
             PBECSpawnEntities.setEffectThrow(effect, random, valueThrow);
             return effect;
         } else if (canSpawn) {
             PBEffectSpawnItemStacks effect = new PBEffectSpawnItemStacks(time, stacks);
+            effect.setSpawnsFromBox(!spawnsFromEffectCenter.getValue(random));
             PBECSpawnEntities.setEffectSpawn(effect, random, valueSpawn);
             return effect;
         }
@@ -128,7 +132,7 @@ public class PBECSpawnItems implements PBEffectCreator {
         boolean isFood = this.canBeFood.getValue(random);
 
         ItemStack[] stacks = getItemStacks(random, world.registryAccess(), items, number, random.nextInt(3) != 0, true, 0, false, isFood);
-        return constructEffect(random, stacks, number * ticksPerItem + 1, valueThrow, valueSpawn);
+        return constructEffect(random, stacks, number * ticksPerItem + 1, valueThrow, valueSpawn, spawnsFromEffectCenter);
     }
 
     @Override

@@ -8,10 +8,7 @@ package ivorius.pandorasbox.effectcreators;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectMulti;
-import ivorius.pandorasbox.random.ILinear;
-import ivorius.pandorasbox.random.IValue;
-import ivorius.pandorasbox.random.ValueSpawn;
-import ivorius.pandorasbox.random.ValueThrow;
+import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.weighted.WeightedEntity;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -26,13 +23,14 @@ public class PBECSpawnArmy implements PBEffectCreator
 {
     public IValue groups;
     public IValue equipLevel;
+    public ZValue spawnFromEffectCenter;
 
     public Collection<WeightedEntity> entityIDs;
 
     public ValueThrow valueThrow;
     public ValueSpawn valueSpawn;
 
-    public PBECSpawnArmy(IValue groups, IValue equipLevel, Collection<WeightedEntity> entityIDs, ValueThrow valueThrow, ValueSpawn valueSpawn)
+    public PBECSpawnArmy(IValue groups, IValue equipLevel, ZValue spawnFromEffectCenter, Collection<WeightedEntity> entityIDs, ValueThrow valueThrow, ValueSpawn valueSpawn)
     {
         this.groups = groups;
         this.equipLevel = equipLevel;
@@ -41,9 +39,9 @@ public class PBECSpawnArmy implements PBEffectCreator
         this.valueSpawn = valueSpawn;
     }
 
-    public PBECSpawnArmy(IValue groups, IValue equipLevel, Collection<WeightedEntity> entityIDs)
+    public PBECSpawnArmy(IValue groups, IValue equipLevel, ZValue spawnFromEffectCenter, Collection<WeightedEntity> entityIDs)
     {
-        this(groups, equipLevel, entityIDs, PBECSpawnEntities.defaultThrow(), PBECSpawnEntities.defaultSpawn());
+        this(groups, equipLevel, spawnFromEffectCenter, entityIDs, PBECSpawnEntities.defaultThrow(), PBECSpawnEntities.defaultSpawn());
     }
 
     @Override
@@ -66,8 +64,8 @@ public class PBECSpawnArmy implements PBEffectCreator
             int equipLevelCaptain = 5 + equipLevel;
             int buffLevelCaptain = random.nextInt(5);
 
-            effects[i * 2] = PBECSpawnEntities.constructEffect(random, soldiers, 50, 0, equipLevel, 0, valueThrow, valueSpawn);
-            effects[i * 2 + 1] = PBECSpawnEntities.constructEffect(random, new String[][]{new String[]{soldierType.entityID}}, 25, 1, equipLevelCaptain, buffLevelCaptain, valueThrow, valueSpawn);
+            effects[i * 2] = PBECSpawnEntities.constructEffect(random, soldiers, 50, 0, equipLevel, 0, spawnFromEffectCenter, valueThrow, valueSpawn);
+            effects[i * 2 + 1] = PBECSpawnEntities.constructEffect(random, new String[][]{new String[]{soldierType.entityID}}, 25, 1, equipLevelCaptain, buffLevelCaptain, spawnFromEffectCenter, valueThrow, valueSpawn);
             delays[i * 2] = i * 50;
             delays[i * 2 + 1] = i * 50 + 25;
         }

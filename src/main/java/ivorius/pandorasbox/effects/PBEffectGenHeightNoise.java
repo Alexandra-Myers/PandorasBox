@@ -22,8 +22,7 @@ import java.util.Random;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenHeightNoise extends PBEffectGenerate2D
-{
+public class PBEffectGenHeightNoise extends PBEffectGenerate2D {
     public int minShift;
     public int maxShift;
 
@@ -33,8 +32,7 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
     public int blockSize;
     public PBEffectGenHeightNoise() {}
 
-    public PBEffectGenHeightNoise(int time, double range, int unifiedSeed, int minShift, int maxShift, int minTowerSize, int maxTowerSize, int blockSize)
-    {
+    public PBEffectGenHeightNoise(int time, double range, int unifiedSeed, int minShift, int maxShift, int minTowerSize, int maxTowerSize, int blockSize) {
         super(time, range, 1, unifiedSeed);
 
         this.minShift = minShift;
@@ -74,8 +72,7 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess)
-    {
+    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
         super.writeToNBT(compound, registryAccess);
 
         compound.putInt("minShift", minShift);
@@ -86,8 +83,7 @@ public class PBEffectGenHeightNoise extends PBEffectGenerate2D
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess)
-    {
+    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
         super.readFromNBT(compound, registryAccess);
 
         minShift = compound.getInt("minShift");

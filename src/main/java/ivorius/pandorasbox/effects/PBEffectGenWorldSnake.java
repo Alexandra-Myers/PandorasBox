@@ -10,7 +10,6 @@ import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -52,7 +51,7 @@ public class PBEffectGenWorldSnake extends PBEffectNormal {
 
     @Override
     public void doEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
-        if (level instanceof ServerLevel) {
+        if (!level.isClientSide) {
             int requiredRange = Mth.ceil(size);
 
             float f1 = Mth.cos(-dirYaw * 0.017453292F - (float) Math.PI);

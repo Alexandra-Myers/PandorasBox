@@ -30,7 +30,7 @@ public class PBEffectEntitiesBombpack extends PBEffectEntityBased {
         double expectedBomb = itemRandom.nextDouble();
         if (newRatio >= expectedBomb && prevRatio < expectedBomb) {
             PrimedTnt entitytntprimed = new PrimedTnt(serverLevel, entity.getX(), entity.getY(), entity.getZ(), null);
-            entitytntprimed.setFuse(60 + random.nextInt(160)); // Use normal fuse for correct visual effect
+            entitytntprimed.setFuse(60 + random.nextInt(160));
 
             serverLevel.addFreshEntity(entitytntprimed);
             entitytntprimed.startRiding(entity, true);

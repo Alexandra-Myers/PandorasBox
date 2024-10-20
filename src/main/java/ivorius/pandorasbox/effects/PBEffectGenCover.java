@@ -58,10 +58,8 @@ public class PBEffectGenCover extends PBEffectGenerateByFlag
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, int pass, BlockPos pos, double range, boolean flag)
-    {
-        if (flag)
-        {
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, int pass, BlockPos pos, double range, boolean flag) {
+        if (flag && !world.isClientSide) {
             Block newBlock = blocks[random.nextInt(blocks.length)];
             world.setBlockAndUpdate(pos, newBlock.defaultBlockState());
         }
