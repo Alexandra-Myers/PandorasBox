@@ -303,7 +303,7 @@ public class PandorasBoxEntity extends Entity implements PowerableMob {
     }
 
     public void setBoxEffect(PBEffect effect) {
-        entityData.set(DATA_EFFECT_ID, ensureNotNull(effect));
+        entityData.set(DATA_EFFECT_ID, ensureNotNull(effect), true);
     }
 
     public PBEffect ensureNotNull(PBEffect input) {

@@ -34,6 +34,7 @@ public class PBECSpawnArmy implements PBEffectCreator
     {
         this.groups = groups;
         this.equipLevel = equipLevel;
+        this.spawnFromEffectCenter = spawnFromEffectCenter;
         this.entityIDs = entityIDs;
         this.valueThrow = valueThrow;
         this.valueSpawn = valueSpawn;

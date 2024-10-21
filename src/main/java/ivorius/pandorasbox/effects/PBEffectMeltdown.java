@@ -22,6 +22,7 @@ public final class PBEffectMeltdown extends PBEffect {
     public int maxTicksAlive;
     private Vec3[] effectCenters;
     public int[] effectStartTicks;
+    private Integer indexToOverwrite = null;
 
     public PBEffectMeltdown() {
         this.effects = new PBEffect[1];
@@ -50,23 +51,34 @@ public final class PBEffectMeltdown extends PBEffect {
             effectCenters[0] = newEffectCenter;
             effectStartTicks[0] = 0;
         }
-        rand = random.nextInt(MELTDOWN_CREATORS.length * 32);
-        if (rand < MELTDOWN_CREATORS.length) {
+        rand = random.nextInt(MELTDOWN_CREATORS.length * 16);
+        if (!level.isClientSide && rand < MELTDOWN_CREATORS.length) {
             double xP = (random.nextDouble() - 0.5) * range;
             double yP = (random.nextDouble() - 0.5) * range * 0.25;
             double zP = (random.nextDouble() - 0.5) * range;
             Vec3 newEffectCenter = effectCenter.add(xP, yP, zP);
             PBEffect pbEffect = MELTDOWN_CREATORS[rand].constructEffect(level, newEffectCenter.x, newEffectCenter.y, newEffectCenter.z, random);
-            effects = Arrays.copyOf(effects, effects.length + 1);
-            effects[effects.length - 1] = pbEffect;
-            effectCenters = Arrays.copyOf(effectCenters, effectCenters.length + 1);
-            effectCenters[effectCenters.length - 1] = newEffectCenter;
-            effectStartTicks = Arrays.copyOf(effectStartTicks, effectStartTicks.length + 1);
-            effectStartTicks[effectStartTicks.length - 1] = ticksAlive;
+            if (indexToOverwrite != null) {
+                effects[indexToOverwrite] = pbEffect;
+                effectCenters[indexToOverwrite] = newEffectCenter;
+                effectStartTicks[indexToOverwrite] = ticksAlive;
+                indexToOverwrite = null;
+            } else {
+                effects = Arrays.copyOf(effects, effects.length + 1);
+                effects[effects.length - 1] = pbEffect;
+                effectCenters = Arrays.copyOf(effectCenters, effectCenters.length + 1);
+                effectCenters[effectCenters.length - 1] = newEffectCenter;
+                effectStartTicks = Arrays.copyOf(effectStartTicks, effectStartTicks.length + 1);
+                effectStartTicks[effectStartTicks.length - 1] = ticksAlive;
+            }
+            entity.setBoxEffect(this);
         }
         for (int i = 0; i < effects.length; i++) {
             int ticksForEffect = ticksAlive - effectStartTicks[i];
-            if (effects[i].isDone(entity, ticksForEffect)) continue;
+            if (effects[i].isDone(entity, ticksForEffect)) {
+                if (indexToOverwrite == null) indexToOverwrite = i;
+                continue;
+            }
             Vec3 currentCenter = effectCenters[i];
             effects[i].doTick(entity, currentCenter, ticksForEffect);
             if (level.isClientSide) {
@@ -136,7 +148,7 @@ public final class PBEffectMeltdown extends PBEffect {
                 level.addParticle(ParticleTypes.FLAME, xO, entity.getY() + yP, zO, random.nextDouble() * xDif, random.nextDouble() * 0.4, random.nextDouble() * zDif);
             }
         }
-        if (ticksAlive == maxTicksAlive - 1)
+        if (!level.isClientSide && ticksAlive == maxTicksAlive - 1)
             level.explode(entity, entity.getX(), entity.getY(), entity.getZ(), 10, true, Level.ExplosionInteraction.MOB);
     }
 
