@@ -2,6 +2,8 @@
     "entity.pandorasbox.pandoras_box": "Pandora's Box",
     "block.pandorasbox.pandoras_box": "Pandora's Box",
 
+    "argument.pandora_effect.id.invalid": "Unknown box effect '%s'",
+
     "text.config.pandoras-box.title": "Pandora's Box",
     "text.config.pandoras-box.reset": "Reset",
     "text.config.pandoras-box.category.balancing": "Balancing",

@@ -1,5 +1,6 @@
 /*
 /*/
+!/libs/
 !/src/
 !.gitignore
 !gradlew*

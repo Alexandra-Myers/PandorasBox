@@ -7,14 +7,15 @@ import com.google.gson.stream.JsonWriter;
 import ivorius.pandorasbox.PandorasBox;
 import net.atlas.atlascore.AtlasCore;
 import net.atlas.atlascore.config.AtlasConfig;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -57,6 +58,13 @@ public class PandoraConfig extends AtlasConfig {
 					throw new ReportedException(CrashReport.forThrowable(new IllegalStateException("Not a JSON Object: " + jsonElement + " this may be due to an incorrectly written config file."), "Configuring Items"));
 			});
 		}
+	}
+
+	@Override
+	public AtlasConfig readClientConfigInformation(RegistryFriendlyByteBuf buf) {
+		super.readClientConfigInformation(buf);
+		buf.readMap(FriendlyByteBuf::readResourceLocation, FriendlyByteBuf::readResourceLocation);
+		return this;
 	}
 
 	@Override
@@ -112,7 +120,12 @@ public class PandoraConfig extends AtlasConfig {
 	}
 
 	@Override
-	public void handleExtraSync(AtlasCore.AtlasConfigPacket atlasConfigPacket, LocalPlayer localPlayer, PacketSender packetSender) {
+	public void handleExtraSync(AtlasCore.AtlasConfigPacket atlasConfigPacket, ClientPlayNetworking.Context context) {
+
+	}
+
+	@Override
+	public void handleConfigInformation(AtlasCore.ClientInformPacket clientInformPacket, ServerPlayer serverPlayer, PacketSender packetSender) {
 
 	}
 
@@ -162,6 +175,11 @@ public class PandoraConfig extends AtlasConfig {
 
 	@Override
 	public <T> void alertChange(ConfigValue<T> tConfigValue, T newValue) {
+
+	}
+
+	@Override
+	public <T> void alertClientValue(ConfigValue<T> configValue, T t, T t1) {
 
 	}
 }
