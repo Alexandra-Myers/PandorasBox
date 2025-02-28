@@ -12,13 +12,13 @@ import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.VegetationFeatures;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -51,6 +51,18 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
     }
 
     @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return switch (biome) {
+            case "wastes" -> Biomes.NETHER_WASTES;
+            case "soul_sand_valley" -> Biomes.SOUL_SAND_VALLEY;
+            case "crimson" -> Biomes.CRIMSON_FOREST;
+            case "warped" -> Biomes.WARPED_FOREST;
+            case "deltas" -> Biomes.BASALT_DELTAS;
+            default -> null;
+        };
+    }
+
+    @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if(world instanceof ServerLevel serverLevel) {
             float newRatio = getRatioDone(entity.getEffectTicksExisted() + 1);
@@ -62,9 +74,6 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
                 case "deltas" -> createDeltas(serverLevel, entity, effectCenter, random, pass, newRatio, pos);
             }
         }
-    }
-    public static BiomeResolver makeResolver(Holder<Biome> biomeHolder) {
-        return (x, y, z, climateSampler) -> biomeHolder;
     }
     public void createWastes(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
@@ -136,8 +145,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
-                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(VegetationFeatures.PATCH_BROWN_MUSHROOM)).place(world, world.getChunkSource().getGenerator(), random, pos);
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+                boolean success = configuredFeatureRegistry.getValueOrThrow(VegetationFeatures.PATCH_BROWN_MUSHROOM).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
@@ -146,12 +155,11 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
-                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(VegetationFeatures.PATCH_RED_MUSHROOM)).place(world, world.getChunkSource().getGenerator(), random, pos);
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+                boolean success = Objects.requireNonNull(configuredFeatureRegistry.getValueOrThrow(VegetationFeatures.PATCH_RED_MUSHROOM)).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
         }
-        changeBiome(Biomes.NETHER_WASTES, pass, effectCenter, world);
     }
     public void createSoul(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
@@ -242,12 +250,11 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
 //                start.placeInChunk(world, world.structureManager(), world.getChunkSource().getGenerator(), world.getRandom(), new BoundingBox(p_289290_.getMinBlockX(), world.getMinBuildHeight(), p_289290_.getMinBlockZ(), p_289290_.getMaxBlockX(), world.getMaxBuildHeight(), p_289290_.getMaxBlockZ()), p_289290_);
 //            });
 //        }
-        changeBiome(Biomes.SOUL_SAND_VALLEY, pass, effectCenter, world);
     }
 
     private void createGlowstoneBlobs(ServerLevel world, BlockPos pos, RandomSource random) {
-        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
-        Objects.requireNonNull(configuredFeatureRegistry.get(GLOWSTONE_EXTRA)).place(world, world.getChunkSource().getGenerator(), random, pos);
+        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+        configuredFeatureRegistry.getValueOrThrow(GLOWSTONE_EXTRA).place(world, world.getChunkSource().getGenerator(), random, pos);
     }
 
     public void createCrimson(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
@@ -328,9 +335,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
-                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(CRIMSON_FUNGUS_PLANTED)).place(world, world.getChunkSource().getGenerator(), random, pos);
+                boolean success = configuredFeatureRegistry.getValueOrThrow(CRIMSON_FUNGUS_PLANTED).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
@@ -339,13 +346,12 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
-                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(CRIMSON_FOREST_VEGETATION)).place(world, world.getChunkSource().getGenerator(), random, pos);
+                boolean success = configuredFeatureRegistry.getValueOrThrow(CRIMSON_FOREST_VEGETATION).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
         }
-        changeBiome(Biomes.CRIMSON_FOREST, pass, effectCenter, world);
     }
     public void createWarped(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
@@ -418,9 +424,9 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
-                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(WARPED_FUNGUS_PLANTED)).place(world, world.getChunkSource().getGenerator(), random, pos);
+                boolean success = configuredFeatureRegistry.getValueOrThrow(WARPED_FUNGUS_PLANTED).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
@@ -429,13 +435,12 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.isAir() && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
                 setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
-                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(WARPED_FOREST_VEGETION)).place(world, world.getChunkSource().getGenerator(), random, pos);
+                boolean success = configuredFeatureRegistry.getValueOrThrow(WARPED_FOREST_VEGETION).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
         }
-        changeBiome(Biomes.WARPED_FOREST, pass, effectCenter, world);
     }
     public void createDeltas(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
@@ -504,8 +509,8 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
-                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(SMALL_BASALT_COLUMNS)).place(world, world.getChunkSource().getGenerator(), random, pos);
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+                boolean success = configuredFeatureRegistry.getValueOrThrow(SMALL_BASALT_COLUMNS).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureAMade++;
             }
         }
@@ -514,12 +519,11 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             BlockState blockBelowState = world.getBlockState(posBelow);
 
             if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
-                boolean success = Objects.requireNonNull(configuredFeatureRegistry.get(LARGE_BASALT_COLUMNS)).place(world, world.getChunkSource().getGenerator(), random, pos);
+                Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+                boolean success = configuredFeatureRegistry.getValueOrThrow(LARGE_BASALT_COLUMNS).place(world, world.getChunkSource().getGenerator(), random, pos);
                 if(success) timesFeatureBMade++;
             }
         }
-        changeBiome(Biomes.BASALT_DELTAS, pass, effectCenter, world);
     }
 
     @Override

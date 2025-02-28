@@ -9,9 +9,11 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -31,6 +33,11 @@ public class PBEffectGenConvertToEnd extends PBEffectGenerate {
     public PBEffectGenConvertToEnd(int time, double range, int unifiedSeed)
     {
         super(time, range, 2, unifiedSeed);
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.END_BARRENS;
     }
 
     @Override
@@ -69,7 +76,6 @@ public class PBEffectGenConvertToEnd extends PBEffectGenerate {
                     if (success) timesFeatureAMade++;
                 }
             }
-            changeBiome(Biomes.END_BARRENS, pass, effectCenter, serverLevel);
         }
     }
 }

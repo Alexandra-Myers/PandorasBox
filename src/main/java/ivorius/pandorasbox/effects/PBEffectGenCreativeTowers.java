@@ -43,7 +43,7 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure {
     public void generateStructure(Level level, PandorasBoxEntity entity, RandomSource random, Structure structure, BlockPos pos, float newRatio, float prevRatio) {
         StructureCreativeTower structureCreativeTower = (StructureCreativeTower) structure;
 
-        int towerHeight = level.getMaxBuildHeight();
+        int towerHeight = level.getHeight();
         int newY = Mth.floor(towerHeight * newRatio);
         int prevY = Mth.floor(towerHeight * prevRatio);
 

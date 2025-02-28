@@ -63,7 +63,10 @@ public class PandorasBox implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> initPB());
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> initPB());
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> PandoraCommand.register(dispatcher));
-        LootTableEvents.ALL_LOADED.register((resourceManager, registry) -> CONFIG.configuredTables.forEach((base, extra) -> registry.getOptional(base).ifPresent(table -> registry.getOptional(extra).ifPresent(extraTable -> table.pools = Stream.concat(table.pools.stream(), extraTable.pools.stream()).toList()))));
+        LootTableEvents.ALL_LOADED.register((resourceManager, registry) -> CONFIG.tables.get().forEach((extra, bases) -> bases.stream().map(registry::getOptional)
+                .forEach(optional -> optional.ifPresent(table ->
+                        registry.getOptional(extra).ifPresent(extraTable ->
+                                table.pools = Stream.concat(table.pools.stream(), extraTable.pools.stream()).toList())))));
     }
     public static void initPB() {
         logs = new ArrayListExtensions<>();

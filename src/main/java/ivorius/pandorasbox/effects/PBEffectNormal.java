@@ -57,7 +57,7 @@ public abstract class PBEffectNormal extends PBEffect {
     }
 
     @Override
-    public boolean isDone(PandorasBoxEntity entity, int ticksAlive) {
+    public boolean isDone(int ticksAlive) {
         return ticksAlive >= maxTicksAlive;
     }
 
@@ -74,5 +74,10 @@ public abstract class PBEffectNormal extends PBEffect {
     @Override
     public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity) {
         return true;
+    }
+
+    @Override
+    public int getTicksExistedForEffect(PBEffect identityEffect, int ticksAlive) {
+        return identityEffect == this ? ticksAlive : -1;
     }
 }

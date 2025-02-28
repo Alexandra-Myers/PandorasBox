@@ -23,12 +23,13 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.PowerableMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -40,7 +41,7 @@ import java.util.UUID;
 /**
  * Created by lukas on 30.03.14.
  */
-public class PandorasBoxEntity extends Entity implements PowerableMob {
+public class PandorasBoxEntity extends Entity {
     public static final float BOX_UPSCALE_SPEED = 0.02f;
     private static final EntityDataAccessor<Integer> BOX_DEATH_TICKS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> BOX_WAITING_TIME = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
@@ -122,6 +123,14 @@ public class PandorasBoxEntity extends Entity implements PowerableMob {
         builder.define(DATA_OWNER_UUID, Optional.empty());
     }
 
+    public int getTicksForEffect(PBEffect identityEffect) {
+        if (getBoxWaitingTime() == 0 && getDeathTicks() < 0) {
+            PBEffect effect = getBoxEffect();
+            return effect.getTicksExistedForEffect(identityEffect, getEffectTicksExisted());
+        }
+        return -2;
+    }
+
     @Override
     public void tick() {
         Level level = level();
@@ -135,7 +144,7 @@ public class PandorasBoxEntity extends Entity implements PowerableMob {
                 if (!level.isClientSide)
                     remove(RemovalReason.DISCARDED);
             } else {
-                if (effect.isDone(this, effectTicksExisted)) {
+                if (effect.isDone(effectTicksExisted)) {
                     if (!level.isClientSide) {
                         boolean isCompletelyDone = true;
 
@@ -352,6 +361,11 @@ public class PandorasBoxEntity extends Entity implements PowerableMob {
     }
 
     @Override
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float f) {
+        return false;
+    }
+
+    @Override
     public void readAdditionalSaveData(@NotNull CompoundTag compound) {
         readBoxData(compound);
     }
@@ -397,10 +411,5 @@ public class PandorasBoxEntity extends Entity implements PowerableMob {
         compound.putDouble("effectCenterX", effectCenter.x);
         compound.putDouble("effectCenterY", effectCenter.y);
         compound.putDouble("effectCenterZ", effectCenter.z);
-    }
-
-    @Override
-    public boolean isPowered() {
-        return true;
     }
 }

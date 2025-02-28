@@ -13,12 +13,14 @@ import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -36,6 +38,11 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate {
         super(time, range, 2, unifiedSeed);
 
         this.groundMetas = groundMetas;
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.CHERRY_GROVE;
     }
 
     @Override
@@ -86,7 +93,6 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate {
                     }
                 }
             }
-            changeBiome(Biomes.CHERRY_GROVE, pass, effectCenter, serverLevel);
         }
     }
 

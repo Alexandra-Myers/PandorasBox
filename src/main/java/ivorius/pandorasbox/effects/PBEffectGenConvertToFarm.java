@@ -10,10 +10,12 @@ import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -30,6 +32,11 @@ public class PBEffectGenConvertToFarm extends PBEffectGenerate {
     public PBEffectGenConvertToFarm(int time, double range, int unifiedSeed, double cropChance) {
         super(time, range, 2, unifiedSeed);
         this.cropChance = cropChance;
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.PLAINS;
     }
 
     @Override
@@ -81,7 +88,6 @@ public class PBEffectGenConvertToFarm extends PBEffectGenerate {
                     canSpawnEntity(world, blockState, pos, entity1);
                 }
             }
-            changeBiome(Biomes.PLAINS, pass, effectCenter, serverLevel);
         }
     }
 

@@ -11,6 +11,8 @@ import ivorius.pandorasbox.worldgen.MegaTreeFeature;
 import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 
 import java.util.List;
@@ -32,6 +34,11 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator<MegaTreeFea
         this.trunkBlock = trunkBlock;
         this.leafBlock = leafBlock;
         this.treeGens = initializeGens();
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return null;
     }
 
     @Override

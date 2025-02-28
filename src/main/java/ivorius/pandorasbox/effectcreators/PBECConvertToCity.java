@@ -49,7 +49,7 @@ public class PBECConvertToCity implements PBEffectCreator
         List<EntityType<?>> entities = new ArrayList<>();
         for (WeightedEntity entity : entitySelection) {
             String entityID = StringConverter.convertCamelCase(entity.entityID);
-            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.tryParse(entityID));
+            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.tryParse(entityID));
             entities.add(type);
         }
 

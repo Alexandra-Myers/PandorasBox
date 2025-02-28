@@ -7,6 +7,7 @@ package ivorius.pandorasbox.effects;
 
 import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
 import java.util.List;
@@ -31,6 +32,11 @@ public class PBEffectGenTrees extends PBEffectGenerateByGenerator<ResourceKey<Co
     public PBEffectGenTrees(int time, double range, int unifiedSeed, boolean requiresSolidGround, double chancePerBlock, int generatorFlags) {
         super(time, range, unifiedSeed, requiresSolidGround, chancePerBlock, generatorFlags);
         treeGens = initializeGens();
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return null;
     }
 
     @Override

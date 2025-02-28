@@ -1,6 +1,7 @@
 {
     "entity.pandorasbox.pandoras_box": "潘多拉的魔盒",
     "block.pandorasbox.pandoras_box": "潘多拉的魔盒",
+    "item.pandorasbox.pandoras_box": "潘多拉的魔盒",
 
     "pandorasbox.configgui.title": "潘多拉的魔盒",
     "pandorasbox.configgui.ctgy.balancing": "平衡性",

@@ -17,12 +17,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
-
-import static ivorius.pandorasbox.effects.PBEffectGenConvertToNether.makeResolver;
+import java.util.List;
 
 /**
  * Created by lukas on 30.03.14.
@@ -30,7 +28,8 @@ import static ivorius.pandorasbox.effects.PBEffectGenConvertToNether.makeResolve
 public abstract class PBEffectGenerate extends PBEffectRangeBased
 {
     public int unifiedSeed;
-    public boolean biomeUnchanged = true;
+    public boolean onFirstRun;
+
     public PBEffectGenerate() {}
 
     public PBEffectGenerate(int time, double range, int passes, int unifiedSeed)
@@ -39,32 +38,31 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
 
         this.unifiedSeed = unifiedSeed;
     }
-    public static Vec3i floorAll(double x, double y, double z) {
-        return new Vec3i(Mth.floor(x), Mth.floor(y), Mth.floor(z));
-    }
-    public void changeBiome(ResourceKey<Biome> biomeResourceKey, int pass, Vec3 effectCenter, ServerLevel serverLevel) {
-        if(!biomeUnchanged) return;
-        BoundingBox boundingbox = BoundingBox.fromCorners(floorAll(range + (passes - 1) * 5.0 + effectCenter.x, range + (passes - 1) * 5.0 + effectCenter.y, range + (passes - 1) * 5.0 + effectCenter.z), floorAll(effectCenter.x - range + (passes - 1) * 5.0, effectCenter.y - range + (passes - 1) * 5.0, effectCenter.z - range + (passes - 1) * 5.0));
-        ArrayList<ChunkAccess> chunks = new ArrayList<>();
-        for (int k = SectionPos.blockToSectionCoord(boundingbox.minZ()); k <= SectionPos.blockToSectionCoord(boundingbox.maxZ()); ++k) {
-            for (int l = SectionPos.blockToSectionCoord(boundingbox.minX()); l <= SectionPos.blockToSectionCoord(boundingbox.maxX()); ++l) {
-                ChunkAccess chunkAccess = serverLevel.getChunk(l, k, ChunkStatus.FULL, false);
-                if (chunkAccess != null)
-                    chunks.add(chunkAccess);
-            }
-        }
+    public void changeBiome(ResourceKey<Biome> biomeResourceKey, int baseX, int baseY, int baseZ, ServerLevel serverLevel, List<ChunkAccess> chunks) {
+        double range = this.range + (passes - 1) * 5.0;
         for (ChunkAccess chunkAccess : chunks) {
-            Registry<Biome> biomeRegistry = serverLevel.registryAccess().registryOrThrow(Registries.BIOME);
-            Biome biome = biomeRegistry.get(biomeResourceKey);
-            assert biome != null;
-            chunkAccess.fillBiomesFromNoise(makeResolver(biomeRegistry.wrapAsHolder(biome)), serverLevel.getChunkSource().randomState().sampler());
-            chunkAccess.setUnsaved(true);
+            Registry<Biome> biomeRegistry = serverLevel.registryAccess().lookupOrThrow(Registries.BIOME);
+            Holder<Biome> biome = biomeRegistry.getOrThrow(biomeResourceKey);
+            chunkAccess.fillBiomesFromNoise((i, j, k, sampler) -> {
+                int l = QuartPos.toBlock(i);
+                int m = QuartPos.toBlock(j);
+                int n = QuartPos.toBlock(k);
+                Holder<Biome> holder2 = chunkAccess.getNoiseBiome(i, j, k);
+                int x = l - baseX;
+                int y = m - baseY;
+                int z = n - baseZ;
+                double dist = Mth.sqrt(x * x + y * y + z * z);
+
+                if (dist <= range) return biome;
+                else return holder2;
+            }, serverLevel.getChunkSource().randomState().sampler());
+            chunkAccess.markUnsaved();
         }
 
         serverLevel.getChunkSource().chunkMap.resendBiomesForChunks(chunks);
-        biomeUnchanged = false;
-
     }
+
+    public abstract ResourceKey<Biome> getBiomeKey();
 
     @Override
     public void generateInRange(Level level, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass) {
@@ -90,6 +88,29 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
         }
     }
 
+    @Override
+    public void setUpEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random) {
+
+        int baseX = Mth.floor(effectCenter.x);
+        int baseY = Mth.floor(effectCenter.y);
+        int baseZ = Mth.floor(effectCenter.z);
+
+        ResourceKey<Biome> biomeResourceKey = getBiomeKey();
+
+        if (biomeResourceKey != null && level instanceof ServerLevel serverLevel) {
+            List<ChunkAccess> chunks = new ArrayList<>();
+            int sectionRange = SectionPos.blockToSectionCoord(this.range + (passes - 1) * 5.0);
+            int baseSectionX = SectionPos.blockToSectionCoord(baseX);
+            int baseSectionZ = SectionPos.blockToSectionCoord(baseZ);
+            for (int cz = -sectionRange; cz <= sectionRange; cz++)
+                for (int cx = -sectionRange; cx <= sectionRange; cx++) {
+                    ChunkAccess chunk = serverLevel.getChunk(cx + baseSectionX, cz + baseSectionZ, ChunkStatus.FULL, false);
+                    if (chunk != null) chunks.add(chunk);
+                }
+            changeBiome(biomeResourceKey, baseX, baseY, baseZ, serverLevel, chunks);
+        }
+    }
+
     public abstract void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range);
 
     @Override
@@ -97,7 +118,7 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     {
         super.writeToNBT(compound, registryAccess);
         compound.putInt("unifiedSeed", unifiedSeed);
-        compound.putBoolean("biomeUnchanged", biomeUnchanged);
+        compound.putBoolean("onFirstRun", onFirstRun);
     }
 
     @Override
@@ -105,6 +126,6 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
     {
         super.readFromNBT(compound, registryAccess);
         unifiedSeed = compound.getInt("unifiedSeed");
-        biomeUnchanged = compound.getBoolean("biomeUnchanged");
+        onFirstRun = compound.getBoolean("onFirstRun");
     }
 }

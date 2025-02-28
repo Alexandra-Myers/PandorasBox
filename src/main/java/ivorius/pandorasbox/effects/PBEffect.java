@@ -114,7 +114,7 @@ public abstract class PBEffect {
         if (world.isClientSide())
             return false;
 
-        if (block.getLightBlock(world, pos) > 0)
+        if (block.getLightBlock() > 0)
             return false;
         if(world.loadedAndEntityCanStandOn(pos.below(), entity) && !world.isClientSide()) {
             world.addFreshEntity(entity);
@@ -128,7 +128,7 @@ public abstract class PBEffect {
         if (world.isClientSide())
             return false;
 
-        return !(block.getLightBlock(world, pos) > 0 || world.getBlockState(pos.below()).getLightBlock(world, pos.below()) > 0 || world.getBlockState(pos.below(2)).getLightBlock(world, pos.below(2)) > 0);
+        return !(block.getLightBlock() > 0 || world.getBlockState(pos.below()).getLightBlock() > 0 || world.getBlockState(pos.below(2)).getLightBlock() > 0);
     }
 
     public void combinedEffectDuration(LivingEntity entity, MobEffectInstance[] mobEffects) {
@@ -152,11 +152,13 @@ public abstract class PBEffect {
 
     public abstract void doTick(PandorasBoxEntity entity, Vec3 effectCenter, int ticksAlive);
 
-    public abstract boolean isDone(PandorasBoxEntity entity, int ticksAlive);
+    public abstract boolean isDone(int ticksAlive);
 
     public abstract void writeToNBT(CompoundTag compound, RegistryAccess registryAccess);
 
     public abstract void readFromNBT(CompoundTag compound, RegistryAccess registryAccess);
 
     public abstract boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity);
+
+    public abstract int getTicksExistedForEffect(PBEffect identityEffect, int ticksAlive);
 }

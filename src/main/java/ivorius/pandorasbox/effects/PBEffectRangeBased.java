@@ -41,7 +41,7 @@ public abstract class PBEffectRangeBased extends PBEffectNormal {
         }
     }
 
-    private double getRange(double ratio, int pass) {
+    protected double getRange(double ratio, int pass) {
         if (spreadSquared)
             ratio = Math.sqrt(ratio);
         if (easeInOut)

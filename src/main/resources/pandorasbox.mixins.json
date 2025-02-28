@@ -3,10 +3,9 @@
   "package": "ivorius.pandorasbox.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-
   ],
   "client": [
-    "client.RendererMixin"
+    "client.SpecialModelRenderersMixin"
   ],
   "injectors": {
     "defaultRequire": 1

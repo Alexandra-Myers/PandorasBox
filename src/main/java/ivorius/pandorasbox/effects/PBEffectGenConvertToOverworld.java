@@ -9,10 +9,12 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -27,6 +29,11 @@ public class PBEffectGenConvertToOverworld extends PBEffectGenerate {
 
     public PBEffectGenConvertToOverworld(int time, double range, int unifiedSeed) {
         super(time, range, 2, unifiedSeed);
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.SUNFLOWER_PLAINS;
     }
 
     @Override
@@ -78,7 +85,6 @@ public class PBEffectGenConvertToOverworld extends PBEffectGenerate {
                     canSpawnEntity(world, blockState, pos, entity1);
                 }
             }
-            changeBiome(Biomes.SUNFLOWER_PLAINS, pass, effectCenter, serverLevel);
         }
     }
 }

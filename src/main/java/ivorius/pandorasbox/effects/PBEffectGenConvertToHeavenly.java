@@ -9,10 +9,12 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -28,6 +30,11 @@ public class PBEffectGenConvertToHeavenly extends PBEffectGenerate {
     public PBEffectGenConvertToHeavenly(int time, double range, int unifiedSeed)
     {
         super(time, range, 2, unifiedSeed);
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.LUSH_CAVES;
     }
 
     @Override
@@ -81,7 +88,6 @@ public class PBEffectGenConvertToHeavenly extends PBEffectGenerate {
                 Entity sheep = lazilySpawnEntity(world, entity, random, "sheep", 1.0f / (20 * 20), pos);
                 canSpawnEntity(world, blockState, pos, sheep);
             }
-            changeBiome(Biomes.LUSH_CAVES, pass, effectCenter, serverLevel);
         }
     }
 }

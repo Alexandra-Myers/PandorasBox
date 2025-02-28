@@ -11,9 +11,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BucketPickup;
@@ -38,6 +40,11 @@ public class PBEffectGenReplace extends PBEffectGenerate {
 
         this.blocks = blocks;
         this.blocksToReplace = blocksToReplace;
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return null;
     }
 
     @Override

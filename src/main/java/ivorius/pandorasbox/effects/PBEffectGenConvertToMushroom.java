@@ -12,10 +12,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.TreeFeatures;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -32,6 +34,11 @@ public class PBEffectGenConvertToMushroom extends PBEffectGenerate {
     public PBEffectGenConvertToMushroom(int time, double range, int unifiedSeed)
     {
         super(time, range, 2, unifiedSeed);
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.MUSHROOM_FIELDS;
     }
 
     @Override
@@ -60,9 +67,8 @@ public class PBEffectGenConvertToMushroom extends PBEffectGenerate {
                             setBlockSafe(world, posUp, (world.random.nextBoolean() ? Blocks.BROWN_MUSHROOM.defaultBlockState() : Blocks.RED_MUSHROOM.defaultBlockState()));
                         } else if (world.random.nextInt(8 * 8) == 0) {
                             boolean bl = random.nextBoolean();
-                            Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = serverLevel.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
-                            ConfiguredFeature<?, ?> mushroomGen = bl ? configuredFeatureRegistry.get(TreeFeatures.HUGE_BROWN_MUSHROOM) : configuredFeatureRegistry.get(TreeFeatures.HUGE_RED_MUSHROOM);
-                            assert mushroomGen != null;
+                            Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = serverLevel.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+                            ConfiguredFeature<?, ?> mushroomGen = bl ? configuredFeatureRegistry.getValueOrThrow(TreeFeatures.HUGE_BROWN_MUSHROOM) : configuredFeatureRegistry.getValueOrThrow(TreeFeatures.HUGE_RED_MUSHROOM);
                             mushroomGen.place(serverLevel, serverLevel.getChunkSource().getGenerator(), world.random, posUp);
                         }
                     } else {
@@ -82,7 +88,6 @@ public class PBEffectGenConvertToMushroom extends PBEffectGenerate {
                 Entity mooshroom = lazilySpawnEntity(world, entity, random, "mooshroom", 1.0f / (20 * 20), pos);
                 canSpawnEntity(world, blockState, pos, mooshroom);
             }
-            changeBiome(Biomes.MUSHROOM_FIELDS, pass, effectCenter, serverLevel);
         }
     }
 }

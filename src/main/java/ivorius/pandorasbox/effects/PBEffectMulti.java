@@ -35,10 +35,10 @@ public class PBEffectMulti extends PBEffect {
     }
 
     @Override
-    public boolean isDone(PandorasBoxEntity entity, int ticksAlive) {
+    public boolean isDone(int ticksAlive) {
         for (int i = 0; i < effects.length; i++) {
             int effectTicks = ticksAlive - delays[i];
-            if (!effects[i].isDone(entity, effectTicks)) {
+            if (!effects[i].isDone(effectTicks)) {
                 return false;
             }
         }
@@ -90,5 +90,13 @@ public class PBEffectMulti extends PBEffect {
         }
 
         return true;
+    }
+
+    @Override
+    public int getTicksExistedForEffect(PBEffect identityEffect, int ticksAlive) {
+        for (int i = 0; i < effects.length; i++) {
+            if (effects[i] == identityEffect) return ticksAlive - delays[i];
+        }
+        return -1;
     }
 }

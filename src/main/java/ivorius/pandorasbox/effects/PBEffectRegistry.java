@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 public class PBEffectRegistry {
     public static Class<? extends PBEffect> getEffect(String id) {
-        return Init.BOX_EFFECT_REGISTRY.get(ResourceLocation.tryParse(id));
+        return Init.BOX_EFFECT_REGISTRY.getValue(ResourceLocation.tryParse(id));
     }
 
     public static void writeEffect(PBEffect effect, CompoundTag compound, RegistryAccess registryAccess) {

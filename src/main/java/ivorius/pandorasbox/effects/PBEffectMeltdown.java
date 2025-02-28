@@ -75,7 +75,7 @@ public final class PBEffectMeltdown extends PBEffect {
         }
         for (int i = 0; i < effects.length; i++) {
             int ticksForEffect = ticksAlive - effectStartTicks[i];
-            if (effects[i].isDone(entity, ticksForEffect)) {
+            if (effects[i].isDone(ticksForEffect)) {
                 if (indexToOverwrite == null) indexToOverwrite = i;
                 continue;
             }
@@ -153,7 +153,7 @@ public final class PBEffectMeltdown extends PBEffect {
     }
 
     @Override
-    public boolean isDone(PandorasBoxEntity entity, int ticksAlive) {
+    public boolean isDone(int ticksAlive) {
         return ticksAlive >= maxTicksAlive;
     }
 
@@ -207,5 +207,15 @@ public final class PBEffectMeltdown extends PBEffect {
     @Override
     public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity) {
         return false;
+    }
+
+    @Override
+    public int getTicksExistedForEffect(PBEffect identityEffect, int ticksAlive) {
+        for (int i = 0; i < effects.length; i++) {
+            if (effects[i] == identityEffect) {
+                return ticksAlive - effectStartTicks[i];
+            }
+        }
+        return -1;
     }
 }

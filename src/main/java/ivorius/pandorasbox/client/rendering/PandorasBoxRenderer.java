@@ -36,7 +36,7 @@ import static com.mojang.math.Axis.YP;
  * Created by lukas on 30.03.14.
  */
 @Environment(EnvType.CLIENT)
-public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity> implements RenderLayerParent<PandorasBoxEntity, PandorasBoxModel> {
+public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, PandorasBoxRenderState> implements RenderLayerParent<PandorasBoxRenderState, PandorasBoxModel> {
     public PandorasBoxModel model;
     public ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
 
@@ -48,51 +48,54 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity> imple
     }
 
     @Override
-    public void render(@NotNull PandorasBoxEntity entity, float entityYaw, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int packedLightIn) {
-        super.render(entity, entityYaw, partialTicks, poseStack, multiBufferSource, packedLightIn);
+    public @NotNull PandorasBoxRenderState createRenderState() {
+        return new PandorasBoxRenderState();
+    }
+
+    @Override
+    public void render(PandorasBoxRenderState renderState, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn) {
+        super.render(renderState, poseStack, multiBufferSource, packedLightIn);
         poseStack.pushPose();
-        poseStack.mulPose(YP.rotationDegrees(-entityYaw));
+        poseStack.mulPose(YP.rotationDegrees(-renderState.yRot));
 
-        PBEffect effect = entity.getBoxEffect();
+        PBEffect effect = renderState.pbEffect;
 
-        float boxScale = entity.getCurrentScale();
+        float boxScale = renderState.boxScale;
         if (boxScale < 1.0f)
             poseStack.scale(boxScale, boxScale, boxScale);
 
         poseStack.translate(0.0f, 1.5f, 0.0f);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
-        entity.setXRot(entity.getRatioBoxOpen(partialTicks) * 120.0f / 180.0f * 3.1415926f);
         int packedOverlay = OverlayTexture.NO_OVERLAY;
-        model.setupAnim(entity, 0, 0, partialTicks, 0, 0);
-        boolean visible = !entity.isInvisible();
-        boolean visibleToPlayer = !visible && !entity.isInvisibleTo(Minecraft.getInstance().player);
-        RenderType renderType = getRenderType(entity, visible, visibleToPlayer);
+        model.setupAnim(renderState);
+        boolean visible = !renderState.isInvisible;
+        boolean visibleToPlayer = !visible && !renderState.invisibleToPlayer;
+        RenderType renderType = getRenderType(visible, visibleToPlayer);
         if (renderType != null) {
             VertexConsumer consumer = multiBufferSource.getBuffer(renderType);
             model.renderToBuffer(poseStack, consumer, packedLightIn, packedOverlay, 0xFFFFFFFF);
-            if (!effect.isDone(entity, entity.getEffectTicksExisted()) && entity.getDeathTicks() < 0) {
-                List<RenderLayer<PandorasBoxEntity, PandorasBoxModel>> layers = new ArrayList<>();
+            if (!effect.isDone(renderState.effectTicksExisted) && renderState.boxDeathTicks < 0) {
+                List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> layers = new ArrayList<>();
                 PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForEffect(effect);
                 if (renderer != null) {
-                    renderer.renderBox(this, entity, effect, partialTicks, poseStack, multiBufferSource, consumer, packedLightIn);
-                    List<RenderLayer<PandorasBoxEntity, PandorasBoxModel>> renderLayers = renderer.getLayers(this, entity, effect, model, partialTicks);
+                    renderer.renderBox(this, renderState, effect, renderState.partialTicks, poseStack, multiBufferSource, consumer, packedLightIn);
+                    List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> renderLayers = renderer.getLayers(this, renderState, effect, model, renderState.partialTicks);
                     if (renderLayers != null) {
                         layers.addAll(renderLayers);
                     }
                 }
 
-                for (RenderLayer<PandorasBoxEntity, PandorasBoxModel> renderLayer : layers) {
-                    renderLayer.render(poseStack, multiBufferSource, packedLightIn, entity, 0, 0, partialTicks, partialTicks, 0, 0);
+                for (RenderLayer<PandorasBoxRenderState, PandorasBoxModel> renderLayer : layers) {
+                    renderLayer.render(poseStack, multiBufferSource, packedLightIn, renderState, 0, 0);
                 }
             }
         }
 
         poseStack.popPose();
-
     }
     @Nullable
-    protected RenderType getRenderType(PandorasBoxEntity pandorasBox, boolean visible, boolean visibleToPlayer) {
-        ResourceLocation resourceLocation = this.getTextureLocation(pandorasBox);
+    protected RenderType getRenderType(boolean visible, boolean visibleToPlayer) {
+        ResourceLocation resourceLocation = texture;
         if (visibleToPlayer) {
             return RenderType.itemEntityTranslucentCull(resourceLocation);
         } else if (visible) {
@@ -107,7 +110,16 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity> imple
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull PandorasBoxEntity var1) {
-        return texture;
+    public void extractRenderState(PandorasBoxEntity entity, PandorasBoxRenderState entityRenderState, float partialTicks) {
+        super.extractRenderState(entity, entityRenderState, partialTicks);
+        entityRenderState.xRot = entity.getRatioBoxOpen(partialTicks) * 120.0f / 180.0f * 3.1415926f;
+        entityRenderState.yRot = entity.getYRot();
+        entityRenderState.boxScale = entity.getCurrentScale();
+        entityRenderState.partialTicks = partialTicks;
+        entityRenderState.effectTicksExisted = entity.getEffectTicksExisted();
+        entityRenderState.entityTickCount = entity.tickCount;
+        entityRenderState.boxDeathTicks = entity.getDeathTicks();
+        entityRenderState.pbEffect = entity.getBoxEffect();
+        entityRenderState.invisibleToPlayer = entity.isInvisibleTo(Minecraft.getInstance().player);
     }
 }

@@ -1,6 +1,7 @@
 {
     "entity.pandorasbox.pandoras_box": "Caixa de Pandora",
     "block.pandorasbox.pandoras_box": "Caixa de Pandora",
+    "item.pandorasbox.pandoras_box": "Caixa de Pandora",
     
     "pandorasbox.configgui.title": "Caixa de Pandora",
     "pandorasbox.configgui.ctgy.balancing": "Balanceamento",

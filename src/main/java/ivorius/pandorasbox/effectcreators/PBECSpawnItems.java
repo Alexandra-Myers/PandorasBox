@@ -12,6 +12,7 @@ import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -90,8 +91,9 @@ public class PBECSpawnItems implements PBEffectCreator {
             ItemStack stack = wrcc.itemStack.copy();
             if (isFood) PandorasBoxHelper.createRandomFoodProperties(stack, random);
             stack.setCount(wrcc.min + random.nextInt(wrcc.max - wrcc.min + 1));
+            Registry<Enchantment> enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 
-            Stream<Holder<Enchantment>> optional = registryAccess.registryOrThrow(Registries.ENCHANTMENT).holders().map(enchantmentReference -> enchantmentReference);
+            Stream<Holder<Enchantment>> optional = enchantmentRegistry.stream().map(enchantmentRegistry::wrapAsHolder);
             if (enchantLevel > 0) {
                 List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, optional);
 
@@ -101,9 +103,7 @@ public class PBECSpawnItems implements PBEffectCreator {
 
                 if (!enchantments.isEmpty()) {
                     for (EnchantmentInstance enchantment : enchantments) {
-                        EnchantmentInstance enchantmentdata = enchantment;
-
-                        stack.enchant(enchantmentdata.enchantment, enchantmentdata.level);
+                        stack.enchant(enchantment.enchantment, enchantment.level);
                     }
                 }
             }
@@ -113,10 +113,7 @@ public class PBECSpawnItems implements PBEffectCreator {
             }
 
             if (split) {
-                for (int n = 0; n < stack.getCount(); n++) {
-                    ItemStack splitStack = stack.split(1);
-                    stacks[i] = splitStack;
-                }
+                stacks[i] = stack.split(1);
             } else {
                 stacks[i] = stack;
             }

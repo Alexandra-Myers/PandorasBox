@@ -22,6 +22,10 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.component.Consumables;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.minecraft.world.item.consume_effects.TeleportRandomlyConsumeEffect;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.tags.ItemTags;
@@ -87,9 +91,9 @@ public class PandorasBoxHelper {
         }
     }
 
-    public static void addItem(RandomizedItemStack RandomizedItemStack) {
-        items.add(RandomizedItemStack);
-        blocksAndItems.add(RandomizedItemStack);
+    public static void addItem(RandomizedItemStack randomizedItemStack) {
+        items.add(randomizedItemStack);
+        blocksAndItems.add(randomizedItemStack);
     }
 
     public static void addItems(double weight, Object... items) {
@@ -384,15 +388,19 @@ public class PandorasBoxHelper {
 
     public static void createRandomFoodProperties(ItemStack stack, RandomSource random) {
         FoodProperties.Builder builder = new FoodProperties.Builder();
+        Consumable original = stack.getOrDefault(DataComponents.CONSUMABLE, Consumables.defaultFood().build());
+        Consumable.Builder consumableBuilder = Consumables.defaultFood().animation(original.animation()).sound(original.sound());
         if (random.nextBoolean()) builder.alwaysEdible();
-        if (random.nextDouble() > 0.7) builder.fast();
+        if (random.nextDouble() > 0.7) consumableBuilder.consumeSeconds(0.8F);
         builder.nutrition(random.nextIntBetweenInclusive(1, 10));
         builder.saturationModifier((float) (0.9 + (random.nextDouble() - random.nextDouble()) * 0.75));
         if (random.nextDouble() > 0.95) {
             List<WeightedPotion>[] posOrNegative = new List[] {buffs, debuffs};
-            builder.effect(WeightedSelector.selectItem(random, posOrNegative[random.nextInt(2)]).build(random), (float) random.nextGaussian());
+            consumableBuilder.onConsume(new ApplyStatusEffectsConsumeEffect(WeightedSelector.selectItem(random, posOrNegative[random.nextInt(2)]).build(random), (float) random.nextGaussian()));
         }
+        if (random.nextDouble() > 0.3) consumableBuilder.onConsume(new TeleportRandomlyConsumeEffect());
         stack.set(DataComponents.FOOD, builder.build());
+        stack.set(DataComponents.CONSUMABLE, consumableBuilder.build());
     }
 
     public static BlockState getRandomBlockState(RandomSource rand, Block block, int unified) {

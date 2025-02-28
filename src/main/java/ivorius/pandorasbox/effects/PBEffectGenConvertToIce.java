@@ -7,10 +7,12 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -27,6 +29,11 @@ public class PBEffectGenConvertToIce extends PBEffectGenerate {
     public PBEffectGenConvertToIce(int time, double range, int unifiedSeed)
     {
         super(time, range, 2, unifiedSeed);
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.FROZEN_PEAKS;
     }
 
     @Override
@@ -60,7 +67,6 @@ public class PBEffectGenConvertToIce extends PBEffectGenerate {
                 Entity snowGolem = lazilySpawnEntity(world, entity, random, "snow_golem", 1.0f / (20 * 20), pos);
                 canSpawnEntity(world, blockState, pos, snowGolem);
             }
-            changeBiome(Biomes.SNOWY_TAIGA, pass, effectCenter, serverLevel);
         }
     }
 }

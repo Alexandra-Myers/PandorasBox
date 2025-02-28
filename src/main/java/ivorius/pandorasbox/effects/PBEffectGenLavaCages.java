@@ -10,9 +10,11 @@ import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -38,6 +40,11 @@ public class PBEffectGenLavaCages extends PBEffectGenerate {
         this.cageBlock = cageBlock;
         this.fillBlock = fillBlock;
         this.floorBlock = floorBlock;
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return null;
     }
 
     @Override

@@ -10,9 +10,11 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -30,8 +32,12 @@ public class PBEffectGenConvertToRainbowCloth extends PBEffectGenerate {
     }
 
     @Override
-    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
+    public ResourceKey<Biome> getBiomeKey() {
+        return null;
+    }
 
+    @Override
+    public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
         if (pass == 0) {
             if (world.loadedAndEntityCanStandOn(pos, entity)) {
                 if (world.getBlockState(pos.above()).isAir()) {

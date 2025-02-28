@@ -1,30 +1,24 @@
 package ivorius.pandorasbox.config;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.gson.*;
-import com.google.gson.stream.JsonWriter;
+import com.mojang.serialization.Codec;
 import ivorius.pandorasbox.PandorasBox;
 import net.atlas.atlascore.AtlasCore;
 import net.atlas.atlascore.config.AtlasConfig;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.CrashReport;
-import net.minecraft.ReportedException;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.*;
 
 public class PandoraConfig extends AtlasConfig {
-	public Map<ResourceLocation, ResourceLocation> configuredTables;
+	public static Map<ResourceLocation, List<ResourceLocation>> defaultTables;
+	public static final Codec<Map<ResourceLocation, List<ResourceLocation>>> tableMapCodec = Codec.unboundedMap(ResourceLocation.CODEC, Codec.withAlternative(Codec.list(ResourceLocation.CODEC), ResourceLocation.CODEC, Collections::singletonList));
+	public TagHolder<Map<ResourceLocation, List<ResourceLocation>>> tables;
 	public DoubleHolder boxLongevity;
 	public DoubleHolder boxIntensity;
 	public DoubleHolder goodEffectChance;
@@ -42,81 +36,7 @@ public class PandoraConfig extends AtlasConfig {
 
 	@Override
 	public void loadExtra(JsonObject configJsonObject) {
-		if (!configJsonObject.has("tables"))
-			configJsonObject.add("tables", new JsonArray());
-		JsonElement tables = configJsonObject.get("tables");
-		if (tables instanceof JsonArray tableArray) {
-			tableArray.asList().forEach(jsonElement -> {
-				if (jsonElement instanceof JsonObject jsonObject) {
-					if (jsonObject.get("original_table") instanceof JsonArray tablesWithConfig) {
-						tablesWithConfig.asList().forEach(
-								tableName -> parseConfiguredTable(tableName, jsonObject)
-						);
-					} else
-						parseConfiguredTable(jsonObject.get("original_table"), jsonObject);
-				} else
-					throw new ReportedException(CrashReport.forThrowable(new IllegalStateException("Not a JSON Object: " + jsonElement + " this may be due to an incorrectly written config file."), "Configuring Items"));
-			});
-		}
-	}
 
-	@Override
-	public AtlasConfig readClientConfigInformation(RegistryFriendlyByteBuf buf) {
-		super.readClientConfigInformation(buf);
-		buf.readMap(FriendlyByteBuf::readResourceLocation, FriendlyByteBuf::readResourceLocation);
-		return this;
-	}
-
-	@Override
-	public PandoraConfig loadFromNetwork(RegistryFriendlyByteBuf buf) {
-		super.loadFromNetwork(buf);
-		configuredTables = buf.readMap(FriendlyByteBuf::readResourceLocation, FriendlyByteBuf::readResourceLocation);
-		return this;
-	}
-
-	@Override
-	public void saveToNetwork(RegistryFriendlyByteBuf buf) {
-		super.saveToNetwork(buf);
-		buf.writeMap(configuredTables, FriendlyByteBuf::writeResourceLocation, FriendlyByteBuf::writeResourceLocation);
-	}
-
-	@Override
-	public void saveExtra(JsonWriter jsonWriter, PrintWriter printWriter) {
-		BiMap<ResourceLocation[], ResourceLocation> arraysOfTables = HashBiMap.create();
-		configuredTables.forEach((key, value) -> {
-			if (arraysOfTables.containsValue(value)) {
-				ResourceLocation[] originalArray = arraysOfTables.inverse().get(value);
-				originalArray = Arrays.copyOf(originalArray, originalArray.length + 1);
-				originalArray[originalArray.length - 1] = key;
-				arraysOfTables.put(originalArray, value);
-			} else {
-				arraysOfTables.put(new ResourceLocation[] {key}, value);
-			}
-		});
-        try {
-			jsonWriter.name("tables");
-            jsonWriter.beginArray();
-			arraysOfTables.forEach((resourceLocations, resourceLocation) -> {
-                try {
-                    jsonWriter.beginObject();
-					jsonWriter.name("original_table");
-					if (resourceLocations.length == 1) jsonWriter.value(resourceLocations[0].toString());
-					else {
-						jsonWriter.beginArray();
-						for (ResourceLocation key : resourceLocations) jsonWriter.value(key.toString());
-						jsonWriter.endArray();
-					}
-					jsonWriter.name("appended_table");
-					jsonWriter.value(resourceLocation.toString());
-					jsonWriter.endObject();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-			jsonWriter.endArray();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 	}
 
 	@Override
@@ -134,17 +54,11 @@ public class PandoraConfig extends AtlasConfig {
 		return null;
 	}
 
-	public void parseConfiguredTable(JsonElement jsonElement, JsonObject jsonObject) {
-		ResourceLocation originalTable = ResourceLocation.tryParse(jsonElement.getAsString());
-		ResourceLocation appendedTable;
-		if (!jsonObject.has("appended_table"))
-			return;
-		appendedTable = ResourceLocation.tryParse(getString(jsonObject, "appended_table"));
-		configuredTables.put(originalTable, appendedTable);
-	}
-
 	@Override
 	public void defineConfigHolders() {
+		tables = createCodecBacked("tables", defaultTables, tableMapCodec);
+		tables.tieToCategory(balancing);
+		tables.setupTooltip(1);
 		boxLongevity = createInRange("box_longevity", 0.2, 0, 1);
 		boxLongevity.tieToCategory(balancing);
 		boxLongevity.setupTooltip(2);
@@ -157,7 +71,6 @@ public class PandoraConfig extends AtlasConfig {
 		maxEffectsPerBox = createInRange("max_effects_per_box", 3, 1, 100, true);
 		maxEffectsPerBox.tieToCategory(balancing);
 		maxEffectsPerBox.setupTooltip(1);
-		configuredTables = new HashMap<>();
 	}
 
 	@Override
@@ -170,7 +83,7 @@ public class PandoraConfig extends AtlasConfig {
 
 	@Override
 	public void resetExtraHolders() {
-		configuredTables = new HashMap<>();
+
 	}
 
 	@Override
@@ -181,5 +94,25 @@ public class PandoraConfig extends AtlasConfig {
 	@Override
 	public <T> void alertClientValue(ConfigValue<T> configValue, T t, T t1) {
 
+	}
+	static {
+		defaultTables = new HashMap<>();
+		defaultTables.put(ResourceLocation.parse("chests/pandora_inject"), List.of(
+				ResourceLocation.withDefaultNamespace("chests/abandoned_mineshaft"),
+				ResourceLocation.withDefaultNamespace("chests/jungle_temple"),
+				ResourceLocation.withDefaultNamespace("chests/simple_dungeon"),
+				ResourceLocation.withDefaultNamespace("chests/desert_pyramid"),
+				ResourceLocation.withDefaultNamespace("chests/stronghold_corridor"),
+				ResourceLocation.withDefaultNamespace("chests/stronghold_crossing"),
+				ResourceLocation.withDefaultNamespace("chests/stronghold_library"),
+				ResourceLocation.withDefaultNamespace("chests/bastion_bridge"),
+				ResourceLocation.withDefaultNamespace("chests/bastion_hoglin_stable"),
+				ResourceLocation.withDefaultNamespace("chests/bastion_other")
+		));
+		defaultTables.put(ResourceLocation.parse("chests/pandora_inject_common"), List.of(
+				ResourceLocation.withDefaultNamespace("chests/ancient_city"),
+				ResourceLocation.withDefaultNamespace("chests/bastion_treasure"),
+				ResourceLocation.withDefaultNamespace("chests/end_city_treasure")
+		));
 	}
 }

@@ -62,9 +62,9 @@ public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate {
 
                     T generator = getRandomGenerator(getGenerators(), generatorFlags, random);
                     if (generator instanceof ResourceKey<?> key) {
-                        Optional<Registry<ConfiguredFeature<?, ?>>> configuredFeatureRegistry = world.registryAccess().registry(Registries.CONFIGURED_FEATURE);
+                        Optional<Registry<ConfiguredFeature<?, ?>>> configuredFeatureRegistry = world.registryAccess().lookup(Registries.CONFIGURED_FEATURE);
                         if(configuredFeatureRegistry.isEmpty()) return;
-                        ConfiguredFeature<?, ?> feature = configuredFeatureRegistry.get().get((ResourceKey<ConfiguredFeature<?, ?>>) key);
+                        ConfiguredFeature<?, ?> feature = configuredFeatureRegistry.get().getValueOrThrow((ResourceKey<ConfiguredFeature<?, ?>>) key);
                         assert feature != null;
                         feature.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
                     }

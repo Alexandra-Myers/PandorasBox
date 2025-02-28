@@ -32,7 +32,7 @@ public class PBECRegistry {
 
     public static void register(PBEffectCreator creator, String id) {
         PandorasBox.logger.info("Effect Name: " + id);
-        EffectHolder holder = Init.EFFECT_HOLDER_REGISTRY.get(ResourceLocation.withDefaultNamespace(id));
+        EffectHolder holder = Init.EFFECT_HOLDER_REGISTRY.getValue(ResourceLocation.withDefaultNamespace(id));
         holder.defineEffectCreator(creator);
         if (holder.fixedChance() != -1)
             fixedChanceCreators.add(holder);

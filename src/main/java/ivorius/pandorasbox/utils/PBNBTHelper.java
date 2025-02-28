@@ -118,7 +118,7 @@ public class PBNBTHelper
             EntityType<?>[] entities = new EntityType<?>[listTag.size()];
 
             for (int i = 0; i < entities.length; i++)
-                entities[i] = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.tryParse(listTag.getString(i)));
+                entities[i] = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.tryParse(listTag.getString(i)));
 
             return entities;
         }
@@ -171,7 +171,7 @@ public class PBNBTHelper
             Block[] blocks = new Block[listTag.size()];
 
             for (int i = 0; i < blocks.length; i++)
-                blocks[i] = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(listTag.getString(i)));
+                blocks[i] = BuiltInRegistries.BLOCK.getValue(ResourceLocation.tryParse(listTag.getString(i)));
 
             return blocks;
         }
@@ -270,7 +270,7 @@ public class PBNBTHelper
     }
 
     public static Block getBlock(String string) {
-        return BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(string));
+        return BuiltInRegistries.BLOCK.getValue(ResourceLocation.tryParse(string));
     }
 
     public static WeightedBlock[] readNBTWeightedBlocks(String id, CompoundTag compound) {
@@ -280,7 +280,7 @@ public class PBNBTHelper
 
             for (int i = 0; i < blocks.length; i++) {
                 CompoundTag compoundNBT = listTag.getCompound(i);
-                Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(compoundNBT.getString("block")));
+                Block block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.tryParse(compoundNBT.getString("block")));
                 double weight = compoundNBT.getDouble("weight");
                 blocks[i] = new WeightedBlock(weight, block);
             }

@@ -18,12 +18,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,6 +49,11 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
     public PBEffectGenConvertToCity(int time, double range, int unifiedSeed, List<EntityType<?>> mobs) {
         super(time, range, 2, unifiedSeed);
         mobsToSpawn = mobs;
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.PLAINS;
     }
 
     @Override
@@ -190,7 +197,6 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                 Entity villager = lazilySpawnEntity(world, entity, random, "villager", 1.0f / (20 * 20), pos);
                 canSpawnEntity(world, blockState, pos, villager);
             }
-            changeBiome(Biomes.PLAINS, pass, effectCenter, serverLevel);
         }
     }
     public void buildStructure(Level world, BlockPos currentPos, int width, int height, int originY, int originX, int originZ) {
@@ -208,7 +214,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                 return;
             }
             if ((IvMathHelper.compareOffsets(currentPos.getX(), originX, width - 1) && currentPos.getZ() == originZ)) {
-                setBlockSafe(world, currentPos.above(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.fromDelta(originX - currentPos.getX(), 0, 0)));
+                setBlockSafe(world, currentPos.above(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.getApproximateNearest(originX - currentPos.getX(), 0, 0)));
                 ChestBlockEntity chestBlockEntity = (ChestBlockEntity) world.getBlockEntity(currentPos.above());
 
                 if (chestBlockEntity != null) {

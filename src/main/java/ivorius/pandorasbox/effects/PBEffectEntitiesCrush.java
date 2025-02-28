@@ -37,8 +37,10 @@ public class PBEffectEntitiesCrush extends PBEffectEntityBased {
         double z = entity.getDeltaMovement().z;
         if (lift) {
             entity.setDeltaMovement(x, y * (1.0f - strength) + strength * speed, z);
+            entity.hurtMarked = true;
         } else {
             entity.setDeltaMovement(x, y - strength * speed, z);
+            entity.hurtMarked = true;
         }
     }
 

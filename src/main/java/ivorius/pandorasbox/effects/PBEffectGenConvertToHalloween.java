@@ -8,6 +8,7 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -28,6 +30,11 @@ public class PBEffectGenConvertToHalloween extends PBEffectGenerate {
     public PBEffectGenConvertToHalloween() {}
     public PBEffectGenConvertToHalloween(int time, double range, int unifiedSeed) {
         super(time, range, 2, unifiedSeed);
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.SOUL_SAND_VALLEY;
     }
 
     @Override
@@ -76,7 +83,6 @@ public class PBEffectGenConvertToHalloween extends PBEffectGenerate {
                     canSpawnEntity(world, blockState, pos, entity1);
                 }
             }
-            changeBiome(Biomes.SOUL_SAND_VALLEY, pass, effectCenter, serverLevel);
         }
     }
 }

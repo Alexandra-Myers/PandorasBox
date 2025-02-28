@@ -9,9 +9,11 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -25,6 +27,11 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate {
     public PBEffectGenConvertToDesert(int time, double range, int unifiedSeed)
     {
         super(time, range, 1, unifiedSeed);
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.DESERT;
     }
 
     @Override
@@ -59,7 +66,6 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate {
                     setBlockSafe(world, pos, Blocks.SANDSTONE.defaultBlockState());
                 }
             }
-            changeBiome(Biomes.DESERT, pass, effectCenter, serverLevel);
         }
     }
 }

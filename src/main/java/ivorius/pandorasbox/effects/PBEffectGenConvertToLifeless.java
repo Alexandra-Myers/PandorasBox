@@ -10,10 +10,12 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -35,6 +37,11 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate {
     public PBEffectGenConvertToLifeless(int time, double range, int unifiedSeed)
     {
         super(time, range, 1, unifiedSeed);
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.BADLANDS;
     }
 
     @Override
@@ -100,7 +107,6 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate {
                     setBlockSafe(level, pos, Blocks.SAND.defaultBlockState());
                 }
             }
-            changeBiome(Biomes.BADLANDS, pass, effectCenter, serverLevel);
         }
     }
 }

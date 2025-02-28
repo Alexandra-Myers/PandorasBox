@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "pandorasbox:item/pandoras_box",
+    "model": {
+      "type": "minecraft:pandoras_box"
+    }
+  }
+}

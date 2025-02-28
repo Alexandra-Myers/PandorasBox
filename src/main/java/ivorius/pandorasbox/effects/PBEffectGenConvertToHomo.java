@@ -11,11 +11,13 @@ import ivorius.pandorasbox.init.FeatureInit;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
 import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -31,6 +33,11 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate {
     public PBEffectGenConvertToHomo(int time, double range, int unifiedSeed)
     {
         super(time, range, 3, unifiedSeed);
+    }
+
+    @Override
+    public ResourceKey<Biome> getBiomeKey() {
+        return Biomes.FLOWER_FOREST;
     }
 
     @Override
@@ -88,7 +95,6 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate {
                     sheep.setColor(DyeColor.byId(random.nextInt(16)));
                 }
             }
-            changeBiome(Biomes.FLOWER_FOREST, pass, effectCenter, serverLevel);
         }
     }
 }
