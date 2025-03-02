@@ -20,7 +20,7 @@ public class SpecialModelRenderersMixin {
     public static ExtraCodecs.LateBoundIdMapper<ResourceLocation, MapCodec<? extends SpecialModelRenderer.Unbaked>> ID_MAPPER;
 
     @Inject(method = "bootstrap", at = @At("TAIL"))
-    private static void injectTieredShieldRenderer(CallbackInfo ci) {
+    private static void injectBoxRenderer(CallbackInfo ci) {
         ID_MAPPER.put(ResourceLocation.withDefaultNamespace("pandoras_box"), PandorasBoxSpecialRenderer.Unbaked.MAP_CODEC);
     }
 }

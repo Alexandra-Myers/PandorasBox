@@ -33,18 +33,18 @@ public class PandorasBoxModel extends EntityModel<PandorasBoxRenderState> {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition feet = partdefinition.addOrReplaceChild("feet", CubeListBuilder.create().texOffs(0, 14).addBox(-3.5F, 22.0F, 2.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+        partdefinition.addOrReplaceChild("feet", CubeListBuilder.create().texOffs(0, 14).addBox(-3.5F, 22.0F, 2.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(4, 14).addBox(2.5F, 22.0F, 2.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(4, 16).addBox(2.5F, 22.0F, -3.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 16).addBox(-3.5F, 22.0F, -3.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 1.0F, 0.0F));
 
-        PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -7.0F, -4.0F, 8.0F, 6.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+        partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -7.0F, -4.0F, 8.0F, 6.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
         PartDefinition joint = partdefinition.addOrReplaceChild("joint", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-        PartDefinition cube_r1 = joint.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(8, 14).addBox(-3.5F, 1.75F, 0.5F, 7.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -10.0F, -4.0F, -0.3054F, 0.0F, 0.0F));
+        joint.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(8, 14).addBox(-3.5F, 1.75F, 0.5F, 7.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -10.0F, -4.0F, -0.3054F, 0.0F, 0.0F));
 
-        PartDefinition top = partdefinition.addOrReplaceChild("top", CubeListBuilder.create().texOffs(0, 18).addBox(-4.0F, -0.5F, 0.0F, 8.0F, 1.0F, 8.0F, new CubeDeformation(0.0F))
+        partdefinition.addOrReplaceChild("top", CubeListBuilder.create().texOffs(0, 18).addBox(-4.0F, -0.5F, 0.0F, 8.0F, 1.0F, 8.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 27).addBox(-2.0F, -1.5F, 2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
                 .texOffs(8, 16).addBox(2.0F, -1.0F, 3.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(12, 16).addBox(3.25F, -0.75F, 7.25F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))

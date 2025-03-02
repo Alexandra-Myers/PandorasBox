@@ -20,10 +20,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-public class PandorasBoxItem extends BlockItem
-{
-    public PandorasBoxItem(Block block, Item.Properties properties)
-    {
+public class PandorasBoxItem extends BlockItem {
+    public PandorasBoxItem(Block block, Item.Properties properties) {
         super(block, properties);
     }
 
@@ -34,14 +32,14 @@ public class PandorasBoxItem extends BlockItem
         if (!player.getAbilities().instabuild) {
             itemstack.shrink(1);
         }
-        return super.use(world, player, hand);
+        return InteractionResult.SUCCESS;
     }
     public @NotNull InteractionResult useOn(@NotNull UseOnContext p_40581_) {
         return this.place(new BlockPlaceContext(p_40581_));
     }
 
     public static PandorasBoxEntity executeRandomEffect(Level world, Player player, BlockPos pos, boolean floatAway) {
-        if(world.isClientSide()) return null;
+        if (world.isClientSide()) return null;
         return PBECRegistry.spawnPandorasBox(world, world.random, true, player, pos, floatAway);
     }
 }

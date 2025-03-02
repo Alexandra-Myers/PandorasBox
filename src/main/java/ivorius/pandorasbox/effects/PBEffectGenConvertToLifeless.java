@@ -11,7 +11,6 @@ import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -46,7 +45,7 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate {
 
     @Override
     public void generateOnBlock(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
-        if(level instanceof ServerLevel serverLevel) {
+        if (!level.isClientSide()) {
             BlockState state = level.getBlockState(pos);
             Block block = state.getBlock();
 

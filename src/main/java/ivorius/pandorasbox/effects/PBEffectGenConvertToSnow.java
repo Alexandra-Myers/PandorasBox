@@ -8,7 +8,6 @@ package ivorius.pandorasbox.effects;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -38,7 +37,7 @@ public class PBEffectGenConvertToSnow extends PBEffectGenerate {
 
     @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
-        if(world instanceof ServerLevel serverLevel) {
+        if (!world.isClientSide()) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
 

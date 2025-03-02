@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +46,7 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate {
 
     @Override
     public void generateOnBlock(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
-        if(level instanceof ServerLevel serverLevel) {
+        if (!level.isClientSide()) {
             BlockState blockState = level.getBlockState(pos);
             Block block = blockState.getBlock();
             ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
