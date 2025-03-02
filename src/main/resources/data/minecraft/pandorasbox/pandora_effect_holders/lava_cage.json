@@ -1,0 +1,33 @@
+{
+  "effect_creator": {
+    "cage_blocks": [
+      {
+        "weight": 100.0,
+        "block": "minecraft:iron_bars"
+      },
+      {
+        "weight": 50.0,
+        "block": "minecraft:black_stained_glass_pane"
+      }
+    ],
+    "floor_blocks": [
+      {
+        "weight": 70.0,
+        "tag": "#c:obsidians/normal"
+      },
+      {
+        "weight": 10.0,
+        "block": "minecraft:bedrock"
+      }
+    ],
+    "range": {
+      "min": 15.0,
+      "max": 40.0,
+      "type": "minecraft:linear"
+    },
+    "lava_block": "minecraft:lava",
+    "type": "pandorasbox:lava_cage"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

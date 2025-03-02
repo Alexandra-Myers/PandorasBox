@@ -1,0 +1,93 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "time": {
+          "min": 60,
+          "max": 200,
+          "type": "minecraft:linear"
+        },
+        "range": {
+          "min": 10.0,
+          "max": 30.0,
+          "type": "minecraft:linear"
+        },
+        "floor_blocks": [
+          {
+            "weight": 100.0,
+            "tag": "#c:glass_blocks/colorless"
+          }
+        ],
+        "fill_block": "minecraft:water",
+        "type": "pandorasbox:create_dome"
+      },
+      {
+        "entities": [
+          {
+            "entity": "minecraft:drowned",
+            "min_count": 3,
+            "max_count": 10,
+            "weight": 6.0
+          },
+          {
+            "entity": "minecraft:guardian",
+            "min_count": 3,
+            "max_count": 10,
+            "weight": 6.0
+          },
+          {
+            "entity": "minecraft:elder_guardian",
+            "min_count": 1,
+            "max_count": 1,
+            "weight": 5.0
+          }
+        ],
+        "value_throw": {
+          "throw_strength_horizontal": {
+            "min": 0.1,
+            "max": 0.4,
+            "type": "minecraft:linear"
+          },
+          "throw_strength_vertical": {
+            "min": 0.2,
+            "max": 1.0,
+            "type": "minecraft:linear"
+          }
+        },
+        "value_spawn": {
+          "spawn_range": {
+            "min": 8.0,
+            "max": 30.0,
+            "type": "minecraft:linear"
+          },
+          "spawn_shift": {
+            "value": 0.0,
+            "type": "minecraft:constant"
+          }
+        },
+        "spawn_from_effect_center": {
+          "guaranteed": false,
+          "type": "minecraft:constant"
+        },
+        "time": {
+          "min": 60,
+          "max": 100,
+          "type": "minecraft:linear"
+        },
+        "number": {
+          "min": 1,
+          "max": 10,
+          "type": "minecraft:linear"
+        },
+        "type": "pandorasbox:spawn_entities"
+      }
+    ],
+    "delays": [
+      0,
+      100
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

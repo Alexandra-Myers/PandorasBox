@@ -1,0 +1,38 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 8.0,
+      "max": 25.0,
+      "type": "minecraft:linear"
+    },
+    "chance_for_more_effects": 0.95,
+    "mob_effects": [
+      {
+        "weight": 100.0,
+        "to_apply": "minecraft:slowness",
+        "duration": {
+          "min": 120,
+          "max": 400,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 4,
+          "max": 8,
+          "type": "minecraft:linear"
+        }
+      }
+    ],
+    "time": {
+      "min": 60,
+      "max": 120,
+      "type": "minecraft:linear"
+    },
+    "number": {
+      "value": 1,
+      "type": "minecraft:constant"
+    },
+    "type": "pandorasbox:apply_mob_effects"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

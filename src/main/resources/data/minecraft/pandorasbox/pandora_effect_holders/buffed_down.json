@@ -1,0 +1,159 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 8.0,
+      "max": 25.0,
+      "type": "minecraft:linear"
+    },
+    "chance_for_more_effects": 0.2,
+    "mob_effects": [
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:blindness",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:nausea",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:slowness",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:mining_fatigue",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:weakness",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:hunger",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:glowing",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:wither",
+        "duration": {
+          "min": 600,
+          "max": 1200,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 2,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:darkness",
+        "duration": {
+          "min": 600,
+          "max": 1200,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 2,
+          "type": "minecraft:linear"
+        }
+      }
+    ],
+    "time": {
+      "min": 60,
+      "max": 600,
+      "type": "minecraft:linear"
+    },
+    "number": {
+      "values": [
+        1,
+        2,
+        3
+      ],
+      "weights": [
+        100,
+        80,
+        50
+      ],
+      "type": "minecraft:weighted"
+    },
+    "type": "pandorasbox:apply_mob_effects"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

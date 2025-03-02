@@ -1,0 +1,26 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 40.0,
+      "max": 120.0,
+      "type": "minecraft:linear"
+    },
+    "source_blocks": [
+      "minecraft:water",
+      "minecraft:lava"
+    ],
+    "destination_blocks": [
+      {
+        "weight": 100.0,
+        "block": "minecraft:air"
+      }
+    ],
+    "take_random_nearby_blocks": {
+      "guaranteed": false,
+      "type": "minecraft:constant"
+    },
+    "type": "pandorasbox:replace_blocks"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

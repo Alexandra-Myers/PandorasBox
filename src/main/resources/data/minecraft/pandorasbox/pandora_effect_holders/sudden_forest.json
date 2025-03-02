@@ -1,0 +1,37 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 10.0,
+      "max": 80.0,
+      "type": "minecraft:linear"
+    },
+    "chance_per_block": {
+      "min": 0.015625,
+      "max": 0.25,
+      "type": "minecraft:linear"
+    },
+    "possible_tree_flags": {
+      "min_flags": 1,
+      "flags": [
+        0,
+        1,
+        2,
+        5,
+        6,
+        7
+      ],
+      "chances": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "type": "minecraft:flags"
+    },
+    "type": "pandorasbox:gen_trees"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

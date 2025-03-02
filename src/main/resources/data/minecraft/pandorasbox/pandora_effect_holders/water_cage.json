@@ -1,0 +1,33 @@
+{
+  "effect_creator": {
+    "fill_block": "minecraft:water",
+    "cage_blocks": [
+      {
+        "weight": 100.0,
+        "tag": "#c:glass_panes/colorless"
+      },
+      {
+        "weight": 50.0,
+        "tag": "#minecraft:wooden_fences"
+      }
+    ],
+    "floor_blocks": [
+      {
+        "weight": 70.0,
+        "tag": "#c:obsidians/normal"
+      },
+      {
+        "weight": 10.0,
+        "block": "minecraft:bedrock"
+      }
+    ],
+    "range": {
+      "min": 15.0,
+      "max": 40.0,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:lava_cage"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

@@ -1,0 +1,27 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 8.0,
+      "max": 30.0,
+      "type": "minecraft:linear"
+    },
+    "shift": {
+      "min": -16,
+      "max": 16,
+      "type": "minecraft:linear"
+    },
+    "tower_size": {
+      "min": 1,
+      "max": 32,
+      "type": "minecraft:linear"
+    },
+    "block_size": {
+      "min": 1,
+      "max": 8,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:height_noise"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

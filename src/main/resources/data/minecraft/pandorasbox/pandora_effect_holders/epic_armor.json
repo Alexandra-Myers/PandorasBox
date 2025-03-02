@@ -1,0 +1,181 @@
+{
+  "effect_creator": {
+    "value_throw": {
+      "throw_strength_horizontal": {
+        "min": 0.05,
+        "max": 0.2,
+        "type": "minecraft:linear"
+      },
+      "throw_strength_vertical": {
+        "min": 0.2,
+        "max": 1.0,
+        "type": "minecraft:linear"
+      }
+    },
+    "give_names": {
+      "chance": 0.7,
+      "type": "minecraft:chance"
+    },
+    "spawns_from_effect_center": {
+      "guaranteed": false,
+      "type": "minecraft:constant"
+    },
+    "number": {
+      "min": 1,
+      "max": 2,
+      "type": "minecraft:linear"
+    },
+    "ticks_per_item": {
+      "min": 0,
+      "max": 30,
+      "type": "minecraft:linear"
+    },
+    "enchantment_level": {
+      "min_value": 1,
+      "max_value": 30,
+      "base": 10.0,
+      "type": "minecraft:exponential"
+    },
+    "items": [
+      {
+        "stack": {
+          "id": "minecraft:iron_helmet"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_helmet"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_helmet"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:iron_chestplate"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_chestplate"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_chestplate"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:iron_leggings"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_leggings"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_leggings"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:iron_boots"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_boots"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_boots"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:turtle_helmet"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_helmet"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_chestplate"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_leggings"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_boots"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      }
+    ],
+    "type": "pandorasbox:spawn_enchanted_items"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

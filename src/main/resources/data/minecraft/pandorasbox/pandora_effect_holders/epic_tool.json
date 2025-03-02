@@ -1,0 +1,221 @@
+{
+  "effect_creator": {
+    "value_throw": {
+      "throw_strength_horizontal": {
+        "min": 0.05,
+        "max": 0.2,
+        "type": "minecraft:linear"
+      },
+      "throw_strength_vertical": {
+        "min": 0.2,
+        "max": 1.0,
+        "type": "minecraft:linear"
+      }
+    },
+    "give_names": {
+      "chance": 0.7,
+      "type": "minecraft:chance"
+    },
+    "spawns_from_effect_center": {
+      "guaranteed": false,
+      "type": "minecraft:constant"
+    },
+    "number": {
+      "min": 1,
+      "max": 2,
+      "type": "minecraft:linear"
+    },
+    "ticks_per_item": {
+      "min": 0,
+      "max": 30,
+      "type": "minecraft:linear"
+    },
+    "enchantment_level": {
+      "min_value": 1,
+      "max_value": 30,
+      "base": 10.0,
+      "type": "minecraft:exponential"
+    },
+    "items": [
+      {
+        "stack": {
+          "id": "minecraft:iron_sword"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_sword"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_sword"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:iron_shovel"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_shovel"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_shovel"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:iron_pickaxe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_pickaxe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_pickaxe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:iron_axe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_axe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_axe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:bow"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:crossbow"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:trident"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_sword"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_shovel"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_pickaxe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_axe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_hoe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:trident"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:mace"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 0.1
+      }
+    ],
+    "type": "pandorasbox:spawn_enchanted_items"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

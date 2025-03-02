@@ -1,6 +1,7 @@
 {
     "entity.pandorasbox.pandoras_box": "Pandora's Box",
     "item.pandorasbox.pandoras_box": "Pandora's Box",
+    "tag.item.pandorasbox.pandoras_box_misc": "Miscellaneous Box Loot",
 
     "argument.pandora_effect.id.invalid": "Unknown box effect '%s'",
 

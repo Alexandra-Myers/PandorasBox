@@ -13,15 +13,19 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
+import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import ivorius.pandorasbox.utils.PBEffectArgument;
+import ivorius.pandorasbox.init.Init;
 import net.atlas.atlascore.command.argument.Argument;
 import net.atlas.atlascore.command.argument.OptsArgument;
 import net.atlas.atlascore.util.MapUtils;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
@@ -29,9 +33,9 @@ import java.util.Map;
 public class PandoraCommand {
 
     @SuppressWarnings("unchecked")
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext) {
         String[] args = new String[] {"first", "second", "third"};
-        Map<String, ArgumentType<?>> realArgs = MapUtils.buildHashMapFromAlignedArrays(new String[]{"player", "effect", "invisible"}, new ArgumentType[]{EntityArgument.player(), PBEffectArgument.effect(), BoolArgumentType.bool()});
+        Map<String, ArgumentType<?>> realArgs = MapUtils.buildHashMapFromAlignedArrays(new String[]{"player", "effect", "invisible"}, new ArgumentType[]{EntityArgument.player(), ResourceArgument.resource(commandBuildContext, Init.EFFECT_HOLDER_REGISTRY_KEY), BoolArgumentType.bool()});
         Command<CommandSourceStack> cmd = context -> createBox(context, Argument.argumentMap(context, args));
         dispatcher.register(Commands.literal("pandora")
                 .requires(cs -> cs.hasPermission(2))
@@ -63,7 +67,9 @@ public class PandoraCommand {
     public static int createBox(CommandContext<CommandSourceStack> commandContext, Argument.Arguments args) throws CommandSyntaxException {
         EntitySelector entitySelector = args.getArgumentOrElseGet("player", EntitySelector.class, () -> null);
         ServerPlayer player = entitySelector == null ? commandContext.getSource().getPlayerOrException() : entitySelector.findSinglePlayer(commandContext.getSource());
-        PBEffectCreator effectCreator = args.getArgumentOrElseGet("effect", PBEffectCreator.class, () -> null);
+        @SuppressWarnings("unchecked") Holder.Reference<EffectHolder> effectHolderReference = args.getArgumentOrElseGet("effect", Holder.Reference.class, () -> null);
+        PBEffectCreator effectCreator = null;
+        if (effectHolderReference != null) effectCreator = effectHolderReference.value().effectCreator();
         boolean invisible = args.getArgumentOrDefault("invisible", false);
         return createBox(player, effectCreator, invisible);
     }

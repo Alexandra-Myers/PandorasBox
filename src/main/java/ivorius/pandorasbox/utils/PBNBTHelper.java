@@ -1,5 +1,6 @@
 package ivorius.pandorasbox.utils;
 
+import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import ivorius.pandorasbox.weighted.WeightedBlock;
@@ -14,11 +15,18 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.function.Supplier;
+
 /**
  * Created by lukas on 03.02.15.
  */
 public class PBNBTHelper
 {
+    public static <E> Codec<E[]> arrayCodec(Codec<E> codec, Supplier<E[]> arrCreator) {
+        return codec.listOf().xmap(list -> list.toArray(arrCreator.get()), elements -> Collections.unmodifiableList(Arrays.asList(elements)));
+    }
     public static byte readByte(CompoundTag compound, String key, byte defaultValue) {
         return compound != null && compound.contains(key, 1)
                 ? compound.getByte(key)
@@ -297,8 +305,8 @@ public class PBNBTHelper
 
             for (WeightedBlock b : blocks) {
                 CompoundTag compoundNBT = new CompoundTag();
-                compoundNBT.putString("block", PBNBTHelper.storeBlockString(b.block));
-                compoundNBT.putDouble("weight", b.weight);
+                compoundNBT.putString("block", PBNBTHelper.storeBlockString(b.block().value()));
+                compoundNBT.putDouble("weight", b.weight());
                 listTag.add(compoundNBT);
             }
 
@@ -313,12 +321,12 @@ public class PBNBTHelper
             for (RandomizedItemStack stack : stacks) {
                 CompoundTag compoundTag = new CompoundTag();
                 CompoundTag stackTag = new CompoundTag();
-                if (stack.itemStack == null || stack.itemStack.isEmpty()) continue;
-                stack.itemStack.save(registryAccess, stackTag);
+                if (stack.itemStack() == null || stack.itemStack().isEmpty()) continue;
+                stack.itemStack().save(registryAccess, stackTag);
                 compoundTag.put("stack", stackTag);
-                compoundTag.putInt("min", stack.min);
-                compoundTag.putInt("max", stack.max);
-                compoundTag.putDouble("weight", stack.weight);
+                compoundTag.putInt("min", stack.min());
+                compoundTag.putInt("max", stack.max());
+                compoundTag.putDouble("weight", stack.weight());
                 listTag.add(compoundTag);
             }
 
@@ -341,7 +349,7 @@ public class PBNBTHelper
                     max = compoundTag.getInt("max");
                 if (compoundTag.contains("weight"))
                     weight = compoundTag.getInt("weight");
-                itemStacks[i] = new RandomizedItemStack(stack, min, max, weight);
+                itemStacks[i] = new RandomizedItemStack(stack, new WeightedWithRandomCount(min, max, weight));
             }
 
             return itemStacks;

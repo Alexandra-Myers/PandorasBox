@@ -17,6 +17,7 @@ import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -219,12 +220,12 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
 
                 if (chestBlockEntity != null) {
                     Collection<WeightedSet> sets = PandorasBoxHelper.equipmentSets;
-                    Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.items;
+                    Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, PandorasBoxHelper.items);
                     if (world.random.nextFloat() > 0.05) {
                         for (int i = 0; i < world.random.nextInt(5) + 2; i++) {
                             RandomizedItemStack chestContent = WeightedSelector.selectItem(world.random, itemSelection);
-                            ItemStack stack = chestContent.itemStack.copy();
-                            stack.setCount(chestContent.min + world.random.nextInt(chestContent.max - chestContent.min + 1));
+                            ItemStack stack = chestContent.itemStack().copy();
+                            stack.setCount(chestContent.min() + world.random.nextInt(chestContent.max() - chestContent.min() + 1));
                             int slot = world.random.nextInt(chestBlockEntity.getContainerSize());
                             while (!chestBlockEntity.getItem(slot).isEmpty())
                                 slot = world.random.nextInt(chestBlockEntity.getContainerSize());
@@ -232,7 +233,7 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                             chestBlockEntity.setItem(slot, stack);
                         }
                     } else {
-                        ItemStack[] itemSet = WeightedSelector.selectItem(world.random, sets).set;
+                        ItemStack[] itemSet = WeightedSelector.selectItem(world.random, sets).set();
                         ItemStack[] chestContent = new ItemStack[itemSet.length];
                         for (int i = 0; i < itemSet.length; i++) {
                             chestContent[i] = itemSet[i].copy();

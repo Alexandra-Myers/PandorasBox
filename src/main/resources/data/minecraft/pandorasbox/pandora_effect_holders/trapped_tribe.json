@@ -1,0 +1,41 @@
+{
+  "effect_creator": {
+    "entities": [
+      {
+        "entity": "minecraft:arrow",
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 100.0
+      }
+    ],
+    "value_throw": {
+      "throw_strength_horizontal": {
+        "min": 0.05,
+        "max": 0.5,
+        "type": "minecraft:linear"
+      },
+      "throw_strength_vertical": {
+        "min": 0.3,
+        "max": 0.8,
+        "type": "minecraft:linear"
+      }
+    },
+    "spawn_from_effect_center": {
+      "guaranteed": false,
+      "type": "minecraft:constant"
+    },
+    "time": {
+      "min": 20,
+      "max": 100,
+      "type": "minecraft:linear"
+    },
+    "number": {
+      "min": 20,
+      "max": 200,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:spawn_entities"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

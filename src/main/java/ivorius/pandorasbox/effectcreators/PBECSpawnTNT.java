@@ -5,6 +5,8 @@
 
 package ivorius.pandorasbox.effectcreators;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ValueSpawn;
@@ -12,27 +14,20 @@ import ivorius.pandorasbox.random.ValueThrow;
 import ivorius.pandorasbox.random.ZValue;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECSpawnTNT implements PBEffectCreator {
-    public IValue time;
-    public IValue number;
-    public IValue fuseTime;
-    public ZValue spawnFromEffectCenter;
-
-    public ValueThrow valueThrow;
-    public ValueSpawn valueSpawn;
-
-    public PBECSpawnTNT(IValue time, IValue number, IValue fuseTime, ZValue spawnFromEffectCenter, ValueSpawn valueSpawn, ValueThrow valueThrow) {
-        this.time = time;
-        this.number = number;
-        this.fuseTime = fuseTime;
-        this.spawnFromEffectCenter = spawnFromEffectCenter;
-        this.valueThrow = valueThrow;
-        this.valueSpawn = valueSpawn;
-    }
+public record PBECSpawnTNT(IValue time, IValue number, IValue fuseTime, ZValue spawnFromEffectCenter, ValueSpawn valueSpawn, ValueThrow valueThrow) implements PBEffectCreator {
+    public static final MapCodec<PBECSpawnTNT> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECSpawnTNT::time),
+                            IValue.CODEC.fieldOf("number").forGetter(PBECSpawnTNT::number),
+                            IValue.CODEC.fieldOf("fuse_time").forGetter(PBECSpawnTNT::fuseTime),
+                            ZValue.CODEC.fieldOf("spawn_from_effect_center").forGetter(PBECSpawnTNT::spawnFromEffectCenter),
+                            ValueSpawn.CODEC.fieldOf("value_spawn").forGetter(PBECSpawnTNT::valueSpawn),
+                            ValueThrow.CODEC.fieldOf("value_throw").forGetter(PBECSpawnTNT::valueThrow))
+                    .apply(instance, PBECSpawnTNT::new));
 
     @Override
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
@@ -50,5 +45,10 @@ public class PBECSpawnTNT implements PBEffectCreator {
     @Override
     public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random) {
         return 0.15f;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PBEffectCreator> codec() {
+        return CODEC;
     }
 }

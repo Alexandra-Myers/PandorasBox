@@ -5,45 +5,34 @@
 
 package ivorius.pandorasbox.random;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.util.RandomSource;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 04.04.14.
  */
-public class DWeighted implements DValue
-{
-    public double[] values;
-    public int[] weights;
-
-    public DWeighted(double[] values, int[] weights)
-    {
-        this.values = values;
-        this.weights = weights;
-    }
-
-    public DWeighted(Number... valuesWithWeights)
-    {
-        this.values = new double[valuesWithWeights.length / 2];
-        this.weights = new int[values.length];
-
-        for (int i = 0; i < values.length; i++)
-        {
-            values[i] = (Double) valuesWithWeights[i * 2];
-            weights[i] = (Integer) valuesWithWeights[i * 2 + 1];
-        }
-    }
+public record DWeighted(Double[] values, Integer[] weights) implements DValue {
+    public static final MapCodec<DWeighted> CODEC = RecordCodecBuilder.<DWeighted>mapCodec(instance ->
+            instance.group(PBNBTHelper.arrayCodec(Codec.DOUBLE, () -> new Double[0]).fieldOf("values").forGetter(DWeighted::values),
+                            PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("weights").forGetter(DWeighted::weights))
+                    .apply(instance, DWeighted::new)).validate(dWeighted -> {
+        if (dWeighted.values.length != dWeighted.weights.length) return DataResult.error(() -> "Weighted value provided without aligned values and weights!");
+        else return DataResult.success(dWeighted);
+    });
 
     @Override
-    public double getValue(RandomSource random)
-    {
+    public double getValue(RandomSource random) {
         int total = getTotalWeight(weights);
         int selected = random.nextInt(total);
 
-        for (int i = 0; i < weights.length; i++)
-        {
+        for (int i = 0; i < weights.length; i++) {
             selected -= weights[i];
-            if (selected < 0)
-            {
+            if (selected < 0) {
                 return values[i];
             }
         }
@@ -51,12 +40,15 @@ public class DWeighted implements DValue
         throw new RuntimeException("Weights have invalid values!");
     }
 
-    public static int getTotalWeight(int[] weights)
-    {
+    @Override
+    public @NotNull MapCodec<? extends DValue> codec() {
+        return CODEC;
+    }
+
+    public static int getTotalWeight(Integer[] weights) {
         int weight = 0;
 
-        for (int i : weights)
-        {
+        for (int i : weights) {
             weight += i;
         }
 

@@ -1,0 +1,15 @@
+{
+  "effect_creator": {
+    "spawn_mode": {
+      "value": 0,
+      "type": "minecraft:constant"
+    },
+    "more_effect_chance": {
+      "value": 0.5,
+      "type": "minecraft:constant"
+    },
+    "type": "pandorasbox:duplicate_box"
+  },
+  "chance": 0.02,
+  "type": "minecraft:fixed_chance"
+}

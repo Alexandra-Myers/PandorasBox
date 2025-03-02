@@ -25,7 +25,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -320,10 +319,6 @@ public class PandorasBoxEntity extends Entity {
             input = PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true);
         }
         return input;
-    }
-
-    public RandomSource getRandom() {
-        return random;
     }
 
     public int getDeathTicks() {

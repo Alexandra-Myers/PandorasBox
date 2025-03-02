@@ -5,23 +5,26 @@
 
 package ivorius.pandorasbox.random;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.util.RandomSource;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 04.04.14.
  */
-public class ZConstant implements ZValue
+public record ZConstant(boolean value) implements ZValue
 {
-    public boolean value;
-
-    public ZConstant(boolean value)
-    {
-        this.value = value;
-    }
+    public static final MapCodec<ZConstant> CODEC = Codec.BOOL.xmap(ZConstant::new, ZConstant::value).fieldOf("guaranteed");
 
     @Override
     public boolean getValue(RandomSource random)
     {
         return value;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends ZValue> codec() {
+        return CODEC;
     }
 }

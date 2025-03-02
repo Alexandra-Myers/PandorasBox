@@ -1,0 +1,279 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 8.0,
+      "max": 25.0,
+      "type": "minecraft:linear"
+    },
+    "chance_for_more_effects": 0.2,
+    "mob_effects": [
+      {
+        "weight": 5.0,
+        "to_apply": [
+          "minecraft:hero_of_the_village",
+          "minecraft:regeneration",
+          "minecraft:trial_omen",
+          "minecraft:weaving",
+          "minecraft:nausea",
+          "minecraft:blindness",
+          "minecraft:hunger"
+        ],
+        "duration": {
+          "min": 600,
+          "max": 1200,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 1,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:regeneration",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:speed",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:strength",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:jump_boost",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:resistance",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:water_breathing",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:fire_resistance",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:night_vision",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:invisibility",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:absorption",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:slow_falling",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:dolphins_grace",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:infested",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:oozing",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:weaving",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      },
+      {
+        "weight": 10.0,
+        "to_apply": "minecraft:wind_charged",
+        "duration": {
+          "min": 1200,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "amplifier": {
+          "min": 0,
+          "max": 3,
+          "type": "minecraft:linear"
+        }
+      }
+    ],
+    "time": {
+      "min": 60,
+      "max": 600,
+      "type": "minecraft:linear"
+    },
+    "number": {
+      "values": [
+        1,
+        2,
+        3
+      ],
+      "weights": [
+        100,
+        80,
+        50
+      ],
+      "type": "minecraft:weighted"
+    },
+    "type": "pandorasbox:apply_mob_effects"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

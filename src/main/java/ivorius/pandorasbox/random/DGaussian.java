@@ -5,25 +5,32 @@
 
 package ivorius.pandorasbox.random;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.RandomSource;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 04.04.14.
  */
-public class DGaussian implements DValue
-{
-    public double min;
-    public double max;
+public record DGaussian(double min, double max) implements DValue {
+    public static final MapCodec<DGaussian> CODEC = RecordCodecBuilder.<DGaussian>mapCodec(instance ->
+            instance.group(Codec.DOUBLE.fieldOf("min").forGetter(DGaussian::min),
+                            Codec.DOUBLE.fieldOf("max").forGetter(DGaussian::max))
+                    .apply(instance, DGaussian::new)).validate(dGaussian -> {
+        if (dGaussian.min > dGaussian.max) return DataResult.error(() -> "Constraints for gaussian mismatched, min greater than max!");
+        else return DataResult.success(dGaussian);
+    });
 
-    public DGaussian(double min, double max)
-    {
-        this.min = min;
-        this.max = max;
+    @Override
+    public double getValue(RandomSource random) {
+        return (min + max * 0.5) + (random.nextDouble() - random.nextDouble()) * (max - min) * 0.5;
     }
 
     @Override
-    public double getValue(RandomSource random)
-    {
-        return (min + max * 0.5) + (random.nextDouble() - random.nextDouble()) * (max - min) * 0.5;
+    public @NotNull MapCodec<? extends DValue> codec() {
+        return CODEC;
     }
 }

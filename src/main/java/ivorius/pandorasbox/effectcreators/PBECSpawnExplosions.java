@@ -5,42 +5,29 @@
 
 package ivorius.pandorasbox.effectcreators;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectRandomExplosions;
-import ivorius.pandorasbox.random.DValue;
-import ivorius.pandorasbox.random.IValue;
-import ivorius.pandorasbox.random.ValueHelper;
-import ivorius.pandorasbox.random.ZValue;
+import ivorius.pandorasbox.random.*;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECSpawnExplosions implements PBEffectCreator
-{
-    public IValue time;
-    public IValue number;
-    public DValue range;
-
-    public DValue explosionStrength;
-
-    public ZValue isFlaming;
-    public ZValue isSmoking;
-
-    public PBECSpawnExplosions(IValue time, IValue number, DValue range, DValue explosionStrength, ZValue isFlaming, ZValue isSmoking)
-    {
-        this.time = time;
-        this.number = number;
-        this.range = range;
-        this.explosionStrength = explosionStrength;
-        this.isFlaming = isFlaming;
-        this.isSmoking = isSmoking;
-    }
-
+public record PBECSpawnExplosions(IValue time, IValue number, DValue range, DValue explosionStrength, ZValue isFlaming, ZValue isSmoking) implements PBEffectCreator {
+    public static final MapCodec<PBECSpawnExplosions> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECSpawnExplosions::time),
+                            IValue.CODEC.fieldOf("number").forGetter(PBECSpawnExplosions::number),
+                            DValue.CODEC.fieldOf("range").forGetter(PBECSpawnExplosions::range),
+                            DValue.CODEC.fieldOf("explosion_strength").forGetter(PBECSpawnExplosions::explosionStrength),
+                            ZValue.CODEC.optionalFieldOf("is_flaming", new ZChance(0.3)).forGetter(PBECSpawnExplosions::isFlaming),
+                            ZValue.CODEC.optionalFieldOf("is_smoking", new ZConstant(true)).forGetter(PBECSpawnExplosions::isSmoking))
+                    .apply(instance, PBECSpawnExplosions::new));
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int time = this.time.getValue(random);
         int number = this.number.getValue(random);
         double range = this.range.getValue(random);
@@ -48,13 +35,17 @@ public class PBECSpawnExplosions implements PBEffectCreator
         boolean isFlaming = this.isFlaming.getValue(random);
         boolean isSmoking = this.isSmoking.getValue(random);
 
-        PBEffectRandomExplosions effect = new PBEffectRandomExplosions(time, number, range, (float) strength[0], (float) strength[1], isFlaming, isSmoking);
-        return effect;
+        return new PBEffectRandomExplosions(time, number, range, (float) strength[0], (float) strength[1], isFlaming, isSmoking);
     }
 
     @Override
     public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.7f;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PBEffectCreator> codec() {
+        return CODEC;
     }
 }

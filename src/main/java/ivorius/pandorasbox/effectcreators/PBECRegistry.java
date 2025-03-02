@@ -13,7 +13,7 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.EntityInit;
 import ivorius.pandorasbox.init.Init;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.player.Player;
@@ -26,26 +26,9 @@ import java.util.*;
  */
 public class PBECRegistry {
     public static final int MAX_DELAY_IN_MULTIEFFECT = 60;
-    private static final List<EffectHolder> fixedChanceCreators = new ArrayList<>();
-    private static final List<EffectHolder> goodCreators = new ArrayList<>();
-    private static final List<EffectHolder> badCreators = new ArrayList<>();
 
-    public static void register(PBEffectCreator creator, String id) {
-        PandorasBox.logger.info("Effect Name: " + id);
-        EffectHolder holder = Init.EFFECT_HOLDER_REGISTRY.getValue(ResourceLocation.withDefaultNamespace(id));
-        holder.defineEffectCreator(creator);
-        if (holder.fixedChance() != -1)
-            fixedChanceCreators.add(holder);
-        else if (holder.isGood())
-            goodCreators.add(holder);
-        else
-            badCreators.add(holder);
-
-    }
-
-    public static PBEffectCreator randomEffectCreatorOfType(RandomSource random, boolean good) {
-        List<EffectHolder> list = good ? goodCreators : badCreators;
-        return list.get(random.nextInt(list.size())).effectCreator;
+    public static PBEffectCreator randomEffectCreatorOfType(RandomSource random, List<EffectHolder> holders) {
+        return holders.get(random.nextInt(holders.size())).effectCreator;
     }
 
     public static PBEffect createEffect(Level world, RandomSource random, double x, double y, double z, PBEffectCreator creator) {
@@ -56,6 +39,10 @@ public class PBECRegistry {
     }
 
     public static PBEffect createRandomEffect(Level world, RandomSource random, double x, double y, double z, boolean multi) {
+        Registry<EffectHolder> effectHolders = world.registryAccess().lookupOrThrow(Init.EFFECT_HOLDER_REGISTRY_KEY);
+        List<EffectHolder> fixedChanceHolders = effectHolders.stream().filter(effectHolder -> effectHolder.fixedChance() != -1).toList();
+        List<EffectHolder> positiveEffects = effectHolders.stream().filter(effectHolder -> !fixedChanceHolders.contains(effectHolder) && effectHolder.isGood()).toList();
+        List<EffectHolder> negativeEffects = effectHolders.stream().filter(effectHolder -> !fixedChanceHolders.contains(effectHolder) && !effectHolder.isGood()).toList();
         float currentMinChance = 1.0f;
         ArrayList<PBEffect> effects = new ArrayList<>();
 
@@ -63,7 +50,7 @@ public class PBECRegistry {
             PBEffectCreator creator = null;
             boolean bl = world.getDifficulty().equals(Difficulty.PEACEFUL);
 
-            for (EffectHolder fixedChanceCreator : fixedChanceCreators) {
+            for (EffectHolder fixedChanceCreator : fixedChanceHolders) {
                 if (random.nextDouble() < fixedChanceCreator.fixedChance()) {
                     if (fixedChanceCreator.canBeGoodOrBad() && !fixedChanceCreator.isGood() && bl)
                         continue;
@@ -73,7 +60,7 @@ public class PBECRegistry {
             }
 
             if (creator == null)
-                creator = randomEffectCreatorOfType(random, random.nextFloat() < PandorasBox.CONFIG.goodEffectChance.get() || bl);
+                creator = randomEffectCreatorOfType(random, random.nextFloat() < PandorasBox.CONFIG.goodEffectChance.get() || bl ? positiveEffects : negativeEffects);
 
             PBEffect effect = constructEffectSafe(creator, world, x, y, z, random);
 
@@ -86,7 +73,7 @@ public class PBECRegistry {
         if (effects.size() == 1)
             return effects.getFirst();
         else {
-            PBEffect[] effectArray = effects.toArray(new PBEffect[effects.size()]);
+            PBEffect[] effectArray = effects.toArray(new PBEffect[0]);
             int[] delays = new int[effectArray.length];
 
             for (int i = 1; i < delays.length; i++)

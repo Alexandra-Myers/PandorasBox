@@ -5,34 +5,31 @@
 
 package ivorius.pandorasbox.effectcreators;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectEntitiesCrush;
-import ivorius.pandorasbox.random.DValue;
-import ivorius.pandorasbox.random.IValue;
+import ivorius.pandorasbox.random.*;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECCrushEntities implements PBEffectCreator
-{
-    public IValue time;
-    public DValue range;
-
-    public PBECCrushEntities(IValue time, DValue range)
-    {
-        this.time = time;
-        this.range = range;
-    }
+public record PBECCrushEntities(IValue time, DValue range, ZValue chanceForExtraCycles, IValue extraCycles) implements PBEffectCreator {
+    public static final MapCodec<PBECCrushEntities> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECCrushEntities::time),
+                            DValue.CODEC.fieldOf("range").forGetter(PBECCrushEntities::range),
+                            ZValue.CODEC.optionalFieldOf("chance_for_extra_cycles", new ZChance(0.5)).forGetter(PBECCrushEntities::chanceForExtraCycles),
+                            IValue.CODEC.optionalFieldOf("extra_cycles", new ILinear(1, 5)).forGetter(PBECCrushEntities::extraCycles))
+                    .apply(instance, PBECCrushEntities::new));
 
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int cycles = 1;
-        if (random.nextBoolean())
-        {
-            cycles += random.nextInt(5) + 1;
+        if (chanceForExtraCycles.getValue(random)) {
+            cycles += extraCycles.getValue(random);
         }
 
         int time = this.time.getValue(random);
@@ -46,5 +43,10 @@ public class PBECCrushEntities implements PBEffectCreator
     public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.15f;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PBEffectCreator> codec() {
+        return CODEC;
     }
 }

@@ -1,0 +1,17 @@
+{
+  "effect_creator": {
+    "time": {
+      "min": 30,
+      "max": 60,
+      "type": "minecraft:linear"
+    },
+    "range": {
+      "min": 20.0,
+      "max": 50.0,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:create_void"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

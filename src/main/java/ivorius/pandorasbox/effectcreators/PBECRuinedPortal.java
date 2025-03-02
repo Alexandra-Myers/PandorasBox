@@ -5,40 +5,35 @@
 
 package ivorius.pandorasbox.effectcreators;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenRuinedPortal;
 import ivorius.pandorasbox.random.IValue;
+import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedSelector;
-import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Alexandra on 27.04.23.
  */
-public class PBECRuinedPortal implements PBEffectCreator {
-    public IValue rangeH;
-    public IValue rangeY;
-    public IValue rangeStartY;
-
-    public Block block;
-    public final WeightedBlock[][] bricks;
-    public final ArrayListExtensions<RandomizedItemStack> loot;
-
-    public PBECRuinedPortal(IValue rangeH, IValue rangeY, IValue rangeStartY, WeightedBlock[][] brickSet, ArrayListExtensions<RandomizedItemStack> loot) {
-        this.rangeH = rangeH;
-        this.rangeY = rangeY;
-        this.rangeStartY = rangeStartY;
-        this.bricks = brickSet;
-        this.loot = loot;
-    }
+public record PBECRuinedPortal(IValue rangeH, IValue rangeY, IValue rangeStartY, WeightedBlock[][] brickSet, List<RandomizedItemStack> loot) implements PBEffectCreator {
+    public static final MapCodec<PBECRuinedPortal> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(IValue.CODEC.fieldOf("range_horizontal").forGetter(PBECRuinedPortal::rangeH),
+                            IValue.CODEC.fieldOf("range_vertical").forGetter(PBECRuinedPortal::rangeY),
+                            IValue.CODEC.fieldOf("range_starting_y").forGetter(PBECRuinedPortal::rangeStartY),
+                            PBNBTHelper.arrayCodec(PBNBTHelper.arrayCodec(WeightedBlock.BLOCK_CODEC, () -> new WeightedBlock[0]), () -> new WeightedBlock[0][]).fieldOf("bricks").forGetter(PBECRuinedPortal::brickSet),
+                            RandomizedItemStack.CODEC.listOf().fieldOf("loot").forGetter(PBECRuinedPortal::loot))
+                    .apply(instance, PBECRuinedPortal::new));
 
     @Override
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
@@ -48,7 +43,7 @@ public class PBECRuinedPortal implements PBEffectCreator {
         rangeY += rangeStartY;
         int time = rangeH * rangeH * rangeY;
 
-        WeightedBlock[] bricks = WeightedSelector.selectWeightless(random, Arrays.asList(this.bricks), this.bricks.length);
+        WeightedBlock[] bricks = WeightedSelector.selectWeightless(random, Arrays.asList(this.brickSet), this.brickSet.length);
         Direction.Axis axis = random.nextBoolean() ? Direction.Axis.X : Direction.Axis.Z;
 
         return new PBEffectGenRuinedPortal(time, rangeH, rangeY, rangeStartY, PandorasBoxHelper.getRandomUnifiedSeed(random), bricks, loot, axis);
@@ -58,5 +53,10 @@ public class PBECRuinedPortal implements PBEffectCreator {
     public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.1f;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PBEffectCreator> codec() {
+        return CODEC;
     }
 }

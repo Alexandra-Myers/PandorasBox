@@ -1,0 +1,71 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "speed": {
+          "min": 0.1,
+          "max": 0.5,
+          "type": "minecraft:linear"
+        },
+        "size": {
+          "min": 1.0,
+          "max": 3.0,
+          "type": "minecraft:linear"
+        },
+        "blocks": [
+          {
+            "weight": 100.0,
+            "block": "minecraft:air"
+          }
+        ],
+        "time": {
+          "min": 160,
+          "max": 600,
+          "type": "minecraft:linear"
+        },
+        "start_range": {
+          "min": 5.0,
+          "max": 20.0,
+          "type": "minecraft:linear"
+        },
+        "type": "pandorasbox:world_snake"
+      },
+      {
+        "speed": {
+          "min": 0.1,
+          "max": 0.5,
+          "type": "minecraft:linear"
+        },
+        "size": {
+          "min": 1.0,
+          "max": 3.0,
+          "type": "minecraft:linear"
+        },
+        "blocks": [
+          {
+            "weight": 100.0,
+            "block": "minecraft:air"
+          }
+        ],
+        "time": {
+          "min": 160,
+          "max": 600,
+          "type": "minecraft:linear"
+        },
+        "start_range": {
+          "min": 5.0,
+          "max": 20.0,
+          "type": "minecraft:linear"
+        },
+        "type": "pandorasbox:world_snake"
+      }
+    ],
+    "delays": [
+      0,
+      0
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

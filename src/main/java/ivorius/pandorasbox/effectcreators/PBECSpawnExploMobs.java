@@ -5,53 +5,36 @@
 
 package ivorius.pandorasbox.effectcreators;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.random.IValue;
-import ivorius.pandorasbox.random.ValueSpawn;
-import ivorius.pandorasbox.random.ValueThrow;
-import ivorius.pandorasbox.random.ZValue;
+import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.weighted.WeightedEntity;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECSpawnExploMobs implements PBEffectCreator
-{
-    public IValue time;
-    public IValue number;
-    public IValue fuseTime;
-    public IValue nameEntities;
-    public ZValue spawnFromEffectCenter;
-    public Collection<WeightedEntity> entityIDs;
-
-    public ValueThrow valueThrow;
-    public ValueSpawn valueSpawn;
-
-    public PBECSpawnExploMobs(IValue time, IValue number, IValue fuseTime, IValue nameEntities, ZValue spawnFromEffectCenter, Collection<WeightedEntity> entityIDs, ValueThrow valueThrow, ValueSpawn valueSpawn)
-    {
-        this.time = time;
-        this.number = number;
-        this.fuseTime = fuseTime;
-        this.nameEntities = nameEntities;
-        this.spawnFromEffectCenter = spawnFromEffectCenter;
-        this.entityIDs = entityIDs;
-        this.valueThrow = valueThrow;
-        this.valueSpawn = valueSpawn;
-    }
-
-    public PBECSpawnExploMobs(IValue time, IValue number, IValue fuseTime, IValue nameEntities, ZValue spawnFromEffectCenter, Collection<WeightedEntity> entityIDs)
-    {
-        this(time, number, fuseTime, nameEntities, spawnFromEffectCenter, entityIDs, PBECSpawnEntities.defaultThrow(), PBECSpawnEntities.defaultSpawn());
-    }
+public record PBECSpawnExploMobs(IValue time, IValue number, IValue fuseTime, IValue nameEntities, ZValue spawnFromEffectCenter, List<WeightedEntity> entityIDs, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) implements PBEffectCreator {
+    public static final MapCodec<PBECSpawnExploMobs> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECSpawnExploMobs::time),
+                            IValue.CODEC.fieldOf("number").forGetter(PBECSpawnExploMobs::number),
+                            IValue.CODEC.fieldOf("fuse_time").forGetter(PBECSpawnExploMobs::fuseTime),
+                            IValue.CODEC.optionalFieldOf("named_entities", new IConstant(0)).forGetter(PBECSpawnExploMobs::nameEntities),
+                            ZValue.CODEC.fieldOf("spawn_from_effect_center").forGetter(PBECSpawnExploMobs::spawnFromEffectCenter),
+                            WeightedEntity.CODEC.listOf().fieldOf("entities").forGetter(PBECSpawnExploMobs::entityIDs),
+                            ValueThrow.CODEC.optionalFieldOf("value_throw").forGetter(PBECSpawnExploMobs::valueThrow),
+                            ValueSpawn.CODEC.optionalFieldOf("value_spawn").forGetter(PBECSpawnExploMobs::valueSpawn))
+                    .apply(instance, PBECSpawnExploMobs::new));
 
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int time = this.time.getValue(random);
         int number = this.number.getValue(random);
         WeightedEntity entity = PandorasBoxHelper.getRandomEntityFromList(random, entityIDs);
@@ -62,17 +45,21 @@ public class PBECSpawnExploMobs implements PBEffectCreator
         {
             entitiesToSpawn[i] = new String[2];
             entitiesToSpawn[i][0] = (invisible ? "pbspecial_invisible_tnt" : "pbspecial_tnt") + this.fuseTime.getValue(random);
-            entitiesToSpawn[i][1] = entity.entityID;
+            entitiesToSpawn[i][1] = entity.entityID();
         }
 
         int nameEntities = this.nameEntities.getValue(random);
 
-        return PBECSpawnEntities.constructEffect(random, entitiesToSpawn, time, nameEntities, 0, 0, spawnFromEffectCenter, valueThrow, valueSpawn);
+        return PBECSpawnEntities.constructEffect(random, entitiesToSpawn, time, nameEntities, 0, 0, spawnFromEffectCenter, valueThrow.orElse(null), valueSpawn.orElse(null));
     }
 
     @Override
-    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
-    {
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random) {
         return 0.1f;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PBEffectCreator> codec() {
+        return CODEC;
     }
 }

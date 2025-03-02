@@ -1,0 +1,17 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 5.0,
+      "max": 15.0,
+      "type": "minecraft:linear"
+    },
+    "crop_chance": {
+      "min": 0.01,
+      "max": 0.5,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:convert_to_farm"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

@@ -1,0 +1,18 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 100.0,
+      "max": 175.0,
+      "type": "minecraft:linear"
+    },
+    "max_ticks_alive": {
+      "min": 750,
+      "max": 1250,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:meltdown"
+  },
+  "chance": 0.001,
+  "positive": true,
+  "type": "minecraft:fixed_chance_marked"
+}

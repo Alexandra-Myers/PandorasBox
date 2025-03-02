@@ -5,41 +5,40 @@
 
 package ivorius.pandorasbox.effectcreators;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenReplace;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.ZValue;
+import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
+import ivorius.pandorasbox.weighted.WeightedTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECReplace implements PBEffectCreator {
-    public DValue range;
-
-    public Block[] srcBlocks;
-    public Collection<WeightedBlock> destBlocks;
-
-    public ZValue takeRandomNearbyBlocks;
-
-    public PBECReplace(DValue range, Block[] srcBlocks, Collection<WeightedBlock> destBlocks, ZValue takeRandomNearbyBlocks) {
-        this.range = range;
-        this.srcBlocks = srcBlocks;
-        this.destBlocks = destBlocks;
-        this.takeRandomNearbyBlocks = takeRandomNearbyBlocks;
-    }
-
+public record PBECReplace(DValue range, Optional<Block[]> srcBlocks, List<Either<WeightedBlock, WeightedTag<Block>>> destBlocks, ZValue takeRandomNearbyBlocks) implements PBEffectCreator {
+    public static final MapCodec<PBECReplace> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(DValue.CODEC.fieldOf("range").forGetter(PBECReplace::range),
+                            PBNBTHelper.arrayCodec(BuiltInRegistries.BLOCK.byNameCodec(), () -> new Block[0]).optionalFieldOf("source_blocks").forGetter(PBECReplace::srcBlocks),
+                            WeightedBlock.CODEC.fieldOf("destination_blocks").forGetter(PBECReplace::destBlocks),
+                            ZValue.CODEC.fieldOf("take_random_nearby_blocks").forGetter(PBECReplace::takeRandomNearbyBlocks))
+                    .apply(instance, PBECReplace::new));
     @Override
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         double range = this.range.getValue(random);
@@ -69,10 +68,10 @@ public class PBECReplace implements PBEffectCreator {
                 srcSelection = PandorasBoxHelper.getRandomBlockList(random, nearbyBlocks);
             }
         } else {
-            srcSelection = srcBlocks.clone();
+            srcSelection = srcBlocks.orElse(new Block[0]).clone();
         }
 
-        Block[] destSelection = PandorasBoxHelper.getRandomBlockList(random, destBlocks);
+        Block[] destSelection = PandorasBoxHelper.getRandomBlockList(random, PandorasBoxHelper.assembleBlocks(destBlocks));
 
         return new PBEffectGenReplace(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), destSelection, srcSelection);
     }
@@ -80,5 +79,10 @@ public class PBECReplace implements PBEffectCreator {
     @Override
     public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random) {
         return 0.1f;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PBEffectCreator> codec() {
+        return CODEC;
     }
 }

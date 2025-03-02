@@ -1,0 +1,17 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 10.0,
+      "max": 80.0,
+      "type": "minecraft:linear"
+    },
+    "chance_to_discard_netherrack": {
+      "value": 0.0,
+      "type": "minecraft:constant"
+    },
+    "biome": "soul_sand_valley",
+    "type": "pandorasbox:convert_to_nether"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

@@ -1,0 +1,43 @@
+{
+  "effect_creator": {
+    "spawns_from_effect_center": {
+      "guaranteed": false,
+      "type": "minecraft:constant"
+    },
+    "blocks": [
+      {
+        "weight": 1.0,
+        "block": "minecraft:tnt"
+      },
+      {
+        "weight": 1.0,
+        "block": "minecraft:redstone_block"
+      }
+    ],
+    "value_spawn": {
+      "spawn_range": {
+        "min": 5.0,
+        "max": 10.0,
+        "type": "minecraft:linear"
+      },
+      "spawn_shift": {
+        "value": 150.0,
+        "type": "minecraft:constant"
+      }
+    },
+    "shuffle_blocks": false,
+    "number": {
+      "min": 50,
+      "max": 120,
+      "type": "minecraft:linear"
+    },
+    "ticks_per_block": {
+      "min": 0,
+      "max": 2,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:spawn_blocks"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

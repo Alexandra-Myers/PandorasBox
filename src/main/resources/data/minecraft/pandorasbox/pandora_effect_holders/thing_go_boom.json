@@ -1,0 +1,22 @@
+{
+  "effect_creator": {
+    "time": {
+      "min": 50,
+      "max": 120,
+      "type": "minecraft:linear"
+    },
+    "radius": {
+      "min": 2.0,
+      "max": 8.0,
+      "type": "minecraft:gaussian"
+    },
+    "burning": {
+      "chance": 0.3,
+      "type": "minecraft:chance"
+    },
+    "explosion_interaction": "tnt",
+    "type": "pandorasbox:box_explosion"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

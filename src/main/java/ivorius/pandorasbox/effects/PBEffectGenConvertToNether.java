@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.atlas.atlascore.util.ArrayListExtensions;
@@ -16,6 +17,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -38,13 +40,13 @@ import static net.minecraft.data.worldgen.features.TreeFeatures.WARPED_FUNGUS_PL
  * Created by lukas on 30.03.14.
  */
 public class PBEffectGenConvertToNether extends PBEffectGenerate {
-    private String biome;
+    private NetherBiome biome;
     private double discardNetherrackChance;
     private int timesFeatureAMade = 0;
     private int timesFeatureBMade = 0;
     public PBEffectGenConvertToNether() {}
 
-    public PBEffectGenConvertToNether(int time, double range, double discardChance, int unifiedSeed, String biome) {
+    public PBEffectGenConvertToNether(int time, double range, double discardChance, int unifiedSeed, NetherBiome biome) {
         super(time, range, 2, unifiedSeed);
         this.discardNetherrackChance = discardChance;
         this.biome = biome;
@@ -52,30 +54,23 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
 
     @Override
     public ResourceKey<Biome> getBiomeKey() {
-        return switch (biome) {
-            case "wastes" -> Biomes.NETHER_WASTES;
-            case "soul_sand_valley" -> Biomes.SOUL_SAND_VALLEY;
-            case "crimson" -> Biomes.CRIMSON_FOREST;
-            case "warped" -> Biomes.WARPED_FOREST;
-            case "deltas" -> Biomes.BASALT_DELTAS;
-            default -> null;
-        };
+        return biome.biomeResourceKey;
     }
 
     @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
-        if(world instanceof ServerLevel serverLevel) {
-            float newRatio = getRatioDone(entity.getEffectTicksExisted() + 1);
+        if (world instanceof ServerLevel serverLevel) {
+            float newRatio = getRatioDone(entity.getTicksForEffect(this) + 1);
             switch (biome) {
-                case "wastes" -> createWastes(serverLevel, entity, effectCenter, random, pass, newRatio, pos);
-                case "soul_sand_valley" -> createSoul(serverLevel, entity, effectCenter, random, pass, newRatio, pos);
-                case "crimson" -> createCrimson(serverLevel, entity, effectCenter, random, pass, newRatio, pos);
-                case "warped" -> createWarped(serverLevel, entity, effectCenter, random, pass, newRatio, pos);
-                case "deltas" -> createDeltas(serverLevel, entity, effectCenter, random, pass, newRatio, pos);
+                case NETHER_WASTES -> createWastes(serverLevel, entity, random, pass, newRatio, pos);
+                case SOUL_SAND_VALLEY -> createSoul(serverLevel, entity, random, pass, newRatio, pos);
+                case CRIMSON_FOREST -> createCrimson(serverLevel, entity, random, pass, newRatio, pos);
+                case WARPED_FOREST -> createWarped(serverLevel, entity, random, pass, newRatio, pos);
+                case BASALT_DELTAS -> createDeltas(serverLevel, entity, random, pass, newRatio, pos);
             }
         }
     }
-    public void createWastes(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
+    public void createWastes(ServerLevel world, PandorasBoxEntity entity, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -161,7 +156,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             }
         }
     }
-    public void createSoul(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
+    public void createSoul(ServerLevel world, PandorasBoxEntity entity, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -257,7 +252,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
         configuredFeatureRegistry.getValueOrThrow(GLOWSTONE_EXTRA).place(world, world.getChunkSource().getGenerator(), random, pos);
     }
 
-    public void createCrimson(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
+    public void createCrimson(ServerLevel world, PandorasBoxEntity entity, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -353,7 +348,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             }
         }
     }
-    public void createWarped(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
+    public void createWarped(ServerLevel world, PandorasBoxEntity entity, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -442,7 +437,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
             }
         }
     }
-    public void createDeltas(ServerLevel world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, float newRatio, BlockPos pos) {
+    public void createDeltas(ServerLevel world, PandorasBoxEntity entity, RandomSource random, int pass, float newRatio, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
@@ -529,7 +524,7 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
     @Override
     public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
         super.readFromNBT(compound, registryAccess);
-        biome = compound.getString("biome");
+        biome = NetherBiome.values()[compound.getInt("biome")];
         discardNetherrackChance = compound.getDouble("discardNetherrackChance");
         timesFeatureAMade = compound.getInt("featureACount");
         timesFeatureBMade = compound.getInt("featureBCount");
@@ -538,11 +533,30 @@ public class PBEffectGenConvertToNether extends PBEffectGenerate {
     @Override
     public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
         super.writeToNBT(compound, registryAccess);
-        if (biome != null) {
-            compound.putString("biome", biome);
-        }
+        compound.putInt("biome", biome.ordinal());
         compound.putDouble("discardNetherrackChance", discardNetherrackChance);
         compound.putInt("featureACount", timesFeatureAMade);
         compound.putInt("featureBCount", timesFeatureBMade);
+    }
+
+    public enum NetherBiome implements StringRepresentable {
+        NETHER_WASTES("nether_wastes", Biomes.NETHER_WASTES),
+        SOUL_SAND_VALLEY("soul_sand_valley", Biomes.SOUL_SAND_VALLEY),
+        BASALT_DELTAS("basalt_deltas", Biomes.BASALT_DELTAS),
+        CRIMSON_FOREST("crimson_forest", Biomes.CRIMSON_FOREST),
+        WARPED_FOREST("warped_forest", Biomes.WARPED_FOREST);
+        public static final Codec<NetherBiome> CODEC = StringRepresentable.fromEnum(NetherBiome::values);
+        public final String name;
+        public final ResourceKey<Biome> biomeResourceKey;
+
+        NetherBiome(String name, ResourceKey<Biome> biomeResourceKey) {
+            this.name = name;
+            this.biomeResourceKey = biomeResourceKey;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return name;
+        }
     }
 }

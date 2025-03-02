@@ -5,17 +5,15 @@
 
 package ivorius.pandorasbox.random;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 /**
  * Created by lukas on 04.04.14.
  */
-public class ValueThrow
-{
-    public DValue throwStrengthSide;
-    public DValue throwStrengthY;
-
-    public ValueThrow(DValue throwStrengthSide, DValue throwStrengthY)
-    {
-        this.throwStrengthSide = throwStrengthSide;
-        this.throwStrengthY = throwStrengthY;
-    }
+public record ValueThrow(DValue throwStrengthSide, DValue throwStrengthY) {
+    public static final Codec<ValueThrow> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(DValue.CODEC.fieldOf("throw_strength_horizontal").forGetter(ValueThrow::throwStrengthSide),
+                            DValue.CODEC.fieldOf("throw_strength_vertical").forGetter(ValueThrow::throwStrengthY))
+                    .apply(instance, ValueThrow::new));
 }

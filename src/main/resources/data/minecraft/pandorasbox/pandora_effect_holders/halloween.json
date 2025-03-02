@@ -1,0 +1,38 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "range": {
+          "min": 10.0,
+          "max": 80.0,
+          "type": "minecraft:linear"
+        },
+        "type": "pandorasbox:convert_to_halloween"
+      },
+      {
+        "time": {
+          "min": 60,
+          "max": 120,
+          "type": "minecraft:linear"
+        },
+        "world_time": {
+          "min": 15000,
+          "max": 20000,
+          "type": "minecraft:linear"
+        },
+        "add": {
+          "guaranteed": false,
+          "type": "minecraft:constant"
+        },
+        "type": "pandorasbox:set_time"
+      }
+    ],
+    "delays": [
+      0,
+      0
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

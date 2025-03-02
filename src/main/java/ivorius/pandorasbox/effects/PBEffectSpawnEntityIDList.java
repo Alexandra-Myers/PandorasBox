@@ -13,7 +13,6 @@ import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.random.PandorasBoxEntityNamer;
 import ivorius.pandorasbox.utils.PBNBTHelper;
-import ivorius.pandorasbox.utils.StringConverter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
@@ -183,9 +182,10 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities {
 
     public static Entity createEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, String entityID, double x, double y, double z) {
         try {
-            if ("pbspecial_experience".equals(entityID)) {
+            String trunkEntityID = ResourceLocation.parse(entityID).getPath();
+            if ("pbspecial_experience".equals(trunkEntityID)) {
                 return new ExperienceOrb(world, x, y, z, 10);
-            } else if ("pbspecial_wolf_tamed".equals(entityID)) {
+            } else if ("pbspecial_wolf_tamed".equals(trunkEntityID)) {
                 Player owner = getPlayer(world, pbEntity);
                 Wolf wolf = EntityType.WOLF.create(world, EntitySpawnReason.COMMAND);
 
@@ -202,7 +202,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities {
                 }
 
                 return wolf;
-            } else if ("pbspecial_cat_tamed".equals(entityID)) {
+            } else if ("pbspecial_cat_tamed".equals(trunkEntityID)) {
                 Player owner = getPlayer(world, pbEntity);
 
                 Cat cat = EntityType.CAT.create(world, EntitySpawnReason.COMMAND);
@@ -217,7 +217,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities {
                 }
 
                 return cat;
-            } else if ("pbspecial_parrot_tamed".equals(entityID)) {
+            } else if ("pbspecial_parrot_tamed".equals(trunkEntityID)) {
                 Player owner = getPlayer(world, pbEntity);
 
                 Parrot parrot = EntityType.PARROT.create(world, EntitySpawnReason.COMMAND);
@@ -233,23 +233,23 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities {
                 }
 
                 return parrot;
-            } else if (entityID.startsWith("pbspecial_tnt")) {
+            } else if (trunkEntityID.startsWith("pbspecial_tnt")) {
                 PrimedTnt primedTnt = new PrimedTnt(world, x, y, z, getPlayer(world, pbEntity));
-                primedTnt.setFuse(Integer.parseInt(entityID.substring(13)));
+                primedTnt.setFuse(Integer.parseInt(trunkEntityID.substring(13)));
 
                 return primedTnt;
-            } else if (entityID.startsWith("pbspecial_invisible_tnt")) {
+            } else if (trunkEntityID.startsWith("pbspecial_invisible_tnt")) {
                 PrimedTnt primedTnt = new PrimedTnt(world, x, y, z, getPlayer(world, pbEntity));
-                primedTnt.setFuse(Integer.parseInt(entityID.substring(23)));
+                primedTnt.setFuse(Integer.parseInt(trunkEntityID.substring(23)));
                 primedTnt.setInvisible(true);
 
                 return primedTnt;
-            } else if ("pbspecial_fireworks".equals(entityID)) {
+            } else if ("pbspecial_fireworks".equals(trunkEntityID)) {
                 ItemStack stack = new ItemStack(Items.FIREWORK_ROCKET);
                 stack.set(DataComponents.FIREWORKS, createRandomFirework(random));
 
                 return new FireworkRocketEntity(world, x, y, z,stack);
-            } else if ("pbspecial_angry_wolf".equals(entityID)) {
+            } else if ("pbspecial_angry_wolf".equals(trunkEntityID)) {
                 Wolf wolf = EntityType.WOLF.create(world, EntitySpawnReason.COMMAND);
                 assert wolf != null;
                 wolf.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
@@ -257,7 +257,7 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities {
                 wolf.setTarget(world.getNearestPlayer(x, y, z, 40.0, false));
 
                 return wolf;
-            } else if ("pbspecial_charged_creeper".equals(entityID)) {
+            } else if ("pbspecial_charged_creeper".equals(trunkEntityID)) {
                 Creeper creeper = EntityType.CREEPER.create(world, EntitySpawnReason.COMMAND);
                 assert creeper != null;
                 creeper.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
@@ -265,8 +265,6 @@ public class PBEffectSpawnEntityIDList extends PBEffectSpawnEntities {
                 creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
                 return creeper;
             }
-            entityID = StringConverter.convertCamelCase(entityID);
-
             EntityType<?> entity = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.tryParse(entityID));
             Entity entity1 = entity.create(world, EntitySpawnReason.COMMAND);
             assert entity1 != null;

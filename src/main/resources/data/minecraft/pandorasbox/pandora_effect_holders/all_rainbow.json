@@ -1,0 +1,22 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 10.0,
+      "max": 80.0,
+      "type": "minecraft:linear"
+    },
+    "rainbow_complexity": {
+      "min": 2,
+      "max": 10,
+      "type": "minecraft:linear"
+    },
+    "ring_size": {
+      "min": 0.2,
+      "max": 4.0,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:convert_to_rainbow_cloth"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

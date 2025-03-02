@@ -1,0 +1,12 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 20.0,
+      "max": 80.0,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:convert_to_lifeless"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

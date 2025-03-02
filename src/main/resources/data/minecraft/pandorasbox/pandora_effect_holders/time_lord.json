@@ -1,0 +1,56 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "time": {
+          "min": 60,
+          "max": 200,
+          "type": "minecraft:linear"
+        },
+        "world_time": {
+          "min": 12000,
+          "max": 120000,
+          "type": "minecraft:linear"
+        },
+        "add": {
+          "guaranteed": true,
+          "type": "minecraft:constant"
+        },
+        "type": "pandorasbox:set_time"
+      },
+      {
+        "weather": {
+          "values": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            50,
+            35,
+            15
+          ],
+          "type": "minecraft:weighted"
+        },
+        "rain_time": {
+          "min": 100,
+          "max": 12000,
+          "type": "minecraft:linear"
+        },
+        "delay": {
+          "min": 10,
+          "max": 120,
+          "type": "minecraft:linear"
+        },
+        "type": "pandorasbox:set_weather"
+      }
+    ],
+    "delays": [
+      0,
+      0
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

@@ -5,49 +5,40 @@
 
 package ivorius.pandorasbox.effectcreators;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.random.IValue;
-import ivorius.pandorasbox.random.ValueSpawn;
-import ivorius.pandorasbox.random.ValueThrow;
-import ivorius.pandorasbox.random.ZValue;
+import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
+import ivorius.pandorasbox.utils.RandomizedItemTag;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECSpawnEnchantedItems implements PBEffectCreator
-{
-    public IValue number;
-    public IValue ticksPerItem;
-    public IValue enchantmentLevel;
-    public List<RandomizedItemStack> items;
-    public ValueThrow valueThrow;
-    public ValueSpawn valueSpawn;
+public record PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, List<Either<RandomizedItemStack, RandomizedItemTag>> items, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn, ZValue giveNames, ZValue spawnsFromEffectCenter) implements PBEffectCreator {
+    public static final MapCodec<PBECSpawnEnchantedItems> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(IValue.CODEC.fieldOf("number").forGetter(PBECSpawnEnchantedItems::number),
+                            IValue.CODEC.fieldOf("ticks_per_item").forGetter(PBECSpawnEnchantedItems::ticksPerItem),
+                            IValue.CODEC.fieldOf("enchantment_level").forGetter(PBECSpawnEnchantedItems::enchantmentLevel),
+                            RandomizedItemStack.LIST_CODEC.fieldOf("items").forGetter(PBECSpawnEnchantedItems::items),
+                            ValueThrow.CODEC.optionalFieldOf("value_throw").forGetter(PBECSpawnEnchantedItems::valueThrow),
+                            ValueSpawn.CODEC.optionalFieldOf("value_spawn").forGetter(PBECSpawnEnchantedItems::valueSpawn),
+                            ZValue.CODEC.optionalFieldOf("give_names", new ZChance(0.5)).forGetter(PBECSpawnEnchantedItems::giveNames),
+                            ZValue.CODEC.fieldOf("spawns_from_effect_center").forGetter(PBECSpawnEnchantedItems::spawnsFromEffectCenter))
+                    .apply(instance, PBECSpawnEnchantedItems::new));
 
-    public ZValue giveNames;
-
-    public ZValue spawnsFromEffectCenter;
-
-    public PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, List<RandomizedItemStack> items, ValueThrow valueThrow, ValueSpawn valueSpawn, ZValue giveNames, ZValue spawnsFromEffectCenter)
-    {
-        this.number = number;
-        this.ticksPerItem = ticksPerItem;
-        this.enchantmentLevel = enchantmentLevel;
-        this.items = items;
-        this.valueThrow = valueThrow;
-        this.valueSpawn = valueSpawn;
-        this.giveNames = giveNames;
-        this.spawnsFromEffectCenter = spawnsFromEffectCenter;
-    }
-
-    public PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, List<RandomizedItemStack> items, ZValue giveNames, ZValue spawnsFromEffectCenter)
-    {
-        this(number, ticksPerItem, enchantmentLevel, items, PBECSpawnItems.defaultThrow(), null, giveNames, spawnsFromEffectCenter);
+    public PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, List<Either<RandomizedItemStack, RandomizedItemTag>> items, ZValue giveNames, ZValue spawnsFromEffectCenter) {
+        this(number, ticksPerItem, enchantmentLevel, items, Optional.of(PBECSpawnItems.defaultThrow()), Optional.empty(), giveNames, spawnsFromEffectCenter);
     }
 
     @Override
@@ -58,17 +49,22 @@ public class PBECSpawnEnchantedItems implements PBEffectCreator
         int ticksPerItem = this.ticksPerItem.getValue(random);
         boolean giveNames = this.giveNames.getValue(random);
 
-        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), items, number, false, true, enchantLevel, giveNames, false);
+        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, items), number, false, true, enchantLevel, giveNames, false);
 
         for (ItemStack stack : stacks)
             stack.setCount(1);
 
-        return PBECSpawnItems.constructEffect(random, stacks, number * ticksPerItem + 1, valueThrow, valueSpawn, spawnsFromEffectCenter);
+        return PBECSpawnItems.constructEffect(random, stacks, number * ticksPerItem + 1, valueThrow.orElse(null), valueSpawn.orElse(null), spawnsFromEffectCenter);
     }
 
     @Override
     public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
     {
         return 0.1f;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PBEffectCreator> codec() {
+        return CODEC;
     }
 }

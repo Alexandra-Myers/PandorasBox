@@ -1,0 +1,49 @@
+{
+  "effect_creator": {
+    "spawn_from_effect_center": {
+      "guaranteed": false,
+      "type": "minecraft:constant"
+    },
+    "value_spawn": {
+      "spawn_range": {
+        "min": 5.0,
+        "max": 50.0,
+        "type": "minecraft:linear"
+      },
+      "spawn_shift": {
+        "value": 0.0,
+        "type": "minecraft:constant"
+      }
+    },
+    "value_throw": {
+      "throw_strength_horizontal": {
+        "min": 0.2,
+        "max": 2.0,
+        "type": "minecraft:linear"
+      },
+      "throw_strength_vertical": {
+        "min": 0.5,
+        "max": 5.0,
+        "type": "minecraft:linear"
+      }
+    },
+    "time": {
+      "min": 20,
+      "max": 100,
+      "type": "minecraft:linear"
+    },
+    "number": {
+      "min": 5,
+      "max": 50,
+      "type": "minecraft:linear"
+    },
+    "fuse_time": {
+      "min": 20,
+      "max": 1000,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:spawn_tnt"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

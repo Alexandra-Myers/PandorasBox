@@ -1,0 +1,27 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 10.0,
+      "max": 80.0,
+      "type": "minecraft:linear"
+    },
+    "teleport_range": {
+      "min": 10.0,
+      "max": 100.0,
+      "type": "minecraft:linear"
+    },
+    "teleports": {
+      "value": 1,
+      "type": "minecraft:constant"
+    },
+    "chance_for_more_effects": 0.1,
+    "time": {
+      "min": 5,
+      "max": 100,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:teleport_entities"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

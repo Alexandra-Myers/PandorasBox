@@ -1,0 +1,17 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 10.0,
+      "max": 60.0,
+      "type": "minecraft:linear"
+    },
+    "time": {
+      "min": 60,
+      "max": 200,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:apply_bombpack"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

@@ -227,7 +227,7 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
     }
 
     /**
-     * Returns a boolean indicating whether or not the current location for the tree, spanning basePos to to the height
+     * Returns a boolean indicating whether the current location for the tree, spanning basePos to the height
      * limit, is valid.
      */
     private boolean validTreeLocation() {

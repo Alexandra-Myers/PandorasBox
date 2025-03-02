@@ -12,9 +12,9 @@ import ivorius.pandorasbox.weighted.WeightedSelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -52,7 +52,7 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate {
 
     @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
-        if (world instanceof ServerLevel serverLevel) {
+        if (!world.isClientSide()) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
 
@@ -69,10 +69,10 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate {
                             ChestBlockEntity chestBlockEntity = (ChestBlockEntity) world.getBlockEntity(pos);
 
                             if (chestBlockEntity != null) {
-                                Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.blocksAndItems;
+                                Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, PandorasBoxHelper.blocksAndItems);
                                 RandomizedItemStack chestContent = WeightedSelector.selectItem(random, itemSelection);
-                                ItemStack stack = chestContent.itemStack.copy();
-                                stack.setCount(chestContent.min + random.nextInt(chestContent.max - chestContent.min + 1));
+                                ItemStack stack = chestContent.itemStack().copy();
+                                stack.setCount(chestContent.min() + random.nextInt(chestContent.max() - chestContent.min() + 1));
 
                                 chestBlockEntity.setItem(world.random.nextInt(chestBlockEntity.getContainerSize()), stack);
                             }

@@ -173,9 +173,7 @@ public class WeightedSelector
         @Override
         public int hashCode() {
             int result;
-            long temp;
-            temp = Double.doubleToLongBits(weight);
-            result = (int) (temp ^ (temp >>> 32));
+            result = Double.hashCode(weight);
             result = 31 * result + (item != null ? item.hashCode() : 0);
             return result;
         }

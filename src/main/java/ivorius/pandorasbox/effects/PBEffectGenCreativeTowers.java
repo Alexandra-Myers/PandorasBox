@@ -31,8 +31,7 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure {
 
     public void createRandomStructures(RandomSource random, int number, double range, Collection<WeightedBlock> blocks) {
         this.structures = new Structure[number];
-        for (int i = 0; i < number; i++)
-        {
+        for (int i = 0; i < number; i++) {
             structures[i] = createStructure();
             applyRandomProperties(structures[i], range, random);
             ((StructureCreativeTower) structures[i]).blocks = PandorasBoxHelper.getRandomBlockList(random, blocks);

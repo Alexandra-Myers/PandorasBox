@@ -7,18 +7,28 @@ package ivorius.pandorasbox;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import ivorius.pandorasbox.init.ItemInit;
+import com.google.common.collect.Streams;
+import com.mojang.datafixers.util.Either;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import ivorius.pandorasbox.random.ILinear;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
+import ivorius.pandorasbox.utils.RandomizedItemTag;
+import ivorius.pandorasbox.utils.WeightedWithRandomCount;
 import ivorius.pandorasbox.weighted.*;
-import net.atlas.atlascore.util.ArrayListExtensions;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -34,8 +44,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class PandorasBoxHelper {
+    public static final List<Property<?>> validProperties = List.of(BlockStateProperties.HALF, BlockStateProperties.RAIL_SHAPE, BlockStateProperties.LEVEL_HONEY, BlockStateProperties.SLAB_TYPE, BlockStateProperties.WATERLOGGED,
+            BlockStateProperties.BAMBOO_LEAVES, BlockStateProperties.NOTEBLOCK_INSTRUMENT, BlockStateProperties.FACING, BlockStateProperties.AXIS, BlockStateProperties.LIT,
+            BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.STAIRS_SHAPE);
+    public static Object2ObjectLinkedOpenHashMap<Collection<Either<WeightedBlock, WeightedTag<Block>>>, Collection<WeightedBlock>> cachedBlockLists = new Object2ObjectLinkedOpenHashMap<>();
+    public static Object2ObjectLinkedOpenHashMap<Collection<Either<RandomizedItemStack, RandomizedItemTag>>, List<RandomizedItemStack>> cachedRandomizedStackLists = new Object2ObjectLinkedOpenHashMap<>();
     public static List<WeightedEntity> landMobs = new ArrayList<>();
     public static List<WeightedEntity> mobs = new ArrayList<>();
     public static List<WeightedEntity> creatures = new ArrayList<>();
@@ -43,22 +60,22 @@ public class PandorasBoxHelper {
     public static List<WeightedEntity> waterMobs = new ArrayList<>();
     public static List<WeightedEntity> tameableCreatures = new ArrayList<>();
 
-    public static List<RandomizedItemStack> blocksAndItems = new ArrayList<>();
+    public static List<Either<RandomizedItemStack, RandomizedItemTag>> blocksAndItems = new ArrayList<>();
     public static Multimap<Block, Property<?>> randomizableBlockProperties = HashMultimap.create();
 
-    public static List<WeightedBlock> blocks = new ArrayList<>();
+    public static List<Either<WeightedBlock, WeightedTag<Block>>> blocks = new ArrayList<>();
 
-    public static List<RandomizedItemStack> items = new ArrayList<>();
+    public static List<Either<RandomizedItemStack, RandomizedItemTag>> items = new ArrayList<>();
     public static List<WeightedSet> equipmentSets = new ArrayList<>();
     public static Hashtable<Item, Hashtable<Integer, ItemStack>> equipmentForLevels = new Hashtable<>();
 
     public static List<WeightedPotion> buffs = new ArrayList<>();
     public static List<WeightedPotion> debuffs = new ArrayList<>();
 
-    public static List<RandomizedItemStack> enchantableArmorList = new ArrayList<>();
-    public static List<RandomizedItemStack> enchantableToolList = new ArrayList<>();
+    public static List<Either<RandomizedItemStack, RandomizedItemTag>> enchantableArmorList = new ArrayList<>();
+    public static List<Either<RandomizedItemStack, RandomizedItemTag>> enchantableToolList = new ArrayList<>();
 
-    public static List<WeightedBlock> heavyBlocks = new ArrayList<>();
+    public static List<Either<WeightedBlock, WeightedTag<Block>>> heavyBlocks = new ArrayList<>();
 
     public static void addEntities(List<WeightedEntity> list, double weight, int minNumber, int maxNumber, String... entities) {
         for (String s : entities) {
@@ -66,34 +83,60 @@ public class PandorasBoxHelper {
         }
     }
 
+    @SafeVarargs
+    public static void addBlockTags(double weight, TagKey<Block>... blocks) {
+        for (TagKey<Block> blockTagKey : blocks) {
+            PandorasBoxHelper.blocks.add(Either.right(new WeightedTag<>(weight, blockTagKey)));
+
+            blockTagKey.cast(Registries.ITEM).ifPresent(itemTag -> blocksAndItems.add(Either.right(new RandomizedItemTag(itemTag, new WeightedWithRandomCount(1, Optional.empty(), weight)))));
+        }
+    }
+
     public static void addBlocks(double weight, Block... blocks) {
         for (Block block : blocks) {
-            PandorasBoxHelper.blocks.add(new WeightedBlock(weight, block));
+            PandorasBoxHelper.blocks.add(Either.left(new WeightedBlock(weight, block)));
 
             Item item = block.asItem();
-            if (item != null)
-                blocksAndItems.add(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight));
+            blocksAndItems.add(Either.left(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight)));
         }
     }
     public static void addBlocks(double weight, List<Block> blocks) {
         for (Block block : blocks) {
-            PandorasBoxHelper.blocks.add(new WeightedBlock(weight, block));
+            PandorasBoxHelper.blocks.add(Either.left(new WeightedBlock(weight, block)));
 
             Item item = block.asItem();
-            if (item != null)
-                blocksAndItems.add(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight));
+            blocksAndItems.add(Either.left(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight)));
         }
     }
 
-    public static void addBlocks(List<WeightedBlock> list, double weight, Block... blocks) {
+    public static void addBlocks(List<Either<WeightedBlock, WeightedTag<Block>>> list, double weight, Block... blocks) {
         for (Block block : blocks) {
-            list.add(new WeightedBlock(weight, block));
+            list.add(Either.left(new WeightedBlock(weight, block)));
         }
     }
 
     public static void addItem(RandomizedItemStack randomizedItemStack) {
-        items.add(randomizedItemStack);
-        blocksAndItems.add(randomizedItemStack);
+        items.add(Either.left(randomizedItemStack));
+        blocksAndItems.add(Either.left(randomizedItemStack));
+    }
+
+    public static void addTag(RandomizedItemTag randomizedItemTag) {
+        items.add(Either.right(randomizedItemTag));
+        blocksAndItems.add(Either.right(randomizedItemTag));
+    }
+
+    @SafeVarargs
+    public static void addTags(double weight, TagKey<Item>... tags) {
+        for (TagKey<Item> tagKey : tags) {
+            addTag(new RandomizedItemTag(tagKey, new WeightedWithRandomCount(1, Optional.empty(), weight)));
+        }
+    }
+
+    @SafeVarargs
+    public static void addTagsMinMax(double weight, int min, int max, TagKey<Item>... tags) {
+        for (TagKey<Item> tagKey : tags) {
+            addTag(new RandomizedItemTag(tagKey, new WeightedWithRandomCount(min, max, weight)));
+        }
     }
 
     public static void addItems(double weight, Object... items) {
@@ -101,7 +144,7 @@ public class PandorasBoxHelper {
             if (object instanceof Item item) {
                 addItem(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight));
             } else if (object instanceof ItemStack itemStack) {
-                addItem(new RandomizedItemStack(itemStack, 1, itemStack.getMaxStackSize(), weight));
+                addItem(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, itemStack.getMaxStackSize(), weight)));
             }
         }
     }
@@ -111,7 +154,7 @@ public class PandorasBoxHelper {
             if (object instanceof Item item) {
                 addItem(new RandomizedItemStack(item, min, max, weight));
             } else if (object instanceof ItemStack itemStack) {
-                addItem(new RandomizedItemStack(itemStack, min, max, weight));
+                addItem(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(min, max, weight)));
             }
         }
     }
@@ -131,18 +174,25 @@ public class PandorasBoxHelper {
     }
 
     @SafeVarargs
-    public static void addPotions(List<WeightedPotion> list, double weight, int minStrength, int maxStrength, int minDuration, int maxDuration, Holder<MobEffect>... potions) {
+    public static void addPotions(List<WeightedPotion> list, double weight, int minAmplifier, int maxAmplifier, int minDuration, int maxDuration, Holder<MobEffect>... potions) {
         for (Holder<MobEffect> effect : potions) {
-            list.add(new WeightedPotion(weight, effect, minStrength, maxStrength, minDuration, maxDuration));
+            list.add(new WeightedPotion(weight, HolderSet.direct(effect), new ILinear(minAmplifier, maxAmplifier), new ILinear(minDuration, maxDuration)));
+        }
+    }
+
+    @SafeVarargs
+    public static void addPotions(List<WeightedPotion> list, double weight, int minAmplifier, int maxAmplifier, int minDuration, int maxDuration, HolderSet<MobEffect>... potions) {
+        for (HolderSet<MobEffect> effect : potions) {
+            list.add(new WeightedPotion(weight, effect, new ILinear(minAmplifier, maxAmplifier), new ILinear(minDuration, maxDuration)));
         }
     }
 
     public static void addEnchantableArmor(double weight, Object... items) {
         for (Object object : items) {
             if (object instanceof Item item) {
-                enchantableArmorList.add(new RandomizedItemStack(item, 1, 1, weight));
+                enchantableArmorList.add(Either.left(new RandomizedItemStack(item, 1, 1, weight)));
             } else if (object instanceof ItemStack itemStack) {
-                enchantableArmorList.add(new RandomizedItemStack(itemStack, 1, 1, weight));
+                enchantableArmorList.add(Either.left(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, 1, weight))));
             }
         }
     }
@@ -150,9 +200,9 @@ public class PandorasBoxHelper {
     public static void addEnchantableTools(double weight, Object... items) {
         for (Object object : items) {
             if (object instanceof Item item) {
-                enchantableToolList.add(new RandomizedItemStack(item, 1, 1, weight));
+                enchantableToolList.add(Either.left(new RandomizedItemStack(item, 1, 1, weight)));
             } else if (object instanceof ItemStack itemStack) {
-                enchantableToolList.add(new RandomizedItemStack(itemStack, 1, 1, weight));
+                enchantableToolList.add(Either.left(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, 1, weight))));
             }
         }
     }
@@ -175,29 +225,30 @@ public class PandorasBoxHelper {
         }
     }
 
-    public static void addAllRandomizableBlockProperties(List<Block> blocks) {
-        for (Block block : blocks)
-            randomizableBlockProperties.putAll(block, block.defaultBlockState().getProperties());
+    public static void addAllRandomizableBlockProperties() {
+        for (Block block : BuiltInRegistries.BLOCK) randomizableBlockProperties.putAll(block, block.defaultBlockState().getProperties().stream().filter(validProperties::contains).toList());
     }
 
     public static void initialize() {
-        landMobs = new ArrayList<>();
-        mobs = new ArrayList<>();
-        creatures = new ArrayList<>();
-        waterCreatures = new ArrayList<>();
-        waterMobs = new ArrayList<>();
-        tameableCreatures = new ArrayList<>();
-        blocks = new ArrayList<>();
-        randomizableBlockProperties = HashMultimap.create();
-        blocksAndItems = new ArrayList<>();
-        items = new ArrayList<>();
-        equipmentSets = new ArrayList<>();
-        equipmentForLevels = new Hashtable<>();
-        buffs = new ArrayList<>();
-        debuffs = new ArrayList<>();
-        enchantableArmorList = new ArrayList<>();
-        enchantableToolList = new ArrayList<>();
-        heavyBlocks = new ArrayList<>();
+        cachedBlockLists.clear();
+        cachedRandomizedStackLists.clear();
+        landMobs.clear();
+        mobs.clear();
+        creatures.clear();
+        waterCreatures.clear();
+        waterMobs.clear();
+        tameableCreatures.clear();
+        blocks.clear();
+        randomizableBlockProperties.clear();
+        blocksAndItems.clear();
+        items.clear();
+        equipmentSets.clear();
+        equipmentForLevels.clear();
+        buffs.clear();
+        debuffs.clear();
+        enchantableArmorList.clear();
+        enchantableToolList.clear();
+        heavyBlocks.clear();
         addEntities(landMobs, 10.0, 3, 10, "zombie", "drowned");
         addEntities(landMobs, 7.5, 3, 10, "husk");
         addEntities(landMobs, 10.0, 2, 8, "spider");
@@ -262,74 +313,59 @@ public class PandorasBoxHelper {
         addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_cat_tamed");
         addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_parrot_tamed");
 
-        ArrayListExtensions<Block> planks = new ArrayListExtensions<>();
-        ArrayListExtensions<Block> glass = new ArrayListExtensions<>();
-        ArrayListExtensions<Block> randomizable = new ArrayListExtensions<>();
-        ArrayListExtensions<Item> misc = new ArrayListExtensions<>();
-        ArrayListExtensions<Item> records = new ArrayListExtensions<>();
-        ArrayListExtensions<Item> dyes = new ArrayListExtensions<>();
-        glass.addAll(Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE, Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE, Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE, Blocks.REDSTONE_ORE, Blocks.DEEPSLATE_REDSTONE_ORE, Blocks.NETHER_QUARTZ_ORE, Blocks.GLASS);
-        planks.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.DEEPSLATE, Blocks.TUFF, Blocks.SANDSTONE, Blocks.SAND, Blocks.RED_SAND, Blocks.RED_SANDSTONE);
-        randomizable.addAll(
-                Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.DEEPSLATE, Blocks.TUFF, Blocks.DIRT, Blocks.SAND, Blocks.RED_SAND, Blocks.STONE_BRICK_STAIRS,
-                Blocks.QUARTZ_BLOCK, Blocks.QUARTZ_STAIRS,
-                Blocks.SMOOTH_QUARTZ, Blocks.SMOOTH_QUARTZ_STAIRS,
-                Blocks.SANDSTONE, Blocks.SANDSTONE_STAIRS,
-                Blocks.RED_SANDSTONE, Blocks.RED_SANDSTONE_STAIRS,
-                Blocks.RAIL, Blocks.POWERED_RAIL, Blocks.ACTIVATOR_RAIL, Blocks.DETECTOR_RAIL,
-                Blocks.FURNACE, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.JACK_O_LANTERN,
-                Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.POWDER_SNOW,
-                Blocks.CHEST, Blocks.ENDER_CHEST, Blocks.TRAPPED_CHEST,
-                Blocks.SPONGE);
-        planks.addAll(PandorasBox.stairs, PandorasBox.planks, PandorasBox.logs, PandorasBox.leaves, PandorasBox.wool, PandorasBox.slabs, PandorasBox.bricks, PandorasBox.stained_terracotta);
-        randomizable.addAll(PandorasBox.stairs, PandorasBox.planks, PandorasBox.logs, PandorasBox.leaves, PandorasBox.wool, PandorasBox.slabs, PandorasBox.bricks, PandorasBox.stained_terracotta, PandorasBox.stained_glass, PandorasBox.saplings, PandorasBox.pots);
-        glass.addAll(Blocks.SOUL_SAND, Blocks.SOUL_SOIL);
-        glass.addAll(randomizable, PandorasBox.stained_glass);
-        misc.addAll(Items.LAVA_BUCKET, Items.MILK_BUCKET, Items.WATER_BUCKET, Items.FLINT_AND_STEEL, Items.PAINTING, Items.FLOWER_POT, Items.MINECART, Items.CAULDRON, Items.BRUSH);
-        for(Item item : BuiltInRegistries.ITEM.stream().toList()) {
-            ItemStack stack = new ItemStack(item);
-            if(stack.is(ItemTags.BOATS) || stack.is(ItemTags.BEDS))
-                misc.add(item);
-            if(stack.has(DataComponents.JUKEBOX_PLAYABLE))
-                records.add(item);
-            if(item instanceof DyeItem)
-                dyes.add(item);
-        }
-
-        addBlocks(40.0, planks);
-        addBlocks(15.0, Blocks.PRISMARINE, Blocks.QUARTZ_BLOCK);
-        addBlocks(10.0, Blocks.COBBLESTONE, Blocks.MOSSY_COBBLESTONE, Blocks.COBBLED_DEEPSLATE, Blocks.POLISHED_DEEPSLATE, Blocks.DEEPSLATE_TILES, Blocks.NETHERRACK, Blocks.NETHER_BRICKS, Blocks.BRICKS, Blocks.END_STONE, Blocks.END_STONE_BRICKS, Blocks.TERRACOTTA);
-        addBlocks(10.0, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.GRAVEL, Blocks.PUMPKIN, Blocks.CLAY, Blocks.MYCELIUM);
-        addBlocks(8.0, glass);
-        addBlocks(0.2, Blocks.NETHERITE_BLOCK, Blocks.DIAMOND_BLOCK, Blocks.EMERALD_BLOCK, Blocks.GOLD_BLOCK, Blocks.LODESTONE);
+        addBlockTags(40.0, BlockTags.PLANKS, BlockTags.WOOL, BlockTags.LEAVES, BlockTags.LOGS, BlockTags.SLABS, BlockTags.STAIRS, BlockTags.STONE_BRICKS);
+        addBlocks(15.0, Blocks.PRISMARINE, Blocks.QUARTZ_BLOCK, Blocks.SMOOTH_QUARTZ);
+        addBlocks(10.0, Blocks.GRAVEL, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.CLAY, Blocks.POLISHED_DEEPSLATE, Blocks.DEEPSLATE_TILES, Blocks.NETHER_BRICKS, Blocks.BRICKS, Blocks.END_STONE, Blocks.END_STONE_BRICKS);
+        addBlockTags(10.0, ConventionalBlockTags.COBBLESTONES, BlockTags.TERRACOTTA, ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES, BlockTags.BASE_STONE_NETHER, BlockTags.DIRT);
+        addBlockTags(8.0, BlockTags.SAND, ConventionalBlockTags.STONES, BlockTags.WITHER_SUMMON_BASE_BLOCKS, ConventionalBlockTags.QUARTZ_ORES, BlockTags.COAL_ORES, BlockTags.COPPER_ORES, BlockTags.LAPIS_ORES, BlockTags.REDSTONE_ORES, BlockTags.SNOW, ConventionalBlockTags.CHESTS, ConventionalBlockTags.BARRELS, ConventionalBlockTags.SANDSTONE_BLOCKS, ConventionalBlockTags.VILLAGER_JOB_SITES, BlockTags.RAILS, ConventionalBlockTags.CONCRETES, BlockTags.CONCRETE_POWDER, BlockTags.SAPLINGS, BlockTags.FLOWER_POTS, ConventionalBlockTags.GLASS_BLOCKS, ConventionalBlockTags.GLASS_PANES);
+        addBlocks(0.2, Blocks.LODESTONE);
+        addBlockTags(0.2, ConventionalBlockTags.STORAGE_BLOCKS_NETHERITE, ConventionalBlockTags.STORAGE_BLOCKS_DIAMOND, ConventionalBlockTags.STORAGE_BLOCKS_EMERALD, ConventionalBlockTags.STORAGE_BLOCKS_GOLD);
         addBlocks(0.3, Blocks.IRON_BLOCK);
-        addBlocks(0.5, Blocks.ANCIENT_DEBRIS, Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE, Blocks.EMERALD_ORE, Blocks.DEEPSLATE_EMERALD_ORE, Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE, Blocks.NETHER_GOLD_ORE);
-        addBlocks(1.0, Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE);
-        addBlocks(2.0, Blocks.TNT, Blocks.GLOWSTONE, Blocks.SHROOMLIGHT, Blocks.COAL_BLOCK, Blocks.COPPER_BLOCK, Blocks.LAPIS_BLOCK, Blocks.REDSTONE_BLOCK, Blocks.SLIME_BLOCK, Blocks.SPONGE);
-        addBlocks(5.0, Blocks.DRAGON_EGG, Blocks.REDSTONE_LAMP, Blocks.SEA_LANTERN, Blocks.SNOW, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.HAY_BLOCK, Blocks.OBSIDIAN, Blocks.MELON, Blocks.CHISELED_BOOKSHELF);
+        addBlockTags(0.5, ConventionalBlockTags.NETHERITE_SCRAP_ORES, BlockTags.DIAMOND_ORES, BlockTags.EMERALD_ORES, BlockTags.GOLD_ORES);
+        addBlockTags(1.0, BlockTags.IRON_ORES);
+        addBlocks(2.0, Blocks.TNT, Blocks.GLOWSTONE, Blocks.SHROOMLIGHT, Blocks.SPONGE);
+        addBlockTags(2.0, ConventionalBlockTags.STORAGE_BLOCKS_COAL, ConventionalBlockTags.STORAGE_BLOCKS_COPPER, ConventionalBlockTags.STORAGE_BLOCKS_LAPIS, ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, ConventionalBlockTags.STORAGE_BLOCKS_SLIME, ConventionalBlockTags.STORAGE_BLOCKS_RESIN);
+        addBlocks(5.0, Blocks.DRAGON_EGG, Blocks.NOTE_BLOCK, Blocks.REDSTONE_LAMP, Blocks.SEA_LANTERN, Blocks.SNOW, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.CHISELED_BOOKSHELF);
+        addBlockTags(5.0, ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, ConventionalBlockTags.STORAGE_BLOCKS_DRIED_KELP, ConventionalBlockTags.NORMAL_OBSIDIANS, ConventionalBlockTags.CRYING_OBSIDIANS);
 
-        addItems(10.0, Items.COAL, Items.CHARCOAL, Items.COPPER_INGOT, Items.GUNPOWDER, Items.WHEAT, Items.SADDLE, Items.REDSTONE, Items.BONE, Items.FEATHER, Items.MELON_SLICE, Items.CLAY_BALL, Items.BOOK, Items.BOWL, Items.GOLD_NUGGET, Items.POTATO, Items.BUCKET, Items.STICK, Items.STRING, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.SNOWBALL, Items.SUGAR, Items.FISHING_ROD, Items.NETHER_WART, Items.FLINT, Items.EGG, Items.BRICK, Items.PAPER, Items.TORCH, Items.SOUL_TORCH, Items.NETHER_BRICK, Items.BEETROOT);
-        addItems(10.0, ItemInit.PBI);
-        addItems(10.0, Items.HONEYCOMB, Items.CHICKEN, Items.COOKED_CHICKEN, Items.BEEF, Items.PUMPKIN_PIE, Items.COOKED_BEEF, Items.MUSHROOM_STEW, Items.ROTTEN_FLESH, Items.CARROT, Items.PORKCHOP, Items.COOKED_PORKCHOP, Items.APPLE, Items.CAKE, Items.BREAD, Items.COOKIE, Items.COD, Items.COOKED_COD, Items.SALMON, Items.COOKED_SALMON, Items.PUFFERFISH, Items.MUTTON, Items.COOKED_MUTTON, Items.RABBIT, Items.RABBIT_FOOT, Items.RABBIT_HIDE, Items.RABBIT_STEW, Items.COOKED_RABBIT, Items.HONEY_BOTTLE, Items.SWEET_BERRIES, Items.GLOW_BERRIES);
-        addItems(8.0,  misc);
-        addItems(8.0, Items.NAME_TAG, Items.NAUTILUS_SHELL, Items.LEATHER, Items.INK_SAC, Items.GLOW_INK_SAC, Items.ARMADILLO_SCUTE, Items.LANTERN, Items.SOUL_LANTERN, Items.SUSPICIOUS_STEW, Items.SLIME_BALL, Items.SPYGLASS);
-        addItems(6.0, Items.IRON_INGOT, Items.AMETHYST_SHARD, Items.GLOWSTONE_DUST, Items.BLAZE_POWDER, Items.BLAZE_ROD, Items.WIND_CHARGE, Items.BREEZE_ROD, Items.CLOCK, Items.GHAST_TEAR, Items.ENDER_EYE, Items.GLISTERING_MELON_SLICE, Items.SPIDER_EYE, Items.FERMENTED_SPIDER_EYE, Items.MAGMA_CREAM, Items.GOLDEN_CARROT, Items.TURTLE_SCUTE, Items.PHANTOM_MEMBRANE, Items.COCOA_BEANS);
+        addItems(10.0, Items.CLAY_BALL, Items.FISHING_ROD, Items.FLINT, Items.EGG, Items.PAPER, Items.TORCH, Items.SOUL_TORCH);
+        addTags(10.0, ItemTags.COALS, ConventionalItemTags.COPPER_INGOTS,
+                ConventionalItemTags.CROPS, ConventionalItemTags.FERTILIZERS,
+                ConventionalItemTags.EMPTY_BUCKETS, ConventionalItemTags.REDSTONE_DUSTS,
+                ConventionalItemTags.WOODEN_RODS, ItemTags.VILLAGER_PLANTABLE_SEEDS,
+                ConventionalItemTags.BRICKS, PandorasBox.PANDORA_ITEMS,
+                ConventionalItemTags.GOLD_NUGGETS, ConventionalItemTags.FISHING_ROD_TOOLS,
+                ConventionalItemTags.RAW_MEAT_FOODS, ConventionalItemTags.RAW_FISH_FOODS,
+                ConventionalItemTags.COOKED_MEAT_FOODS, ConventionalItemTags.COOKED_FISH_FOODS,
+                ConventionalItemTags.BREAD_FOODS, ConventionalItemTags.COOKIE_FOODS,
+                ConventionalItemTags.BERRY_FOODS, ConventionalItemTags.PIE_FOODS,
+                ConventionalItemTags.FOOD_POISONING_FOODS, ConventionalItemTags.CANDY_FOODS,
+                ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS);
+        addItems(10.0, Items.HONEYCOMB, Items.MUSHROOM_STEW, Items.APPLE, Items.RABBIT_FOOT, Items.RABBIT_HIDE, Items.RABBIT_STEW, Items.HONEY_BOTTLE);
+        addItems(8.0,  Items.PAINTING, Items.FLOWER_POT, Items.MINECART, Items.CAULDRON);
+        addTags(8.0, ItemTags.BOATS, ItemTags.BEDS, ConventionalItemTags.LEATHERS,
+                ConventionalItemTags.MILK_BUCKETS, ConventionalItemTags.LAVA_BUCKETS, ConventionalItemTags.WATER_BUCKETS,
+                ConventionalItemTags.BRUSH_TOOLS, ConventionalItemTags.IGNITER_TOOLS, ConventionalItemTags.SOUP_FOODS,
+                ConventionalItemTags.SLIME_BALLS);
+        addItems(8.0, Items.NAME_TAG, Items.NAUTILUS_SHELL, Items.INK_SAC, Items.GLOW_INK_SAC, Items.ARMADILLO_SCUTE, Items.LANTERN, Items.SOUL_LANTERN, Items.SPYGLASS);
+        addTags(6.0, ConventionalItemTags.IRON_INGOTS, ConventionalItemTags.IRON_NUGGETS, ConventionalItemTags.GLOWSTONE_DUSTS,
+                ConventionalItemTags.AMETHYST_GEMS, ConventionalItemTags.RODS, ItemTags.BREWING_FUEL);
+        addItems(6.0, Items.WIND_CHARGE, Items.CLOCK, Items.GHAST_TEAR, Items.ENDER_EYE, Items.GLISTERING_MELON_SLICE, Items.FERMENTED_SPIDER_EYE, Items.MAGMA_CREAM, Items.GOLDEN_CARROT, Items.TURTLE_SCUTE, Items.PHANTOM_MEMBRANE);
         addItems(4.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
         addItems(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE);
         addItems(4.0, Items.TURTLE_HELMET, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
         addItems(4.0, Items.COMPASS, Items.LEAD, Items.CHORUS_FRUIT, Items.HEART_OF_THE_SEA);
         addItems(3.0, Items.SHIELD, Items.WOLF_ARMOR, Items.LEATHER_HORSE_ARMOR, Items.IRON_HORSE_ARMOR, Items.GOLDEN_HORSE_ARMOR);
-        addItems(2.0, Items.DIAMOND_HORSE_ARMOR);
-        addItemsMinMax(2.0, 1, 1, Items.NETHER_STAR, Items.BEACON, Items.ANVIL, Items.BREWING_STAND, Items.DISPENSER, Items.ENDER_CHEST, Items.JUKEBOX, Items.ENCHANTING_TABLE);
-        addItemsMinMax(5.0, 1, 1, Items.CHEST, Items.BARREL);
-        addItems(2.0, Items.DIAMOND, Items.EMERALD, Items.GOLD_INGOT, Items.GOLDEN_APPLE, Items.ENDER_PEARL, Items.PRISMARINE_CRYSTALS, Items.PRISMARINE_SHARD, Items.OMINOUS_BOTTLE);
+        addTagsMinMax(5.0, 1, 1, ConventionalItemTags.CHESTS, ConventionalItemTags.BARRELS);
+        addTagsMinMax(2.0, 1, 1, ItemTags.ANVIL);
+        addItemsMinMax(2.0, 1, 1, Items.NETHER_STAR, Items.BEACON, Items.DISPENSER, Items.JUKEBOX, Items.ENCHANTING_TABLE);
+        addTags(2.0, ConventionalItemTags.MUSIC_DISCS, ConventionalItemTags.DIAMOND_GEMS, ConventionalItemTags.EMERALD_GEMS, ConventionalItemTags.GOLD_INGOTS, ConventionalItemTags.GOLDEN_FOODS, ConventionalItemTags.ENDER_PEARLS, ConventionalItemTags.PRISMARINE_GEMS);
+        addItems(2.0, Items.PRISMARINE_SHARD, Items.OMINOUS_BOTTLE);
         addItemsMinMax(0.5, 1, 5, Items.NETHERITE_SCRAP, Items.DISC_FRAGMENT_5, Items.ECHO_SHARD, Items.RECOVERY_COMPASS);
         addItems(1.0, Items.ELYTRA, Items.DRAGON_BREATH);
-        addItems(2.0, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
+        addItems(2.0, Items.DIAMOND_HORSE_ARMOR, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
         addItems(0.2, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS, Items.NETHERITE_SWORD, Items.NETHERITE_PICKAXE, Items.NETHERITE_SHOVEL, Items.NETHERITE_AXE, Items.NETHERITE_HOE);
-        addItems(2.0, records);
-        for (Item dye : dyes)
-            addItems(10.0, new ItemStack(dye, 1));
+        addTagsMinMax(10.0, 1, 1, ConventionalItemTags.DYES);
 
         addEquipmentSet(10.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
@@ -352,6 +388,7 @@ public class PandorasBoxHelper {
         addEquipmentLevelsInOrder(Items.WOODEN_SHOVEL, Items.WOODEN_SHOVEL, Items.GOLDEN_SHOVEL, Items.STONE_SHOVEL, Items.IRON_SHOVEL, Items.DIAMOND_SHOVEL, Items.NETHERITE_SHOVEL);
         addEquipmentLevelsInOrder(Items.WOODEN_HOE, Items.WOODEN_HOE, Items.GOLDEN_HOE, Items.STONE_HOE, Items.IRON_HOE, Items.DIAMOND_HOE, Items.NETHERITE_HOE);
 
+        addPotions(buffs, 5.0, 1, 3, 20 * 30, 20 * 60, HolderSet.direct(MobEffects.HERO_OF_THE_VILLAGE, MobEffects.REGENERATION, MobEffects.TRIAL_OMEN, MobEffects.WEAVING, MobEffects.CONFUSION, MobEffects.BLINDNESS, MobEffects.HUNGER));
         addPotions(buffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.REGENERATION, MobEffects.MOVEMENT_SPEED, MobEffects.DAMAGE_BOOST, MobEffects.JUMP, MobEffects.DAMAGE_RESISTANCE, MobEffects.WATER_BREATHING, MobEffects.FIRE_RESISTANCE, MobEffects.NIGHT_VISION, MobEffects.INVISIBILITY, MobEffects.ABSORPTION, MobEffects.SLOW_FALLING, MobEffects.DOLPHINS_GRACE, MobEffects.INFESTED, MobEffects.OOZING, MobEffects.WEAVING, MobEffects.WIND_CHARGED);
         addPotions(debuffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.BLINDNESS, MobEffects.CONFUSION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN, MobEffects.WEAKNESS, MobEffects.HUNGER, MobEffects.GLOWING);
         addPotions(debuffs, 10.0, 0, 2, 20 * 30, 20 * 60, MobEffects.WITHER, MobEffects.DARKNESS);
@@ -368,9 +405,7 @@ public class PandorasBoxHelper {
 
         addBlocks(heavyBlocks, 10.0, Blocks.ANVIL);
 
-        addAllRandomizableBlockProperties(
-                randomizable
-        );
+        addAllRandomizableBlockProperties();
     }
 
     public static int getRandomUnifiedSeed(RandomSource random) {
@@ -398,7 +433,7 @@ public class PandorasBoxHelper {
             List<WeightedPotion>[] posOrNegative = new List[] {buffs, debuffs};
             consumableBuilder.onConsume(new ApplyStatusEffectsConsumeEffect(WeightedSelector.selectItem(random, posOrNegative[random.nextInt(2)]).build(random), (float) random.nextGaussian()));
         }
-        if (random.nextDouble() > 0.3) consumableBuilder.onConsume(new TeleportRandomlyConsumeEffect());
+        if (random.nextDouble() > 0.7) consumableBuilder.onConsume(new TeleportRandomlyConsumeEffect());
         stack.set(DataComponents.FOOD, builder.build());
         stack.set(DataComponents.CONSUMABLE, consumableBuilder.build());
     }
@@ -418,6 +453,44 @@ public class PandorasBoxHelper {
         }
 
         return state;
+    }
+
+    public static Collection<WeightedBlock> assembleBlocks(List<Either<WeightedBlock, WeightedTag<Block>>> blocks) {
+        if (cachedBlockLists.containsKey(blocks)) return cachedBlockLists.get(blocks);
+        Collection<WeightedBlock> output = assembleCollection(BuiltInRegistries.BLOCK, WeightedBlock::block, WeightedBlock::new, blocks);
+        cachedBlockLists.put(blocks, output);
+        return output;
+    }
+
+    public static <W extends WeightedSelector.Item, T> Collection<W> assembleCollection(Registry<T> tRegistry, Function<W, Holder<T>> heldGetter, BiFunction<Double, Holder<T>, W> constructor, Collection<Either<W, WeightedTag<T>>> selection) {
+        Map<Holder<T>, Double> select = new HashMap<>();
+        for (Either<W, WeightedTag<T>> current : selection) {
+            current.ifLeft(w -> {
+                if (!select.containsKey(heldGetter.apply(w))) select.put(heldGetter.apply(w), w.weight());
+            });
+            current.ifRight(tWeightedTag -> {
+                Iterable<Holder<T>> ts = tRegistry.getTagOrEmpty(tWeightedTag.tagKey());
+                Streams.stream(ts).filter(tHolder -> !select.containsKey(tHolder)).forEach(tHolder -> select.put(tHolder, tWeightedTag.weight()));
+            });
+        }
+        return select.entrySet().stream().map(entry -> constructor.apply(entry.getValue(), entry.getKey())).toList();
+    }
+
+    public static List<RandomizedItemStack> assembleRandomisedStacks(Registry<Item> tRegistry, Collection<Either<RandomizedItemStack, RandomizedItemTag>> selection) {
+        if (cachedRandomizedStackLists.containsKey(selection)) return cachedRandomizedStackLists.get(selection);
+        Map<Holder<Item>, WeightedWithRandomCount> select = new HashMap<>();
+        for (Either<RandomizedItemStack, RandomizedItemTag> current : selection) {
+            current.ifLeft(randomizedItemStack -> {
+                if (!select.containsKey(randomizedItemStack.itemStack().getItemHolder())) select.put(randomizedItemStack.itemStack().getItemHolder(), randomizedItemStack.count());
+            });
+            current.ifRight(randomizedItemTag -> {
+                Iterable<Holder<Item>> ts = tRegistry.getTagOrEmpty(randomizedItemTag.items());
+                Streams.stream(ts).filter(tHolder -> !select.containsKey(tHolder)).forEach(tHolder -> select.put(tHolder, randomizedItemTag.count()));
+            });
+        }
+        List<RandomizedItemStack> output = select.entrySet().stream().map(entry -> new RandomizedItemStack(new ItemStack(entry.getKey()), entry.getValue().copyWithMaxCountOverride(entry.getKey().value().getDefaultMaxStackSize()))).toList();
+        cachedRandomizedStackLists.put(selection, output);
+        return output;
     }
 
     public static Block[] getRandomBlockList(RandomSource rand, Collection<WeightedBlock> selection) {
@@ -441,7 +514,7 @@ public class PandorasBoxHelper {
         int blockIndex = 0;
 
         for (int i = 0; i < number; i++) {
-            Block block = WeightedSelector.selectItem(rand, selection).block;
+            Block block = WeightedSelector.selectItem(rand, selection).block().value();
 
             for (int j = 0; j < weights[i]; j++) {
                 blocks[blockIndex] = block;
@@ -454,9 +527,9 @@ public class PandorasBoxHelper {
 
     public static Block getRandomBlock(RandomSource rand, Collection<WeightedBlock> randomBlockList) {
         if (randomBlockList != null && !randomBlockList.isEmpty())
-            return WeightedSelector.selectItem(rand, randomBlockList).block;
+            return WeightedSelector.selectItem(rand, randomBlockList).block().value();
 
-        return WeightedSelector.selectItem(rand, blocks).block;
+        return WeightedSelector.selectItem(rand, assembleBlocks(blocks)).block().value();
     }
 
     public static WeightedEntity[] getRandomEntityList(RandomSource rand, Collection<WeightedEntity> selection) {
@@ -474,7 +547,7 @@ public class PandorasBoxHelper {
 
     public static ItemStack getRandomWeaponItemForLevel(RandomSource random, int level) {
         Set<Item> itemSet = equipmentForLevels.keySet();
-        Item[] itemArray = itemSet.toArray(new Item[itemSet.size()]);
+        Item[] itemArray = itemSet.toArray(new Item[0]);
 
         return getWeaponItemForLevel(itemArray[random.nextInt(itemArray.length)], level);
     }

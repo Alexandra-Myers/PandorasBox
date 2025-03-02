@@ -25,16 +25,17 @@ import net.minecraft.world.level.block.state.properties.SlabType;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
     public WeightedBlock[] bricks = new WeightedBlock[]{};
-    public ArrayListExtensions<RandomizedItemStack> loot = new ArrayListExtensions<>();
+    public List<RandomizedItemStack> loot = new ArrayListExtensions<>();
     public Direction.Axis axis = Direction.Axis.X;
     public boolean[] usedStairsForTop = new boolean[2];
     public PBEffectGenRuinedPortal() {}
 
-    public PBEffectGenRuinedPortal(int time, int maxH, int maxY, int startY, int unifiedSeed, WeightedBlock[] brickSet, ArrayListExtensions<RandomizedItemStack> loot, Direction.Axis axis) {
+    public PBEffectGenRuinedPortal(int time, int maxH, int maxY, int startY, int unifiedSeed, WeightedBlock[] brickSet, List<RandomizedItemStack> loot, Direction.Axis axis) {
         super(time, maxH, maxH, maxY, startY, unifiedSeed);
 
         this.bricks = brickSet;
@@ -66,14 +67,14 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
                 return portalEdges(level, currentPos, random);
             } else if (IvMathHelper.isBetweenInclusive(currentPos.getY(), Mth.floor(originY + height * 0.5), Mth.ceil(height * 0.5)) && IvMathHelper.compareOffsets(currentH, originH, portalHAxis + 1)) {
                 if (random.nextDouble() > 0.25) {
-                    Block block = WeightedSelector.selectItem(random, Arrays.asList(bricks)).block;
+                    Block block = WeightedSelector.selectItem(random, Arrays.asList(bricks)).block().value();
                     setBlockSafe(level, currentPos, block instanceof StairBlock ? block.defaultBlockState().setValue(StairBlock.HALF, random.nextBoolean() ? Half.TOP : Half.BOTTOM) : block instanceof SlabBlock ? block.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.values()[level.random.nextInt(SlabType.values().length - 1)]) : block.defaultBlockState());
                     return true;
                 }
             }
         } else if (currentPos.getY() == originY && IvMathHelper.isBetweenInclusive(currentH, originH, 2) && level.getBlockState(currentPos).getFluidState().is(FluidTags.LAVA)) {
             if (random.nextDouble() > 0.25) {
-                setBlockSafe(level, currentPos, bricks[3].block.defaultBlockState());
+                setBlockSafe(level, currentPos, bricks[3].block().value().defaultBlockState());
                 return true;
             }
         }
@@ -118,18 +119,18 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
             }
         } else if (random.nextDouble() > 0.25) {
             boolean isNegative = diff < 0;
-            Block block = WeightedSelector.selectItem(random, Arrays.asList(bricks)).block;
+            Block block = WeightedSelector.selectItem(random, Arrays.asList(bricks)).block().value();
             BlockState state = block.defaultBlockState();
             if (block instanceof StairBlock) {
                 state = state.setValue(StairBlock.FACING, Direction.fromAxisAndDirection(axis, isNegative ? Direction.AxisDirection.POSITIVE : Direction.AxisDirection.NEGATIVE));
                 if (isNegative ? usedStairsForTop[0] : usedStairsForTop[1])
-                    state = bricks[3].block.defaultBlockState();
+                    state = bricks[3].block().value().defaultBlockState();
                 if (isNegative)
                     usedStairsForTop[0] = true;
                 else
                     usedStairsForTop[1] = true;
             } else if (!(block instanceof SlabBlock) && random.nextBoolean())
-                state = bricks[3].block.defaultBlockState();
+                state = bricks[3].block().value().defaultBlockState();
             setBlockSafe(level, currentPos, state);
             return true;
         }

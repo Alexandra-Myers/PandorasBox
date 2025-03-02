@@ -29,11 +29,11 @@ public class PBEffectEntitiesBombpack extends PBEffectEntityBased {
         Random itemRandom = new Random(entity.getId());
         double expectedBomb = itemRandom.nextDouble();
         if (newRatio >= expectedBomb && prevRatio < expectedBomb) {
-            PrimedTnt entitytntprimed = new PrimedTnt(serverLevel, entity.getX(), entity.getY(), entity.getZ(), null);
-            entitytntprimed.setFuse(60 + random.nextInt(160));
+            PrimedTnt primedTnt = new PrimedTnt(serverLevel, entity.getX(), entity.getY(), entity.getZ(), null);
+            primedTnt.setFuse(60 + random.nextInt(160));
 
-            serverLevel.addFreshEntity(entitytntprimed);
-            entitytntprimed.startRiding(entity, true);
+            serverLevel.addFreshEntity(primedTnt);
+            primedTnt.startRiding(entity, true);
         }
     }
 }

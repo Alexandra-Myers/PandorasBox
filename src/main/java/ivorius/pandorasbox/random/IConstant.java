@@ -5,23 +5,24 @@
 
 package ivorius.pandorasbox.random;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.util.RandomSource;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 04.04.14.
  */
-public class IConstant implements IValue
-{
-    public int constant;
+public record IConstant(int constant) implements IValue {
+    public static final MapCodec<IConstant> CODEC = Codec.INT.xmap(IConstant::new, IConstant::constant).fieldOf("value");
 
-    public IConstant(int constant)
-    {
-        this.constant = constant;
+    @Override
+    public int getValue(RandomSource random) {
+        return constant;
     }
 
     @Override
-    public int getValue(RandomSource random)
-    {
-        return constant;
+    public @NotNull MapCodec<? extends IValue> codec() {
+        return CODEC;
     }
 }

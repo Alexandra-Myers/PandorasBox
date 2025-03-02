@@ -5,32 +5,28 @@
 
 package ivorius.pandorasbox.effectcreators;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectSetTime;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ZValue;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBECSetTime implements PBEffectCreator
-{
-    public IValue time;
-    public IValue worldTime;
-    public ZValue add;
-
-    public PBECSetTime(IValue time, IValue worldTime, ZValue add)
-    {
-        this.time = time;
-        this.worldTime = worldTime;
-        this.add = add;
-    }
+public record PBECSetTime(IValue time, IValue worldTime, ZValue add) implements PBEffectCreator {
+    public static final MapCodec<PBECSetTime> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECSetTime::time),
+                            IValue.CODEC.fieldOf("world_time").forGetter(PBECSetTime::worldTime),
+                            ZValue.CODEC.fieldOf("add").forGetter(PBECSetTime::add))
+                    .apply(instance, PBECSetTime::new));
 
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int time = this.time.getValue(random);
         int worldTime = this.worldTime.getValue(random);
         boolean add = this.add.getValue(random);
@@ -43,8 +39,12 @@ public class PBECSetTime implements PBEffectCreator
     }
 
     @Override
-    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
-    {
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random) {
         return 0.7f;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PBEffectCreator> codec() {
+        return CODEC;
     }
 }

@@ -1,0 +1,49 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "range": {
+          "min": 20.0,
+          "max": 80.0,
+          "type": "minecraft:linear"
+        },
+        "type": "pandorasbox:convert_to_heavenly"
+      },
+      {
+        "number": {
+          "min": 8,
+          "max": 10,
+          "type": "minecraft:linear"
+        },
+        "blocks": [
+          {
+            "weight": 1.0,
+            "block": "minecraft:cobweb"
+          }
+        ],
+        "same_block_setup": {
+          "guaranteed": true,
+          "type": "minecraft:constant"
+        },
+        "range": {
+          "min": 20.0,
+          "max": 80.0,
+          "type": "minecraft:linear"
+        },
+        "size": {
+          "min": 2.0,
+          "max": 5.0,
+          "type": "minecraft:linear"
+        },
+        "type": "pandorasbox:create_random_shapes"
+      }
+    ],
+    "delays": [
+      0,
+      0
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}
