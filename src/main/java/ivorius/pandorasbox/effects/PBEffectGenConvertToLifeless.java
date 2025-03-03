@@ -5,12 +5,14 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.datafixers.util.Either;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.atlas.atlascore.util.ArrayListExtensions;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -50,18 +52,6 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate {
             Block block = state.getBlock();
 
             if (pass == 0) {
-                ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-                ArrayListExtensions<Block> iCTWTGASTB = new ArrayListExtensions<>();
-                ArrayListExtensions<Block> weird = new ArrayListExtensions<>();
-                ArrayListExtensions<Block> hmm = new ArrayListExtensions<>();
-                hmm.addAll(Blocks.NETHERRACK, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.DEEPSLATE, Blocks.TUFF);
-                blocks.addAll(Blocks.TALL_GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
-                weird.addAll(Blocks.SAND, Blocks.RED_SAND, Blocks.MYCELIUM, Blocks.GRASS_BLOCK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.MOSS_BLOCK, Blocks.CAKE);
-                iCTWTGASTB.addAll(Blocks.VINE, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM);
-                iCTWTGASTB.addAll(PandorasBox.logs, PandorasBox.leaves);
-                weird.addAll(PandorasBox.wool);
-                blocks.addAll(PandorasBox.flowers);
-                hmm.addAll(PandorasBox.stained_terracotta);
                 FluidState fluidstate = level.getFluidState(pos);
                 if (fluidstate.is(FluidTags.WATER)) {
                     if (block instanceof BucketPickup bucketPickup && !bucketPickup.pickupBlock(null, level, pos, state).isEmpty()) return;
@@ -92,17 +82,17 @@ public class PBEffectGenConvertToLifeless extends PBEffectGenerate {
                             setBlockToAirSafe(level, pos1);
                         }
                     }
-                } else if (isBlockAnyOf(block, Blocks.ICE, Blocks.WATER, Blocks.LAVA, Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.POWDER_SNOW)) {
+                } else if (isBlockAnyOf(block, Either.left(Blocks.ICE), Either.left(Blocks.WATER), Either.left(Blocks.LAVA), Either.right(BlockTags.SNOW))) {
                     setBlockToAirSafe(level, pos);
-                } else if (isBlockAnyOf(block, iCTWTGASTB)) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(level, pos);
-                } else if (isBlockAnyOf(block, blocks)) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS))) {
                     setBlockSafe(level, pos, Blocks.DEAD_BUSH.defaultBlockState());
-                } else if (isBlockAnyOf(block, weird)) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT), Either.right(BlockTags.WOOL), Either.left(Blocks.CAKE))) {
                     setBlockSafe(level, pos, Blocks.DIRT.defaultBlockState());
-                } else if (isBlockAnyOf(block, hmm)) {
+                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.BASE_STONE_NETHER), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     setBlockSafe(level, pos, Blocks.STONE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.RED_SAND)) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.left(Blocks.RED_SAND))) {
                     setBlockSafe(level, pos, Blocks.SAND.defaultBlockState());
                 }
             }

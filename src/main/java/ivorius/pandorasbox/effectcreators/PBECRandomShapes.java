@@ -5,7 +5,6 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
@@ -15,6 +14,7 @@ import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ValueHelper;
 import ivorius.pandorasbox.random.ZValue;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedTag;
 import net.minecraft.util.Mth;
@@ -24,12 +24,11 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECRandomShapes(DValue range, DValue size, IValue number, List<Either<WeightedBlock, WeightedTag<Block>>> blocks, ZValue sameBlockSetup) implements PBEffectCreator {
+public record PBECRandomShapes(DValue range, DValue size, IValue number, EitherArrayList<WeightedBlock, WeightedTag<Block>> blocks, ZValue sameBlockSetup) implements PBEffectCreator {
     public static final MapCodec<PBECRandomShapes> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(DValue.CODEC.fieldOf("range").forGetter(PBECRandomShapes::range),
                             DValue.CODEC.fieldOf("size").forGetter(PBECRandomShapes::size),

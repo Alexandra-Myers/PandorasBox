@@ -5,7 +5,6 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -13,6 +12,7 @@ import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectSpawnBlocks;
 import ivorius.pandorasbox.random.*;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedTag;
 import net.minecraft.util.RandomSource;
@@ -26,7 +26,7 @@ import java.util.*;
  * Created by lukas on 30.03.14.
  */
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-public record PBECSpawnBlocks(boolean shuffleBlocks, IValue number, IValue ticksPerBlock, ZValue spawnsFromEffectCenter, List<Either<WeightedBlock, WeightedTag<Block>>> blocks, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) implements PBEffectCreator {
+public record PBECSpawnBlocks(boolean shuffleBlocks, IValue number, IValue ticksPerBlock, ZValue spawnsFromEffectCenter, EitherArrayList<WeightedBlock, WeightedTag<Block>> blocks, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) implements PBEffectCreator {
     public static final MapCodec<PBECSpawnBlocks> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(Codec.BOOL.optionalFieldOf("shuffle_blocks", true).forGetter(PBECSpawnBlocks::shuffleBlocks),
                             IValue.CODEC.fieldOf("number").forGetter(PBECSpawnBlocks::number),
@@ -37,7 +37,7 @@ public record PBECSpawnBlocks(boolean shuffleBlocks, IValue number, IValue ticks
                             ValueSpawn.CODEC.optionalFieldOf("value_spawn").forGetter(PBECSpawnBlocks::valueSpawn))
                     .apply(instance, PBECSpawnBlocks::new));
 
-    public PBECSpawnBlocks(IValue number, IValue ticksPerBlock, ZValue spawnsFromEffectCenter, List<Either<WeightedBlock, WeightedTag<Block>>> blocks, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) {
+    public PBECSpawnBlocks(IValue number, IValue ticksPerBlock, ZValue spawnsFromEffectCenter, EitherArrayList<WeightedBlock, WeightedTag<Block>> blocks, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) {
         this(true, number, ticksPerBlock, spawnsFromEffectCenter, blocks, valueThrow, valueSpawn);
     }
 

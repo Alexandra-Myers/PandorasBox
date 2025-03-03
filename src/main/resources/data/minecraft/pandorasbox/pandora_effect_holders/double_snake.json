@@ -99,7 +99,7 @@
           },
           {
             "weight": 10.0,
-            "tag": "#minecraft:terracotta"
+            "tag": "#pandorasbox:all_terracotta"
           },
           {
             "weight": 10.0,
@@ -440,7 +440,7 @@
           },
           {
             "weight": 10.0,
-            "tag": "#minecraft:terracotta"
+            "tag": "#pandorasbox:all_terracotta"
           },
           {
             "weight": 10.0,

@@ -42,7 +42,7 @@ public class PBEffectGenTreesOdd extends PBEffectGenerateByGenerator<MegaTreeFea
     }
 
     @Override
-    public ArrayListExtensions<MegaTreeFeature> initializeGens() {
+    public List<MegaTreeFeature> initializeGens() {
         ArrayListExtensions<MegaTreeFeature> trees = new ArrayListExtensions<>();
         trees.addFirst((MegaTreeFeature) FeatureInit.MEGA_JUNGLE);
         trees.getFirst().setLeaves(leafBlock.defaultBlockState());

@@ -5,13 +5,17 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.datafixers.util.Either;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.FeatureInit;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
-import net.atlas.atlascore.util.ArrayListExtensions;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.item.DyeColor;
@@ -44,29 +48,21 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate {
         if (!world.isClientSide()) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
-            ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-            blocks.addAll(PandorasBox.flowers);
-            ArrayListExtensions<Block> solid = new ArrayListExtensions<>();
-            solid.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.RED_SAND, Blocks.MOSS_BLOCK, Blocks.DEEPSLATE, Blocks.TUFF);
-            solid.addAll(PandorasBox.terracotta, PandorasBox.stained_terracotta);
 
             if (pass == 0) {
-                if (isBlockAnyOf(block, Blocks.SNOW, Blocks.SNOW_BLOCK)) {
+                if (isBlockAnyOf(block, Either.right(BlockTags.SNOW))) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, solid)) {
+                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.BASE_STONE_NETHER), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE)) && !isBlockAnyOf(block, Either.left(Blocks.DIRT), Either.left(Blocks.GRASS_BLOCK))) {
                     if (world.getBlockState(pos.above()).isAir()) {
                         setBlockSafe(world, pos, Blocks.GRASS_BLOCK.defaultBlockState());
                     } else {
                         setBlockSafe(world, pos, Blocks.DIRT.defaultBlockState());
                     }
-                } else if (isBlockAnyOf(block, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK)) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.FIRE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(world, pos);
                 }
 
-                if (isBlockAnyOf(block, Blocks.LAVA)) {
-                    setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
-                }
-                if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.ICE)) {
+                if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.ICE), Either.left(Blocks.LAVA))) {
                     setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
                 }
             } else if (pass == 1) {
@@ -80,12 +76,12 @@ public class PBEffectGenConvertToHomo extends PBEffectGenerate {
                     treeFeature.setMetas(lolliColors);
                     treeFeature.setSoil(Blocks.GRASS_BLOCK);
                     treeFeature.place(world, random, pos);
-                } else if (blockState.isAir() && Blocks.SNOW.defaultBlockState().canSurvive(world, pos)) {
+                } else if (blockState.isAir() && Blocks.POPPY.defaultBlockState().canSurvive(world, pos)) {
                     if (random.nextInt(3 * 3) == 0) {
-                        int meta;
-                        meta = random.nextInt(10);
+                        HolderSet.Named<Block> flowers = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.FLOWERS);
+                        int flowerIndex = random.nextInt(flowers.size());
 
-                        setBlockSafe(world, pos, blocks.get(meta).defaultBlockState());
+                        setBlockSafe(world, pos, flowers.get(flowerIndex).value().defaultBlockState());
                     }
                 }
             } else {

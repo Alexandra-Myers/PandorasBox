@@ -5,12 +5,12 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.random.*;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.utils.RandomizedItemTag;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,13 +19,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, List<Either<RandomizedItemStack, RandomizedItemTag>> items, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn, ZValue giveNames, ZValue spawnsFromEffectCenter) implements PBEffectCreator {
+public record PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn, ZValue giveNames, ZValue spawnsFromEffectCenter) implements PBEffectCreator {
     public static final MapCodec<PBECSpawnEnchantedItems> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(IValue.CODEC.fieldOf("number").forGetter(PBECSpawnEnchantedItems::number),
                             IValue.CODEC.fieldOf("ticks_per_item").forGetter(PBECSpawnEnchantedItems::ticksPerItem),
@@ -37,7 +36,7 @@ public record PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue
                             ZValue.CODEC.fieldOf("spawns_from_effect_center").forGetter(PBECSpawnEnchantedItems::spawnsFromEffectCenter))
                     .apply(instance, PBECSpawnEnchantedItems::new));
 
-    public PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, List<Either<RandomizedItemStack, RandomizedItemTag>> items, ZValue giveNames, ZValue spawnsFromEffectCenter) {
+    public PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue enchantmentLevel, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items, ZValue giveNames, ZValue spawnsFromEffectCenter) {
         this(number, ticksPerItem, enchantmentLevel, items, Optional.of(PBECSpawnItems.defaultThrow()), Optional.empty(), giveNames, spawnsFromEffectCenter);
     }
 

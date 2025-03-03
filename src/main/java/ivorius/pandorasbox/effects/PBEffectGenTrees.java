@@ -40,7 +40,7 @@ public class PBEffectGenTrees extends PBEffectGenerateByGenerator<ResourceKey<Co
     }
 
     @Override
-    public ArrayListExtensions<ResourceKey<ConfiguredFeature<?, ?>>> initializeGens() {
+    public List<ResourceKey<ConfiguredFeature<?, ?>>> initializeGens() {
         ArrayListExtensions<ResourceKey<ConfiguredFeature<?, ?>>> trees = new ArrayListExtensions<>();
         trees.addFirst(JUNGLE_BUSH);
         trees.add(treeNormal, OAK);

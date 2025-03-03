@@ -5,16 +5,19 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -42,7 +45,8 @@ public class PBEffectGenConvertToRainbowCloth extends PBEffectGenerate {
             if (world.loadedAndEntityCanStandOn(pos, entity)) {
                 if (world.getBlockState(pos.above()).isAir()) {
                     double dist = Mth.sqrt((float) effectCenter.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5)));
-                    setBlockSafe(world, pos, PandorasBox.wool.get(woolMetas[Mth.floor(dist / ringSize) % woolMetas.length]).defaultBlockState());
+                    HolderSet.Named<Block> wool = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.WOOL);
+                    setBlockSafe(world, pos, wool.get(woolMetas[Mth.floor(dist / ringSize) % woolMetas.length]).value().defaultBlockState());
                 }
             }
         }

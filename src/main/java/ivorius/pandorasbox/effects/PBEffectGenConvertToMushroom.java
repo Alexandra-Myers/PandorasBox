@@ -5,15 +5,17 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.datafixers.util.Either;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.atlas.atlascore.util.ArrayListExtensions;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.TreeFeatures;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -43,21 +45,19 @@ public class PBEffectGenConvertToMushroom extends PBEffectGenerate {
 
     @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
-        if(world instanceof ServerLevel serverLevel) {
+        if (world instanceof ServerLevel serverLevel) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
-            ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-            blocks.addAll(PandorasBox.logs, PandorasBox.leaves, PandorasBox.flowers);
-
-            blocks.addAll(Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.TALL_GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
-            ArrayListExtensions<Block> solid = new ArrayListExtensions<>();
-            solid.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.TUFF, Blocks.DEEPSLATE, Blocks.RED_SANDSTONE, Blocks.SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SOIL, Blocks.BASALT, Blocks.BLACKSTONE, Blocks.SOUL_SAND, Blocks.SAND, Blocks.RED_SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK);
-            solid.addAll(PandorasBox.terracotta, PandorasBox.stained_terracotta);
 
             if (pass == 0) {
-                if (isBlockAnyOf(block, blocks)) {
+                if (isBlockAnyOf(block, Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.FLOWERS),
+                        Either.right(BlockTags.SNOW), Either.right(BlockTags.FIRE), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN),
+                        Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS))) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, solid)) {
+                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES),
+                        Either.right(BlockTags.BASE_STONE_NETHER), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM),
+                        Either.right(BlockTags.DIRT), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS),
+                        Either.left(Blocks.END_STONE))) {
                     BlockPos posUp = pos.above();
 
                     if (world.getBlockState(posUp).isAir()) {
@@ -74,14 +74,7 @@ public class PBEffectGenConvertToMushroom extends PBEffectGenerate {
                     } else {
                         setBlockSafe(world, pos, Blocks.DIRT.defaultBlockState());
                     }
-                } else if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.LAVA, Blocks.ICE)) {
-                    setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
-                }
-
-                if (isBlockAnyOf(block, Blocks.LAVA)) {
-                    setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
-                }
-                if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.ICE)) {
+                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE))) {
                     setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
                 }
             } else {

@@ -6,9 +6,9 @@
 package ivorius.pandorasbox.worldgen;
 
 import com.mojang.serialization.Codec;
-import ivorius.pandorasbox.PandorasBox;
-import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -46,8 +46,7 @@ public class WorldGenRainbow extends TreeFeature implements AccessibleTreeFeatur
         int par3 = position.getX();
         int par4 = position.getY();
         int par5 = position.getZ();
-        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-        blocks.addAll(PandorasBox.wool);
+        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.WOOL);
 
         if(world == null) return false;
         if (world.getBlockState(position).getBlock() == soil && world.getBlockState(position.above()).isAir()) {
@@ -72,11 +71,11 @@ public class WorldGenRainbow extends TreeFeature implements AccessibleTreeFeatur
                                 if (meta < 0) {
                                     meta = 0;
                                 }
-                                if (meta > 15) {
-                                    meta = 15;
+                                if (meta >= blocks.size()) {
+                                    meta = blocks.size() - 1;
                                 }
 
-                                this.setBlock(world, placePos, blocks.get(meta).defaultBlockState());
+                                this.setBlock(world, placePos, blocks.get(meta).value().defaultBlockState());
                             }
                         }
                     }

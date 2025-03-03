@@ -6,9 +6,9 @@
 package ivorius.pandorasbox.worldgen;
 
 import com.mojang.serialization.Codec;
-import ivorius.pandorasbox.PandorasBox;
-import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -40,8 +40,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
     @Override
     public boolean place(Level world, RandomSource rand, BlockPos position) {
         int l = rand.nextInt(addition) + 5;
-        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-        blocks.addAll(PandorasBox.wool);
+        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.WOOL);
 
         boolean flag = true;
 
@@ -79,7 +78,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
                                     BlockState block1State = world.getBlockState(pos1);
 
                                     if (block1State.isAir() || block1State.is(BlockTags.LEAVES)) {
-                                        Block block = blocks.get(metas[rand.nextInt(metas.length)]);
+                                        Block block = blocks.get(metas[rand.nextInt(metas.length)]).value();
                                         this.setBlock(world, pos1, block.defaultBlockState());
                                     }
                                 }
@@ -92,7 +91,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
                         BlockState block3State = world.getBlockState(pos1);
 
                         if (block3State.isAir() || block3State.is(BlockTags.LEAVES)) {
-                            Block block = blocks.get(metas[0]);
+                            Block block = blocks.get(metas[0]).value();
                             this.setBlock(world, pos1, block.defaultBlockState());
                         }
                     }

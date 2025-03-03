@@ -5,7 +5,6 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
@@ -13,6 +12,7 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenReplace;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.ZValue;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedTag;
@@ -32,7 +32,7 @@ import java.util.Optional;
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECReplace(DValue range, Optional<Block[]> srcBlocks, List<Either<WeightedBlock, WeightedTag<Block>>> destBlocks, ZValue takeRandomNearbyBlocks) implements PBEffectCreator {
+public record PBECReplace(DValue range, Optional<Block[]> srcBlocks, EitherArrayList<WeightedBlock, WeightedTag<Block>> destBlocks, ZValue takeRandomNearbyBlocks) implements PBEffectCreator {
     public static final MapCodec<PBECReplace> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(DValue.CODEC.fieldOf("range").forGetter(PBECReplace::range),
                             PBNBTHelper.arrayCodec(BuiltInRegistries.BLOCK.byNameCodec(), () -> new Block[0]).optionalFieldOf("source_blocks").forGetter(PBECReplace::srcBlocks),

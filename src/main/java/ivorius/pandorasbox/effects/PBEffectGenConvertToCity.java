@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.datafixers.util.Either;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
@@ -13,7 +14,7 @@ import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.pandorasbox.weighted.WeightedSet;
-import net.atlas.atlascore.util.ArrayListExtensions;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
@@ -21,6 +22,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -64,14 +66,9 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
             Block block = blockState.getBlock();
 
             if (pass == 0) {
-                ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-                blocks.addAll(Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.FIRE, Blocks.SOUL_FIRE, Blocks.TALL_GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS);
-                blocks.addAll(PandorasBox.flowers);
-                ArrayListExtensions<Block> solid = new ArrayListExtensions<>();
-                solid.addAll(PandorasBox.terracotta, PandorasBox.stained_terracotta);
-                if (isBlockAnyOf(block, blocks)) {
+                if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.SNOW), Either.right(BlockTags.FIRE), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS))) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.END_STONE, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.SAND, Blocks.RED_SAND, Blocks.DIRT, Blocks.GRASS_BLOCK, Blocks.MOSS_BLOCK, Blocks.DEEPSLATE, Blocks.TUFF)) {
+                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.BASE_STONE_NETHER), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     if (world.getBlockState(pos.above()).getBlock() == Blocks.AIR) {
                         if (world.random.nextInt(144) == 0) {
                             for (int i = 0; i < 4; i++) {
@@ -184,15 +181,9 @@ public class PBEffectGenConvertToCity extends PBEffectGenerate {
                             setBlockSafe(world, pos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
                     } else
                         setBlockSafe(world, pos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
-                } else if (isBlockAnyOf(block, solid))
+                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA)))
                     setBlockSafe(world, pos, Blocks.CYAN_TERRACOTTA.defaultBlockState());
-                else if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.LAVA, Blocks.ICE))
-                    setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
-
-                if (isBlockAnyOf(block, Blocks.LAVA))
-                    setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
-
-                if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.ICE))
+                else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)))
                     setBlockSafe(world, pos, Blocks.WATER.defaultBlockState());
             } else {
                 Entity villager = lazilySpawnEntity(world, entity, random, "villager", 1.0f / (20 * 20), pos);

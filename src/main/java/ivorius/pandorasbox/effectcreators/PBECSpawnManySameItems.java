@@ -5,7 +5,6 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
@@ -14,6 +13,7 @@ import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ValueSpawn;
 import ivorius.pandorasbox.random.ValueThrow;
 import ivorius.pandorasbox.random.ZValue;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.utils.RandomizedItemTag;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,13 +22,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECSpawnManySameItems(IValue ticksPerStack, ZValue spawnsFromEffectCenter, List<Either<RandomizedItemStack, RandomizedItemTag>> items, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) implements PBEffectCreator {
+public record PBECSpawnManySameItems(IValue ticksPerStack, ZValue spawnsFromEffectCenter, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) implements PBEffectCreator {
     public static final MapCodec<PBECSpawnManySameItems> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(IValue.CODEC.fieldOf("ticks_per_stack").forGetter(PBECSpawnManySameItems::ticksPerStack),
                             ZValue.CODEC.fieldOf("spawns_from_effect_center").forGetter(PBECSpawnManySameItems::spawnsFromEffectCenter),

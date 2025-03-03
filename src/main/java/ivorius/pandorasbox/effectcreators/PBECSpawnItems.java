@@ -5,13 +5,13 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectSpawnItemStacks;
 import ivorius.pandorasbox.random.*;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.utils.RandomizedItemTag;
 import ivorius.pandorasbox.weighted.WeightedSelector;
@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECSpawnItems(IValue number, IValue ticksPerItem, List<Either<RandomizedItemStack, RandomizedItemTag>> items, ZValue canBeFood, ZValue spawnsFromEffectCenter, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) implements PBEffectCreator {
+public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items, ZValue canBeFood, ZValue spawnsFromEffectCenter, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) implements PBEffectCreator {
     public static final MapCodec<PBECSpawnItems> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(IValue.CODEC.fieldOf("number").forGetter(PBECSpawnItems::number),
                             IValue.CODEC.fieldOf("ticks_per_item").forGetter(PBECSpawnItems::ticksPerItem),

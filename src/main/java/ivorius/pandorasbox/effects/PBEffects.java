@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effectcreators.*;
 import ivorius.pandorasbox.random.*;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedEntity;
 import ivorius.pandorasbox.weighted.WeightedTag;
@@ -53,13 +54,13 @@ public class PBEffects {
                 new PBECSpawnExplosions(new ILinear(10, 150), new ILinear(6, 20), new DLinear(10.0, 20.0), new DLinear(3.0, 5.0), new ZChance(0.3), new ZConstant(true)),
                 new PBECConvertToHFT(new DLinear(10.0, 15.0)),
                 PBECMulti.create(new PBECConvertToHomo(new DLinear(10.0, 15.0)), 10, new PBECSpawnArmy(new ILinear(1, 4), new IConstant(0), new ZConstant(true), PandorasBoxHelper.creatures), 0),
-                PBECMulti.create(new PBECConvertToIce(new DLinear(10.0, 15.0)), 20, new PBECDome(new ILinear(5, 10), new DGaussian(10.0, 15.0), Arrays.asList(Either.left(new WeightedBlock(100, Blocks.PACKED_ICE)), Either.left(new WeightedBlock(80, Blocks.ICE)), Either.left(new WeightedBlock(50, Blocks.BLUE_ICE))), Optional.of(Blocks.WATER)), 0),
-                new PBECLavaCage(new DGaussian(10.0, 20.0), Optional.of(Blocks.LAVA), Optional.empty(), Collections.singletonList(Either.left(new WeightedBlock(100, Blocks.NETHER_BRICK_WALL))), Collections.singletonList(Either.right(new WeightedTag<>(100, ConventionalBlockTags.CRYING_OBSIDIANS)))),
+                PBECMulti.create(new PBECConvertToIce(new DLinear(10.0, 15.0)), 20, new PBECDome(new ILinear(5, 10), new DGaussian(10.0, 15.0), new EitherArrayList<>(Arrays.asList(Either.left(new WeightedBlock(100, Blocks.PACKED_ICE)), Either.left(new WeightedBlock(80, Blocks.ICE)), Either.left(new WeightedBlock(50, Blocks.BLUE_ICE)))), Optional.of(Blocks.WATER)), 0),
+                new PBECLavaCage(new DGaussian(10.0, 20.0), Optional.of(Blocks.LAVA), Optional.empty(), new EitherArrayList<>(Collections.singletonList(Either.left(new WeightedBlock(100, Blocks.NETHER_BRICK_WALL)))), new EitherArrayList<>(Collections.singletonList(Either.right(new WeightedTag<>(100, ConventionalBlockTags.CRYING_OBSIDIANS))))),
                 new PBECBuffEntities(new ILinear(30, 150), new IWeighted(1, 100, 2, 80, 3, 50), new DLinear(8.0, 10.0), 0.0f, PandorasBoxHelper.buffs),
-                PBECMulti.create(new PBECConvertToDesert(new DLinear(10.0, 15.0)), 0, new PBECCreativeTowers(new DLinear(10.0, 15.0), new ILinear(4, 10), Arrays.asList(Either.right(new WeightedTag<>(100, ConventionalBlockTags.DYED)), Either.right(new WeightedTag<>(50, ConventionalBlockTags.CHAINS)))), 0),
+                PBECMulti.create(new PBECConvertToDesert(new DLinear(10.0, 15.0)), 0, new PBECCreativeTowers(new DLinear(10.0, 15.0), new ILinear(4, 10), new EitherArrayList<>(Arrays.asList(Either.right(new WeightedTag<>(100, ConventionalBlockTags.DYED)), Either.right(new WeightedTag<>(50, ConventionalBlockTags.CHAINS))))), 0),
                 PBECMulti.create(new PBECTransform(new DLinear(10.0, 15.0), PandorasBoxHelper.blocks), 0, new PBECGenTrees(new DGaussian(10.0, 20.0), new DLinear(1.0f / (32.0f * 32.0f * 32.0f), 1.0f / (6.0f * 6.0f * 6.0f)), new ZConstant(false), new IFlags(1, PBEffectGenTrees.treeSmall, 1.0, PBEffectGenTrees.treeNormal, 0.5, PBEffectGenTrees.treeBig, 0.5, PBEffectGenTrees.treeComplexNormal, 0.5, PBEffectGenTrees.treeTaiga, 0.5, PBEffectGenTrees.treeBirch, 0.5)), 20),
                 PBECMulti.create(new PBECConvertToHeavenly(new DLinear(10.0, 15.0)), 0, new PBECSpawnItemSet(new ILinear(1, 5), new ZConstant(true), PandorasBoxHelper.equipmentSets), 0, new PBECBombpack(new DLinear(10.0, 25.0), new ILinear(15, 100)), 0),
-                PBECMulti.create(new PBECConvertToLifeless(new DLinear(10.0, 15.0)), 0, new PBECRandomShapes(new DLinear(10.0, 20.0), new DLinear(2, 5), new ILinear(8, 13), List.of(Either.right(new WeightedTag<>(1, ConventionalBlockTags.STONES)), Either.right(new WeightedTag<>(5, ConventionalBlockTags.COBBLESTONES))), new ZConstant(true)), 0),
+                PBECMulti.create(new PBECConvertToLifeless(new DLinear(10.0, 15.0)), 0, new PBECRandomShapes(new DLinear(10.0, 20.0), new DLinear(2, 5), new ILinear(8, 13), new EitherArrayList<>(List.of(Either.right(new WeightedTag<>(1, ConventionalBlockTags.STONES)), Either.right(new WeightedTag<>(5, ConventionalBlockTags.COBBLESTONES)))), new ZConstant(true)), 0),
                 new PBECConvertToOverworld(new DLinear(10.0, 15.0)),
                 PBECMulti.create(new PBECConvertToMushroom(new DLinear(10.0, 20.0)), 0, new PBECSpawnEntities(new ILinear(10, 50), new ILinear(3, 10), new ILinear(2, 5), new IConstant(0), new IConstant(0), new ILinear(0, 1), new ZConstant(true), PandorasBoxHelper.creatures), 10),
                 new PBECGenTreesOdd(new DGaussian(10.0, 20.0), new DLinear(1.0f / (8.0f * 8.0f), 1.0f / (3.0f * 3.0f)), new ZChance(0.50), new IFlags(1, PBEffectGenTreesOdd.treeJungle, 0.7), PandorasBoxHelper.blocks, PandorasBoxHelper.blocks));

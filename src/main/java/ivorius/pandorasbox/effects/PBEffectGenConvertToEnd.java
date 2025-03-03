@@ -5,12 +5,13 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.PandorasBox;
+import com.mojang.datafixers.util.Either;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.atlas.atlascore.util.ArrayListExtensions;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -23,11 +24,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.phys.Vec3;
 
+import static ivorius.pandorasbox.effects.PBEffectGenConvertToNether.NetherBiome.expFromRatio;
+
 /**
  * Created by lukas on 30.03.14.
  */
 public class PBEffectGenConvertToEnd extends PBEffectGenerate {
-    private int timesFeatureAMade = 0;
     public PBEffectGenConvertToEnd() {}
 
     public PBEffectGenConvertToEnd(int time, double range, int unifiedSeed)
@@ -45,35 +47,26 @@ public class PBEffectGenConvertToEnd extends PBEffectGenerate {
         if(world instanceof ServerLevel serverLevel) {
             BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
-            ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-            blocks.addAll(Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM_BLOCK);
-            ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
-            misc.addAll(Blocks.ICE, Blocks.WATER, Blocks.SNOW_BLOCK, Blocks.SNOW, Blocks.VINE, Blocks.TALL_GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.BROWN_MUSHROOM, Blocks.RED_MUSHROOM);
-            blocks.addAll(PandorasBox.logs);
-            misc.addAll(PandorasBox.leaves, PandorasBox.flowers);
 
-            if (pass == 0) {
-                if (isBlockAnyOf(block, Blocks.OBSIDIAN, Blocks.CHORUS_PLANT, Blocks.CHORUS_FLOWER)) {
-
-                } else if (isBlockAnyOf(block, blocks)) {
+            if (pass == 0 && isBlockAnyOf(block, Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.CHORUS_PLANT), Either.left(Blocks.CHORUS_FLOWER))) {
+                if (isBlockAnyOf(block, Either.right(BlockTags.LEAVES), Either.right(BlockTags.FLOWERS), Either.right(BlockTags.SNOW), Either.left(Blocks.ICE), Either.left(Blocks.WATER), Either.left(Blocks.VINE), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK), Either.right(BlockTags.LOGS))) {
                     setBlockSafe(world, pos, Blocks.OBSIDIAN.defaultBlockState());
-                } else if (isBlockAnyOf(block, misc)) {
+                } else if (isBlockAnyOf(block, Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM))) {
                     setBlockToAirSafe(world, pos);
                 } else if (world.loadedAndEntityCanStandOn(pos, entity)) {
                     setBlockSafe(world, pos, Blocks.END_STONE.defaultBlockState());
                 }
-            } else {
+            } else if (pass != 0) {
                 Entity enderman = lazilySpawnEntity(world, entity, random, "enderman", 1.0f / (20 * 20), pos);
                 canSpawnEntity(world, blockState, pos, enderman);
             }
-            if (random.nextDouble() < Math.pow(0.2, Math.floor(timesFeatureAMade / 16.0))) {
+            if (random.nextDouble() < Math.pow(0.02, expFromRatio(getRatioDone(entity.getTicksForEffect(this) + 1)))) {
                 BlockPos posBelow = pos.below();
                 BlockState blockBelowState = world.getBlockState(posBelow);
 
-                if (blockState.isAir() && !isBlockAnyOf(blockBelowState.getBlock(), Blocks.CHORUS_FLOWER, Blocks.CHORUS_PLANT, Blocks.OBSIDIAN) && blockBelowState.isRedstoneConductor(world, posBelow)) {
+                if (blockState.isAir() && !isBlockAnyOf(blockBelowState.getBlock(), Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.CHORUS_FLOWER), Either.left(Blocks.CHORUS_PLANT)) && blockBelowState.isRedstoneConductor(world, posBelow)) {
                     setBlockSafe(world, posBelow, Blocks.END_STONE.defaultBlockState());
-                    boolean success = Feature.CHORUS_PLANT.place(FeatureConfiguration.NONE, serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
-                    if (success) timesFeatureAMade++;
+                    Feature.CHORUS_PLANT.place(FeatureConfiguration.NONE, serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
                 }
             }
         }

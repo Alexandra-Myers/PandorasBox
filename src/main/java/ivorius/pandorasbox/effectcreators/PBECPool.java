@@ -5,13 +5,13 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenPool;
 import ivorius.pandorasbox.random.DValue;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedTag;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,12 +22,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECPool(DValue range, Block block, List<Either<WeightedBlock, WeightedTag<Block>>> platformBlocks) implements PBEffectCreator {
+public record PBECPool(DValue range, Block block, EitherArrayList<WeightedBlock, WeightedTag<Block>> platformBlocks) implements PBEffectCreator {
     public static final MapCodec<PBECPool> CODEC = RecordCodecBuilder.mapCodec(instance ->
         instance.group(DValue.CODEC.fieldOf("range").forGetter(PBECPool::range),
                         BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(PBECPool::block),

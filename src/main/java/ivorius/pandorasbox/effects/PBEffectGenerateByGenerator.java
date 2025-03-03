@@ -7,7 +7,6 @@ package ivorius.pandorasbox.effects;
 
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.worldgen.MegaTreeFeature;
-import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -33,7 +32,7 @@ public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate {
     public double chancePerBlock;
 
     public int generatorFlags;
-    protected ArrayListExtensions<T> treeGens = null;
+    protected List<T> treeGens = null;
     public PBEffectGenerateByGenerator() {
     }
 
@@ -45,11 +44,11 @@ public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate {
         this.generatorFlags = generatorFlags;
     }
 
-    abstract ArrayListExtensions<T> initializeGens();
+    abstract List<T> initializeGens();
 
     @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range) {
-        if(treeGens == null)
+        if (treeGens == null)
             this.treeGens = initializeGens();
         if (world instanceof ServerLevel serverWorld) {
             if (random.nextDouble() < chancePerBlock) {
@@ -57,18 +56,17 @@ public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate {
                 BlockPos posBelow = pos.below();
                 BlockState blockBelowState = world.getBlockState(posBelow);
 
-                if (blockState.isAir() && (!requiresSolidGround || blockBelowState.isCollisionShapeFullBlock(world, posBelow))) {
+                if (blockState.isAir() && (!requiresSolidGround || blockBelowState.isRedstoneConductor(world, posBelow))) {
                     setBlockSafe(world, posBelow, Blocks.DIRT.defaultBlockState());
 
                     T generator = getRandomGenerator(getGenerators(), generatorFlags, random);
                     if (generator instanceof ResourceKey<?> key) {
                         Optional<Registry<ConfiguredFeature<?, ?>>> configuredFeatureRegistry = world.registryAccess().lookup(Registries.CONFIGURED_FEATURE);
-                        if(configuredFeatureRegistry.isEmpty()) return;
+                        if (configuredFeatureRegistry.isEmpty()) return;
                         ConfiguredFeature<?, ?> feature = configuredFeatureRegistry.get().getValueOrThrow((ResourceKey<ConfiguredFeature<?, ?>>) key);
-                        assert feature != null;
                         feature.place(serverWorld, serverWorld.getChunkSource().getGenerator(), random, pos);
                     }
-                    if(generator instanceof MegaTreeFeature feature) {
+                    if (generator instanceof MegaTreeFeature feature) {
                         feature.place(world, random, pos);
                     }
                 }
@@ -78,27 +76,21 @@ public abstract class PBEffectGenerateByGenerator<T> extends PBEffectGenerate {
 
     public abstract List<T> getGenerators();
 
-    public T getRandomGenerator(List<T> generators, int flags, RandomSource random)
-    {
+    public T getRandomGenerator(List<T> generators, int flags, RandomSource random) {
         int totalNumber = 0;
 
-        for (int i = 0; i < generators.size(); i++)
-        {
+        for (int i = 0; i < generators.size(); i++) {
             int flag = 1 << i;
-            if ((flags & flag) > 0)
-            {
+            if ((flags & flag) > 0) {
                 totalNumber++;
             }
         }
 
         int chosenGen = random.nextInt(totalNumber);
-        for (int i = 0; i < generators.size(); i++)
-        {
+        for (int i = 0; i < generators.size(); i++) {
             int flag = 1 << i;
-            if ((flags & flag) > 0)
-            {
-                if (chosenGen == 0)
-                {
+            if ((flags & flag) > 0) {
+                if (chosenGen == 0) {
                     return generators.get(i);
                 }
 

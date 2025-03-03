@@ -1,13 +1,12 @@
 package ivorius.pandorasbox.utils;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 05.04.15.
@@ -17,7 +16,7 @@ public record RandomizedItemStack(ItemStack itemStack, WeightedWithRandomCount c
             instance.group(ItemStack.SINGLE_ITEM_CODEC.fieldOf("stack").forGetter(RandomizedItemStack::itemStack),
                             WeightedWithRandomCount.CODEC_FORCE.forGetter(RandomizedItemStack::count))
                     .apply(instance, RandomizedItemStack::new));
-    public static final Codec<List<Either<RandomizedItemStack, RandomizedItemTag>>> LIST_CODEC = Codec.either(CODEC, RandomizedItemTag.TAG_MAP_CODEC).listOf();
+    public static final Codec<EitherArrayList<RandomizedItemStack, RandomizedItemTag>> LIST_CODEC = Codec.either(CODEC, RandomizedItemTag.TAG_MAP_CODEC).listOf().xmap(EitherArrayList::new, Function.identity());
     public RandomizedItemStack(Item item, int min, int max, double weight) {
         this(new ItemStack(item, 1), new WeightedWithRandomCount(min, max, weight));
     }

@@ -7,9 +7,9 @@ package ivorius.pandorasbox.worldgen;
 
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
-import ivorius.pandorasbox.PandorasBox;
-import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -266,9 +266,8 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
         this.level = worldIn;
         this.origin = position;
         this.random = new Random(rand.nextLong());
-        ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-        blocks.addAll(PandorasBox.wool);
-        trunk = blocks.get(metas[rand.nextInt(metas.length)]);
+        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.WOOL);
+        trunk = blocks.get(metas[rand.nextInt(metas.length)]).value();
 
         if(level == null) return false;
         if (this.heightLimit == 0) {

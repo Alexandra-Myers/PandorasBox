@@ -5,7 +5,6 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
@@ -13,6 +12,7 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectEntitiesThrowItems;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.utils.RandomizedItemTag;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,12 +21,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECThrowItems(IValue time, DValue range, DValue throwChancePerItem, DValue deletionChancePerThrow, IValue smuggledInItems, List<Either<RandomizedItemStack, RandomizedItemTag>> items) implements PBEffectCreator {
+public record PBECThrowItems(IValue time, DValue range, DValue throwChancePerItem, DValue deletionChancePerThrow, IValue smuggledInItems, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items) implements PBEffectCreator {
     public static final MapCodec<PBECThrowItems> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECThrowItems::time),
                             DValue.CODEC.fieldOf("range").forGetter(PBECThrowItems::range),

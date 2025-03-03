@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.datafixers.util.Either;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
@@ -15,6 +16,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -57,7 +59,7 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate {
             Block block = blockState.getBlock();
 
             if (pass == 0) {
-                if (isBlockAnyOf(block, Blocks.WATER)) {
+                if (isBlockAnyOf(block, Either.left(Blocks.WATER))) {
                     setBlockSafe(world, pos, Blocks.ICE.defaultBlockState());
                 } else if (blockState.isAir()) {
                     boolean setSnow = true;
@@ -95,7 +97,7 @@ public class PBEffectGenConvertToChristmas extends PBEffectGenerate {
                     if (setSnow && Blocks.SNOW.defaultBlockState().canSurvive(world, pos)) {
                         setBlockSafe(world, pos, Blocks.SNOW.defaultBlockState());
                     }
-                } else if (block == Blocks.FIRE || block == Blocks.SOUL_FIRE) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.FIRE))) {
                     setBlockToAirSafe(world, pos);
                 } else if ((block == Blocks.LAVA && !blockState.getValue(LiquidBlock.LEVEL).equals(0)) || block == Blocks.MAGMA_BLOCK) {
                     setBlockSafe(world, pos, Blocks.COBBLESTONE.defaultBlockState());

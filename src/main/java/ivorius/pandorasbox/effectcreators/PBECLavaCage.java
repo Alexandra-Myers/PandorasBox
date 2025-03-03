@@ -5,13 +5,13 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenLavaCages;
 import ivorius.pandorasbox.random.DValue;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedTag;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,13 +21,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECLavaCage(DValue range, Optional<Block> lavaBlock, Optional<Block> fillBlock, List<Either<WeightedBlock, WeightedTag<Block>>> cageBlocks, List<Either<WeightedBlock, WeightedTag<Block>>> floorBlocks) implements PBEffectCreator {
+public record PBECLavaCage(DValue range, Optional<Block> lavaBlock, Optional<Block> fillBlock, EitherArrayList<WeightedBlock, WeightedTag<Block>> cageBlocks, EitherArrayList<WeightedBlock, WeightedTag<Block>> floorBlocks) implements PBEffectCreator {
     public static final MapCodec<PBECLavaCage> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(DValue.CODEC.fieldOf("range").forGetter(PBECLavaCage::range),
                             BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("lava_block").forGetter(PBECLavaCage::lavaBlock),

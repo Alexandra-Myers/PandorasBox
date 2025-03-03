@@ -5,11 +5,13 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.datafixers.util.Either;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.atlas.atlascore.util.ArrayListExtensions;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -39,17 +41,10 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate {
             Block block = world.getBlockState(pos).getBlock();
 
             if (pass == 0) {
-                ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-                blocks.addAll(Blocks.ICE, Blocks.WATER, Blocks.SNOW, Blocks.SNOW_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.FERN, Blocks.LARGE_FERN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.RED_MUSHROOM, Blocks.RED_MUSHROOM_BLOCK);
-                ArrayListExtensions<Block> soil = new ArrayListExtensions<>();
-                ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
-                soil.addAll(Blocks.SOUL_SAND, Blocks.SOUL_SOIL, Blocks.GRASS_BLOCK, Blocks.NETHERRACK, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.DIRT, Blocks.MYCELIUM, Blocks.MOSS_BLOCK, Blocks.RED_SAND);
-                misc.addAll(Blocks.STONE, Blocks.ANDESITE, Blocks.DIORITE, Blocks.GRANITE, Blocks.BLACKSTONE, Blocks.BASALT, Blocks.END_STONE, Blocks.DEEPSLATE, Blocks.TUFF, Blocks.RED_SANDSTONE);
-                blocks.addAll(PandorasBox.flowers, PandorasBox.leaves, PandorasBox.logs);
-                misc.addAll(PandorasBox.terracotta);
-                if (isBlockAnyOf(block, blocks)) {
+                if (isBlockAnyOf(block, Either.right(BlockTags.LEAVES), Either.right(BlockTags.FLOWERS), Either.right(BlockTags.SNOW), Either.left(Blocks.ICE), Either.left(Blocks.WATER), Either.left(Blocks.VINE), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.RED_MUSHROOM_BLOCK), Either.right(BlockTags.LOGS))) {
                     setBlockToAirSafe(world, pos);
-                } else if (isBlockAnyOf(block, soil)) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.SAND), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT), Either.left(Blocks.NETHERRACK)) &&
+                        !isBlockAnyOf(block, Either.left(Blocks.SAND))) {
                     setBlockSafe(world, pos, Blocks.SAND.defaultBlockState());
 
                     if (world.getBlockState(pos.above()).isAir()) {
@@ -61,7 +56,7 @@ public class PBEffectGenConvertToDesert extends PBEffectGenerate {
                             setBlockSafe(world, pos.above(1), Blocks.DEAD_BUSH.defaultBlockState());
                         }
                     }
-                } else if (isBlockAnyOf(block, misc)) {
+                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(BlockTags.BASE_STONE_NETHER), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     setBlockSafe(world, pos, Blocks.SANDSTONE.defaultBlockState());
                 }
             }

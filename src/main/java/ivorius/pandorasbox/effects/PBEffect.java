@@ -5,6 +5,7 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.datafixers.util.Either;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
@@ -12,6 +13,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -22,6 +24,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -36,8 +39,7 @@ public abstract class PBEffect {
         compound.put("boxEffect", effectCompound);
         registryFriendlyByteBuf.writeNbt(compound);
     }, registryFriendlyByteBuf -> PBEffectRegistry.loadEffect(registryFriendlyByteBuf.readNbt().getCompound("boxEffect"), registryFriendlyByteBuf.registryAccess()));
-    public String getEffectID()
-    {
+    public final String getEffectID() {
         return PBEffectRegistry.getEffectID(this);
     }
 
@@ -78,18 +80,13 @@ public abstract class PBEffect {
         return player == null ? getRandomNearbyPlayer(world, box) : player;
     }
 
-    public static boolean isBlockAnyOf(Block block, Block... blocks) {
-        for (Block block1 : blocks) {
-            if (block == block1)
-                return true;
-        }
-
-        return false;
-    }
-    public static boolean isBlockAnyOf(Block block, List<Block> blocks) {
-        for (Block block1 : blocks) {
-            if (block == block1)
-                return true;
+    @SafeVarargs
+    public static boolean isBlockAnyOf(@NotNull Block block, Either<Block, TagKey<Block>>... blocks) {
+        for (Either<Block, TagKey<Block>> match : blocks) {
+            Block other = match.left().orElse(null);
+            TagKey<Block> tag = match.right().orElse(null);
+            if (other != null) return block == other;
+            else return block.defaultBlockState().is(tag);
         }
 
         return false;

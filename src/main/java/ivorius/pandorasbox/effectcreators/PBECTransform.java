@@ -5,13 +5,13 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenTransform;
 import ivorius.pandorasbox.random.DValue;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedTag;
 import net.minecraft.util.Mth;
@@ -20,12 +20,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECTransform(DValue range, List<Either<WeightedBlock, WeightedTag<Block>>> blocks) implements PBEffectCreator {
+public record PBECTransform(DValue range, EitherArrayList<WeightedBlock, WeightedTag<Block>> blocks) implements PBEffectCreator {
     public static final MapCodec<PBECTransform> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(DValue.CODEC.fieldOf("range").forGetter(PBECTransform::range),
                             WeightedBlock.CODEC.fieldOf("blocks").forGetter(PBECTransform::blocks))

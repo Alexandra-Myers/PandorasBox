@@ -5,7 +5,6 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
@@ -15,6 +14,7 @@ import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ZConstant;
 import ivorius.pandorasbox.random.ZValue;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedTag;
 import net.minecraft.util.Mth;
@@ -23,12 +23,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECGenTreesOdd(DValue range, DValue chancePerBlock, ZValue requiresSolidGround, IValue possibleTreeFlags, List<Either<WeightedBlock, WeightedTag<Block>>> trunkBlocks, List<Either<WeightedBlock, WeightedTag<Block>>> leafBlocks) implements PBEffectCreator {
+public record PBECGenTreesOdd(DValue range, DValue chancePerBlock, ZValue requiresSolidGround, IValue possibleTreeFlags, EitherArrayList<WeightedBlock, WeightedTag<Block>> trunkBlocks, EitherArrayList<WeightedBlock, WeightedTag<Block>> leafBlocks) implements PBEffectCreator {
     public static final MapCodec<PBECGenTreesOdd> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(DValue.CODEC.fieldOf("range").forGetter(PBECGenTreesOdd::range),
                             DValue.CODEC.fieldOf("chance_per_block").forGetter(PBECGenTreesOdd::chancePerBlock),

@@ -5,15 +5,18 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.datafixers.util.Either;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.FeatureInit;
 import ivorius.pandorasbox.worldgen.AccessibleTreeFeature;
-import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -49,18 +52,12 @@ public class PBEffectGenConvertToHFT extends PBEffectGenerate {
         if (!level.isClientSide()) {
             BlockState blockState = level.getBlockState(pos);
             Block block = blockState.getBlock();
-            ArrayListExtensions<Block> misc = new ArrayListExtensions<>();
-            ArrayListExtensions<Block> blocks = new ArrayListExtensions<>();
-            ArrayListExtensions<Block> iCTWTGASTB = new ArrayListExtensions<>();
-            iCTWTGASTB.add(Blocks.LAVA);
-            iCTWTGASTB.addAll(PandorasBox.logs, PandorasBox.leaves);
-            blocks.addAll(PandorasBox.terracotta, PandorasBox.wool);
-            misc.addAll(PandorasBox.terracotta);
-            Block placeBlock = misc.get(groundMetas[random.nextInt(groundMetas.length)]);
+            HolderSet.Named<Block> terracotta = BuiltInRegistries.BLOCK.getOrThrow(PandorasBox.ALL_TERRACOTTA);
+            Block placeBlock = terracotta.get(groundMetas[random.nextInt(groundMetas.length)] % terracotta.size()).value();
             if (pass == 0) {
-                if (isBlockAnyOf(block, iCTWTGASTB)) {
+                if (isBlockAnyOf(block, Either.left(Blocks.LAVA), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES))) {
                     setBlockToAirSafe(level, pos);
-                } else if (!isBlockAnyOf(block, blocks) && Block.isShapeFullBlock(blockState.getBlockSupportShape(level, pos))) {
+                } else if (!isBlockAnyOf(block, Either.right(BlockTags.WOOL), Either.right(PandorasBox.ALL_TERRACOTTA)) && Block.isShapeFullBlock(blockState.getBlockSupportShape(level, pos))) {
                     setBlockSafe(level, pos, placeBlock.defaultBlockState());
                 }
             } else if (pass == 1) {

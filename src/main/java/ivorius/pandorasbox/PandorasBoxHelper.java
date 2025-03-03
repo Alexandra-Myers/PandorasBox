@@ -11,6 +11,7 @@ import com.google.common.collect.Streams;
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import ivorius.pandorasbox.random.ILinear;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.utils.RandomizedItemTag;
 import ivorius.pandorasbox.utils.WeightedWithRandomCount;
@@ -44,15 +45,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
-import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class PandorasBoxHelper {
     public static final List<Property<?>> validProperties = List.of(BlockStateProperties.HALF, BlockStateProperties.RAIL_SHAPE, BlockStateProperties.LEVEL_HONEY, BlockStateProperties.SLAB_TYPE, BlockStateProperties.WATERLOGGED,
             BlockStateProperties.BAMBOO_LEAVES, BlockStateProperties.NOTEBLOCK_INSTRUMENT, BlockStateProperties.FACING, BlockStateProperties.AXIS, BlockStateProperties.LIT,
             BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.STAIRS_SHAPE);
-    public static Object2ObjectLinkedOpenHashMap<Collection<Either<WeightedBlock, WeightedTag<Block>>>, Collection<WeightedBlock>> cachedBlockLists = new Object2ObjectLinkedOpenHashMap<>();
-    public static Object2ObjectLinkedOpenHashMap<Collection<Either<RandomizedItemStack, RandomizedItemTag>>, List<RandomizedItemStack>> cachedRandomizedStackLists = new Object2ObjectLinkedOpenHashMap<>();
+    public static Object2ObjectLinkedOpenHashMap<EitherArrayList<WeightedBlock, WeightedTag<Block>>, Collection<WeightedBlock>> cachedBlockLists = new Object2ObjectLinkedOpenHashMap<>();
+    public static Object2ObjectLinkedOpenHashMap<EitherArrayList<RandomizedItemStack, RandomizedItemTag>, List<RandomizedItemStack>> cachedRandomizedStackLists = new Object2ObjectLinkedOpenHashMap<>();
     public static List<WeightedEntity> landMobs = new ArrayList<>();
     public static List<WeightedEntity> mobs = new ArrayList<>();
     public static List<WeightedEntity> creatures = new ArrayList<>();
@@ -60,22 +61,22 @@ public class PandorasBoxHelper {
     public static List<WeightedEntity> waterMobs = new ArrayList<>();
     public static List<WeightedEntity> tameableCreatures = new ArrayList<>();
 
-    public static List<Either<RandomizedItemStack, RandomizedItemTag>> blocksAndItems = new ArrayList<>();
+    public static EitherArrayList<RandomizedItemStack, RandomizedItemTag> blocksAndItems = new EitherArrayList<>();
     public static Multimap<Block, Property<?>> randomizableBlockProperties = HashMultimap.create();
 
-    public static List<Either<WeightedBlock, WeightedTag<Block>>> blocks = new ArrayList<>();
+    public static EitherArrayList<WeightedBlock, WeightedTag<Block>> blocks = new EitherArrayList<>();
 
-    public static List<Either<RandomizedItemStack, RandomizedItemTag>> items = new ArrayList<>();
+    public static EitherArrayList<RandomizedItemStack, RandomizedItemTag> items = new EitherArrayList<>();
     public static List<WeightedSet> equipmentSets = new ArrayList<>();
     public static Hashtable<Item, Hashtable<Integer, ItemStack>> equipmentForLevels = new Hashtable<>();
 
     public static List<WeightedPotion> buffs = new ArrayList<>();
     public static List<WeightedPotion> debuffs = new ArrayList<>();
 
-    public static List<Either<RandomizedItemStack, RandomizedItemTag>> enchantableArmorList = new ArrayList<>();
-    public static List<Either<RandomizedItemStack, RandomizedItemTag>> enchantableToolList = new ArrayList<>();
+    public static EitherArrayList<RandomizedItemStack, RandomizedItemTag> enchantableArmorList = new EitherArrayList<>();
+    public static EitherArrayList<RandomizedItemStack, RandomizedItemTag> enchantableToolList = new EitherArrayList<>();
 
-    public static List<Either<WeightedBlock, WeightedTag<Block>>> heavyBlocks = new ArrayList<>();
+    public static EitherArrayList<WeightedBlock, WeightedTag<Block>> heavyBlocks = new EitherArrayList<>();
 
     public static void addEntities(List<WeightedEntity> list, double weight, int minNumber, int maxNumber, String... entities) {
         for (String s : entities) {
@@ -109,7 +110,7 @@ public class PandorasBoxHelper {
         }
     }
 
-    public static void addBlocks(List<Either<WeightedBlock, WeightedTag<Block>>> list, double weight, Block... blocks) {
+    public static void addBlocks(EitherArrayList<WeightedBlock, WeightedTag<Block>> list, double weight, Block... blocks) {
         for (Block block : blocks) {
             list.add(Either.left(new WeightedBlock(weight, block)));
         }
@@ -316,7 +317,7 @@ public class PandorasBoxHelper {
         addBlockTags(40.0, BlockTags.PLANKS, BlockTags.WOOL, BlockTags.LEAVES, BlockTags.LOGS, BlockTags.SLABS, BlockTags.STAIRS, BlockTags.STONE_BRICKS);
         addBlocks(15.0, Blocks.PRISMARINE, Blocks.QUARTZ_BLOCK, Blocks.SMOOTH_QUARTZ);
         addBlocks(10.0, Blocks.GRAVEL, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.CLAY, Blocks.POLISHED_DEEPSLATE, Blocks.DEEPSLATE_TILES, Blocks.NETHER_BRICKS, Blocks.BRICKS, Blocks.END_STONE, Blocks.END_STONE_BRICKS);
-        addBlockTags(10.0, ConventionalBlockTags.COBBLESTONES, BlockTags.TERRACOTTA, ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES, BlockTags.BASE_STONE_NETHER, BlockTags.DIRT);
+        addBlockTags(10.0, ConventionalBlockTags.COBBLESTONES, BlockTags.NYLIUM, PandorasBox.ALL_TERRACOTTA, ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES, BlockTags.BASE_STONE_NETHER, BlockTags.DIRT);
         addBlockTags(8.0, BlockTags.SAND, ConventionalBlockTags.STONES, BlockTags.WITHER_SUMMON_BASE_BLOCKS, ConventionalBlockTags.QUARTZ_ORES, BlockTags.COAL_ORES, BlockTags.COPPER_ORES, BlockTags.LAPIS_ORES, BlockTags.REDSTONE_ORES, BlockTags.SNOW, ConventionalBlockTags.CHESTS, ConventionalBlockTags.BARRELS, ConventionalBlockTags.SANDSTONE_BLOCKS, ConventionalBlockTags.VILLAGER_JOB_SITES, BlockTags.RAILS, ConventionalBlockTags.CONCRETES, BlockTags.CONCRETE_POWDER, BlockTags.SAPLINGS, BlockTags.FLOWER_POTS, ConventionalBlockTags.GLASS_BLOCKS, ConventionalBlockTags.GLASS_PANES);
         addBlocks(0.2, Blocks.LODESTONE);
         addBlockTags(0.2, ConventionalBlockTags.STORAGE_BLOCKS_NETHERITE, ConventionalBlockTags.STORAGE_BLOCKS_DIAMOND, ConventionalBlockTags.STORAGE_BLOCKS_EMERALD, ConventionalBlockTags.STORAGE_BLOCKS_GOLD);
@@ -378,9 +379,11 @@ public class PandorasBoxHelper {
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.DIAMOND_AXE, new ItemStack(Items.COOKED_BEEF, 16));
         addEquipmentSet(6.0, Items.TURTLE_HELMET, Items.IRON_BOOTS, Items.TRIDENT, Items.IRON_SWORD, new ItemStack(Items.BREAD, 48));
         addEquipmentSet(0.1, Items.DIAMOND_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.TRIDENT, Items.MACE, Items.IRON_AXE, new ItemStack(Items.COOKED_BEEF, 8));
-        for(Block block : PandorasBox.wool)
+
+        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.WOOL);
+        for(Holder<Block> block : blocks)
             if(RandomSource.create().nextDouble() > 0.8)
-                addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(block, 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
+                addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(block.value(), 16), new ItemStack(block.value(), 16), new ItemStack(block.value(), 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
 
         addEquipmentLevelsInOrder(Items.WOODEN_SWORD, Items.WOODEN_SWORD, Items.GOLDEN_SWORD, Items.STONE_SWORD, Items.IRON_SWORD, Items.DIAMOND_SWORD, Items.NETHERITE_SWORD);
         addEquipmentLevelsInOrder(Items.WOODEN_AXE, Items.WOODEN_AXE, Items.GOLDEN_AXE, Items.STONE_AXE, Items.IRON_AXE, Items.DIAMOND_AXE, Items.NETHERITE_AXE);
@@ -447,6 +450,7 @@ public class PandorasBoxHelper {
                 randomizableProperties.remove(BlockStateProperties.WATERLOGGED);
             if (unified >= 0)
                 rand = RandomSource.create(unified ^ rand.nextInt(256));
+            if (block.getStateDefinition().getProperties().contains(BlockStateProperties.PERSISTENT)) state.setValue(BlockStateProperties.PERSISTENT, true);
 
             for (Property property : randomizableProperties)
                 state = state.setValue(property, PandorasBoxHelper.<Comparable>randomElement(property.getPossibleValues(), rand));
@@ -455,40 +459,42 @@ public class PandorasBoxHelper {
         return state;
     }
 
-    public static Collection<WeightedBlock> assembleBlocks(List<Either<WeightedBlock, WeightedTag<Block>>> blocks) {
+    public static Collection<WeightedBlock> assembleBlocks(EitherArrayList<WeightedBlock, WeightedTag<Block>> blocks) {
         if (cachedBlockLists.containsKey(blocks)) return cachedBlockLists.get(blocks);
-        Collection<WeightedBlock> output = assembleCollection(BuiltInRegistries.BLOCK, WeightedBlock::block, WeightedBlock::new, blocks);
+        Collection<WeightedBlock> output = assembleCollection(WeightedBlock::block, blockWeightedTag -> {
+            List<WeightedBlock> edit = new ArrayList<>();
+            Iterable<Holder<Block>> ts = BuiltInRegistries.BLOCK.getTagOrEmpty(blockWeightedTag.tagKey());
+            Streams.stream(ts).forEach(blockHolder -> edit.add(new WeightedBlock(blockWeightedTag.weight(), blockHolder)));
+            return edit;
+        }, blocks);
         cachedBlockLists.put(blocks, output);
         return output;
     }
 
-    public static <W extends WeightedSelector.Item, T> Collection<W> assembleCollection(Registry<T> tRegistry, Function<W, Holder<T>> heldGetter, BiFunction<Double, Holder<T>, W> constructor, Collection<Either<W, WeightedTag<T>>> selection) {
-        Map<Holder<T>, Double> select = new HashMap<>();
-        for (Either<W, WeightedTag<T>> current : selection) {
-            current.ifLeft(w -> {
-                if (!select.containsKey(heldGetter.apply(w))) select.put(heldGetter.apply(w), w.weight());
-            });
-            current.ifRight(tWeightedTag -> {
-                Iterable<Holder<T>> ts = tRegistry.getTagOrEmpty(tWeightedTag.tagKey());
-                Streams.stream(ts).filter(tHolder -> !select.containsKey(tHolder)).forEach(tHolder -> select.put(tHolder, tWeightedTag.weight()));
-            });
-        }
-        return select.entrySet().stream().map(entry -> constructor.apply(entry.getValue(), entry.getKey())).toList();
+    public static <W extends WeightedSelector.Item, T> List<W> assembleCollection(Function<W, Holder<T>> heldGetter, Function<WeightedTag<T>, Collection<W>> mapper, EitherArrayList<W, WeightedTag<T>> selection) {
+        Map<Holder<T>, W> select = new HashMap<>();
+        Consumer<W> consumer = w -> {
+            if (!select.containsKey(heldGetter.apply(w))) select.put(heldGetter.apply(w), w);
+        };
+        selection.leftSide().forEach(consumer);
+        selection.rightSide().stream().map(mapper).forEach(col -> col.forEach(consumer));
+        return new ArrayList<>(select.values());
     }
 
-    public static List<RandomizedItemStack> assembleRandomisedStacks(Registry<Item> tRegistry, Collection<Either<RandomizedItemStack, RandomizedItemTag>> selection) {
+    public static List<RandomizedItemStack> assembleRandomisedStacks(Registry<Item> itemRegistry, EitherArrayList<RandomizedItemStack, RandomizedItemTag> selection) {
         if (cachedRandomizedStackLists.containsKey(selection)) return cachedRandomizedStackLists.get(selection);
-        Map<Holder<Item>, WeightedWithRandomCount> select = new HashMap<>();
-        for (Either<RandomizedItemStack, RandomizedItemTag> current : selection) {
-            current.ifLeft(randomizedItemStack -> {
-                if (!select.containsKey(randomizedItemStack.itemStack().getItemHolder())) select.put(randomizedItemStack.itemStack().getItemHolder(), randomizedItemStack.count());
-            });
-            current.ifRight(randomizedItemTag -> {
-                Iterable<Holder<Item>> ts = tRegistry.getTagOrEmpty(randomizedItemTag.items());
-                Streams.stream(ts).filter(tHolder -> !select.containsKey(tHolder)).forEach(tHolder -> select.put(tHolder, randomizedItemTag.count()));
-            });
-        }
-        List<RandomizedItemStack> output = select.entrySet().stream().map(entry -> new RandomizedItemStack(new ItemStack(entry.getKey()), entry.getValue().copyWithMaxCountOverride(entry.getKey().value().getDefaultMaxStackSize()))).toList();
+        Map<Holder<Item>, RandomizedItemStack> select = new HashMap<>();
+        Consumer<RandomizedItemStack> consumer = randomizedItemStack -> {
+            if (!select.containsKey(randomizedItemStack.itemStack().getItemHolder())) select.put(randomizedItemStack.itemStack().getItemHolder(), randomizedItemStack);
+        };
+        selection.leftSide().forEach(consumer);
+        selection.rightSide().stream().map(randomizedItemTag -> {
+            List<RandomizedItemStack> edit = new ArrayList<>();
+            Iterable<Holder<Item>> ts = itemRegistry.getTagOrEmpty(randomizedItemTag.items());
+            Streams.stream(ts).forEach(itemHolder -> edit.add(new RandomizedItemStack(new ItemStack(itemHolder), randomizedItemTag.count().copyWithMaxCountOverride(itemHolder.value().getDefaultMaxStackSize()))));
+            return edit;
+        }).forEach(col -> col.forEach(consumer));
+        List<RandomizedItemStack> output = new ArrayList<>(select.values());
         cachedRandomizedStackLists.put(selection, output);
         return output;
     }

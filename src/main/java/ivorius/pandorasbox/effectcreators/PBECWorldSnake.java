@@ -5,7 +5,6 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
@@ -13,6 +12,7 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenWorldSnake;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedTag;
 import net.minecraft.util.RandomSource;
@@ -20,13 +20,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 /**
  * Created by lukas on 30.03.14.
  */
 public record PBECWorldSnake(IValue time, DValue startRange, DValue speed, DValue size,
-                             List<Either<WeightedBlock, WeightedTag<Block>>> blocks) implements PBEffectCreator {
+                             EitherArrayList<WeightedBlock, WeightedTag<Block>> blocks) implements PBEffectCreator {
     public static final MapCodec<PBECWorldSnake> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECWorldSnake::time),
                         DValue.CODEC.fieldOf("start_range").forGetter(PBECWorldSnake::startRange),
