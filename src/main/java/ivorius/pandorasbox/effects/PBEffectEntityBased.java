@@ -20,13 +20,11 @@ import java.util.List;
 /**
  * Created by lukas on 31.03.14.
  */
-public abstract class PBEffectEntityBased extends PBEffectNormal
-{
+public abstract class PBEffectEntityBased extends PBEffectNormal {
     public double range;
     public PBEffectEntityBased() {}
 
-    public PBEffectEntityBased(int maxTicksAlive, double range)
-    {
+    public PBEffectEntityBased(int maxTicksAlive, double range) {
         super(maxTicksAlive);
         this.range = range;
     }

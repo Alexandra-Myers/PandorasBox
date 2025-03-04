@@ -2,11 +2,14 @@ package ivorius.pandorasbox.init;
 
 import ivorius.pandorasbox.effectcreators.*;
 import ivorius.pandorasbox.effects.*;
+import ivorius.pandorasbox.mods.PsychedelicraftHooks;
+import net.fabricmc.loader.api.FabricLoader;
 
 import static ivorius.pandorasbox.init.Init.*;
 
 public class PBEffectInit {
     static {
+        if (FabricLoader.getInstance().isModLoaded("psychedelicraft")) PsychedelicraftHooks.registerDrugEntitiesCreator();
         registerBoxEffectCreatorType(PBECBombentities.CODEC, "apply_bomberman");
         registerBoxEffectCreatorType(PBECBombpack.CODEC, "apply_bombpack");
         registerBoxEffectCreatorType(PBECBuffEntities.CODEC, "apply_mob_effects");
