@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.dead_mobs"
+  },
   "effect_creator": {
     "entities": [
       {

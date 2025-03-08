@@ -5,20 +5,49 @@
 
 package ivorius.pandorasbox.effectcreators;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenConvertToSnow;
+import ivorius.pandorasbox.effects.PBEffectGenerate;
+import ivorius.pandorasbox.effects.generate.SimpleConvertEffect;
+import ivorius.pandorasbox.effects.generate.block_mappers.BlockMapper;
+import ivorius.pandorasbox.effects.generate.block_mappers.CoverMapper;
+import ivorius.pandorasbox.effects.generate.block_mappers.LavaChillMapper;
+import ivorius.pandorasbox.effects.generate.block_mappers.SimpleConvertMapper;
+import ivorius.pandorasbox.effects.generate.entity_spawners.EntitySpawner;
+import ivorius.pandorasbox.effects.generate.entity_spawners.SpawnRandom;
 import ivorius.pandorasbox.random.DValue;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lukas on 30.03.14.
  */
 public record PBECConvertToSnow(DValue range) implements PBEffectCreator {
+    public static final List<BlockMapper> SNOW_MAPPERS;
+    public static final List<EntitySpawner> SNOW_SPAWNERS;
+    static {
+        SNOW_MAPPERS = new ArrayList<>();
+        SNOW_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.left(Blocks.WATER)}, Blocks.ICE));
+        SNOW_MAPPERS.add(new CoverMapper(Blocks.SNOW));
+        SNOW_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.FIRE)}, Blocks.AIR));
+        SNOW_MAPPERS.add(new LavaChillMapper(Blocks.LAVA, Blocks.COBBLESTONE));
+        SNOW_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.left(Blocks.MAGMA_BLOCK)}, Blocks.COBBLESTONE));
+        SNOW_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.left(Blocks.LAVA)}, Blocks.OBSIDIAN));
+        SNOW_SPAWNERS = new ArrayList<>();
+        SNOW_SPAWNERS.add(new SpawnRandom("snow_golem", 1.0f / (20 * 20)));
+    }
     public static final MapCodec<PBECConvertToSnow> CODEC = DValue.CODEC.fieldOf("range").xmap(PBECConvertToSnow::new, PBECConvertToSnow::range);
 
     @Override
@@ -26,7 +55,7 @@ public record PBECConvertToSnow(DValue range) implements PBEffectCreator {
         double range = this.range.getValue(random);
         int time = Mth.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        return new PBEffectGenConvertToSnow(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random));
+        return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.of(Biomes.SNOWY_PLAINS), SNOW_MAPPERS, Collections.emptyList(), SNOW_SPAWNERS));
     }
 
     @Override

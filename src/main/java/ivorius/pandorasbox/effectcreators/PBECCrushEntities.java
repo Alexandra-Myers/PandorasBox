@@ -8,7 +8,8 @@ package ivorius.pandorasbox.effectcreators;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectEntitiesCrush;
+import ivorius.pandorasbox.effects.PBEffectEntityBased;
+import ivorius.pandorasbox.effects.entity.CrushEntityEffect;
 import ivorius.pandorasbox.random.*;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -36,7 +37,7 @@ public record PBECCrushEntities(IValue time, DValue range, ZValue chanceForExtra
         double range = this.range.getValue(random);
         double strength = (0.15 + random.nextDouble() * 0.15) * (1 + (cycles - 1) * 0.3);
 
-        return new PBEffectEntitiesCrush(time, range, cycles, strength);
+        return new PBEffectEntityBased(time, range, new CrushEntityEffect(cycles, strength));
     }
 
     @Override

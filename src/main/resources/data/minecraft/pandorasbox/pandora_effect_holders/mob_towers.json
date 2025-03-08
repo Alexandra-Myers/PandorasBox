@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.mob_towers"
+  },
   "effect_creator": {
     "entities": [
       {

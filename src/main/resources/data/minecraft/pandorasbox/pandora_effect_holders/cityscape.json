@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.cityscape"
+  },
   "effect_creator": {
     "range": {
       "min": 40.0,

@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.explocreatures"
+  },
   "effect_creator": {
     "spawn_from_effect_center": {
       "guaranteed": false,

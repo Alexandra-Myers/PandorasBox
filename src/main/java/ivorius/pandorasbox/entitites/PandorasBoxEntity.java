@@ -6,14 +6,11 @@
 package ivorius.pandorasbox.entitites;
 
 import ivorius.pandorasbox.PandorasBox;
-import ivorius.pandorasbox.effectcreators.PBECDuplicateBox;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
 import ivorius.pandorasbox.effects.PBEffectRegistry;
 import ivorius.pandorasbox.init.DataSerializerInit;
-import ivorius.pandorasbox.random.DConstant;
-import ivorius.pandorasbox.random.IConstant;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -118,7 +115,7 @@ public class PandorasBoxEntity extends Entity {
         builder.define(EFFECT_TICKS_EXISTED, -1);
         builder.define(FLOAT_PROGRESS, -1F);
         builder.define(SCALE_PROGRESS, 1F);
-        builder.define(DATA_EFFECT_ID, new PBECDuplicateBox(new IConstant(PBEffectDuplicateBox.MODE_BOX_IN_BOX), new DConstant(0.5)).constructEffect(this.level(), this.getX(), this.getY(), this.getZ(), this.random));
+        builder.define(DATA_EFFECT_ID, new PBEffectDuplicateBox(PBEffectDuplicateBox.MODE_BOX_IN_BOX));
         builder.define(DATA_OWNER_UUID, Optional.empty());
     }
 
@@ -371,7 +368,7 @@ public class PandorasBoxEntity extends Entity {
     }
 
     public void readBoxData(CompoundTag compound) {
-        setBoxEffect(PBEffectRegistry.loadEffect(compound.getCompound("boxEffect"), registryAccess()));
+        setBoxEffect(PBEffectRegistry.loadEffect(compound.get("boxEffect"), registryAccess()));
         if (compound.contains("ownerUUID"))
             setBoxOwnerUUID(compound.getUUID("ownerUUID"));
 
@@ -389,9 +386,7 @@ public class PandorasBoxEntity extends Entity {
     }
 
     public void writeBoxData(CompoundTag compound) {
-        CompoundTag effectCompound = new CompoundTag();
-        PBEffectRegistry.writeEffect(getBoxEffect(), effectCompound, registryAccess());
-        compound.put("boxEffect", effectCompound);
+        compound.put("boxEffect", PBEffectRegistry.writeEffect(getBoxEffect(), registryAccess()));
         UUID uuid = getBoxOwnerUUID();
         if (uuid != null)
             compound.putUUID("ownerUUID", uuid);

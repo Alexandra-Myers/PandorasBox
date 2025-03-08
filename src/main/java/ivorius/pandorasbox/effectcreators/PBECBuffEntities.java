@@ -8,7 +8,8 @@ package ivorius.pandorasbox.effectcreators;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectEntitiesBuff;
+import ivorius.pandorasbox.effects.PBEffectEntityBased;
+import ivorius.pandorasbox.effects.entity.BuffEntityEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.weighted.WeightedSelector;
@@ -47,7 +48,7 @@ public record PBECBuffEntities(IValue time, IValue number, DValue range, float c
             effects.addAll(weightedPotion.build(random));
         }
 
-        return new PBEffectEntitiesBuff(time, range, effects.toArray(new MobEffectInstance[0]));
+        return new PBEffectEntityBased(time, range, new BuffEntityEffect(effects.toArray(new MobEffectInstance[0])));
     }
 
     @Override

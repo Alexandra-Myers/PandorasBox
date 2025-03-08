@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.normal_land"
+  },
   "effect_creator": {
     "range": {
       "min": 10.0,

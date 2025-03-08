@@ -5,53 +5,59 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
+import ivorius.pandorasbox.effects.structure.ShapeConfiguration;
+import ivorius.pandorasbox.effects.structure.StructureShape;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenShapes extends PBEffectGenerateByStructure {
-    public PBEffectGenShapes() {}
+public class PBEffectGenShapes extends PBEffectGenerateByStructure<StructureShape> {
+    public static final MapCodec<PBEffectGenShapes> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(base(),
+                            PBNBTHelper.arrayCodec(StructureShape.CODEC, () -> new StructureShape[0]).fieldOf("structures").forGetter(PBEffectGenShapes::getStructures))
+                    .apply(instance, PBEffectGenShapes::new));
+    public PBEffectGenShapes(int maxTicksAlive) {
+        this(maxTicksAlive, new StructureShape[0]);
+    }
 
-    public PBEffectGenShapes(int maxTicksAlive)
-    {
+    public PBEffectGenShapes(int maxTicksAlive, StructureShape[] structures) {
         super(maxTicksAlive);
+        this.structures = structures;
     }
 
     public void setRandomShapes(RandomSource random, Collection<WeightedBlock> blocks, double range, double minSize, double maxSize, int number, int shape) {
-        structures = new Structure[number];
+        structures = new StructureShape[number];
 
         for (int i = 0; i < structures.length; i++) {
             StructureShape randomShape = createStructure();
             applyRandomProperties(randomShape, range, random);
-            randomShape.shapeType = shape < 0 ? random.nextInt(4) : shape;
-            randomShape.size = minSize + random.nextDouble() * (maxSize - minSize);
-            randomShape.blocks = PandorasBoxHelper.getRandomBlockList(random, blocks);
+            randomShape.configuration = new ShapeConfiguration(PandorasBoxHelper.getRandomBlockList(random, blocks), shape < 0 ? random.nextInt(4) : shape, minSize + random.nextDouble() * (maxSize - minSize));
 
             structures[i] = randomShape;
         }
     }
 
     public void setShapes(RandomSource random, Block[] blockSelection, double range, double minSize, double maxSize, int number, int shape, int unifiedSeed) {
-        structures = new Structure[number];
+        structures = new StructureShape[number];
 
         for (int i = 0; i < structures.length; i++) {
             StructureShape randomShape = createStructure();
             applyRandomProperties(randomShape, range, random);
-            randomShape.shapeType = shape < 0 ? random.nextInt(4) : shape;
-            randomShape.size = minSize + random.nextDouble() * (maxSize - minSize);
-            randomShape.blocks = blockSelection.clone();
+            randomShape.configuration = new ShapeConfiguration(blockSelection.clone(), shape < 0 ? random.nextInt(4) : shape, minSize + random.nextDouble() * (maxSize - minSize));
             randomShape.unifiedSeed = unifiedSeed;
 
             structures[i] = randomShape;
@@ -59,67 +65,66 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure {
     }
 
     @Override
-    public void generateStructure(Level level, PandorasBoxEntity entity, RandomSource random, Structure structure, BlockPos pos, float newRatio, float prevRatio) {
-        StructureShape structureShape = (StructureShape) structure;
-        double prevSize = structureShape.size * prevRatio;
-        double newSize = structureShape.size * newRatio;
+    public void generateStructure(Level level, PandorasBoxEntity entity, RandomSource random, StructureShape structure, BlockPos pos, float newRatio, float prevRatio) {
+        double prevSize = structure.getSize() * prevRatio;
+        double newSize = structure.getSize() * newRatio;
+        int requiredRange = Mth.floor(newSize);
 
-        if (structureShape.shapeType == 0) {
-            int requiredRange = Mth.floor(newSize);
+        switch (structure.getShapeType()) {
+            case 0 -> {
+                for (int xPlus = -requiredRange; xPlus <= requiredRange; xPlus++) {
+                    for (int yPlus = -requiredRange; yPlus <= requiredRange; yPlus++) {
+                        for (int zPlus = -requiredRange; zPlus <= requiredRange; zPlus++) {
+                            double dist = Mth.sqrt(xPlus * xPlus + yPlus * yPlus + zPlus * zPlus);
 
-            for (int xPlus = -requiredRange; xPlus <= requiredRange; xPlus++) {
-                for (int yPlus = -requiredRange; yPlus <= requiredRange; yPlus++) {
-                    for (int zPlus = -requiredRange; zPlus <= requiredRange; zPlus++) {
-                        double dist = Mth.sqrt(xPlus * xPlus + yPlus * yPlus + zPlus * zPlus);
-
-                        if (dist <= newSize) {
-                            if (dist > prevSize) {
-                                generateOnBlock(level, entity, random, structureShape, pos.offset(structure.x + xPlus, structure.y + yPlus, structure.z + zPlus));
-                            } else {
-                                zPlus = -zPlus; // We can skip all blocks in between
+                            if (dist <= newSize) {
+                                if (dist > prevSize) {
+                                    generateOnBlock(level, entity, random, structure, pos.offset(structure.pos.offset(xPlus, yPlus, zPlus)));
+                                } else {
+                                    zPlus = -zPlus; // We can skip all blocks in between
+                                }
                             }
                         }
                     }
                 }
             }
-        } else if (structureShape.shapeType == 1) {
-            int requiredRange = Mth.floor(newSize);
+            case 1 -> {
+                for (int xPlus = -requiredRange; xPlus <= requiredRange; xPlus++) {
+                    for (int yPlus = -requiredRange; yPlus <= requiredRange; yPlus++) {
+                        for (int zPlus = -requiredRange; zPlus <= requiredRange; zPlus++) {
+                            double xDist = Math.abs(xPlus);
+                            double yDist = Math.abs(yPlus);
+                            double zDist = Math.abs(zPlus);
 
-            for (int xPlus = -requiredRange; xPlus <= requiredRange; xPlus++) {
-                for (int yPlus = -requiredRange; yPlus <= requiredRange; yPlus++) {
-                    for (int zPlus = -requiredRange; zPlus <= requiredRange; zPlus++) {
-                        double xDist = Math.abs(xPlus);
-                        double yDist = Math.abs(yPlus);
-                        double zDist = Math.abs(zPlus);
-
-                        if (xDist <= newSize && yDist <= newSize && zDist <= newSize) {
-                            if (xDist > prevSize || yDist > prevSize || zDist > prevSize) {
-                                generateOnBlock(level, entity, random, structureShape, pos.offset(structure.x + xPlus, structure.y + yPlus, structure.z + zPlus));
-                            } else {
-                                zPlus = -zPlus; // We can skip all blocks in between
+                            if (xDist <= newSize && yDist <= newSize && zDist <= newSize) {
+                                if (xDist > prevSize || yDist > prevSize || zDist > prevSize) {
+                                    generateOnBlock(level, entity, random, structure, pos.offset(structure.pos.offset(xPlus, yPlus, zPlus)));
+                                } else {
+                                    zPlus = -zPlus; // We can skip all blocks in between
+                                }
                             }
                         }
                     }
                 }
             }
-        } else if (structureShape.shapeType == 2 || structureShape.shapeType == 3) {
-            int requiredRange = Mth.floor(newSize);
-            int totalHeight = Mth.floor(structureShape.size);
+            default -> {
+                int totalHeight = Mth.floor(structure.getSize());
 
-            for (int yPlus = -requiredRange; yPlus <= requiredRange; yPlus++) {
-                int yDist = Math.abs(yPlus);
+                for (int yPlus = -requiredRange; yPlus <= requiredRange; yPlus++) {
+                    int yDist = Math.abs(yPlus);
 
-                if (yDist <= newSize) {
-                    if (yDist > prevSize) {
-                        int levelSize = structureShape.shapeType == 2 ? (totalHeight - yDist) : (yDist + 1);
+                    if (yDist <= newSize) {
+                        if (yDist > prevSize) {
+                            int levelSize = structure.getShapeType() == 2 ? (totalHeight - yDist) : (yDist + 1);
 
-                        for (int xPlus = -levelSize; xPlus <= levelSize; xPlus++) {
-                            for (int zPlus = -levelSize; zPlus <= levelSize; zPlus++) {
-                                generateOnBlock(level, entity, random, structureShape, pos.offset(structure.x + xPlus, structure.y + yPlus, structure.z + zPlus));
+                            for (int xPlus = -levelSize; xPlus <= levelSize; xPlus++) {
+                                for (int zPlus = -levelSize; zPlus <= levelSize; zPlus++) {
+                                    generateOnBlock(level, entity, random, structure, pos.offset(structure.pos.offset(xPlus, yPlus, zPlus)));
+                                }
                             }
+                        } else {
+                            yPlus = -yPlus; // We can skip all blocks in between
                         }
-                    } else {
-                        yPlus = -yPlus; // We can skip all blocks in between
                     }
                 }
             }
@@ -127,47 +132,18 @@ public class PBEffectGenShapes extends PBEffectGenerateByStructure {
     }
 
     public void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, StructureShape structure, BlockPos pos) {
-        Block block = structure.blocks[random.nextInt(structure.blocks.length)];
+        Block block = structure.getBlocks()[random.nextInt(structure.getBlocks().length)];
         setBlockVarying(world, pos, block, structure.unifiedSeed);
     }
 
     @Override
-    public StructureShape createStructure()
-    {
+    public StructureShape createStructure() {
         return new StructureShape();
     }
 
-    public static class StructureShape extends Structure
-    {
-        public Block[] blocks;
 
-        public int shapeType;
-        public double size;
-
-        public StructureShape()
-        {
-        }
-
-        @Override
-        public void writeToNBT(CompoundTag compound)
-        {
-            super.writeToNBT(compound);
-
-            PBNBTHelper.writeNBTBlocks("blocks", blocks, compound);
-
-            compound.putInt("shapeType", shapeType);
-            compound.putDouble("size", size);
-        }
-
-        @Override
-        public void readFromNBT(CompoundTag compound)
-        {
-            super.readFromNBT(compound);
-
-            blocks = PBNBTHelper.readNBTBlocks("blocks", compound);
-
-            shapeType = compound.getInt("shapeType");
-            size = compound.getDouble("size");
-        }
+    @Override
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

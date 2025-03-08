@@ -9,7 +9,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectSpawnItemStacks;
+import ivorius.pandorasbox.effects.PBEffectSpawnEntities;
+import ivorius.pandorasbox.effects.spawn_entities.EntitySpawnConfiguration;
+import ivorius.pandorasbox.effects.spawn_entities.SpawnItemStacksEffect;
 import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
@@ -56,18 +58,10 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
     public static PBEffect constructEffect(RandomSource random, ItemStack[] stacks, int time, ValueThrow valueThrow, ValueSpawn valueSpawn, ZValue spawnsFromEffectCenter) {
         boolean canSpawn = valueSpawn != null;
         boolean canThrow = valueThrow != null;
+        EntitySpawnConfiguration.Builder builder = EntitySpawnConfiguration.builder(!spawnsFromEffectCenter.getValue(random));
 
-        if (canThrow && (!canSpawn || random.nextBoolean())) {
-            PBEffectSpawnItemStacks effect = new PBEffectSpawnItemStacks(time, stacks);
-            effect.setSpawnsFromBox(!spawnsFromEffectCenter.getValue(random));
-            PBECSpawnEntities.setEffectThrow(effect, random, valueThrow);
-            return effect;
-        } else if (canSpawn) {
-            PBEffectSpawnItemStacks effect = new PBEffectSpawnItemStacks(time, stacks);
-            effect.setSpawnsFromBox(!spawnsFromEffectCenter.getValue(random));
-            PBECSpawnEntities.setEffectSpawn(effect, random, valueSpawn);
-            return effect;
-        }
+        if (canThrow && (!canSpawn || random.nextBoolean())) return new PBEffectSpawnEntities(time, stacks.length, new SpawnItemStacksEffect(stacks, PBECSpawnEntities.setEffectThrow(builder, random, valueThrow).build()));
+        else if (canSpawn) return new PBEffectSpawnEntities(time, stacks.length, new SpawnItemStacksEffect(stacks, PBECSpawnEntities.setEffectSpawn(builder, random, valueSpawn).build()));
 
         throw new RuntimeException("Both spawnRange and throwStrength are null!");
     }

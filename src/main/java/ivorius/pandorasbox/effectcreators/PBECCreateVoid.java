@@ -8,7 +8,8 @@ package ivorius.pandorasbox.effectcreators;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectEntitiesCreateVoid;
+import ivorius.pandorasbox.effects.PBEffectEntityBased;
+import ivorius.pandorasbox.effects.entity.CreateVoidEntityEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import net.minecraft.util.RandomSource;
@@ -29,7 +30,7 @@ public record PBECCreateVoid(IValue time, DValue range) implements PBEffectCreat
         int time = this.time.getValue(random);
         double range = this.range.getValue(random);
 
-        return new PBEffectEntitiesCreateVoid(time, range);
+        return new PBEffectEntityBased(time, range, new CreateVoidEntityEffect());
     }
 
     @Override

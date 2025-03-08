@@ -5,58 +5,28 @@
 
 package ivorius.pandorasbox.effects;
 
-import ivorius.pandorasbox.init.Init;
+import ivorius.pandorasbox.PandorasBox;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 
-import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 30.03.14.
  */
 public class PBEffectRegistry {
-    public static Class<? extends PBEffect> getEffect(String id) {
-        return Init.BOX_EFFECT_REGISTRY.getValue(ResourceLocation.tryParse(id));
+    public static Tag writeEffect(PBEffect effect, RegistryAccess registryAccess) {
+        if (effect != null) return PBEffect.CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, registryAccess), effect).getOrThrow();
+        return new CompoundTag();
     }
 
-    public static void writeEffect(PBEffect effect, CompoundTag compound, RegistryAccess registryAccess) {
-        if (effect != null) {
-            compound.putString("pbEffectID", effect.getEffectID());
-            CompoundTag pbEffectCompound = new CompoundTag();
-            effect.writeToNBT(pbEffectCompound, registryAccess);
-            compound.put("pbEffectCompound", pbEffectCompound);
-        }
-    }
-
-    public static PBEffect loadEffect(CompoundTag compound, RegistryAccess registryAccess) {
-        return loadEffect(compound.getString("pbEffectID"), compound.getCompound("pbEffectCompound"), registryAccess);
-    }
-
-    public static PBEffect loadEffect(String id, CompoundTag compound, RegistryAccess registryAccess) {
-        Class<? extends PBEffect> clazz = getEffect(id);
-
-        PBEffect effect = null;
-
-        if (clazz != null) {
-            try {
-                effect = clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (effect != null && compound != null) {
-            effect.readFromNBT(compound, registryAccess);
-            return effect;
-        } else {
-            System.err.println("Pandoras Box: Could not load effect with id '" + id + "'!");
-        }
-
-        return null;
-    }
-
-    public static String getEffectID(PBEffect effect) {
-        return Objects.requireNonNull(Init.BOX_EFFECT_REGISTRY.getKey(effect.getClass())).toString();
+    public static PBEffect loadEffect(Tag tag, RegistryAccess registryAccess) {
+        return PBEffect.CODEC.parse(RegistryOps.create(NbtOps.INSTANCE, registryAccess), tag).mapOrElse(Function.identity(), pbEffectError -> {
+            PandorasBox.logger.error("Failed to parse box, using fallback. Error: " + pbEffectError);
+            return new PBEffectDuplicateBox(PBEffectDuplicateBox.MODE_BOX_IN_BOX);
+        });
     }
 }

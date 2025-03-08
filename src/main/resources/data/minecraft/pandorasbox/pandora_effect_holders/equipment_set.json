@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.equipment_set"
+  },
   "effect_creator": {
     "sets": [
       {

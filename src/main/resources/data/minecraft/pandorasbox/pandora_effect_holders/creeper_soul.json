@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.creeper_soul"
+  },
   "effect_creator": {
     "explosion_strength": {
       "min": 1.0,

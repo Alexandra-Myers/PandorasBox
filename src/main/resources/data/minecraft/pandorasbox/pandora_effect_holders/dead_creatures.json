@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.dead_creatures"
+  },
   "effect_creator": {
     "entities": [
       {

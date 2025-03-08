@@ -29,21 +29,21 @@ public class PBEffectRendererMeltdown implements PBEffectRenderer<PBEffectMeltdo
     public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectMeltdown effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer, int packedLightIn) {
         int lightColor = 0xff6611;
 
-        float timePassed = Math.min((float) renderState.effectTicksExisted / effect.maxTicksAlive, 1F);
+        float timePassed = Math.min((float) renderState.effectTicksExisted / effect.getMaxTicksAlive(), 1F);
         if (timePassed >= 0.8) {
             timePassed *= timePassed;
             timePassed *= timePassed;
             timePassed *= timePassed * 0.5F;
 
-            float scale = (timePassed * 0.3f) * effect.range * 0.3f;
+            float scale = (timePassed * 0.3f) * effect.getRange() * 0.3f;
             IvRenderHelper.renderLights(renderState.entityTickCount + partialTicks, scale, lightColor, timePassed * 255F, 10, poseStack, multiBufferSource);
         }
-        Arrays.stream(effect.effects).toList().forEach(pbEffect -> {
+        Arrays.stream(effect.getEffects()).toList().forEach(pbEffect -> {
             PBEffectRenderer renderer1 = PBEffectRenderingRegistry.rendererForEffect(pbEffect);
             if (renderer1 != null && !pbEffect.isDone(renderState.effectTicksExisted))
                 renderer1.renderBox(renderer, renderState, pbEffect, partialTicks, poseStack, multiBufferSource, consumer, packedLightIn);
         });
-        timePassed = Math.min((float) renderState.effectTicksExisted / effect.maxTicksAlive, 1F);
+        timePassed = Math.min((float) renderState.effectTicksExisted / effect.getMaxTicksAlive(), 1F);
         VertexConsumer newConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTextureForProgress(timePassed)));
         renderer.model.renderToBuffer(poseStack, newConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
     }
@@ -51,7 +51,7 @@ public class PBEffectRendererMeltdown implements PBEffectRenderer<PBEffectMeltdo
     @Override
     public List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> getLayers(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectMeltdown effect, PandorasBoxModel model, float partialTicks) {
         List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> layers = new ArrayList<>();
-        Arrays.stream(effect.effects).toList().forEach(pbEffect -> {
+        Arrays.stream(effect.getEffects()).toList().forEach(pbEffect -> {
             PBEffectRenderer renderer1 = PBEffectRenderingRegistry.rendererForEffect(pbEffect);
             if (renderer1 != null && !pbEffect.isDone(renderState.effectTicksExisted)) {
                 List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> renderLayers = renderer1.getLayers(renderer, renderState, pbEffect, model, partialTicks);

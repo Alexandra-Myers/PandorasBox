@@ -38,8 +38,7 @@ public record PBECRandomShapes(DValue range, DValue size, IValue number, EitherA
                     .apply(instance, PBECRandomShapes::new));
 
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         double range = this.range.getValue(random);
         int number = this.number.getValue(random);
         int shape = random.nextInt(4) - 1;
@@ -60,8 +59,7 @@ public record PBECRandomShapes(DValue range, DValue size, IValue number, EitherA
     }
 
     @Override
-    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
-    {
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random) {
         return 0.2f;
     }
 

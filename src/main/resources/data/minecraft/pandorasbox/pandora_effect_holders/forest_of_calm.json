@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.forest_of_calm"
+  },
   "effect_creator": {
     "range": {
       "min": 10.0,

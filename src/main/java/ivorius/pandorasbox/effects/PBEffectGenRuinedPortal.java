@@ -1,16 +1,16 @@
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.math.IvMathHelper;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import ivorius.pandorasbox.weighted.WeightedSelector;
-import net.atlas.atlascore.util.ArrayListExtensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -22,18 +22,32 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
-    public WeightedBlock[] bricks = new WeightedBlock[]{};
-    public List<RandomizedItemStack> loot = new ArrayListExtensions<>();
-    public Direction.Axis axis = Direction.Axis.X;
-    public boolean[] usedStairsForTop = new boolean[2];
-    public PBEffectGenRuinedPortal() {}
+    public static final MapCodec<PBEffectGenRuinedPortal> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(base(),
+                            Codec.INT.fieldOf("max_horizontal").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.length),
+                            Codec.INT.fieldOf("max_vertical").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.height),
+                            Codec.INT.fieldOf("starting_y").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.startingYOffset),
+                            Codec.INT.fieldOf("unified_seed").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.unifiedSeed),
+                            Codec.BOOL.fieldOf("grounded").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.grounded),
+                            BlockPos.CODEC.fieldOf("center").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.center),
+                            BlockPos.CODEC.xmap(BlockPos::mutable, Function.identity()).fieldOf("current").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.current),
+                            PBNBTHelper.arrayCodec(WeightedBlock.BLOCK_CODEC, () -> new WeightedBlock[0]).fieldOf("bricks").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.bricks),
+                            RandomizedItemStack.CODEC.listOf().fieldOf("loot").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.loot),
+                            Direction.Axis.CODEC.fieldOf("axis").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.axis),
+                            PBNBTHelper.arrayCodec(Codec.BOOL, () -> new Boolean[0]).fieldOf("used_stairs").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.usedStairsForTop))
+                    .apply(instance, PBEffectGenRuinedPortal::new));
+    public WeightedBlock[] bricks;
+    public List<RandomizedItemStack> loot;
+    public Direction.Axis axis;
+    public Boolean[] usedStairsForTop = new Boolean[] {false, false};
 
     public PBEffectGenRuinedPortal(int time, int maxH, int maxY, int startY, int unifiedSeed, WeightedBlock[] brickSet, List<RandomizedItemStack> loot, Direction.Axis axis) {
         super(time, maxH, maxH, maxY, startY, unifiedSeed);
@@ -41,6 +55,16 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
         this.bricks = brickSet;
         this.loot = loot;
         this.axis = axis;
+    }
+    private PBEffectGenRuinedPortal(int time, int maxH, int maxY, int startY, int unifiedSeed, boolean grounded, BlockPos center, BlockPos.MutableBlockPos current, WeightedBlock[] brickSet, List<RandomizedItemStack> loot, Direction.Axis axis, Boolean[] usedStairsForTop) {
+        super(time, maxH, maxH, maxY, startY, unifiedSeed, grounded);
+
+        this.center = center;
+        this.current = current;
+        this.bricks = brickSet;
+        this.loot = loot;
+        this.axis = axis;
+        this.usedStairsForTop = usedStairsForTop;
     }
     @Override
     public boolean buildStructure(Level level, PandorasBoxEntity entity, BlockPos currentPos, RandomSource random, float prevRatio, float newRatio, int length, int width, int height, int originY, int originX, int originZ) {
@@ -81,26 +105,6 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
         return false;
     }
 
-    @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.writeToNBT(compound, registryAccess);
-        compound.putString("axis", axis == Direction.Axis.X ? "x" : "z");
-        PBNBTHelper.writeNBTRandomizedStacks("loot", loot.toArray(new RandomizedItemStack[]{}), compound, registryAccess);
-        PBNBTHelper.writeNBTWeightedBlocks("bricks", bricks, compound);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.readFromNBT(compound, registryAccess);
-        axis = compound.getString("axis").equals("x") ? Direction.Axis.X : Direction.Axis.Z;
-
-        RandomizedItemStack[] randomizedItemStacks = PBNBTHelper.readNBTRandomizedStacks("loot", compound, registryAccess);
-        loot = new ArrayListExtensions<>(randomizedItemStacks.length);
-        Collections.addAll(loot, randomizedItemStacks);
-
-        this.bricks = PBNBTHelper.readNBTWeightedBlocks("bricks", compound);
-    }
-
     public static boolean portalEdges(Level level, BlockPos currentPos, RandomSource random) {
         if (random.nextDouble() > 0.25) {
             if (random.nextDouble() > 0.75)
@@ -135,5 +139,10 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

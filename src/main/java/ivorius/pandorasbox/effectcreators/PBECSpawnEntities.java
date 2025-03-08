@@ -10,7 +10,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectSpawnEntities;
-import ivorius.pandorasbox.effects.PBEffectSpawnEntityIDList;
+import ivorius.pandorasbox.effects.spawn_entities.EntitySpawnConfiguration;
+import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
 import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.weighted.WeightedEntity;
 import net.minecraft.util.RandomSource;
@@ -40,13 +41,11 @@ public record PBECSpawnEntities(IValue time, IValue number, IValue entitiesPerTo
         this(time, number, entitiesPerTower, nameEntities, equipLevel, buffLevel, spawnFromEffectCenter, entityIDs, Optional.of(defaultThrow()), Optional.of(defaultSpawn()));
     }
 
-    public static ValueThrow defaultThrow()
-    {
+    public static ValueThrow defaultThrow() {
         return new ValueThrow(new DLinear(0.1, 0.4), new DLinear(0.2, 1.0));
     }
 
-    public static ValueSpawn defaultSpawn()
-    {
+    public static ValueSpawn defaultSpawn() {
         return new ValueSpawn(new DLinear(8.0, 30.0), new DConstant(0.0));
     }
 
@@ -81,37 +80,28 @@ public record PBECSpawnEntities(IValue time, IValue number, IValue entitiesPerTo
     public static PBEffect constructEffect(RandomSource random, String[][] entitiesToSpawn, int time, int nameEntities, int equipLevel, int buffLevel, ZValue spawnFromEffectCenter, ValueThrow valueThrow, ValueSpawn valueSpawn) {
         boolean canSpawn = valueSpawn != null;
         boolean canThrow = valueThrow != null;
+        EntitySpawnConfiguration.Builder builder = EntitySpawnConfiguration.builder(!spawnFromEffectCenter.getValue(random));
 
-        if (canThrow && (!canSpawn || random.nextBoolean())) {
-            PBEffectSpawnEntityIDList effect = new PBEffectSpawnEntityIDList(time, entitiesToSpawn, nameEntities, equipLevel, buffLevel);
-            effect.setSpawnsFromBox(!spawnFromEffectCenter.getValue(random));
-            setEffectThrow(effect, random, valueThrow);
-            return effect;
-        } else if (canSpawn) {
-            PBEffectSpawnEntityIDList effect = new PBEffectSpawnEntityIDList(time, entitiesToSpawn, nameEntities, equipLevel, buffLevel);
-            effect.setSpawnsFromBox(!spawnFromEffectCenter.getValue(random));
-            setEffectSpawn(effect, random, valueSpawn);
-            return effect;
-        }
+        if (canThrow && (!canSpawn || random.nextBoolean())) return new PBEffectSpawnEntities(time, entitiesToSpawn.length, new SpawnEntityIDListEffect(entitiesToSpawn, nameEntities, equipLevel, buffLevel, setEffectThrow(builder, random, valueThrow).build()));
+        else if (canSpawn) return new PBEffectSpawnEntities(time, entitiesToSpawn.length, new SpawnEntityIDListEffect(entitiesToSpawn, nameEntities, equipLevel, buffLevel, setEffectSpawn(builder, random, valueSpawn).build()));
 
         throw new RuntimeException("Both spawnRange and throwStrength are null!");
     }
 
-    public static void setEffectThrow(PBEffectSpawnEntities effect, RandomSource random, ValueThrow valueThrow) {
+    public static EntitySpawnConfiguration.Builder setEffectThrow(EntitySpawnConfiguration.Builder config, RandomSource random, ValueThrow valueThrow) {
         double[] throwX = ValueHelper.getValueRange(valueThrow.throwStrengthSide(), random);
         double[] throwY = ValueHelper.getValueRange(valueThrow.throwStrengthY(), random);
-        effect.setDoesSpawnDirect(throwX[0], throwX[1], throwY[0], throwY[1]);
+        return config.doesSpawnDirect(throwX[0], throwX[1], throwY[0], throwY[1]);
     }
 
-    public static void setEffectSpawn(PBEffectSpawnEntities effect, RandomSource random, ValueSpawn valueSpawn) {
+    public static EntitySpawnConfiguration.Builder setEffectSpawn(EntitySpawnConfiguration.Builder config, RandomSource random, ValueSpawn valueSpawn) {
         double range = valueSpawn.spawnRange().getValue(random);
         double spawnShift = valueSpawn.spawnShift().getValue(random);
-        effect.setDoesNotSpawnDirect(range, spawnShift);
+        return config.doesNotSpawnDirect(range, spawnShift);
     }
 
     @Override
-    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
-    {
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random) {
         return 0.1f;
     }
 

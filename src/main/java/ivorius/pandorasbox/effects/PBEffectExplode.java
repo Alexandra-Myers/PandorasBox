@@ -1,21 +1,38 @@
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 05.12.14.
  */
 public class PBEffectExplode extends PBEffectNormal {
-    public Level.ExplosionInteraction interaction;
-    public float explosionRadius;
-    public boolean burning;
-    public PBEffectExplode() {
+    public static final MapCodec<PBEffectExplode> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(base(),
+                            Codec.FLOAT.fieldOf("explosion_radius").forGetter(PBEffectExplode::getExplosionRadius),
+                            Codec.BOOL.fieldOf("burning").forGetter(PBEffectExplode::isBurning),
+                            Level.ExplosionInteraction.CODEC.fieldOf("explosion_interaction").forGetter(PBEffectExplode::getInteraction))
+                    .apply(instance, PBEffectExplode::new));
+    public final Level.ExplosionInteraction interaction;
+    public final float explosionRadius;
+    public final boolean burning;
 
+    public Level.ExplosionInteraction getInteraction() {
+        return interaction;
+    }
+
+    public float getExplosionRadius() {
+        return explosionRadius;
+    }
+
+    public boolean isBurning() {
+        return burning;
     }
 
     @Override
@@ -39,20 +56,7 @@ public class PBEffectExplode extends PBEffectNormal {
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.readFromNBT(compound, registryAccess);
-
-        explosionRadius = compound.getFloat("explosionRadius");
-        burning = compound.getBoolean("burning");
-        interaction = Level.ExplosionInteraction.values()[compound.getInt("interaction")];
-    }
-
-    @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.writeToNBT(compound, registryAccess);
-
-        compound.putFloat("explosionRadius", explosionRadius);
-        compound.putBoolean("burning", burning);
-        compound.putInt("interaction", interaction.ordinal());
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

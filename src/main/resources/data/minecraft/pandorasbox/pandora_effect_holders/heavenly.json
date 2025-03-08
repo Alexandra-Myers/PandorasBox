@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.heavenly"
+  },
   "effect_creator": {
     "effects": [
       {

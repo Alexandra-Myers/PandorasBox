@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.water_cage"
+  },
   "effect_creator": {
     "fill_block": "minecraft:water",
     "cage_blocks": [

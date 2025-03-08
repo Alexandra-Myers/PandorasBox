@@ -1,13 +1,15 @@
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.core.RegistryAccess;
+import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -17,25 +19,54 @@ import static ivorius.pandorasbox.effects.PBEffects.MELTDOWN_CREATORS;
  * Created by Alexandra on 18.10.24.
  */
 public final class PBEffectMeltdown extends PBEffect {
-    public PBEffect[] effects;
-    public float range;
-    public int maxTicksAlive;
+    public static final MapCodec<PBEffectMeltdown> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(PBNBTHelper.arrayCodec(PBEffect.CODEC, () -> new PBEffect[0]).fieldOf("effects").forGetter(PBEffectMeltdown::getEffects),
+                            PBNBTHelper.arrayCodec(Vec3.CODEC, () -> new Vec3[0]).fieldOf("effect_centers").forGetter(PBEffectMeltdown::getEffectCenters),
+                            PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("effect_start_ticks").forGetter(PBEffectMeltdown::getEffectStartTicks),
+                            Codec.FLOAT.fieldOf("range").forGetter(PBEffectMeltdown::getRange),
+                            Codec.INT.fieldOf("max_ticks_alive").forGetter(PBEffectMeltdown::getMaxTicksAlive))
+                    .apply(instance, PBEffectMeltdown::new));
+    private PBEffect[] effects;
     private Vec3[] effectCenters;
-    public int[] effectStartTicks;
+    private Integer[] effectStartTicks;
+    private final float range;
+    private final int maxTicksAlive;
     private Integer indexToOverwrite = null;
 
-    public PBEffectMeltdown() {
-        this.effects = new PBEffect[1];
-        this.effectCenters = new Vec3[] {Vec3.ZERO};
-        this.effectStartTicks = new int[] {0};
+    public PBEffectMeltdown(PBEffect[] effects, Vec3[] effectCenters, Integer[] effectStartTicks, float range, int maxTicksAlive) {
+        this.effects = effects;
+        this.effectCenters = effectCenters;
+        this.effectStartTicks = effectStartTicks;
+        this.range = range;
+        this.maxTicksAlive = maxTicksAlive;
     }
 
     public PBEffectMeltdown(PBEffect firstEffect, float range, int maxTicksAlive) {
         this.effects = new PBEffect[] {firstEffect};
         this.effectCenters = new Vec3[] {Vec3.ZERO};
-        this.effectStartTicks = new int[] {0};
+        this.effectStartTicks = new Integer[] {0};
         this.range = range;
         this.maxTicksAlive = maxTicksAlive;
+    }
+
+    public PBEffect[] getEffects() {
+        return effects;
+    }
+
+    public Vec3[] getEffectCenters() {
+        return effectCenters;
+    }
+
+    public Integer[] getEffectStartTicks() {
+        return effectStartTicks;
+    }
+
+    public float getRange() {
+        return range;
+    }
+
+    public int getMaxTicksAlive() {
+        return maxTicksAlive;
     }
 
     @Override
@@ -158,53 +189,6 @@ public final class PBEffectMeltdown extends PBEffect {
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        ListTag list = new ListTag();
-
-        for (int i = 0; i < effects.length; i++) {
-            CompoundTag cmp = new CompoundTag();
-
-            cmp.putString("pbEffectID", effects[i].getEffectID());
-            CompoundTag effectCmp = new CompoundTag();
-            effects[i].writeToNBT(effectCmp, registryAccess);
-            cmp.put("pbEffectCompound", effectCmp);
-            Vec3 effectCenter = effectCenters[i];
-            cmp.putDouble("x", effectCenter.x);
-            cmp.putDouble("y", effectCenter.y);
-            cmp.putDouble("z", effectCenter.z);
-            cmp.putInt("startTicks", effectStartTicks[i]);
-
-            list.add(cmp);
-        }
-
-        compound.put("effects", list);
-        compound.putFloat("range", range);
-        compound.putInt("maxTicksAlive", maxTicksAlive);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        ListTag list = compound.getList("effects", 10);
-
-        effects = new PBEffect[list.size()];
-        effectCenters = new Vec3[list.size()];
-        effectStartTicks = new int[list.size()];
-
-        for (int i = 0; i < effects.length; i++) {
-            CompoundTag cmp = list.getCompound(i);
-
-            effects[i] = PBEffectRegistry.loadEffect(cmp.getString("pbEffectID"), cmp.getCompound("pbEffectCompound"), registryAccess);
-            double x = cmp.getDouble("x");
-            double y = cmp.getDouble("y");
-            double z = cmp.getDouble("z");
-            effectCenters[i] = new Vec3(x, y, z);
-            effectStartTicks[i] = cmp.getInt("startTicks");
-        }
-        range = compound.getFloat("range");
-        maxTicksAlive = compound.getInt("maxTicksAlive");
-    }
-
-    @Override
     public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity) {
         return false;
     }
@@ -217,5 +201,10 @@ public final class PBEffectMeltdown extends PBEffect {
             }
         }
         return -1;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

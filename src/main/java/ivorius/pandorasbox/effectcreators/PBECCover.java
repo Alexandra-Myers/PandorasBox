@@ -9,7 +9,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenCover;
+import ivorius.pandorasbox.effects.PBEffectGenerateByFlag;
+import ivorius.pandorasbox.effects.generate.flags.GenCover;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.ZValue;
 import ivorius.pandorasbox.utils.EitherArrayList;
@@ -40,7 +41,7 @@ public record PBECCover(DValue range, ZValue overSurface, EitherArrayList<Weight
 
         Block[] selection = PandorasBoxHelper.getRandomBlockList(random, PandorasBoxHelper.assembleBlocks(blocks));
 
-        return new PBEffectGenCover(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), overSurface, selection);
+        return new PBEffectGenerateByFlag(time, range, 1, PandorasBoxHelper.getRandomUnifiedSeed(random), new GenCover(overSurface, selection));
     }
 
     @Override

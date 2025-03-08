@@ -9,7 +9,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectEntitiesDrug;
+import ivorius.pandorasbox.effects.PBEffectEntityBased;
+import ivorius.pandorasbox.effects.entity.DrugEntityEffect;
 import ivorius.pandorasbox.mods.PsychedelicraftHooks;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
@@ -54,7 +55,7 @@ public record PBECDrugEntities(IValue time, IValue number, DValue range, float c
             effects.add(drugInfluence);
         }
 
-        return new PBEffectEntitiesDrug(time, range, effects);
+        return new PBEffectEntityBased(time, range, new DrugEntityEffect(effects));
     }
 
     @Override

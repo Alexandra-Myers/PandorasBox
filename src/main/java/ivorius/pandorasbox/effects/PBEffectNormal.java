@@ -5,9 +5,9 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -16,11 +16,14 @@ import net.minecraft.world.phys.Vec3;
  * Created by lukas on 30.03.14.
  */
 public abstract class PBEffectNormal extends PBEffect {
-    public int maxTicksAlive;
-    public PBEffectNormal() {}
+    public final int maxTicksAlive;
 
     public PBEffectNormal(int maxTicksAlive) {
         this.maxTicksAlive = maxTicksAlive;
+    }
+
+    public int getMaxTicksAlive() {
+        return maxTicksAlive;
     }
 
     public float getRatioDone(int ticks) {
@@ -62,16 +65,6 @@ public abstract class PBEffectNormal extends PBEffect {
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        compound.putInt("maxTicksAlive", maxTicksAlive);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        maxTicksAlive = compound.getInt("maxTicksAlive");
-    }
-
-    @Override
     public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity) {
         return true;
     }
@@ -79,5 +72,9 @@ public abstract class PBEffectNormal extends PBEffect {
     @Override
     public int getTicksExistedForEffect(PBEffect identityEffect, int ticksAlive) {
         return identityEffect == this ? ticksAlive : -1;
+    }
+
+    protected static <T extends PBEffectNormal> RecordCodecBuilder<T, Integer> base() {
+        return Codec.INT.fieldOf("max_ticks_alive").forGetter(PBEffectNormal::getMaxTicksAlive);
     }
 }

@@ -31,8 +31,7 @@ public record PBECTargets(IValue time, DValue range, DValue targetSize, DValue e
                             WeightedEntity.CODEC.listOf().fieldOf("entities").forGetter(PBECTargets::entities))
                     .apply(instance, PBECTargets::new));
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         double range = this.range.getValue(random);
         double targetSize = this.targetSize.getValue(random);
         double entityDensity = this.entityDensity.getValue(random);

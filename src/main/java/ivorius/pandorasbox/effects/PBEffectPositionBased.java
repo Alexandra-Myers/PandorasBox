@@ -5,29 +5,51 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import ivorius.pandorasbox.effects.position.PositionEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffectPositionBased extends PBEffectNormal {
-    public int number;
+public class PBEffectPositionBased extends PBEffectNormal {
+    public static final MapCodec<PBEffectPositionBased> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(base(),
+                            Codec.INT.fieldOf("number").forGetter(PBEffectPositionBased::getNumber),
+                            Codec.DOUBLE.fieldOf("range").forGetter(PBEffectPositionBased::getRange),
+                            PositionEffect.CODEC.fieldOf("effect").forGetter(PBEffectPositionBased::getEffect))
+                    .apply(instance, PBEffectPositionBased::new));
+    public final int number;
 
-    public double range;
-    public PBEffectPositionBased() {}
+    public final double range;
+    public final PositionEffect effect;
 
-    public PBEffectPositionBased(int time, int number, double range) {
+    public PBEffectPositionBased(int time, int number, double range, PositionEffect effect) {
         super(time);
 
         this.number = number;
         this.range = range;
+        this.effect = effect;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public double getRange() {
+        return range;
+    }
+
+    public PositionEffect getEffect() {
+        return effect;
     }
 
     @Override
@@ -41,30 +63,16 @@ public abstract class PBEffectPositionBased extends PBEffectNormal {
                 double eY = effectCenter.y + (random.nextDouble() - random.nextDouble()) * 3.0 * 2.0;
                 double eZ = effectCenter.z + (random.nextDouble() - random.nextDouble()) * range;
 
-                doEffect(serverLevel, entity, random, newRatio, prevRatio, eX, eY, eZ);
+                effect.doEffect(serverLevel, entity, random, newRatio, prevRatio, eX, eY, eZ);
             }
         }
     }
-
-    public abstract void doEffect(ServerLevel serverLevel, PandorasBoxEntity entity, RandomSource random, float newRatio, float prevRatio, double x, double y, double z);
-
     private int getSpawnNumber(float ratio) {
         return Mth.floor(ratio * number);
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.writeToNBT(compound, registryAccess);
-
-        compound.putInt("number", number);
-        compound.putDouble("range", range);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.readFromNBT(compound, registryAccess);
-
-        number = compound.getInt("number");
-        range = compound.getDouble("range");
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

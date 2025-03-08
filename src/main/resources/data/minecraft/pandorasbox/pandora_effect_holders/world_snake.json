@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.world_snake"
+  },
   "effect_creator": {
     "speed": {
       "min": 0.1,

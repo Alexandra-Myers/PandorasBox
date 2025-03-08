@@ -1,24 +1,26 @@
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.EntityInit;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 03.12.14.
  */
 public class PBEffectDuplicateBox extends PBEffectNormal {
     public static final int MODE_BOX_IN_BOX = 0;
+    public static final MapCodec<PBEffectDuplicateBox> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(Codec.INT.fieldOf("spawn_mode").forGetter(PBEffectDuplicateBox::getSpawnMode))
+                    .apply(instance, PBEffectDuplicateBox::new));
 
     public int spawnMode;
-    public PBEffectDuplicateBox() {
-
-    }
 
     public static int timeNeededForSpawnMode(int mode) {
         if (mode == MODE_BOX_IN_BOX) {
@@ -31,6 +33,10 @@ public class PBEffectDuplicateBox extends PBEffectNormal {
     public PBEffectDuplicateBox(int spawnMode) {
         super(timeNeededForSpawnMode(spawnMode));
         this.spawnMode = spawnMode;
+    }
+
+    public int getSpawnMode() {
+        return spawnMode;
     }
 
     @Override
@@ -57,16 +63,7 @@ public class PBEffectDuplicateBox extends PBEffectNormal {
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.writeToNBT(compound, registryAccess);
-
-        compound.putInt("spawnMode", spawnMode);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.readFromNBT(compound, registryAccess);
-
-        spawnMode = compound.getInt("spawnMode");
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

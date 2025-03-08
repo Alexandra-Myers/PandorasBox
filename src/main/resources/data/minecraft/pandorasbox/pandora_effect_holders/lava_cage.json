@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.lava_cage"
+  },
   "effect_creator": {
     "cage_blocks": [
       {

@@ -38,8 +38,7 @@ public record PBECSpawnArmy(IValue groups, IValue equipLevel, ZValue spawnFromEf
     }
 
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int groups = this.groups.getValue(random);
 
         WeightedEntity[] entitySelection = PandorasBoxHelper.getRandomEntityList(random, entityIDs);
@@ -47,8 +46,7 @@ public record PBECSpawnArmy(IValue groups, IValue equipLevel, ZValue spawnFromEf
         PBEffect[] effects = new PBEffect[groups * 2];
         int[] delays = new int[effects.length];
 
-        for (int i = 0; i < groups; i++)
-        {
+        for (int i = 0; i < groups; i++) {
             WeightedEntity soldierType = entitySelection[random.nextInt(entitySelection.length)];
             String[][] soldiers = new String[new ILinear(soldierType.count().min(), soldierType.count().max().orElse(soldierType.count().min())).getValue(random)][];
             Arrays.fill(soldiers, new String[]{soldierType.entityID()});
@@ -67,8 +65,7 @@ public record PBECSpawnArmy(IValue groups, IValue equipLevel, ZValue spawnFromEf
     }
 
     @Override
-    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random)
-    {
+    public float chanceForMoreEffects(Level world, double x, double y, double z, RandomSource random) {
         return 0.1f;
     }
 

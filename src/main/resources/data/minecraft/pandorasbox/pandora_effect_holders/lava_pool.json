@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.lava_pool"
+  },
   "effect_creator": {
     "range": {
       "min": 10.0,

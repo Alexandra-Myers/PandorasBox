@@ -9,7 +9,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenTrees;
+import ivorius.pandorasbox.effects.PBEffectGenerate;
+import ivorius.pandorasbox.effects.generate.GenTreesEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ZConstant;
@@ -18,6 +19,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import static net.minecraft.data.worldgen.features.TreeFeatures.*;
 
 /**
  * Created by lukas on 30.03.14.
@@ -31,15 +36,14 @@ public record PBECGenTrees(DValue range, DValue chancePerBlock, ZValue requiresS
                 .apply(instance, PBECGenTrees::new));
 
     @Override
-    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
-    {
+    public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         double range = this.range.getValue(random);
         int time = Mth.floor((random.nextDouble() * 7.0 + 3.0) * range);
         double chancePerBlock = this.chancePerBlock.getValue(random);
         boolean requiresSolidGround = this.requiresSolidGround.getValue(random);
         int possibleTreeFlags = this.possibleTreeFlags.getValue(random);
 
-        return new PBEffectGenTrees(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), requiresSolidGround, chancePerBlock, possibleTreeFlags);
+        return new PBEffectGenerate(time, range, 1, PandorasBoxHelper.getRandomUnifiedSeed(random), new GenTreesEffect(requiresSolidGround, chancePerBlock, possibleTreeFlags, List.of(JUNGLE_BUSH, OAK, FANCY_OAK, MEGA_JUNGLE_TREE, JUNGLE_TREE, DARK_OAK, SPRUCE, BIRCH)));
     }
 
     @Override

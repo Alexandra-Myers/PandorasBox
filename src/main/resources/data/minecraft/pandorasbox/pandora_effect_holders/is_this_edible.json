@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.is_this_edible"
+  },
   "effect_creator": {
     "can_be_food": {
       "guaranteed": true,

@@ -9,7 +9,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenTreesOdd;
+import ivorius.pandorasbox.effects.PBEffectGenerate;
+import ivorius.pandorasbox.effects.generate.GenTreesOddEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ZConstant;
@@ -47,7 +48,7 @@ public record PBECGenTreesOdd(DValue range, DValue chancePerBlock, ZValue requir
         Block trunkBlock = PandorasBoxHelper.getRandomBlock(random, PandorasBoxHelper.assembleBlocks(trunkBlocks));
         Block leafBlock = PandorasBoxHelper.getRandomBlock(random, PandorasBoxHelper.assembleBlocks(leafBlocks));
 
-        return new PBEffectGenTreesOdd(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), requiresSolidGround, chancePerBlock, possibleTreeFlags, trunkBlock, leafBlock);
+        return new PBEffectGenerate(time, range, 1, PandorasBoxHelper.getRandomUnifiedSeed(random), new GenTreesOddEffect(requiresSolidGround, chancePerBlock, possibleTreeFlags, trunkBlock, leafBlock));
     }
 
     @Override

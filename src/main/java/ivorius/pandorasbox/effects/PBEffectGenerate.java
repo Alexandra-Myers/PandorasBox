@@ -5,10 +5,11 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.MapCodec;
+import ivorius.pandorasbox.effects.generate.GenerateEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,19 +27,19 @@ import java.util.List;
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffectGenerate extends PBEffectRangeBased
-{
-    public int unifiedSeed;
-    public boolean onFirstRun;
+public class PBEffectGenerate extends PBEffectRangeBased {
+    public static final MapCodec<PBEffectGenerate> CODEC = produceCodec(instance -> GenerateEffect.CODEC.fieldOf("effect").forGetter(PBEffectGenerate::getGenerateEffect), PBEffectGenerate::new);
+    public final GenerateEffect generateEffect;
 
-    public PBEffectGenerate() {}
-
-    public PBEffectGenerate(int time, double range, int passes, int unifiedSeed)
-    {
-        super(time, range, passes);
-
-        this.unifiedSeed = unifiedSeed;
+    public PBEffectGenerate(int time, double range, int passes, int unifiedSeed, GenerateEffect generateEffect) {
+        super(time, range, passes, unifiedSeed);
+        this.generateEffect = generateEffect;
     }
+
+    public GenerateEffect getGenerateEffect() {
+        return generateEffect;
+    }
+
     public void changeBiome(ResourceKey<Biome> biomeResourceKey, int baseX, int baseY, int baseZ, ServerLevel serverLevel, List<ChunkAccess> chunks) {
         double range = this.range + (passes - 1) * 5.0;
         for (ChunkAccess chunkAccess : chunks) {
@@ -62,8 +64,6 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
         serverLevel.getChunkSource().chunkMap.resendBiomesForChunks(chunks);
     }
 
-    public abstract ResourceKey<Biome> getBiomeKey();
-
     @Override
     public void generateInRange(Level level, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass) {
         int requiredRange = Mth.ceil(newRange);
@@ -72,6 +72,8 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
         int baseY = Mth.floor(effectCenter.y);
         int baseZ = Mth.floor(effectCenter.z);
 
+        double newRatio = getRatioDone(entity.getTicksForEffect(this) + 1);
+
         for (int x = -requiredRange; x <= requiredRange; x++) {
             for (int y = -requiredRange; y <= requiredRange; y++) {
                 for (int z = -requiredRange; z <= requiredRange; z++) {
@@ -79,7 +81,7 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
 
                     if (dist <= newRange) {
                         if (dist > prevRange)
-                            generateOnBlock(level, entity, effectCenter, random, pass, new BlockPos(baseX + x, baseY + y, baseZ + z), dist);
+                            generateEffect.generateOnBlock(level, entity, effectCenter, random, pass, new BlockPos(baseX + x, baseY + y, baseZ + z), dist, newRatio, unifiedSeed);
                         else
                             z = -z; // We can skip all blocks in between
                     }
@@ -95,7 +97,7 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
         int baseY = Mth.floor(effectCenter.y);
         int baseZ = Mth.floor(effectCenter.z);
 
-        ResourceKey<Biome> biomeResourceKey = getBiomeKey();
+        ResourceKey<Biome> biomeResourceKey = generateEffect.biome();
 
         if (biomeResourceKey != null && level instanceof ServerLevel serverLevel) {
             List<ChunkAccess> chunks = new ArrayList<>();
@@ -111,21 +113,8 @@ public abstract class PBEffectGenerate extends PBEffectRangeBased
         }
     }
 
-    public abstract void generateOnBlock(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range);
-
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess)
-    {
-        super.writeToNBT(compound, registryAccess);
-        compound.putInt("unifiedSeed", unifiedSeed);
-        compound.putBoolean("onFirstRun", onFirstRun);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess)
-    {
-        super.readFromNBT(compound, registryAccess);
-        unifiedSeed = compound.getInt("unifiedSeed");
-        onFirstRun = compound.getBoolean("onFirstRun");
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

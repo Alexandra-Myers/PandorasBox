@@ -10,7 +10,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectSpawnBlocks;
+import ivorius.pandorasbox.effects.PBEffectSpawnEntities;
+import ivorius.pandorasbox.effects.spawn_entities.EntitySpawnConfiguration;
+import ivorius.pandorasbox.effects.spawn_entities.SpawnBlocksEffect;
 import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
@@ -86,16 +88,10 @@ public record PBECSpawnBlocks(boolean shuffleBlocks, IValue number, IValue ticks
     public static PBEffect constructEffect(RandomSource random, Block[] blocks, int time, ValueThrow valueThrow, ValueSpawn valueSpawn, boolean spawnsFromEffectCenter) {
         boolean canSpawn = valueSpawn != null;
         boolean canThrow = valueThrow != null;
+        EntitySpawnConfiguration.Builder builder = EntitySpawnConfiguration.builder(!spawnsFromEffectCenter);
 
-        if (canThrow && (!canSpawn || random.nextBoolean())) {
-            PBEffectSpawnBlocks effect = new PBEffectSpawnBlocks(time, blocks, !spawnsFromEffectCenter);
-            PBECSpawnEntities.setEffectThrow(effect, random, valueThrow);
-            return effect;
-        } else if (canSpawn) {
-            PBEffectSpawnBlocks effect = new PBEffectSpawnBlocks(time, blocks, !spawnsFromEffectCenter);
-            PBECSpawnEntities.setEffectSpawn(effect, random, valueSpawn);
-            return effect;
-        }
+        if (canThrow && (!canSpawn || random.nextBoolean())) return new PBEffectSpawnEntities(time, blocks.length, new SpawnBlocksEffect(blocks, PBECSpawnEntities.setEffectThrow(builder, random, valueThrow).build()));
+        else if (canSpawn) return new PBEffectSpawnEntities(time, blocks.length, new SpawnBlocksEffect(blocks, PBECSpawnEntities.setEffectSpawn(builder, random, valueSpawn).build()));
 
         throw new RuntimeException("Both spawnRange and throwStrength are null!");
     }

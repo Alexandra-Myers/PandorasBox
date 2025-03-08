@@ -8,7 +8,8 @@ package ivorius.pandorasbox.effectcreators;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectEntitiesBomberman;
+import ivorius.pandorasbox.effects.PBEffectEntityBased;
+import ivorius.pandorasbox.effects.entity.BombermanEntityEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import net.minecraft.util.RandomSource;
@@ -31,7 +32,7 @@ public record PBECBombentities(IValue time, IValue number, DValue range) impleme
         int time = this.time.getValue(random);
         double range = this.range.getValue(random);
 
-        return new PBEffectEntitiesBomberman(time, range, number);
+        return new PBEffectEntityBased(time, range, new BombermanEntityEffect(number));
     }
 
     @Override

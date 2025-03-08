@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.buffed_up"
+  },
   "effect_creator": {
     "range": {
       "min": 8.0,

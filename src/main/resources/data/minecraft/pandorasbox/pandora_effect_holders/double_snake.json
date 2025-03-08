@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.double_snake"
+  },
   "effect_creator": {
     "effects": [
       {

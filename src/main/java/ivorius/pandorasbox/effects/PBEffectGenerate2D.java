@@ -5,26 +5,29 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.MapCodec;
+import ivorius.pandorasbox.effects.generate.two_dimensional.Generate2D;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffectGenerate2D extends PBEffectRangeBased {
-    public int unifiedSeed;
-    public PBEffectGenerate2D() {}
+public class PBEffectGenerate2D extends PBEffectRangeBased {
+    public static final MapCodec<PBEffectGenerate2D> CODEC = produceCodec(instance -> Generate2D.CODEC.fieldOf("generate_two_dimensional").forGetter(PBEffectGenerate2D::getGenerate2D), PBEffectGenerate2D::new);
+    public final Generate2D generate2D;
+    public PBEffectGenerate2D(int time, double range, int passes, int unifiedSeed, Generate2D generate2D) {
+        super(time, range, passes, unifiedSeed);
+        this.generate2D = generate2D;
+    }
 
-    public PBEffectGenerate2D(int time, double range, int passes, int unifiedSeed) {
-        super(time, range, passes);
-
-        this.unifiedSeed = unifiedSeed;
+    public Generate2D getGenerate2D() {
+        return generate2D;
     }
 
     @Override
@@ -41,7 +44,7 @@ public abstract class PBEffectGenerate2D extends PBEffectRangeBased {
 
                 if (dist <= newRange) {
                     if (dist > prevRange) {
-                        generateOnSurface(level, entity, effectCenter, random, new BlockPos(baseX + x, baseY, baseZ + z), dist, pass);
+                        generate2D.generateOnSurface(level, entity, effectCenter, random, new BlockPos(baseX + x, baseY, baseZ + z), dist, range, pass, unifiedSeed);
                     } else {
                         z = -z; // We can skip all blocks in between
                     }
@@ -50,19 +53,8 @@ public abstract class PBEffectGenerate2D extends PBEffectRangeBased {
         }
     }
 
-    public abstract void generateOnSurface(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, BlockPos pos, double distance, int pass);
-
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.writeToNBT(compound, registryAccess);
-
-        compound.putInt("unifiedSeed", unifiedSeed);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.readFromNBT(compound, registryAccess);
-
-        unifiedSeed = compound.getInt("unifiedSeed");
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.madder_geometry"
+  },
   "effect_creator": {
     "number": {
       "min": 10,

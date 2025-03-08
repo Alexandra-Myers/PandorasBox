@@ -9,7 +9,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenTransform;
+import ivorius.pandorasbox.effects.PBEffectGenerate;
+import ivorius.pandorasbox.effects.generate.GenTransformEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
@@ -36,7 +37,7 @@ public record PBECTransform(DValue range, EitherArrayList<WeightedBlock, Weighte
 
         Block[] selection = PandorasBoxHelper.getRandomBlockList(random, PandorasBoxHelper.assembleBlocks(blocks));
 
-        return new PBEffectGenTransform(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), selection);
+        return new PBEffectGenerate(time, range, 1, PandorasBoxHelper.getRandomUnifiedSeed(random), new GenTransformEffect(selection));
     }
 
     @Override

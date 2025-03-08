@@ -3,6 +3,7 @@ package ivorius.pandorasbox.effects;
 import com.mojang.datafixers.util.Either;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effectcreators.*;
+import ivorius.pandorasbox.effects.generate.NetherBiome;
 import ivorius.pandorasbox.random.*;
 import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
@@ -34,10 +35,10 @@ public class PBEffects {
                 new PBECSpawnBlocks(new ILinear(10, 25), new ILinear(3, 5), new ZConstant(true), PandorasBoxHelper.heavyBlocks, Optional.empty(), Optional.of(PBECSpawnBlocks.defaultShowerSpawn())),
                 new PBECSpawnBlocks(new ILinear(6, 20), new ILinear(2, 5), new ZConstant(true), PandorasBoxHelper.blocks, Optional.empty(), Optional.of(new ValueSpawn(new DConstant(0.0), new DConstant(25.0)))),
                 new PBECConvertToEnd(new DLinear(10.0, 15.0)),
-                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), PBEffectGenConvertToNether.NetherBiome.NETHER_WASTES),
-                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), PBEffectGenConvertToNether.NetherBiome.SOUL_SAND_VALLEY),
-                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), PBEffectGenConvertToNether.NetherBiome.WARPED_FOREST),
-                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), PBEffectGenConvertToNether.NetherBiome.CRIMSON_FOREST),
+                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), NetherBiome.NETHER_WASTES),
+                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), NetherBiome.SOUL_SAND_VALLEY),
+                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), NetherBiome.WARPED_FOREST),
+                new PBECConvertToNether(new DLinear(10.0, 15.0), new DLinear(0.0, 0.3), NetherBiome.CRIMSON_FOREST),
                 new PBECWorldSnake(new ILinear(40, 300), new DLinear(5.0, 10.0), new DLinear(0.6, 1.0), new DLinear(1.0, 3.0), PandorasBoxHelper.blocks),
                 new PBECConvertToCity(new DLinear(10.0, 20.0), PandorasBoxHelper.landMobs.stream().filter(weightedEntity -> !weightedEntity.entityID().startsWith("pbspecial")).toList()),
                 PBECMulti.create(new PBECConvertToHalloween(new DLinear(10.0, 15.0)), 0, new PBECSetTime(new ILinear(30, 60), new ILinear(15000, 20000), new ZConstant(false)), 0),
@@ -58,12 +59,12 @@ public class PBEffects {
                 new PBECLavaCage(new DGaussian(10.0, 20.0), Optional.of(Blocks.LAVA), Optional.empty(), new EitherArrayList<>(Collections.singletonList(Either.left(new WeightedBlock(100, Blocks.NETHER_BRICK_WALL)))), new EitherArrayList<>(Collections.singletonList(Either.right(new WeightedTag<>(100, ConventionalBlockTags.CRYING_OBSIDIANS))))),
                 new PBECBuffEntities(new ILinear(30, 150), new IWeighted(1, 100, 2, 80, 3, 50), new DLinear(8.0, 10.0), 0.0f, PandorasBoxHelper.buffs),
                 PBECMulti.create(new PBECConvertToDesert(new DLinear(10.0, 15.0)), 0, new PBECCreativeTowers(new DLinear(10.0, 15.0), new ILinear(4, 10), new EitherArrayList<>(Arrays.asList(Either.right(new WeightedTag<>(100, ConventionalBlockTags.DYED)), Either.right(new WeightedTag<>(50, ConventionalBlockTags.CHAINS))))), 0),
-                PBECMulti.create(new PBECTransform(new DLinear(10.0, 15.0), PandorasBoxHelper.blocks), 0, new PBECGenTrees(new DGaussian(10.0, 20.0), new DLinear(1.0f / (32.0f * 32.0f * 32.0f), 1.0f / (6.0f * 6.0f * 6.0f)), new ZConstant(false), new IFlags(1, PBEffectGenTrees.treeSmall, 1.0, PBEffectGenTrees.treeNormal, 0.5, PBEffectGenTrees.treeBig, 0.5, PBEffectGenTrees.treeComplexNormal, 0.5, PBEffectGenTrees.treeTaiga, 0.5, PBEffectGenTrees.treeBirch, 0.5)), 20),
+                PBECMulti.create(new PBECTransform(new DLinear(10.0, 15.0), PandorasBoxHelper.blocks), 0, new PBECGenTrees(new DGaussian(10.0, 20.0), new DLinear(1.0f / (32.0f * 32.0f * 32.0f), 1.0f / (6.0f * 6.0f * 6.0f)), new ZConstant(false), new IFlags(1, 0, 1.0, 1, 0.5, 2, 0.5, 5, 0.5, 6, 0.5, 7, 0.5)), 20),
                 PBECMulti.create(new PBECConvertToHeavenly(new DLinear(10.0, 15.0)), 0, new PBECSpawnItemSet(new ILinear(1, 5), new ZConstant(true), PandorasBoxHelper.equipmentSets), 0, new PBECBombpack(new DLinear(10.0, 25.0), new ILinear(15, 100)), 0),
                 PBECMulti.create(new PBECConvertToLifeless(new DLinear(10.0, 15.0)), 0, new PBECRandomShapes(new DLinear(10.0, 20.0), new DLinear(2, 5), new ILinear(8, 13), new EitherArrayList<>(List.of(Either.right(new WeightedTag<>(1, ConventionalBlockTags.STONES)), Either.right(new WeightedTag<>(5, ConventionalBlockTags.COBBLESTONES)))), new ZConstant(true)), 0),
                 new PBECConvertToOverworld(new DLinear(10.0, 15.0)),
                 PBECMulti.create(new PBECConvertToMushroom(new DLinear(10.0, 20.0)), 0, new PBECSpawnEntities(new ILinear(10, 50), new ILinear(3, 10), new ILinear(2, 5), new IConstant(0), new IConstant(0), new ILinear(0, 1), new ZConstant(true), PandorasBoxHelper.creatures), 10),
-                new PBECGenTreesOdd(new DGaussian(10.0, 20.0), new DLinear(1.0f / (8.0f * 8.0f), 1.0f / (3.0f * 3.0f)), new ZChance(0.50), new IFlags(1, PBEffectGenTreesOdd.treeJungle, 0.7), PandorasBoxHelper.blocks, PandorasBoxHelper.blocks));
+                new PBECGenTreesOdd(new DGaussian(10.0, 20.0), new DLinear(1.0f / (8.0f * 8.0f), 1.0f / (3.0f * 3.0f)), new ZChance(0.50), new IFlags(1, 0, 0.7), PandorasBoxHelper.blocks, PandorasBoxHelper.blocks));
     }
 
     public static void addMeltdownCreator(PBEffectCreator pbEffectCreator) {

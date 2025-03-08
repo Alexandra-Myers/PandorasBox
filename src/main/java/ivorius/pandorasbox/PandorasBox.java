@@ -14,20 +14,26 @@ import ivorius.pandorasbox.init.ItemInit;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ZValue;
+import net.atlas.atlascore.util.PrefixLogger;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.stream.Stream;
 
@@ -36,6 +42,7 @@ public class PandorasBox implements ModInitializer {
     public static final TagKey<Item> PANDORA_ITEMS = register(Registries.ITEM, "pandoras_box_misc");
     public static final TagKey<Block> ALL_TERRACOTTA = register(Registries.BLOCK, "all_terracotta");
     public static PandoraConfig CONFIG;
+    public static PrefixLogger logger = new PrefixLogger(LogManager.getLogger());
     public static void initConfig() {
         CONFIG = new PandoraConfig();
     }
@@ -49,6 +56,7 @@ public class PandorasBox implements ModInitializer {
      */
     @Override
     public void onInitialize() {
+        PayloadTypeRegistry.playS2C().register(ClientboundUpdateFakeDeathPacket.TYPE, ClientboundUpdateFakeDeathPacket.CODEC);
         initConfig();
         IValue.bootstrap();
         DValue.bootstrap();
@@ -67,5 +75,21 @@ public class PandorasBox implements ModInitializer {
     }
     public static void initPB() {
         PBEffects.registerEffectCreators();
+    }
+    public record ClientboundUpdateFakeDeathPacket() implements CustomPacketPayload {
+        public static final Type<ClientboundUpdateFakeDeathPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MOD_ID, "fake_death_overlay"));
+        public static final StreamCodec<FriendlyByteBuf, ClientboundUpdateFakeDeathPacket> CODEC = CustomPacketPayload.codec(ClientboundUpdateFakeDeathPacket::write, ClientboundUpdateFakeDeathPacket::new);
+
+        public ClientboundUpdateFakeDeathPacket(FriendlyByteBuf buf) {
+            this();
+        }
+
+        public void write(FriendlyByteBuf buf) {
+
+        }
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
     }
 }

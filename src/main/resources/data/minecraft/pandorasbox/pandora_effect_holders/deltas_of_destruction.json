@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.deltas_of_destruction"
+  },
   "effect_creator": {
     "range": {
       "min": 10.0,

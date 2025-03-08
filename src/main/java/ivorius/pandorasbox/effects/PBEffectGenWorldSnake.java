@@ -5,27 +5,41 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import ivorius.pandorasbox.effects.generate.two_dimensional.GenDome;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 30.03.14.
  */
 public class PBEffectGenWorldSnake extends PBEffectNormal {
+    public static final MapCodec<PBEffectGenWorldSnake> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(base(),
+                            PBNBTHelper.arrayCodec(BuiltInRegistries.BLOCK.byNameCodec(),  () -> new Block[0]).fieldOf("blocks").forGetter(PBEffectGenWorldSnake::getBlocks),
+                            Codec.INT.fieldOf("unified_seed").forGetter(PBEffectGenWorldSnake::getUnifiedSeed),
+                            Vec3.CODEC.fieldOf("current_position").forGetter(PBEffectGenWorldSnake::getCurrent),
+                            Codec.DOUBLE.fieldOf("size").forGetter(PBEffectGenWorldSnake::getSize),
+                            Codec.DOUBLE.fieldOf("speed").forGetter(PBEffectGenWorldSnake::getSpeed),
+                            Codec.FLOAT.fieldOf("direction_yaw").forGetter(PBEffectGenWorldSnake::getDirYaw),
+                            Codec.FLOAT.fieldOf("direction_pitch").forGetter(PBEffectGenWorldSnake::getDirPitch),
+                            Codec.FLOAT.fieldOf("direction_yaw_accel").forGetter(PBEffectGenWorldSnake::getDirYawAcc),
+                            Codec.FLOAT.fieldOf("direction_pitch_accel").forGetter(PBEffectGenWorldSnake::getDirPitchAcc))
+                    .apply(instance, PBEffectGenWorldSnake::new));
     public Block[] blocks;
     public int unifiedSeed;
 
-    public double currentX;
-    public double currentY;
-    public double currentZ;
+    public Vec3 current;
 
     public double size;
 
@@ -34,19 +48,57 @@ public class PBEffectGenWorldSnake extends PBEffectNormal {
     public float dirPitch;
     public float dirYawAcc;
     public float dirPitchAcc;
-    public PBEffectGenWorldSnake() {}
-
-    public PBEffectGenWorldSnake(int maxTicksAlive, Block[] blocks, int unifiedSeed, double currentX, double currentY, double currentZ, double size, double speed, float dirYaw, float dirPitch) {
+    public PBEffectGenWorldSnake(int maxTicksAlive, Block[] blocks, int unifiedSeed, Vec3 current, double size, double speed, float dirYaw, float dirPitch, float dirYawAcc, float dirPitchAcc) {
         super(maxTicksAlive);
         this.blocks = blocks;
         this.unifiedSeed = unifiedSeed;
-        this.currentX = currentX;
-        this.currentY = currentY;
-        this.currentZ = currentZ;
+        this.current = current;
         this.size = size;
         this.speed = speed;
         this.dirYaw = dirYaw;
         this.dirPitch = dirPitch;
+        this.dirYawAcc = dirYawAcc;
+        this.dirPitchAcc = dirPitchAcc;
+    }
+
+    public PBEffectGenWorldSnake(int maxTicksAlive, Block[] blocks, int unifiedSeed, double currentX, double currentY, double currentZ, double size, double speed, float dirYaw, float dirPitch) {
+        this(maxTicksAlive, blocks, unifiedSeed, new Vec3(currentX, currentY, currentZ), size, speed, dirYaw, dirPitch, 0, 0);
+    }
+
+    public Block[] getBlocks() {
+        return blocks;
+    }
+
+    public int getUnifiedSeed() {
+        return unifiedSeed;
+    }
+
+    public Vec3 getCurrent() {
+        return current;
+    }
+
+    public double getSize() {
+        return size;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public float getDirYaw() {
+        return dirYaw;
+    }
+
+    public float getDirPitch() {
+        return dirPitch;
+    }
+
+    public float getDirYawAcc() {
+        return dirYawAcc;
+    }
+
+    public float getDirPitchAcc() {
+        return dirPitchAcc;
     }
 
     @Override
@@ -63,9 +115,9 @@ public class PBEffectGenWorldSnake extends PBEffectNormal {
             double dirY = f4 * speed;
             double dirZ = f1 * f3 * speed;
 
-            double newX = currentX + dirX;
-            double newY = currentY + dirY;
-            double newZ = currentZ + dirZ;
+            double newX = current.x + dirX;
+            double newY = current.y + dirY;
+            double newZ = current.z + dirZ;
 
             int baseX = Mth.floor(newX);
             int baseY = Mth.floor(newY);
@@ -74,8 +126,8 @@ public class PBEffectGenWorldSnake extends PBEffectNormal {
             for (int x = -requiredRange; x <= requiredRange; x++) {
                 for (int y = -requiredRange; y <= requiredRange; y++) {
                     for (int z = -requiredRange; z <= requiredRange; z++) {
-                        if (PBEffectGenDome.isSpherePart(baseX + x + 0.5, baseY + y + 0.5, baseZ + z + 0.5, newX, newY, newZ, 0.0, size)) {
-                            if (!PBEffectGenDome.isSpherePart(baseX + x + 0.5, baseY + y + 0.5, baseZ + z + 0.5, currentX, currentY, currentZ, 0.0, size)) {
+                        if (GenDome.isSpherePart(baseX + x + 0.5, baseY + y + 0.5, baseZ + z + 0.5, newX, newY, newZ, 0.0, size)) {
+                            if (!GenDome.isSpherePart(baseX + x + 0.5, baseY + y + 0.5, baseZ + z + 0.5, current.x, current.y, current.z, 0.0, size)) {
                                 setBlockVarying(level, new BlockPos(x + baseX, y + baseY, z + baseZ), blocks[random.nextInt(blocks.length)], unifiedSeed);
                             }
                         }
@@ -83,9 +135,7 @@ public class PBEffectGenWorldSnake extends PBEffectNormal {
                 }
             }
 
-            currentX = newX;
-            currentY = newY;
-            currentZ = newZ;
+            current = new Vec3(newX, newY, newZ);
 
             dirYaw += dirYawAcc;
             dirPitch += dirPitchAcc;
@@ -96,42 +146,7 @@ public class PBEffectGenWorldSnake extends PBEffectNormal {
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.writeToNBT(compound, registryAccess);
-
-        PBNBTHelper.writeNBTBlocks("block", blocks, compound);
-        compound.putInt("unifiedSeed", unifiedSeed);
-
-        compound.putDouble("currentX", currentX);
-        compound.putDouble("currentY", currentY);
-        compound.putDouble("currentZ", currentZ);
-
-        compound.putDouble("size", size);
-
-        compound.putDouble("speed", speed);
-        compound.putFloat("dirYaw", dirYaw);
-        compound.putFloat("dirPitch", dirPitch);
-        compound.putFloat("dirYawAcc", dirYawAcc);
-        compound.putFloat("dirPitchAcc", dirPitchAcc);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.readFromNBT(compound, registryAccess);
-
-        blocks = PBNBTHelper.readNBTBlocks("block", compound);
-        unifiedSeed = compound.getInt("unifiedSeed");
-
-        currentX = compound.getDouble("currentX");
-        currentY = compound.getDouble("currentY");
-        currentZ = compound.getDouble("currentZ");
-
-        size = compound.getDouble("size");
-
-        speed = compound.getDouble("speed");
-        dirYaw = compound.getFloat("dirYaw");
-        dirPitch = compound.getFloat("dirPitch");
-        dirYawAcc = compound.getFloat("dirYawAcc");
-        dirPitchAcc = compound.getFloat("dirPitchAcc");
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

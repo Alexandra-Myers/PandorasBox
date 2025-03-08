@@ -9,7 +9,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenPool;
+import ivorius.pandorasbox.effects.PBEffectGenerate;
+import ivorius.pandorasbox.effects.generate.GenPoolEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
@@ -39,7 +40,7 @@ public record PBECPool(DValue range, Block block, EitherArrayList<WeightedBlock,
 
         Block platformBlock = platformBlocks.isEmpty() ? Blocks.AIR : PandorasBoxHelper.getRandomBlock(random, PandorasBoxHelper.assembleBlocks(platformBlocks));
 
-        return new PBEffectGenPool(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), block, platformBlock);
+        return new PBEffectGenerate(time, range, 1, PandorasBoxHelper.getRandomUnifiedSeed(random), new GenPoolEffect(block, platformBlock));
     }
 
     @Override

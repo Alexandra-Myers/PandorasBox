@@ -9,7 +9,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenLavaCages;
+import ivorius.pandorasbox.effects.PBEffectGenerate;
+import ivorius.pandorasbox.effects.generate.GenLavaCagesEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedBlock;
@@ -43,7 +44,7 @@ public record PBECLavaCage(DValue range, Optional<Block> lavaBlock, Optional<Blo
         Block cageBlock = PandorasBoxHelper.getRandomBlock(random, PandorasBoxHelper.assembleBlocks(cageBlocks));
         Block floorBlock = PandorasBoxHelper.getRandomBlock(random, PandorasBoxHelper.assembleBlocks(floorBlocks));
 
-        return new PBEffectGenLavaCages(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), lavaBlock.orElse(null), cageBlock, fillBlock.orElse(null), floorBlock);
+        return new PBEffectGenerate(time, range, 1, PandorasBoxHelper.getRandomUnifiedSeed(random), new GenLavaCagesEffect(lavaBlock, cageBlock, fillBlock, floorBlock, random.nextInt(10) + 2, random.nextInt(5) + 2));
     }
 
     @Override

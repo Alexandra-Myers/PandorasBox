@@ -6,12 +6,15 @@
 package ivorius.pandorasbox.effects;
 
 import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import ivorius.pandorasbox.PandorasBoxHelper;
+import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.Init;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -32,16 +35,9 @@ import java.util.List;
  * Created by lukas on 30.03.14.
  */
 public abstract class PBEffect {
-    public static final StreamCodec<RegistryFriendlyByteBuf, PBEffect> STREAM_CODEC = StreamCodec.of((registryFriendlyByteBuf, effect) -> {
-        CompoundTag compound = new CompoundTag();
-        CompoundTag effectCompound = new CompoundTag();
-        PBEffectRegistry.writeEffect(effect, effectCompound, registryFriendlyByteBuf.registryAccess());
-        compound.put("boxEffect", effectCompound);
-        registryFriendlyByteBuf.writeNbt(compound);
-    }, registryFriendlyByteBuf -> PBEffectRegistry.loadEffect(registryFriendlyByteBuf.readNbt().getCompound("boxEffect"), registryFriendlyByteBuf.registryAccess()));
-    public final String getEffectID() {
-        return PBEffectRegistry.getEffectID(this);
-    }
+    public static final Codec<PBEffect> CODEC = Init.BOX_EFFECT_TYPE_REGISTRY.byNameCodec()
+            .dispatch(PBEffect::codec, mapCodec -> mapCodec);
+    public static final StreamCodec<RegistryFriendlyByteBuf, PBEffect> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
 
     public static boolean setBlockToAirSafe(Level world, BlockPos pos) {
         boolean safeDest = world.getBlockState(pos).isAir() || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
@@ -85,8 +81,8 @@ public abstract class PBEffect {
         for (Either<Block, TagKey<Block>> match : blocks) {
             Block other = match.left().orElse(null);
             TagKey<Block> tag = match.right().orElse(null);
-            if (other != null) return block == other;
-            else return block.defaultBlockState().is(tag);
+            if (block == other) return true;
+            else if (tag != null && block.defaultBlockState().is(tag)) return true;
         }
 
         return false;
@@ -94,7 +90,7 @@ public abstract class PBEffect {
 
     public static Entity lazilySpawnEntity(Level world, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos) {
         if (random.nextFloat() < chance && !world.isClientSide()) {
-            return PBEffectSpawnEntityIDList.createEntity(world, box, random, entityID, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+            return SpawnEntityIDListEffect.createEntity(world, box, random, entityID, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         }
 
         return null;
@@ -121,14 +117,14 @@ public abstract class PBEffect {
         return false;
     }
 
-    public boolean canSpawnFlyingEntity(Level world, BlockState block, BlockPos pos) {
+    public static boolean canSpawnFlyingEntity(Level world, BlockState block, BlockPos pos) {
         if (world.isClientSide())
             return false;
 
         return !(block.getLightBlock() > 0 || world.getBlockState(pos.below()).getLightBlock() > 0 || world.getBlockState(pos.below(2)).getLightBlock() > 0);
     }
 
-    public void combinedEffectDuration(LivingEntity entity, MobEffectInstance[] mobEffects) {
+    public static void combinedEffectDuration(LivingEntity entity, MobEffectInstance[] mobEffects) {
         for(MobEffectInstance effectInstance : mobEffects) {
             if(effectInstance == null)
                 continue;
@@ -151,11 +147,9 @@ public abstract class PBEffect {
 
     public abstract boolean isDone(int ticksAlive);
 
-    public abstract void writeToNBT(CompoundTag compound, RegistryAccess registryAccess);
-
-    public abstract void readFromNBT(CompoundTag compound, RegistryAccess registryAccess);
-
     public abstract boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity);
 
     public abstract int getTicksExistedForEffect(PBEffect identityEffect, int ticksAlive);
+
+    public abstract @NotNull MapCodec<? extends PBEffect> codec();
 }

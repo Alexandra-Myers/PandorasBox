@@ -5,25 +5,41 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 /**
  * Created by lukas on 31.03.14.
  */
 public class PBEffectMulti extends PBEffect {
-    public PBEffect[] effects;
-    public int[] delays;
-    public PBEffectMulti() {
-
-    }
+    public static final MapCodec<PBEffectMulti> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(PBNBTHelper.arrayCodec(PBEffect.CODEC, () -> new PBEffect[0]).fieldOf("effects").forGetter(PBEffectMulti::getEffects),
+                            PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("delays").forGetter(pbEffectMulti -> Arrays.stream(pbEffectMulti.getDelays()).boxed().toArray(Integer[]::new)))
+                    .apply(instance, PBEffectMulti::new));
+    public final PBEffect[] effects;
+    public final int[] delays;
 
     public PBEffectMulti(PBEffect[] effects, int[] delays) {
         this.effects = effects;
         this.delays = delays;
+    }
+    public PBEffectMulti(PBEffect[] effects, Integer[] delays) {
+        this(effects, Arrays.stream(delays).mapToInt(Integer::intValue).toArray());
+    }
+
+    public PBEffect[] getEffects() {
+        return effects;
+    }
+
+    public int[] getDelays() {
+        return delays;
     }
 
     @Override
@@ -47,41 +63,6 @@ public class PBEffectMulti extends PBEffect {
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        ListTag list = new ListTag();
-
-        for (int i = 0; i < effects.length; i++) {
-            CompoundTag cmp = new CompoundTag();
-
-            cmp.putInt("delay", delays[i]);
-
-            cmp.putString("pbEffectID", effects[i].getEffectID());
-            CompoundTag effectCmp = new CompoundTag();
-            effects[i].writeToNBT(effectCmp, registryAccess);
-            cmp.put("pbEffectCompound", effectCmp);
-
-            list.add(cmp);
-        }
-
-        compound.put("effects", list);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        ListTag list = compound.getList("effects", 10);
-
-        effects = new PBEffect[list.size()];
-        delays = new int[effects.length];
-
-        for (int i = 0; i < effects.length; i++) {
-            CompoundTag cmp = list.getCompound(i);
-
-            delays[i] = cmp.getInt("delay");
-            effects[i] = PBEffectRegistry.loadEffect(cmp.getString("pbEffectID"), cmp.getCompound("pbEffectCompound"), registryAccess);
-        }
-    }
-
-    @Override
     public boolean canGenerateMoreEffectsAfterwards(PandorasBoxEntity entity) {
         for (PBEffect effect : effects) {
             if (!effect.canGenerateMoreEffectsAfterwards(entity)) {
@@ -98,5 +79,10 @@ public class PBEffectMulti extends PBEffect {
             if (effects[i] == identityEffect) return ticksAlive - delays[i];
         }
         return -1;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

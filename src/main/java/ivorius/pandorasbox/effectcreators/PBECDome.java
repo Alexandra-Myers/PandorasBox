@@ -9,7 +9,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenDome;
+import ivorius.pandorasbox.effects.PBEffectGenerate2D;
+import ivorius.pandorasbox.effects.generate.two_dimensional.GenDome;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.utils.EitherArrayList;
@@ -41,7 +42,7 @@ public record PBECDome(IValue time, DValue range, EitherArrayList<WeightedBlock,
 
         Block domeBlock = PandorasBoxHelper.getRandomBlock(random, PandorasBoxHelper.assembleBlocks(domeBlocks));
 
-        return new PBEffectGenDome(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), domeBlock, fillBlock.orElse(null));
+        return new PBEffectGenerate2D(time, range, 2, PandorasBoxHelper.getRandomUnifiedSeed(random), new GenDome(domeBlock, fillBlock));
     }
 
     @Override

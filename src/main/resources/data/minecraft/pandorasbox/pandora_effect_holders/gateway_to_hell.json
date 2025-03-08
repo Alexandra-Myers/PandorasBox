@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.gateway_to_hell"
+  },
   "effect_creator": {
     "effects": [
       {

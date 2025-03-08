@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.tunnel_bore"
+  },
   "effect_creator": {
     "effects": [
       {

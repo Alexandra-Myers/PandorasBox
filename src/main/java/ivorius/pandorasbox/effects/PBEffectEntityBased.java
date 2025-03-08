@@ -5,28 +5,44 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import ivorius.pandorasbox.effects.entity.EntityEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 /**
  * Created by lukas on 31.03.14.
  */
-public abstract class PBEffectEntityBased extends PBEffectNormal {
-    public double range;
-    public PBEffectEntityBased() {}
+public class PBEffectEntityBased extends PBEffectNormal {
+    public static final MapCodec<PBEffectEntityBased> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(base(),
+                            Codec.DOUBLE.fieldOf("range").forGetter(PBEffectEntityBased::getRange),
+                            EntityEffect.CODEC.fieldOf("effect").forGetter(PBEffectEntityBased::getEffect))
+                    .apply(instance, PBEffectEntityBased::new));
+    public final EntityEffect effect;
+    public final double range;
 
-    public PBEffectEntityBased(int maxTicksAlive, double range) {
+    public PBEffectEntityBased(int maxTicksAlive, double range, EntityEffect effect) {
         super(maxTicksAlive);
+        this.effect = effect;
         this.range = range;
+    }
+
+    public EntityEffect getEffect() {
+        return effect;
+    }
+
+    public double getRange() {
+        return range;
     }
 
     @Override
@@ -39,24 +55,18 @@ public abstract class PBEffectEntityBased extends PBEffectNormal {
             double strength = (range - dist) / range;
 
             if (strength > 0.0) {
-                affectEntity(level, entity, random, entityLivingBase, newRatio, prevRatio, strength);
+                effect.affectEntity(level, entity, random, entityLivingBase, newRatio, prevRatio, strength);
             }
         }
     }
 
-    public void affectEntity(Level level, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
-        if (level instanceof ServerLevel serverLevel) affectEntityServer(serverLevel, box, random, entity, newRatio, prevRatio, strength);
-    }
-
-    public abstract void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength);
-
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        compound.putDouble("range", range);
+    public void finalizeEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random) {
+        effect.finalise(level, entity, effectCenter, random);
     }
 
     @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        range = compound.getDouble("range");
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

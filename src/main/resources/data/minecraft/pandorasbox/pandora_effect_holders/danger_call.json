@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.danger_call"
+  },
   "effect_creator": {
     "spawns_from_effect_center": {
       "guaranteed": false,

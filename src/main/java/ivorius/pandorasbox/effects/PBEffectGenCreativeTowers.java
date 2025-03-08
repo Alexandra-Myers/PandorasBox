@@ -5,78 +5,70 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
+import ivorius.pandorasbox.effects.structure.CreativeTowerConfiguration;
+import ivorius.pandorasbox.effects.structure.StructureCreativeTower;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure {
-    public PBEffectGenCreativeTowers() {}
-
-    public PBEffectGenCreativeTowers(int maxTicksAlive)
-    {
+public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure<StructureCreativeTower> {
+    public static final MapCodec<PBEffectGenCreativeTowers> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(base(),
+                            PBNBTHelper.arrayCodec(StructureCreativeTower.CODEC, () -> new StructureCreativeTower[0]).fieldOf("structures").forGetter(PBEffectGenCreativeTowers::getStructures))
+                    .apply(instance, PBEffectGenCreativeTowers::new));
+    public PBEffectGenCreativeTowers(int maxTicksAlive) {
+        this(maxTicksAlive, new StructureCreativeTower[0]);
+    }
+    public PBEffectGenCreativeTowers(int maxTicksAlive, StructureCreativeTower[] structures) {
         super(maxTicksAlive);
+        this.structures = structures;
     }
 
     public void createRandomStructures(RandomSource random, int number, double range, Collection<WeightedBlock> blocks) {
-        this.structures = new Structure[number];
+        this.structures = new StructureCreativeTower[number];
         for (int i = 0; i < number; i++) {
             structures[i] = createStructure();
             applyRandomProperties(structures[i], range, random);
-            ((StructureCreativeTower) structures[i]).blocks = PandorasBoxHelper.getRandomBlockList(random, blocks);
+            structures[i].configuration = new CreativeTowerConfiguration(PandorasBoxHelper.getRandomBlockList(random, blocks));
         }
     }
 
     @Override
-    public void generateStructure(Level level, PandorasBoxEntity entity, RandomSource random, Structure structure, BlockPos pos, float newRatio, float prevRatio) {
-        StructureCreativeTower structureCreativeTower = (StructureCreativeTower) structure;
-
+    public void generateStructure(Level level, PandorasBoxEntity entity, RandomSource random, StructureCreativeTower structure, BlockPos pos, float newRatio, float prevRatio) {
         int towerHeight = level.getHeight();
         int newY = Mth.floor(towerHeight * newRatio);
         int prevY = Mth.floor(towerHeight * prevRatio);
 
         for (int towerY = prevY; towerY < newY; towerY++) {
-            Block block = structureCreativeTower.blocks[random.nextInt(structureCreativeTower.blocks.length)];
+            Block block = structure.getBlocks()[random.nextInt(structure.getBlocks().length)];
 
-            setBlockVarying(level, new BlockPos(pos.getX() + structure.x, towerY, pos.getZ() + structure.z), block, structure.unifiedSeed);
+            setBlockVarying(level, new BlockPos(pos.getX() + structure.pos.getX(), towerY, pos.getZ() + structure.pos.getZ()), block, structure.unifiedSeed);
         }
     }
 
     @Override
-    public StructureCreativeTower createStructure()
-    {
+    public StructureCreativeTower createStructure() {
         return new StructureCreativeTower();
     }
 
-    public static class StructureCreativeTower extends Structure {
-        public Block[] blocks;
-
-        public StructureCreativeTower() {
-        }
-
-        @Override
-        public void writeToNBT(CompoundTag compound) {
-            super.writeToNBT(compound);
-
-            PBNBTHelper.writeNBTBlocks("blocks", blocks, compound);
-        }
-
-        @Override
-        public void readFromNBT(CompoundTag compound) {
-            super.readFromNBT(compound);
-
-            blocks = PBNBTHelper.readNBTBlocks("blocks", compound);
-        }
+    @Override
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
+
+
 }

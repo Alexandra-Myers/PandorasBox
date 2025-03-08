@@ -5,29 +5,30 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.MapCodec;
+import ivorius.pandorasbox.effects.generate.flags.GenerateByFlag;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased {
-    public int unifiedSeed;
+public class PBEffectGenerateByFlag extends PBEffectRangeBased {
+    public static final MapCodec<PBEffectGenerateByFlag> CODEC = produceCodec(instance -> GenerateByFlag.CODEC.fieldOf("generate_by_flag").forGetter(PBEffectGenerateByFlag::getGenerateByFlag), PBEffectGenerateByFlag::new);
+    public final GenerateByFlag generateByFlag;
 
-    public int[] flags;
-    public PBEffectGenerateByFlag() {}
+    public PBEffectGenerateByFlag(int time, double range, int passes, int unifiedSeed, GenerateByFlag generateByFlag) {
+        super(time, range, passes, unifiedSeed);
+        this.generateByFlag = generateByFlag;
+    }
 
-    public PBEffectGenerateByFlag(int time, double range, int passes, int unifiedSeed) {
-        super(time, range, passes);
-
-        this.unifiedSeed = unifiedSeed;
-        flags = new int[31 * 31];
+    public GenerateByFlag getGenerateByFlag() {
+        return generateByFlag;
     }
 
     @Override
@@ -48,15 +49,13 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased {
                     double dist = Mth.sqrt(x * x + y * y + z * z);
 
                     if (dist <= range)
-                        flags[y + 15] = hasFlag(level, entity, random, new BlockPos(baseX + x, baseY + y, baseZ + z));
+                        flags[y + 15] = generateByFlag.hasFlag(level, entity, random, new BlockPos(baseX + x, baseY + y, baseZ + z));
                 }
 
                 setAllFlags(x, z, flags);
             }
         }
     }
-
-    public abstract boolean hasFlag(Level world, PandorasBoxEntity entity, RandomSource random, BlockPos pos);
 
     @Override
     public void generateInRange(Level level, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass) {
@@ -73,7 +72,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased {
 
                     if (dist <= newRange) {
                         if (dist > prevRange) {
-                            generateOnBlock(level, entity, random, pass, new BlockPos(baseX + x, baseY + y, baseZ + z), dist, getFlag(x, y, z));
+                            generateByFlag.generateOnBlock(level, entity, random, pass, unifiedSeed, new BlockPos(baseX + x, baseY + y, baseZ + z), dist, getFlag(x, y, z));
                         } else {
                             z = (byte) -z; // We can skip all blocks in between
                         }
@@ -82,8 +81,6 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased {
             }
         }
     }
-
-    public abstract void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, int pass, BlockPos pos, double dist, boolean flag);
 
     public void setAllFlags(byte x, byte z, boolean... flags) {
         int flagInt = 0;
@@ -96,7 +93,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased {
             }
         }
 
-        this.flags[getFlagIndex(x, z)] = flagInt;
+        this.generateByFlag.flags()[getFlagIndex(x, z)] = flagInt;
     }
 
     public void setFlag(byte x, byte y, byte z, boolean flag) {
@@ -104,9 +101,9 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased {
         int bit = getBitOfFlag(y);
 
         if (flag) {
-            flags[index] = flags[index] | bit;
+            generateByFlag.flags()[index] = generateByFlag.flags()[index] | bit;
         } else {
-            flags[index] = flags[index] & (~bit);
+            generateByFlag.flags()[index] = generateByFlag.flags()[index] & (~bit);
         }
     }
 
@@ -114,7 +111,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased {
         int index = getFlagIndex(x, z);
         int bit = getBitOfFlag(y);
 
-        return (flags[index] & bit) > 0;
+        return (generateByFlag.flags()[index] & bit) > 0;
     }
 
     public int getBitOfFlag(byte y) {
@@ -126,18 +123,7 @@ public abstract class PBEffectGenerateByFlag extends PBEffectRangeBased {
     }
 
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.writeToNBT(compound, registryAccess);
-
-        compound.putInt("unifiedSeed", unifiedSeed);
-        compound.putIntArray("flags", flags);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.readFromNBT(compound, registryAccess);
-
-        unifiedSeed = compound.getInt("unifiedSeed");
-        flags = compound.getIntArray("flags");
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

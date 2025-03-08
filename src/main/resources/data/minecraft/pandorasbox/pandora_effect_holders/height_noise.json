@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.height_noise"
+  },
   "effect_creator": {
     "range": {
       "min": 8.0,

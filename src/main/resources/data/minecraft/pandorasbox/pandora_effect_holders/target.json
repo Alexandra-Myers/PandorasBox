@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.target"
+  },
   "effect_creator": {
     "target_size": {
       "min": 6.0,

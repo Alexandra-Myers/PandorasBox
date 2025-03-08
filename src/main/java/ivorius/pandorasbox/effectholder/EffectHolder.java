@@ -3,15 +3,28 @@ package ivorius.pandorasbox.effectholder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
+import ivorius.pandorasbox.init.Init;
+import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 
 public abstract class EffectHolder {
     public static final ExtraCodecs.LateBoundIdMapper<ResourceLocation, MapCodec<? extends EffectHolder>> HOLDER_MAPPER = new ExtraCodecs.LateBoundIdMapper<>();
-    public static final Codec<EffectHolder> CODEC = HOLDER_MAPPER.codec(ResourceLocation.CODEC)
+    public static final Codec<EffectHolder> DIRECT_CODEC = HOLDER_MAPPER.codec(ResourceLocation.CODEC)
             .dispatch(EffectHolder::codec, mapCodec -> mapCodec);
-
-    protected EffectHolder(PBEffectCreator effectCreator) {
+    public static final Codec<Holder<EffectHolder>> CODEC = RegistryFixedCodec.create(Init.EFFECT_HOLDER_REGISTRY_KEY);
+    public final PBEffectCreator effectCreator;
+    public final Component component;
+    public Component component() {
+        return component;
+    }
+    public PBEffectCreator effectCreator() {
+        return effectCreator;
+    }
+    protected EffectHolder(Component component, PBEffectCreator effectCreator) {
+        this.component = component;
         this.effectCreator = effectCreator;
     }
 
@@ -19,10 +32,6 @@ public abstract class EffectHolder {
         HOLDER_MAPPER.put(ResourceLocation.withDefaultNamespace("fixed_chance"), FixedChanceEffectHolder.CODEC);
         HOLDER_MAPPER.put(ResourceLocation.withDefaultNamespace("fixed_chance_marked"), FixedChancePositiveOrNegativeEffectHolder.CODEC);
         HOLDER_MAPPER.put(ResourceLocation.withDefaultNamespace("positive_or_negative"), PositiveOrNegativeEffectHolder.CODEC);
-    }
-    public final PBEffectCreator effectCreator;
-    public PBEffectCreator effectCreator() {
-        return effectCreator;
     }
     public abstract boolean canBeGoodOrBad();
     public abstract boolean isGood();

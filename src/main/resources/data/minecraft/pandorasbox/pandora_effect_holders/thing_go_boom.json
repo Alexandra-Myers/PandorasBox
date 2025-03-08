@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.thing_go_boom"
+  },
   "effect_creator": {
     "time": {
       "min": 50,

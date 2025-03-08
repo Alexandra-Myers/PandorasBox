@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.are_these_mine"
+  },
   "effect_creator": {
     "deletion_chance_per_throw": {
       "min": 0.0,

@@ -19,7 +19,9 @@ import java.util.Arrays;
  * Created by lukas on 31.03.14.
  */
 public record WeightedEntity(String entityID, WeightedWithRandomCount count) implements WeightedSelector.Item {
-    public static final String[] PB_SPECIAL_LOCS = new String[]{
+    public static final String[] PB_SPECIAL_LOCS = new String[] {
+            "pbspecial_colorful_sheep",
+            "pbspecial_hogfather",
             "pbspecial_angry_wolf",
             "pbspecial_charged_creeper",
             "pbspecial_fireworks",
@@ -30,8 +32,9 @@ public record WeightedEntity(String entityID, WeightedWithRandomCount count) imp
             "pbspecial_wolf_tamed",
             "pbspecial_experience"
     };
+    public static final Codec<String> ID_CODEC = ResourceLocation.CODEC.validate(resourceLocation -> BuiltInRegistries.ENTITY_TYPE.containsKey(resourceLocation) || Arrays.asList(PB_SPECIAL_LOCS).contains(resourceLocation.getPath()) ? DataResult.success(resourceLocation) : DataResult.error(() -> "Unknown registry key in " + Registries.ENTITY_TYPE + "found, and was not a pbspecial entity! Input: " + resourceLocation)).xmap(ResourceLocation::toString, ResourceLocation::tryParse);
     public static final Codec<WeightedEntity> CODEC = RecordCodecBuilder.create(instance ->
-            instance.group(ResourceLocation.CODEC.validate(resourceLocation -> BuiltInRegistries.ENTITY_TYPE.containsKey(resourceLocation) || Arrays.asList(PB_SPECIAL_LOCS).contains(resourceLocation.getPath()) ? DataResult.success(resourceLocation) : DataResult.error(() -> "Unknown registry key in " + Registries.ENTITY_TYPE + "found, and was not a pbspecial entity! Input: " + resourceLocation)).xmap(ResourceLocation::toString, ResourceLocation::tryParse).fieldOf("entity").forGetter(WeightedEntity::entityID),
+            instance.group(ID_CODEC.fieldOf("entity").forGetter(WeightedEntity::entityID),
                             WeightedWithRandomCount.CODEC_FORCE.forGetter(WeightedEntity::count))
                     .apply(instance, WeightedEntity::new));
     public static final Codec<WeightedEntity> NO_SPECIAL_CODEC = RecordCodecBuilder.create(instance ->

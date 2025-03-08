@@ -5,13 +5,20 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBox;
+import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
+import ivorius.pandorasbox.effects.structure.StructureTarget;
+import ivorius.pandorasbox.effects.structure.TargetConfiguration;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.utils.PBNBTHelper;
+import ivorius.pandorasbox.weighted.WeightedEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -19,52 +26,77 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public class PBEffectGenTargets extends PBEffectGenerateByStructure {
+public class PBEffectGenTargets extends PBEffectGenerateByStructure<StructureTarget> {
+    public static final MapCodec<PBEffectGenTargets> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(base(),
+                            PBNBTHelper.arrayCodec(StructureTarget.CODEC, () -> new StructureTarget[0]).fieldOf("structures").forGetter(PBEffectGenTargets::getStructures),
+                            WeightedEntity.ID_CODEC.fieldOf("entity_to_spawn").forGetter(PBEffectGenTargets::getEntityToSpawn),
+                            Codec.DOUBLE.fieldOf("range").forGetter(PBEffectGenTargets::getRange),
+                            Codec.DOUBLE.fieldOf("target_size").forGetter(PBEffectGenTargets::getTargetSize),
+                            Codec.DOUBLE.fieldOf("entity_density").forGetter(PBEffectGenTargets::getEntityDensity))
+                    .apply(instance, PBEffectGenTargets::new));
     public String entityToSpawn;
     public double range;
     public double targetSize;
     public double entityDensity;
-    public PBEffectGenTargets() {}
-
-    public PBEffectGenTargets(int maxTicksAlive, String entityToSpawn, double range, double targetSize, double entityDensity) {
+    public PBEffectGenTargets(int maxTicksAlive, StructureTarget[] structures, String entityToSpawn, double range, double targetSize, double entityDensity) {
         super(maxTicksAlive);
+        this.structures = structures;
         this.entityToSpawn = entityToSpawn;
         this.range = range;
         this.targetSize = targetSize;
         this.entityDensity = entityDensity;
     }
+    public PBEffectGenTargets(int maxTicksAlive, String entityToSpawn, double range, double targetSize, double entityDensity) {
+        this(maxTicksAlive, new StructureTarget[0], entityToSpawn, range, targetSize, entityDensity);
+    }
+
+    public String getEntityToSpawn() {
+        return entityToSpawn;
+    }
+
+    public double getRange() {
+        return range;
+    }
+
+    public double getTargetSize() {
+        return targetSize;
+    }
+
+    public double getEntityDensity() {
+        return entityDensity;
+    }
 
     public void createTargets(Level world, double x, double y, double z, RandomSource random) {
         List<Player> players = world.getEntitiesOfClass(Player.class, new AABB(x - range, y - range, z - range, x + range, y + range, z + range));
-        this.structures = new Structure[players.size()];
+        this.structures = new StructureTarget[players.size()];
 
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
             StructureTarget structureTarget = new StructureTarget();
-            structureTarget.x = Mth.floor(player.getX());
-            structureTarget.y = Mth.floor(player.getY() - 0.5);
-            structureTarget.z = Mth.floor(player.getZ());
+            structureTarget.pos = new Vec3i(Mth.floor(player.getX()), Mth.floor(player.getY() - 0.5), Mth.floor(player.getZ()));
             structureTarget.structureStart = random.nextFloat() * 0.3f;
             structureTarget.structureLength = 0.5f + random.nextFloat() * 0.2f;
 
-            structureTarget.colors = new int[Mth.ceil(targetSize) * 2];
-            for (int j = 0; j < structureTarget.colors.length; j++) {
-                structureTarget.colors[j] = random.nextInt(16);
+            Integer[] colors = new Integer[Mth.ceil(targetSize) * 2];
+            for (int j = 0; j < colors.length; j++) {
+                colors[j] = random.nextInt(16);
             }
+            structureTarget.configuration = new TargetConfiguration(colors);
 
             structures[i] = structureTarget;
         }
     }
 
-    public void generateStructure(Level level, PandorasBoxEntity entity, RandomSource random, Structure structure, BlockPos pos, float newRatio, float prevRatio) {
-        StructureTarget structureTarget = (StructureTarget) structure;
-
+    @Override
+    public void generateStructure(Level level, PandorasBoxEntity entity, RandomSource random, StructureTarget structure, BlockPos pos, float newRatio, float prevRatio) {
         double newRange = newRatio * targetSize;
         double prevRange = prevRatio * targetSize;
 
@@ -77,12 +109,13 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure {
                 if (dist < newRange) {
                     if (dist >= prevRange) {
                         HolderSet.Named<Block> terracottas = BuiltInRegistries.BLOCK.getOrThrow(PandorasBox.ALL_TERRACOTTA);
-                        setBlockSafe(level, new BlockPos(structureTarget.x + xP, structureTarget.y, structureTarget.z + zP), terracottas.get(structureTarget.colors[Mth.floor(dist)]).value().defaultBlockState());
+                        Vec3i offset = structure.pos.offset(xP, 0, zP);
+                        setBlockSafe(level, new BlockPos(offset), terracottas.get(structure.getColors()[Mth.floor(dist)]).value().defaultBlockState());
 
                         double nextDist = Mth.sqrt((xP * xP + 3 * 3) + (zP * zP + 3 * 3));
 
                         if (nextDist >= targetSize && random.nextDouble() < entityDensity) {
-                            Entity newEntity = PBEffectSpawnEntityIDList.createEntity(level, entity, random, entityToSpawn, structureTarget.x + xP + 0.5, structureTarget.y + 1.5, structureTarget.z + zP + 0.5);
+                            Entity newEntity = SpawnEntityIDListEffect.createEntity(level, entity, random, entityToSpawn, offset.getX() + 0.5, offset.getY() + 1.5, offset.getZ() + 0.5);
                             assert newEntity != null;
                             level.addFreshEntity(newEntity);
                         }
@@ -93,30 +126,10 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure {
                     double dist3D = Mth.sqrt(xP * xP + zP * zP + yP * yP);
 
                     if (dist3D < newRange && dist3D >= prevRange) // -3 so we have a bit of a height bonus
-                        setBlockToAirSafe(level, new BlockPos(structureTarget.x + xP, structureTarget.y + yP, structureTarget.z + zP));
+                        setBlockToAirSafe(level, new BlockPos(structure.pos.offset(xP, yP, zP)));
                 }
             }
         }
-    }
-
-    @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.writeToNBT(compound, registryAccess);
-
-        compound.putString("entityToSpawn", entityToSpawn);
-        compound.putDouble("range", range);
-        compound.putDouble("targetSize", targetSize);
-        compound.putDouble("entityDensity", entityDensity);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.readFromNBT(compound, registryAccess);
-
-        entityToSpawn = compound.getString("entityToSpawn");
-        range = compound.getDouble("range");
-        targetSize = compound.getDouble("targetSize");
-        entityDensity = compound.getDouble("entityDensity");
     }
 
     @Override
@@ -124,24 +137,8 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure {
         return new StructureTarget();
     }
 
-    public static class StructureTarget extends Structure {
-        public int[] colors;
-
-        public StructureTarget() {
-        }
-
-        @Override
-        public void writeToNBT(CompoundTag compound) {
-            super.writeToNBT(compound);
-
-            compound.putIntArray("colors", colors);
-        }
-
-        @Override
-        public void readFromNBT(CompoundTag compound) {
-            super.readFromNBT(compound);
-
-            colors = compound.getIntArray("colors");
-        }
+    @Override
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

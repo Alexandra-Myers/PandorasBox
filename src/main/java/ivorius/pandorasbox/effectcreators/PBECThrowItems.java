@@ -9,7 +9,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectEntitiesThrowItems;
+import ivorius.pandorasbox.effects.PBEffectEntityBased;
+import ivorius.pandorasbox.effects.entity.ThrowItemsEntityEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.utils.EitherArrayList;
@@ -44,7 +45,7 @@ public record PBECThrowItems(IValue time, DValue range, DValue throwChancePerIte
 
         ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, items), smuggledIn, random.nextInt(3) != 0, true, 0, false, false);
 
-        return new PBEffectEntitiesThrowItems(time, range, chancePerItem, deletionChance, stacks);
+        return new PBEffectEntityBased(time, range, new ThrowItemsEntityEffect(chancePerItem, deletionChance, stacks));
     }
 
     @Override

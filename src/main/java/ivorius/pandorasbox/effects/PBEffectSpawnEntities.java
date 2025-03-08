@@ -5,53 +5,36 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import ivorius.pandorasbox.effects.spawn_entities.SpawnEntitiesEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by lukas on 30.03.14.
  */
-public abstract class PBEffectSpawnEntities extends PBEffectNormal {
-    public int number;
-    public boolean spawnsFromBox;
-    public boolean spawnDirect;
-    public double range;
-    public double shiftY;
-    public double throwStrengthSideMin;
-    public double throwStrengthSideMax;
-    public double throwStrengthYMin;
-    public double throwStrengthYMax;
-    public PBEffectSpawnEntities() {}
+public class PBEffectSpawnEntities extends PBEffectNormal {
+    public static final MapCodec<PBEffectSpawnEntities> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(base(),
+                            Codec.INT.fieldOf("number").forGetter(PBEffectSpawnEntities::getNumber),
+                            SpawnEntitiesEffect.CODEC.fieldOf("effect").forGetter(PBEffectSpawnEntities::getEffect))
+                    .apply(instance, PBEffectSpawnEntities::new));
+    public final int number;
+    public final SpawnEntitiesEffect effect;
 
-    public PBEffectSpawnEntities(int time, int number) {
+    public PBEffectSpawnEntities(int time, int number, SpawnEntitiesEffect effect) {
         super(time);
 
         this.number = number;
-    }
-
-    public void setSpawnsFromBox(boolean spawnsFromBox) {
-        this.spawnsFromBox = spawnsFromBox;
-    }
-
-    public void setDoesNotSpawnDirect(double range, double shiftY) {
-        this.spawnDirect = false;
-        this.range = range;
-        this.shiftY = shiftY;
-    }
-
-    public void setDoesSpawnDirect(double throwStrengthSideMin, double throwStrengthSideMax, double throwStrengthYMin, double throwStrengthYMax) {
-        this.spawnDirect = true;
-        this.throwStrengthSideMin = throwStrengthSideMin;
-        this.throwStrengthSideMax = throwStrengthSideMax;
-        this.throwStrengthYMin = throwStrengthYMin;
-        this.throwStrengthYMax = throwStrengthYMax;
+        this.effect = effect;
     }
 
     @Override
@@ -66,28 +49,28 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal {
                 double eZ;
 
                 Vec3 baseVec;
-                if (spawnsFromBox) baseVec = box.position();
+                if (effect.spawnsFromBox()) baseVec = box.position();
                 else baseVec = effectCenter;
 
-                if (spawnDirect) {
+                if (effect.spawnDirect()) {
                     eX = baseVec.x;
                     eY = baseVec.y;
                     eZ = baseVec.z;
                 } else {
-                    eX = baseVec.x + (random.nextDouble() - random.nextDouble()) * range;
-                    eY = baseVec.y + (random.nextDouble() - random.nextDouble()) * 3.0 + shiftY;
-                    eZ = baseVec.z + (random.nextDouble() - random.nextDouble()) * range;
+                    eX = baseVec.x + (random.nextDouble() - random.nextDouble()) * effect.range();
+                    eY = baseVec.y + (random.nextDouble() - random.nextDouble()) * 3.0 + effect.shiftY();
+                    eZ = baseVec.z + (random.nextDouble() - random.nextDouble()) * effect.range();
                 }
 
-                Entity newEntity = spawnEntity(level, box, random, prev + i, eX, eY, eZ);
+                Entity newEntity = effect.spawnEntity(level, box, random, prev + i, eX, eY, eZ);
                 if (newEntity != null) {
-                    if (spawnDirect && !(newEntity instanceof LivingEntity)) {
+                    if (effect.spawnDirect() && !(newEntity instanceof LivingEntity)) {
                         // FIXME Disabled because it causes mobs to sink in the ground on clients (async) >.>
                         float dirSide = random.nextFloat() * 2.0f * 3.1415926f;
-                        double throwStrengthSide = throwStrengthSideMin + random.nextDouble() * (throwStrengthSideMax - throwStrengthSideMin);
+                        double throwStrengthSide = effect.throwStrengthSideMin() + random.nextDouble() * (effect.throwStrengthSideMax() - effect.throwStrengthSideMin());
 
                         newEntity.push(Mth.sin(dirSide) * throwStrengthSide,
-                                throwStrengthYMin + random.nextDouble() * (throwStrengthYMax - throwStrengthYMin),
+                                effect.throwStrengthYMin() + random.nextDouble() * (effect.throwStrengthYMax() - effect.throwStrengthYMin()),
                                 Mth.cos(dirSide) * throwStrengthSide);
                         newEntity.hurtMarked = true;
                     }
@@ -96,44 +79,20 @@ public abstract class PBEffectSpawnEntities extends PBEffectNormal {
         }
     }
 
+    public SpawnEntitiesEffect getEffect() {
+        return effect;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
     private int getSpawnNumber(float ratio) {
         return Mth.floor(ratio * number);
     }
 
-    public abstract Entity spawnEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, int number, double x, double y, double z);
-
     @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.writeToNBT(compound, registryAccess);
-
-        compound.putInt("number", number);
-        compound.putBoolean("spawnsFromBox", spawnsFromBox);
-        compound.putBoolean("spawnDirect", spawnDirect);
-        compound.putDouble("range", range);
-        compound.putDouble("shiftY", shiftY);
-        compound.putDouble("throwStrengthSideMin", throwStrengthSideMin);
-        compound.putDouble("throwStrengthSideMax", throwStrengthSideMax);
-        compound.putDouble("throwStrengthYMin", throwStrengthYMin);
-        compound.putDouble("throwStrengthYMax", throwStrengthYMax);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.readFromNBT(compound, registryAccess);
-
-        number = compound.getInt("number");
-        if (compound.contains("spawnFromBox")) {
-            spawnsFromBox = true;
-            spawnDirect = compound.getBoolean("spawnFromBox");
-        } else {
-            spawnsFromBox = compound.getBoolean("spawnsFromBox");
-            spawnDirect = compound.getBoolean("spawnDirect");
-        }
-        range = compound.getDouble("range");
-        shiftY = compound.getDouble("shiftY");
-        throwStrengthSideMin = compound.getDouble("throwStrengthSideMin");
-        throwStrengthSideMax = compound.getDouble("throwStrengthSideMax");
-        throwStrengthYMin = compound.getDouble("throwStrengthYMin");
-        throwStrengthYMax = compound.getDouble("throwStrengthYMax");
+    public @NotNull MapCodec<? extends PBEffect> codec() {
+        return CODEC;
     }
 }

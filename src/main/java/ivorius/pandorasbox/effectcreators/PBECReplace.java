@@ -9,7 +9,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenReplace;
+import ivorius.pandorasbox.effects.PBEffectGenerate;
+import ivorius.pandorasbox.effects.generate.GenReplaceEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.ZValue;
 import ivorius.pandorasbox.utils.EitherArrayList;
@@ -73,7 +74,7 @@ public record PBECReplace(DValue range, Optional<Block[]> srcBlocks, EitherArray
 
         Block[] destSelection = PandorasBoxHelper.getRandomBlockList(random, PandorasBoxHelper.assembleBlocks(destBlocks));
 
-        return new PBEffectGenReplace(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), destSelection, srcSelection);
+        return new PBEffectGenerate(time, range, 1, PandorasBoxHelper.getRandomUnifiedSeed(random), new GenReplaceEffect(destSelection, srcSelection));
     }
 
     @Override

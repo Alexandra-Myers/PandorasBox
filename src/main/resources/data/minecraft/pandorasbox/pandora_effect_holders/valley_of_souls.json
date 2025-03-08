@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.valley_of_souls"
+  },
   "effect_creator": {
     "range": {
       "min": 10.0,

@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.odd_jungle"
+  },
   "effect_creator": {
     "possible_tree_flags": {
       "min_flags": 1,

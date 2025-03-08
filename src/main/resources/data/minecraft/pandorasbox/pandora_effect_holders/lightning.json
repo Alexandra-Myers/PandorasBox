@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.lightning"
+  },
   "effect_creator": {
     "time": {
       "min": 40,

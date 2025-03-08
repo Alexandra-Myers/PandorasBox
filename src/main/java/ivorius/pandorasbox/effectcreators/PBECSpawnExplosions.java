@@ -8,7 +8,8 @@ package ivorius.pandorasbox.effectcreators;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectRandomExplosions;
+import ivorius.pandorasbox.effects.PBEffectPositionBased;
+import ivorius.pandorasbox.effects.position.RandomExplosionsPositionEffect;
 import ivorius.pandorasbox.random.*;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -35,7 +36,7 @@ public record PBECSpawnExplosions(IValue time, IValue number, DValue range, DVal
         boolean isFlaming = this.isFlaming.getValue(random);
         boolean isSmoking = this.isSmoking.getValue(random);
 
-        return new PBEffectRandomExplosions(time, number, range, (float) strength[0], (float) strength[1], isFlaming, isSmoking);
+        return new PBEffectPositionBased(time, number, range, new RandomExplosionsPositionEffect((float) strength[0], (float) strength[1], isFlaming, isSmoking));
     }
 
     @Override

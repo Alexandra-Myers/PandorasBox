@@ -8,7 +8,8 @@ package ivorius.pandorasbox.effectcreators;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectRandomLightnings;
+import ivorius.pandorasbox.effects.PBEffectPositionBased;
+import ivorius.pandorasbox.effects.position.RandomLightningsPositionEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import net.minecraft.util.RandomSource;
@@ -30,7 +31,7 @@ public record PBECSpawnLightning(IValue time, IValue number, DValue range) imple
         int number = this.number.getValue(random);
         double range = this.range.getValue(random);
 
-        return new PBEffectRandomLightnings(time, number, range);
+        return new PBEffectPositionBased(time, number, range, new RandomLightningsPositionEffect());
     }
 
     @Override

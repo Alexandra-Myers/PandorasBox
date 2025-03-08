@@ -6,8 +6,9 @@
 package ivorius.pandorasbox.block;
 
 import com.mojang.serialization.MapCodec;
+import ivorius.pandorasbox.component.PBEffectComponent;
 import ivorius.pandorasbox.init.BlockEntityInit;
-import ivorius.pandorasbox.items.PandorasBoxItem;
+import ivorius.pandorasbox.init.ComponentInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -65,10 +66,13 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult rayTraceResult) {
-        PandorasBoxItem.executeRandomEffect(worldIn, player, pos, false);
-        worldIn.removeBlock(pos, false);
-        worldIn.removeBlockEntity(pos);
+    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult rayTraceResult) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        PBEffectComponent effectComponent = PBEffectComponent.DEFAULT;
+        if (blockEntity != null) effectComponent = blockEntity.components().getOrDefault(ComponentInit.EFFECT_COMPONENT, effectComponent);
+        effectComponent.createEffect(level, player, pos, false);
+        level.removeBlock(pos, false);
+        level.removeBlockEntity(pos);
 
         return InteractionResult.SUCCESS;
     }
@@ -79,13 +83,13 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public void setPlacedBy(Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, LivingEntity livingEntity, @NotNull ItemStack itemStack) {
-        worldIn.setBlock(pos, this.defaultBlockState().setValue(DIRECTION, livingEntity.getDirection().getOpposite()), 2);
-        BlockEntity tileEntity = worldIn.getBlockEntity(pos);
+    public void setPlacedBy(Level level, @NotNull BlockPos pos, @NotNull BlockState state, LivingEntity livingEntity, @NotNull ItemStack itemStack) {
+        level.setBlock(pos, this.defaultBlockState().setValue(DIRECTION, livingEntity.getDirection().getOpposite()), 2);
+        BlockEntity blockEntity = level.getBlockEntity(pos);
 
-        if (tileEntity instanceof PandorasBoxBlockEntity)
-            ((PandorasBoxBlockEntity) tileEntity).setRotationYaw(livingEntity.getYRot() + 180);
-        super.setPlacedBy(worldIn, pos, state, livingEntity, itemStack);
+        if (blockEntity instanceof PandorasBoxBlockEntity)
+            ((PandorasBoxBlockEntity) blockEntity).setRotationYaw(livingEntity.getYRot() + 180);
+        super.setPlacedBy(level, pos, state, livingEntity, itemStack);
     }
 
     @Override

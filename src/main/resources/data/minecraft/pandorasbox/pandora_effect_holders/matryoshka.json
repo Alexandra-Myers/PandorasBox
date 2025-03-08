@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.matryoshka"
+  },
   "effect_creator": {
     "spawn_mode": {
       "value": 0,

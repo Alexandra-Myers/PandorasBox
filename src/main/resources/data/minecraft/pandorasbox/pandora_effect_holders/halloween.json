@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.halloween"
+  },
   "effect_creator": {
     "effects": [
       {

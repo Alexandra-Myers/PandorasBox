@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.epic_thing"
+  },
   "effect_creator": {
     "value_throw": {
       "throw_strength_horizontal": {

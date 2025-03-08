@@ -5,30 +5,45 @@
 
 package ivorius.pandorasbox.effects;
 
+import com.mojang.datafixers.kinds.App;
+import com.mojang.datafixers.util.Function5;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.math.IvMathHelper;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.function.Function;
+
 /**
  * Created by lukas on 31.03.14.
  */
 public abstract class PBEffectRangeBased extends PBEffectNormal {
-    public double range;
-    public int passes;
-    public PBEffectRangeBased() {}
+    public final int unifiedSeed;
+    public final double range;
+    public final int passes;
 
-    public boolean spreadSquared = true;
-    public boolean easeInOut = true;
-
-    public PBEffectRangeBased(int maxTicksAlive, double range, int passes) {
+    public PBEffectRangeBased(int maxTicksAlive, double range, int passes, int unifiedSeed) {
         super(maxTicksAlive);
         this.range = range;
         this.passes = passes;
+        this.unifiedSeed = unifiedSeed;
+    }
+
+    public int getUnifiedSeed() {
+        return unifiedSeed;
+    }
+
+    public double getRange() {
+        return range;
+    }
+
+    public int getPasses() {
+        return passes;
     }
 
     @Override
@@ -42,10 +57,7 @@ public abstract class PBEffectRangeBased extends PBEffectNormal {
     }
 
     protected double getRange(double ratio, int pass) {
-        if (spreadSquared)
-            ratio = Math.sqrt(ratio);
-        if (easeInOut)
-            ratio = IvMathHelper.mixEaseInOut(0.0, 1.0, ratio);
+        ratio = IvMathHelper.mixEaseInOut(0.0, 1.0, Math.sqrt(ratio));
 
         double fullRange = range + (passes - 1) * 5.0;
         double tempRange = ratio * fullRange - pass * 5.0;
@@ -54,25 +66,13 @@ public abstract class PBEffectRangeBased extends PBEffectNormal {
     }
 
     public abstract void generateInRange(Level level, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass);
-
-    @Override
-    public void writeToNBT(CompoundTag compound, RegistryAccess registryAccess) {
-        super.writeToNBT(compound, registryAccess);
-
-        compound.putDouble("range", range);
-        compound.putInt("passes", passes);
-        compound.putBoolean("spreadSquared", spreadSquared);
-        compound.putBoolean("easeInOut", easeInOut);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound, RegistryAccess registryAccess)
-    {
-        super.readFromNBT(compound, registryAccess);
-
-        range = compound.getDouble("range");
-        passes = compound.getInt("passes");
-        spreadSquared = compound.getBoolean("spreadSquared");
-        easeInOut = compound.getBoolean("easeInOut");
+    public static <T extends PBEffectRangeBased, T2> MapCodec<T> produceCodec(Function<RecordCodecBuilder.Instance<T>, App<RecordCodecBuilder.Mu<T>, T2>> function, Function5<Integer, Double, Integer, Integer, T2, T> constructor) {
+        return RecordCodecBuilder.mapCodec(instance ->
+                instance.group(base(),
+                                Codec.DOUBLE.fieldOf("range").forGetter(PBEffectRangeBased::getRange),
+                                Codec.INT.fieldOf("passes").forGetter(PBEffectRangeBased::getPasses),
+                                Codec.INT.fieldOf("unified_seed").forGetter(PBEffectRangeBased::getUnifiedSeed),
+                                function.apply(instance))
+                        .apply(instance, constructor));
     }
 }

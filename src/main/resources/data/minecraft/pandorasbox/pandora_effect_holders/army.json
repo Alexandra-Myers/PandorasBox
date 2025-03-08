@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.army"
+  },
   "effect_creator": {
     "entities": [
       {

@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.aquarium"
+  },
   "effect_creator": {
     "effects": [
       {

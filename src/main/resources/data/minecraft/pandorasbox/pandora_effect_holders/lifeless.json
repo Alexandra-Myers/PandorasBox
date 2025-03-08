@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.lifeless"
+  },
   "effect_creator": {
     "range": {
       "min": 20.0,

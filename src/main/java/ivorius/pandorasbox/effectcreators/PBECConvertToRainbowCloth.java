@@ -9,13 +9,19 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenConvertToRainbowCloth;
+import ivorius.pandorasbox.effects.PBEffectGenerate;
+import ivorius.pandorasbox.effects.generate.SimpleConvertEffect;
+import ivorius.pandorasbox.effects.generate.block_mappers.RangeTaggedMapper;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.Optional;
 
 /**
  * Created by lukas on 30.03.14.
@@ -34,11 +40,11 @@ public record PBECConvertToRainbowCloth(DValue range, IValue rainbowComplexity, 
         int rainbowComplexity = this.rainbowComplexity.getValue(random);
         double ringSize = this.ringSize.getValue(random);
 
-        int[] colors = new int[rainbowComplexity];
+        Integer[] colors = new Integer[rainbowComplexity];
         for (int i = 0; i < colors.length; i++)
             colors[i] = random.nextInt(16);
 
-        return new PBEffectGenConvertToRainbowCloth(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), colors, ringSize);
+        return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.empty(), Collections.singletonList(new RangeTaggedMapper(BlockTags.WOOL, colors, ringSize)), Collections.emptyList(), Collections.emptyList()));
     }
 
     @Override

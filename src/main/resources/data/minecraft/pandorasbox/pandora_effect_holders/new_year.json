@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.new_year"
+  },
   "effect_creator": {
     "entities": [
       {

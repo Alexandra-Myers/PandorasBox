@@ -5,9 +5,8 @@
 
 package ivorius.pandorasbox.items;
 
-import ivorius.pandorasbox.effectcreators.PBECRegistry;
-import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.minecraft.core.BlockPos;
+import ivorius.pandorasbox.component.PBEffectComponent;
+import ivorius.pandorasbox.init.ComponentInit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -28,7 +27,7 @@ public class PandorasBoxItem extends BlockItem {
     @Override
     public @NotNull InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        executeRandomEffect(world, player, player.blockPosition(), true);
+        itemstack.getOrDefault(ComponentInit.EFFECT_COMPONENT, PBEffectComponent.DEFAULT).createEffect(world, player, player.blockPosition(), true);
         if (!player.getAbilities().instabuild) {
             itemstack.shrink(1);
         }
@@ -36,10 +35,5 @@ public class PandorasBoxItem extends BlockItem {
     }
     public @NotNull InteractionResult useOn(@NotNull UseOnContext p_40581_) {
         return this.place(new BlockPlaceContext(p_40581_));
-    }
-
-    public static PandorasBoxEntity executeRandomEffect(Level world, Player player, BlockPos pos, boolean floatAway) {
-        if (world.isClientSide()) return null;
-        return PBECRegistry.spawnPandorasBox(world, world.random, true, player, pos, floatAway);
     }
 }

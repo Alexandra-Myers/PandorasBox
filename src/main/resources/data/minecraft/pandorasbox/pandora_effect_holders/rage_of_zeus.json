@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.rage_of_zeus"
+  },
   "effect_creator": {
     "range": {
       "min": 100.0,

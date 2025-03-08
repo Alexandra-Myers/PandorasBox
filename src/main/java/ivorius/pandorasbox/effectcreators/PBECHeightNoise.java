@@ -9,7 +9,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenHeightNoise;
+import ivorius.pandorasbox.effects.PBEffectGenerate2D;
+import ivorius.pandorasbox.effects.generate.two_dimensional.GenHeightNoise;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ValueHelper;
@@ -39,7 +40,7 @@ public record PBECHeightNoise(DValue range, IValue shift, IValue towerSize, IVal
         int[] shift = ValueHelper.getValueRange(this.shift, random);
         int[] towerSize = ValueHelper.getValueRange(this.towerSize, random);
 
-        return new PBEffectGenHeightNoise(time, range, PandorasBoxHelper.getRandomUnifiedSeed(random), shift[0], shift[1], towerSize[0], towerSize[1], blockSize);
+        return new PBEffectGenerate2D(time, range, 1, PandorasBoxHelper.getRandomUnifiedSeed(random), new GenHeightNoise(shift[0], shift[1], towerSize[0], towerSize[1], blockSize));
     }
 
     @Override

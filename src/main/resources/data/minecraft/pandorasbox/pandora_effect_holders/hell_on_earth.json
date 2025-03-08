@@ -1,4 +1,7 @@
 {
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.hell_on_earth"
+  },
   "effect_creator": {
     "range": {
       "min": 10.0,

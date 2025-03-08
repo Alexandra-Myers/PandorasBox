@@ -1,0 +1,21 @@
+{
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.karma"
+  },
+  "effect_creator": {
+    "time": {
+      "min": 150,
+      "max": 400,
+      "type": "minecraft:linear"
+    },
+    "range": {
+      "min": 15.0,
+      "max": 40.0,
+      "type": "minecraft:linear"
+    },
+    "chance_for_more_effects": 0.15,
+    "type": "pandorasbox:fake_death"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}
