@@ -7,8 +7,9 @@
     "LivingEntityMixin"
   ],
   "client": [
+    "client.GuiMixin",
+    "client.KeyboardInputMixin",
     "client.MinecraftMixin",
-    "client.MouseHandlerMixin",
     "client.SpecialModelRenderersMixin"
   ],
   "injectors": {

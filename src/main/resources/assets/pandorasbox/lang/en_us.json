@@ -108,6 +108,7 @@
     "tag.item.pandorasbox.pandoras_box_misc": "Miscellaneous Box Loot",
 
     "argument.pandora_effect.id.invalid": "Unknown box effect '%s'",
+    "text.pandorasbox.fake": "Just kidding, %s!",
 
     "text.config.pandoras-box.title": "Pandora's Box",
     "text.config.pandoras-box.reset": "Reset",
