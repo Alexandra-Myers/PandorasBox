@@ -1,6 +1,7 @@
 {
     "entity.pandorasbox.pandoras_box": "Pandora's Box",
     "item.pandorasbox.pandoras_box": "Pandora's Box",
+    "block.pandorasbox.pandoras_box": "Pandora's Box",
 
     "component.pandora_effects.random": "Random Effects",
     "component.pandora_effects.holders": "Held Effects: ",
