@@ -8,7 +8,59 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "type": "pandorasbox:convert_to_snow"
+    "convert_effect": {
+      "mappers": [
+        {
+          "targets": [
+            "minecraft:water"
+          ],
+          "to_replace": "minecraft:ice",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "block": "minecraft:snow",
+          "type": "pandorasbox:cover"
+        },
+        {
+          "targets": [
+            "#minecraft:fire"
+          ],
+          "to_replace": "minecraft:air",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "fluid_target": "minecraft:lava",
+          "to_replace": "minecraft:cobblestone",
+          "type": "pandorasbox:chill_lava"
+        },
+        {
+          "targets": [
+            "minecraft:magma_block"
+          ],
+          "to_replace": "minecraft:cobblestone",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "minecraft:lava"
+          ],
+          "to_replace": "minecraft:obsidian",
+          "type": "pandorasbox:convert_simple"
+        }
+      ],
+      "generators": [],
+      "spawners": [
+        {
+          "entity_id": "minecraft:snow_golem",
+          "chance": 0.0025,
+          "type": "pandorasbox:spawn_random"
+        }
+      ],
+      "biome": "minecraft:snowy_plains",
+      "exclusions": []
+    },
+    "chance_for_more_effects": 0.1,
+    "type": "pandorasbox:convert_generic"
   },
   "positive": true,
   "type": "minecraft:positive_or_negative"

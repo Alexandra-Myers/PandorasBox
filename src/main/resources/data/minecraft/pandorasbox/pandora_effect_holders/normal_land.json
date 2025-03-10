@@ -8,7 +8,93 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "type": "pandorasbox:convert_to_overworld"
+    "convert_effect": {
+      "mappers": [
+        {
+          "targets": [
+            "#minecraft:snow",
+            "#minecraft:fire",
+            "minecraft:brown_mushroom",
+            "minecraft:red_mushroom",
+            "minecraft:brown_mushroom_block",
+            "minecraft:red_mushroom_block",
+            "minecraft:mushroom_stem"
+          ],
+          "to_replace": "minecraft:air",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "#pandorasbox:all_terracotta",
+            "#c:stones",
+            "#c:cobblestones",
+            "#minecraft:base_stone_nether",
+            "#minecraft:wither_summon_base_blocks",
+            "#minecraft:nylium",
+            "#minecraft:dirt",
+            "#minecraft:sand",
+            "#c:sandstone/blocks",
+            "minecraft:end_stone"
+          ],
+          "surface_block": "minecraft:grass_block",
+          "under_block": "minecraft:dirt",
+          "discard_surface_chance": 0.0,
+          "type": "pandorasbox:convert_surface"
+        },
+        {
+          "targets": [
+            "#c:obsidians",
+            "minecraft:lava",
+            "minecraft:ice"
+          ],
+          "to_replace": "minecraft:water",
+          "type": "pandorasbox:convert_simple"
+        }
+      ],
+      "generators": [
+        {
+          "feature_set": [
+            "minecraft:patch_grass",
+            "minecraft:patch_sunflower",
+            "minecraft:trees_plains",
+            "minecraft:flower_plain"
+          ],
+          "placed": "minecraft:grass_block",
+          "force": true,
+          "base_chance": 0.05,
+          "block_set": [
+            "minecraft:grass_block"
+          ],
+          "type": "pandorasbox:generate_feature"
+        }
+      ],
+      "spawners": [
+        {
+          "entity_id": "minecraft:pig",
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:cow",
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:sheep",
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:chicken",
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        }
+      ],
+      "biome": "minecraft:sunflower_plains",
+      "exclusions": []
+    },
+    "chance_for_more_effects": 0.1,
+    "type": "pandorasbox:convert_generic"
   },
   "positive": true,
   "type": "minecraft:positive_or_negative"

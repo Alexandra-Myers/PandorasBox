@@ -8,7 +8,75 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "type": "pandorasbox:convert_to_end"
+    "convert_effect": {
+      "mappers": [
+        {
+          "targets": [
+            "#minecraft:leaves",
+            "#minecraft:flowers",
+            "#minecraft:snow",
+            "minecraft:ice",
+            "minecraft:water",
+            "minecraft:vine",
+            "minecraft:short_grass",
+            "minecraft:tall_grass",
+            "minecraft:fern",
+            "minecraft:large_fern",
+            "minecraft:seagrass",
+            "minecraft:tall_seagrass",
+            "minecraft:brown_mushroom_block",
+            "minecraft:red_mushroom_block",
+            "minecraft:mushroom_stem",
+            "#minecraft:logs"
+          ],
+          "to_replace": "minecraft:obsidian",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "minecraft:brown_mushroom",
+            "minecraft:red_mushroom"
+          ],
+          "to_replace": "minecraft:air",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "to_replace": "minecraft:end_stone",
+          "type": "pandorasbox:convert_all"
+        }
+      ],
+      "generators": [
+        {
+          "feature_set": [
+            "minecraft:chorus_plant"
+          ],
+          "placed": "minecraft:end_stone",
+          "force": false,
+          "base_chance": 0.02,
+          "block_set": [
+            "#c:obsidians",
+            "minecraft:chorus_flower",
+            "minecraft:chorus_plant"
+          ],
+          "type": "pandorasbox:generate_feature"
+        }
+      ],
+      "spawners": [
+        {
+          "entity_id": "minecraft:enderman",
+          "chance": 0.0025,
+          "type": "pandorasbox:spawn_random"
+        }
+      ],
+      "biome": "minecraft:end_barrens",
+      "exclusions": [
+        "#c:obsidians",
+        "minecraft:chorus_plant",
+        "minecraft:chorus_flower"
+      ]
+    },
+    "chance_for_more_effects": 0.1,
+    "type": "pandorasbox:convert_generic"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

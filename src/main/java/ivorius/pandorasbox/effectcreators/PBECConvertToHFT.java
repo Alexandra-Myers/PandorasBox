@@ -7,6 +7,7 @@ package ivorius.pandorasbox.effectcreators;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
@@ -18,6 +19,9 @@ import ivorius.pandorasbox.effects.generate.block_mappers.SetAllSolid;
 import ivorius.pandorasbox.effects.generate.block_mappers.SimpleConvertMapper;
 import ivorius.pandorasbox.effects.generate.feature_generators.GenerateHFT;
 import ivorius.pandorasbox.random.DValue;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -36,14 +40,17 @@ import java.util.Optional;
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECConvertToHFT(DValue range) implements PBEffectCreator {
+public record PBECConvertToHFT(DValue range, TagKey<Block> tag) implements PBEffectCreator {
     public static final Either<Block, TagKey<Block>>[] EXCLUDED_TARGETS = new Either[]{Either.right(BlockTags.WOOL), Either.right(PandorasBox.ALL_TERRACOTTA)};
     public static final List<BlockMapper> HFT_MAPPERS;
     static {
         HFT_MAPPERS = new ArrayList<>();
         HFT_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.left(Blocks.LAVA), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES)}, Blocks.AIR));
     }
-    public static final MapCodec<PBECConvertToHFT> CODEC = DValue.CODEC.fieldOf("range").xmap(PBECConvertToHFT::new, PBECConvertToHFT::range);
+    public static final MapCodec<PBECConvertToHFT> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(DValue.CODEC.fieldOf("range").forGetter(PBECConvertToHFT::range),
+                            TagKey.codec(Registries.BLOCK).optionalFieldOf("tag", PandorasBox.ALL_TERRACOTTA).forGetter(PBECConvertToHFT::tag))
+                    .apply(instance, PBECConvertToHFT::new));
 
     @Override
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
@@ -52,10 +59,10 @@ public record PBECConvertToHFT(DValue range) implements PBEffectCreator {
 
         Integer[] metaTypes = new Integer[random.nextInt(3) + 2];
         for (int i = 0; i < metaTypes.length; i++) {
-            metaTypes[i] = random.nextInt(32);
+            metaTypes[i] = random.nextInt(BuiltInRegistries.BLOCK.get(tag).map(HolderSet.ListBacked::size).orElse(32));
         }
         List<BlockMapper> adjMappers = new ArrayList<>(HFT_MAPPERS);
-        adjMappers.add(new SetAllSolid(Blocks.AIR, Optional.of(new RandomTaggedMapper(Optional.empty(), PandorasBox.ALL_TERRACOTTA, metaTypes))));
+        adjMappers.add(new SetAllSolid(Blocks.AIR, Optional.of(new RandomTaggedMapper(Optional.empty(), tag, metaTypes))));
 
         return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.of(Biomes.CHERRY_GROVE), EXCLUDED_TARGETS, adjMappers, Collections.singletonList(new GenerateHFT(metaTypes)), Collections.emptyList()));
     }

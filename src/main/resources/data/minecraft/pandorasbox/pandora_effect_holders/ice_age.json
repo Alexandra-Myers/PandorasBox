@@ -8,7 +8,62 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "type": "pandorasbox:convert_to_ice"
+    "convert_effect": {
+      "mappers": [
+        {
+          "targets": [
+            "minecraft:water"
+          ],
+          "to_replace": "minecraft:ice",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "block": "minecraft:snow",
+          "type": "pandorasbox:cover"
+        },
+        {
+          "targets": [
+            "#minecraft:fire"
+          ],
+          "to_replace": "minecraft:air",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "fluid_target": "minecraft:lava",
+          "to_replace": "minecraft:ice",
+          "type": "pandorasbox:chill_lava"
+        },
+        {
+          "targets": [
+            "minecraft:magma_block"
+          ],
+          "to_replace": "minecraft:ice",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "minecraft:lava"
+          ],
+          "to_replace": "minecraft:packed_ice",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "type": "pandorasbox:convert_ice"
+        }
+      ],
+      "generators": [],
+      "spawners": [
+        {
+          "entity_id": "minecraft:snow_golem",
+          "chance": 0.0025,
+          "type": "pandorasbox:spawn_random"
+        }
+      ],
+      "biome": "minecraft:frozen_peaks",
+      "exclusions": []
+    },
+    "chance_for_more_effects": 0.1,
+    "type": "pandorasbox:convert_generic"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

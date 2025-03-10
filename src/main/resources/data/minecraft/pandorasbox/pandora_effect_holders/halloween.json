@@ -10,7 +10,35 @@
           "max": 80.0,
           "type": "minecraft:linear"
         },
-        "type": "pandorasbox:convert_to_halloween"
+        "convert_effect": {
+          "mappers": [
+            {
+              "type": "pandorasbox:halloween"
+            }
+          ],
+          "generators": [],
+          "spawners": [
+            {
+              "entity_id": "minecraft:zombified_piglin",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            },
+            {
+              "entity_id": "minecraft:enderman",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            },
+            {
+              "entity_id": "minecraft:phantom",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            }
+          ],
+          "biome": "minecraft:soul_sand_valley",
+          "exclusions": []
+        },
+        "chance_for_more_effects": 0.1,
+        "type": "pandorasbox:convert_generic"
       },
       {
         "time": {

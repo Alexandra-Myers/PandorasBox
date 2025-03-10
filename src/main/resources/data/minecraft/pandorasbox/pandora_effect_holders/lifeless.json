@@ -8,7 +8,81 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "type": "pandorasbox:convert_to_lifeless"
+    "convert_effect": {
+      "mappers": [
+        {
+          "type": "pandorasbox:dryness"
+        },
+        {
+          "targets": [
+            "minecraft:ice",
+            "minecraft:water",
+            "minecraft:lava",
+            "#minecraft:snow",
+            "#minecraft:logs",
+            "#minecraft:leaves",
+            "minecraft:vine",
+            "minecraft:brown_mushroom",
+            "minecraft:red_mushroom",
+            "minecraft:brown_mushroom_block",
+            "minecraft:red_mushroom_block",
+            "minecraft:mushroom_stem"
+          ],
+          "to_replace": "minecraft:air",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "#minecraft:flowers",
+            "minecraft:short_grass",
+            "minecraft:tall_grass",
+            "minecraft:fern",
+            "minecraft:large_fern",
+            "minecraft:seagrass",
+            "minecraft:tall_seagrass"
+          ],
+          "to_replace": "minecraft:dead_bush",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "#minecraft:nylium",
+            "#minecraft:dirt",
+            "#minecraft:wool",
+            "minecraft:cake"
+          ],
+          "to_replace": "minecraft:dirt",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "#pandorasbox:all_terracotta",
+            "#c:stones",
+            "#c:cobblestones",
+            "#minecraft:base_stone_nether",
+            "#minecraft:wither_summon_base_blocks",
+            "#c:sandstone/blocks",
+            "minecraft:end_stone"
+          ],
+          "to_replace": "minecraft:stone",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "#minecraft:wither_summon_base_blocks",
+            "#minecraft:sand"
+          ],
+          "to_replace": "minecraft:sand",
+          "type": "pandorasbox:convert_simple"
+        }
+      ],
+      "generators": [],
+      "spawners": [],
+      "biome": "minecraft:badlands",
+      "exclusions": []
+    },
+    "chance_for_more_effects": 0.1,
+    "type": "pandorasbox:convert_generic"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

@@ -8,7 +8,100 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "type": "pandorasbox:convert_to_mushroom"
+    "convert_effect": {
+      "mappers": [
+        {
+          "targets": [
+            "#minecraft:logs",
+            "#minecraft:leaves",
+            "#minecraft:flowers",
+            "#minecraft:snow",
+            "#minecraft:fire",
+            "minecraft:short_grass",
+            "minecraft:tall_grass",
+            "minecraft:fern",
+            "minecraft:large_fern",
+            "minecraft:seagrass",
+            "minecraft:tall_seagrass"
+          ],
+          "to_replace": "minecraft:air",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "#pandorasbox:all_terracotta",
+            "#c:stones",
+            "#c:cobblestones",
+            "#minecraft:base_stone_nether",
+            "#minecraft:wither_summon_base_blocks",
+            "#minecraft:nylium",
+            "#minecraft:dirt",
+            "#minecraft:sand",
+            "#c:sandstone/blocks",
+            "minecraft:end_stone"
+          ],
+          "surface_block": "minecraft:mycelium",
+          "under_block": "minecraft:dirt",
+          "discard_surface_chance": 0.0,
+          "type": "pandorasbox:convert_surface"
+        },
+        {
+          "targets": [
+            "#c:obsidians",
+            "minecraft:lava",
+            "minecraft:ice"
+          ],
+          "to_replace": "minecraft:water",
+          "type": "pandorasbox:convert_simple"
+        }
+      ],
+      "generators": [
+        {
+          "feature_set": [
+            "minecraft:huge_brown_mushroom",
+            "minecraft:huge_red_mushroom"
+          ],
+          "placed": "minecraft:mycelium",
+          "force": false,
+          "base_chance": 0.03,
+          "block_set": [
+            "#c:stones",
+            "minecraft:red_mushroom_block",
+            "minecraft:brown_mushroom_block",
+            "minecraft:mushroom_stem"
+          ],
+          "type": "pandorasbox:generate_feature"
+        },
+        {
+          "feature_set": [
+            "minecraft:patch_red_mushroom",
+            "minecraft:patch_brown_mushroom",
+            "minecraft:mushroom_island_vegetation"
+          ],
+          "placed": "minecraft:mycelium",
+          "force": false,
+          "base_chance": 0.04,
+          "block_set": [
+            "#c:stones",
+            "minecraft:red_mushroom_block",
+            "minecraft:brown_mushroom_block",
+            "minecraft:mushroom_stem"
+          ],
+          "type": "pandorasbox:generate_feature"
+        }
+      ],
+      "spawners": [
+        {
+          "entity_id": "minecraft:mooshroom",
+          "chance": 0.0025,
+          "type": "pandorasbox:spawn_random"
+        }
+      ],
+      "biome": "minecraft:mushroom_fields",
+      "exclusions": []
+    },
+    "chance_for_more_effects": 0.1,
+    "type": "pandorasbox:convert_generic"
   },
   "positive": true,
   "type": "minecraft:positive_or_negative"

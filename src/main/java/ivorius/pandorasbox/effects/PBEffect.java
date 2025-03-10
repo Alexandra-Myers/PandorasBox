@@ -22,6 +22,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DoubleHighBlockItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -39,41 +40,41 @@ public abstract class PBEffect {
             .dispatch(PBEffect::codec, mapCodec -> mapCodec);
     public static final StreamCodec<RegistryFriendlyByteBuf, PBEffect> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
 
-    public static boolean setBlockToAirSafe(Level world, BlockPos pos) {
-        boolean safeDest = world.getBlockState(pos).isAir() || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
-        return safeDest && world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+    public static boolean setBlockToAirSafe(Level level, BlockPos pos) {
+        boolean safeDest = level.getBlockState(pos).isAir() || level.getBlockState(pos).getDestroySpeed(level, pos) >= 0f;
+        return safeDest && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
     }
 
-    public static boolean setBlockSafe(Level world, BlockPos pos, BlockState state) {
-        boolean safeDest = world.getBlockState(pos).isAir() || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
-        boolean safeSrc = state.isAir()|| state.getDestroySpeed(world, pos) >= 0f;
+    public static boolean setBlockSafe(Level level, BlockPos pos, BlockState state) {
+        boolean safeDest = level.getBlockState(pos).isAir() || level.getBlockState(pos).getDestroySpeed(level, pos) >= 0f;
+        boolean safeSrc = state.isAir() || state.getDestroySpeed(level, pos) >= 0f;
 
-        return safeDest && safeSrc && world.setBlockAndUpdate(pos, state);
+        return safeDest && safeSrc && level.setBlockAndUpdate(pos, state);
     }
-    public static boolean setBlockUnsafeSrc(Level world, BlockPos pos, BlockState state) {
-        boolean safeDest = world.getBlockState(pos).isAir() || world.getBlockState(pos).getDestroySpeed(world, pos) >= 0f;
+    public static boolean setBlockUnsafeSrc(Level level, BlockPos pos, BlockState state) {
+        boolean safeDest = level.getBlockState(pos).isAir() || level.getBlockState(pos).getDestroySpeed(level, pos) >= 0f;
 
-        return safeDest && world.setBlockAndUpdate(pos, state);
-    }
-
-    public static boolean setBlockVarying(Level world, BlockPos pos, Block block, int unified) {
-        return setBlockSafe(world, pos, PandorasBoxHelper.getRandomBlockState(world.random, block, unified));
+        return safeDest && level.setBlockAndUpdate(pos, state);
     }
 
-    public static boolean setBlockVaryingUnsafeSrc(Level world, BlockPos pos, Block block, int unified) {
-        return setBlockUnsafeSrc(world, pos, PandorasBoxHelper.getRandomBlockState(world.random, block, unified));
+    public static boolean setBlockVarying(Level level, BlockPos pos, Block block, int unified) {
+        return setBlockSafe(level, pos, PandorasBoxHelper.getRandomBlockState(level.random, block, unified));
     }
 
-    public static Player getRandomNearbyPlayer(Level world, PandorasBoxEntity box) {
-        List<Player> players = world.getEntitiesOfClass(Player.class, box.getBoundingBox().expandTowards(30.0, 30.0, 30.0));
+    public static boolean setBlockVaryingUnsafeSrc(Level level, BlockPos pos, Block block, int unified) {
+        return setBlockUnsafeSrc(level, pos, PandorasBoxHelper.getRandomBlockState(level.random, block, unified));
+    }
+
+    public static Player getRandomNearbyPlayer(Level level, PandorasBoxEntity box) {
+        List<Player> players = level.getEntitiesOfClass(Player.class, box.getBoundingBox().expandTowards(30.0, 30.0, 30.0));
         if (players.isEmpty())
             return null;
         return players.get(box.getRandom().nextInt(players.size()));
     }
 
-    public static Player getPlayer(Level world, PandorasBoxEntity box) {
+    public static Player getPlayer(Level level, PandorasBoxEntity box) {
         Player player = box.getBoxOwner();
-        return player == null ? getRandomNearbyPlayer(world, box) : player;
+        return player == null ? getRandomNearbyPlayer(level, box) : player;
     }
 
     @SafeVarargs
@@ -88,40 +89,40 @@ public abstract class PBEffect {
         return false;
     }
 
-    public static Entity lazilySpawnEntity(Level world, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos) {
-        if (random.nextFloat() < chance && !world.isClientSide()) {
-            return SpawnEntityIDListEffect.createEntity(world, box, random, entityID, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+    public static Entity lazilySpawnEntity(Level level, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos) {
+        if (random.nextFloat() < chance && !level.isClientSide()) {
+            return SpawnEntityIDListEffect.createEntity(level, box, random, entityID, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         }
 
         return null;
     }
-    public static Entity lazilySpawnFlyingEntity(Level world, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos) {
-        Entity entity =  lazilySpawnEntity(world, box, random, entityID, chance, pos);
+    public static Entity lazilySpawnFlyingEntity(Level level, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos) {
+        Entity entity =  lazilySpawnEntity(level, box, random, entityID, chance, pos);
         if(entity != null)
-            world.addFreshEntity(entity);
+            level.addFreshEntity(entity);
         return entity;
     }
 
-    public static boolean canSpawnEntity(Level world, BlockState block, BlockPos pos, Entity entity) {
+    public static boolean canSpawnEntity(Level level, BlockState block, BlockPos pos, Entity entity) {
         if(entity == null) return false;
-        if (world.isClientSide())
+        if (level.isClientSide())
             return false;
 
         if (block.getLightBlock() > 0)
             return false;
-        if(world.loadedAndEntityCanStandOn(pos.below(), entity) && !world.isClientSide()) {
-            world.addFreshEntity(entity);
+        if(level.loadedAndEntityCanStandOn(pos.below(), entity) && !level.isClientSide()) {
+            level.addFreshEntity(entity);
             return true;
         }
 
         return false;
     }
 
-    public static boolean canSpawnFlyingEntity(Level world, BlockState block, BlockPos pos) {
-        if (world.isClientSide())
+    public static boolean canSpawnFlyingEntity(Level level, BlockState block, BlockPos pos) {
+        if (level.isClientSide())
             return false;
 
-        return !(block.getLightBlock() > 0 || world.getBlockState(pos.below()).getLightBlock() > 0 || world.getBlockState(pos.below(2)).getLightBlock() > 0);
+        return !(block.getLightBlock() > 0 || level.getBlockState(pos.below()).getLightBlock() > 0 || level.getBlockState(pos.below(2)).getLightBlock() > 0);
     }
 
     public static void combinedEffectDuration(LivingEntity entity, MobEffectInstance[] mobEffects) {

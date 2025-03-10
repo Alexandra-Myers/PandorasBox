@@ -8,7 +8,93 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "type": "pandorasbox:convert_to_desert"
+    "convert_effect": {
+      "mappers": [
+        {
+          "targets": [
+            "#minecraft:leaves",
+            "#minecraft:flowers",
+            "#minecraft:snow",
+            "minecraft:ice",
+            "minecraft:water",
+            "minecraft:vine",
+            "minecraft:short_grass",
+            "minecraft:tall_grass",
+            "minecraft:fern",
+            "minecraft:large_fern",
+            "minecraft:seagrass",
+            "minecraft:tall_seagrass",
+            "minecraft:brown_mushroom",
+            "minecraft:brown_mushroom_block",
+            "minecraft:red_mushroom",
+            "minecraft:red_mushroom_block",
+            "minecraft:mushroom_stem",
+            "#minecraft:logs"
+          ],
+          "to_replace": "minecraft:air",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "#minecraft:sand",
+            "#minecraft:wither_summon_base_blocks",
+            "#minecraft:nylium",
+            "#minecraft:dirt",
+            "minecraft:netherrack"
+          ],
+          "to_replace": "minecraft:sand",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "#pandorasbox:all_terracotta",
+            "#c:stones",
+            "#minecraft:base_stone_nether",
+            "#c:sandstone/blocks",
+            "minecraft:end_stone"
+          ],
+          "to_replace": "minecraft:sandstone",
+          "type": "pandorasbox:convert_simple"
+        }
+      ],
+      "generators": [
+        {
+          "feature_set": [
+            "minecraft:patch_cactus"
+          ],
+          "placed": "minecraft:sand",
+          "force": false,
+          "base_chance": 0.03,
+          "block_set": [
+            "#c:sandstone/blocks"
+          ],
+          "type": "pandorasbox:generate_feature"
+        },
+        {
+          "feature_set": [
+            "minecraft:patch_dead_bush"
+          ],
+          "placed": "minecraft:sand",
+          "force": false,
+          "base_chance": 0.05,
+          "block_set": [
+            "#c:sandstone/blocks"
+          ],
+          "type": "pandorasbox:generate_feature"
+        }
+      ],
+      "spawners": [
+        {
+          "entity_id": "minecraft:camel",
+          "chance": 0.0025,
+          "type": "pandorasbox:spawn_random"
+        }
+      ],
+      "biome": "minecraft:desert",
+      "exclusions": []
+    },
+    "chance_for_more_effects": 0.1,
+    "type": "pandorasbox:convert_generic"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

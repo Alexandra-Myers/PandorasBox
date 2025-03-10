@@ -10,7 +10,61 @@
           "max": 80.0,
           "type": "minecraft:linear"
         },
-        "type": "pandorasbox:convert_to_heavenly"
+        "convert_effect": {
+          "mappers": [
+            {
+              "targets": [
+                "#minecraft:snow",
+                "#minecraft:fire",
+                "#minecraft:flowers",
+                "minecraft:short_grass",
+                "minecraft:tall_grass",
+                "minecraft:fern",
+                "minecraft:large_fern",
+                "minecraft:seagrass",
+                "minecraft:tall_seagrass"
+              ],
+              "to_replace": "minecraft:air",
+              "type": "pandorasbox:convert_simple"
+            },
+            {
+              "targets": [
+                "#pandorasbox:all_terracotta",
+                "#c:stones",
+                "#c:cobblestones",
+                "#minecraft:base_stone_nether",
+                "#minecraft:wither_summon_base_blocks",
+                "#minecraft:nylium",
+                "#minecraft:dirt",
+                "#minecraft:sand",
+                "#c:sandstone/blocks",
+                "minecraft:end_stone"
+              ],
+              "type": "pandorasbox:heavenly"
+            },
+            {
+              "targets": [
+                "#c:obsidians",
+                "minecraft:lava",
+                "minecraft:ice"
+              ],
+              "to_replace": "minecraft:water",
+              "type": "pandorasbox:convert_simple"
+            }
+          ],
+          "generators": [],
+          "spawners": [
+            {
+              "entity_id": "minecraft:sheep",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            }
+          ],
+          "biome": "minecraft:lush_caves",
+          "exclusions": []
+        },
+        "chance_for_more_effects": 0.1,
+        "type": "pandorasbox:convert_generic"
       },
       {
         "number": {

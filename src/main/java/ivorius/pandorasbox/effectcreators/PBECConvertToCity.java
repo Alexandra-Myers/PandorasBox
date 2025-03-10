@@ -73,7 +73,7 @@ public record PBECConvertToCity(DValue range, List<WeightedEntity> entityIDs) im
         List<BlockMapper> adjMappers = new ArrayList<>(CITY_MAPPERS);
         adjMappers.set(1, new CityMapper(CITY_TARGETS, entities));
 
-        return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.of(Biomes.PLAINS), adjMappers, Collections.emptyList(), CITY_SPAWNERS));
+        return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.of(Biomes.PLAINS), adjMappers, Collections.emptyList(), CITY_SPAWNERS, null));
     }
 
     @Override

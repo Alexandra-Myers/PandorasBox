@@ -51,7 +51,7 @@ public record PBECConvertToFarm(DValue range, DValue cropChance) implements PBEf
         double cropChance = this.cropChance.getValue(random);
         int time = Mth.floor((random.nextDouble() * 7.0 + 3.0) * range);
 
-        return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.of(Biomes.PLAINS), List.of(new CreateFarmMapper(cropChance)), Collections.emptyList(), FARM_SPAWNERS));
+        return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.of(Biomes.PLAINS), List.of(new CreateFarmMapper(cropChance)), Collections.emptyList(), FARM_SPAWNERS, null));
     }
 
     @Override
