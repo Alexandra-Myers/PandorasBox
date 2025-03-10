@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("unchecked")
 public class PBECConversions {
     public static final SimpleConvertEffect CHRISTMAS;
     public static final SimpleConvertEffect DESERT;
@@ -47,7 +48,7 @@ public class PBECConversions {
         List<EntitySpawner> spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("pbspecial_hogfather", 1.0f / (150 * 150)));
         spawners.add(new SpawnRandom("snow_golem", 1.0f / (20 * 20)));
-        CHRISTMAS = new SimpleConvertEffect(Optional.of(Biomes.SNOWY_TAIGA), mappers, Collections.emptyList(), spawners, null);
+        CHRISTMAS = new SimpleConvertEffect(Optional.of(Biomes.SNOWY_TAIGA), mappers, Collections.emptyList(), spawners);
 
         mappers = new ArrayList<>();
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.LEAVES), Either.right(BlockTags.FLOWERS), Either.right(BlockTags.SNOW), Either.left(Blocks.ICE), Either.left(Blocks.WATER), Either.left(Blocks.VINE), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.RED_MUSHROOM_BLOCK), Either.left(Blocks.MUSHROOM_STEM), Either.right(BlockTags.LOGS)}, Blocks.AIR));
@@ -57,7 +58,7 @@ public class PBECConversions {
         spawners.add(new SpawnRandom("camel", 1.0f / (20 * 20)));
         generators.add(new GenerateGeneric(0.03, new Either[] {Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS)}, VegetationFeatures.PATCH_CACTUS, Blocks.SAND));
         generators.add(new GenerateGeneric(0.05, new Either[] {Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS)}, VegetationFeatures.PATCH_DEAD_BUSH, Blocks.SAND));
-        DESERT = new SimpleConvertEffect(Optional.of(Biomes.DESERT), mappers, generators, spawners, null);
+        DESERT = new SimpleConvertEffect(Optional.of(Biomes.DESERT), mappers, generators, spawners);
 
         mappers = new ArrayList<>();
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.LEAVES), Either.right(BlockTags.FLOWERS), Either.right(BlockTags.SNOW), Either.left(Blocks.ICE), Either.left(Blocks.WATER), Either.left(Blocks.VINE), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK), Either.left(Blocks.MUSHROOM_STEM), Either.right(BlockTags.LOGS)}, Blocks.OBSIDIAN));
@@ -67,7 +68,7 @@ public class PBECConversions {
         spawners.add(new SpawnRandom("enderman", 1.0f / (20 * 20)));
         generators = new ArrayList<>();
         generators.add(new GenerateGeneric(0.02, new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.CHORUS_FLOWER), Either.left(Blocks.CHORUS_PLANT)}, EndFeatures.CHORUS_PLANT, Blocks.END_STONE));
-        END = new SimpleConvertEffect(Optional.of(Biomes.END_BARRENS), mappers, generators, spawners, null);
+        END = new SimpleConvertEffect(Optional.of(Biomes.END_BARRENS), mappers, generators, spawners);
 
         mappers = new ArrayList<>();
         mappers.add(new HalloweenMapper());
@@ -75,7 +76,7 @@ public class PBECConversions {
         spawners.add(new SpawnRandom("zombified_piglin", 1.0f / (20 * 20)));
         spawners.add(new SpawnRandom("enderman", 1.0f / (20 * 20)));
         spawners.add(new SpawnRandom("phantom", 1.0f / (20 * 20)));
-        HALLOWEEN = new SimpleConvertEffect(Optional.of(Biomes.SOUL_SAND_VALLEY), mappers, Collections.emptyList(), spawners, null);
+        HALLOWEEN = new SimpleConvertEffect(Optional.of(Biomes.SOUL_SAND_VALLEY), mappers, Collections.emptyList(), spawners);
 
         mappers = new ArrayList<>();
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.SNOW), Either.right(BlockTags.FIRE), Either.right(BlockTags.FLOWERS), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS)}, Blocks.AIR));
@@ -83,7 +84,7 @@ public class PBECConversions {
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
         spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("sheep", 1.0f / (20 * 20)));
-        HEAVENLY = new SimpleConvertEffect(Optional.of(Biomes.LUSH_CAVES), mappers, Collections.emptyList(), spawners, null);
+        HEAVENLY = new SimpleConvertEffect(Optional.of(Biomes.LUSH_CAVES), mappers, Collections.emptyList(), spawners);
 
         mappers = new ArrayList<>();
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.SNOW), Either.right(BlockTags.FIRE),
@@ -98,7 +99,7 @@ public class PBECConversions {
         spawners.add(new SpawnRandom("pbspecial_colorful_sheep", 1.0f / (20 * 20)));
         generators = new ArrayList<>();
         generators.add(new GenerateHomo());
-        HOMO = new SimpleConvertEffect(Optional.of(Biomes.FLOWER_FOREST), mappers, generators, spawners, null);
+        HOMO = new SimpleConvertEffect(Optional.of(Biomes.FLOWER_FOREST), mappers, generators, spawners);
 
         mappers = new ArrayList<>();
         mappers.add(new SimpleConvertMapper(new Either[] {Either.left(Blocks.WATER)}, Blocks.ICE));
@@ -110,7 +111,7 @@ public class PBECConversions {
         mappers.add(new IceMapper());
         spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("snow_golem", 1.0f / (20 * 20)));
-        ICE = new SimpleConvertEffect(Optional.of(Biomes.FROZEN_PEAKS), mappers, Collections.emptyList(), spawners, null);
+        ICE = new SimpleConvertEffect(Optional.of(Biomes.FROZEN_PEAKS), mappers, Collections.emptyList(), spawners);
 
         mappers = new ArrayList<>();
         mappers.add(new DryMapper());
@@ -119,7 +120,7 @@ public class PBECConversions {
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT), Either.right(BlockTags.WOOL), Either.left(Blocks.CAKE)}, Blocks.DIRT));
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.BASE_STONE_NETHER), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE)}, Blocks.STONE));
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.SAND)}, Blocks.SAND));
-        LIFELESS = new SimpleConvertEffect(Optional.of(Biomes.BADLANDS), mappers, Collections.emptyList(), Collections.emptyList(), null);
+        LIFELESS = new SimpleConvertEffect(Optional.of(Biomes.BADLANDS), mappers, Collections.emptyList(), Collections.emptyList());
 
         mappers = new ArrayList<>();
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.FLOWERS),
@@ -135,7 +136,7 @@ public class PBECConversions {
         generators = new ArrayList<>();
         generators.add(new GenerateGeneric(0.03, new Either[] {Either.right(ConventionalBlockTags.STONES), Either.left(Blocks.RED_MUSHROOM_BLOCK), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.MUSHROOM_STEM)}, new ResourceKey[] {TreeFeatures.HUGE_BROWN_MUSHROOM, TreeFeatures.HUGE_RED_MUSHROOM}, Blocks.MYCELIUM, false));
         generators.add(new GenerateGeneric(0.04, new Either[] {Either.right(ConventionalBlockTags.STONES), Either.left(Blocks.RED_MUSHROOM_BLOCK), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.MUSHROOM_STEM)}, new ResourceKey[] {VegetationFeatures.PATCH_RED_MUSHROOM, VegetationFeatures.PATCH_BROWN_MUSHROOM, VegetationFeatures.MUSHROOM_ISLAND_VEGETATION}, Blocks.MYCELIUM, false));
-        MUSHROOM = new SimpleConvertEffect(Optional.of(Biomes.MUSHROOM_FIELDS), mappers, generators, spawners, null);
+        MUSHROOM = new SimpleConvertEffect(Optional.of(Biomes.MUSHROOM_FIELDS), mappers, generators, spawners);
 
         mappers = new ArrayList<>();
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.SNOW), Either.right(BlockTags.FIRE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM),
@@ -152,6 +153,6 @@ public class PBECConversions {
         spawners.add(new SpawnRandom("chicken", 1.0f / (30 * 30)));
         generators = new ArrayList<>();
         generators.add(new GenerateGeneric(0.05, new Either[] {Either.left(Blocks.GRASS_BLOCK)}, new ResourceKey[] {VegetationFeatures.PATCH_GRASS, VegetationFeatures.PATCH_SUNFLOWER, VegetationFeatures.TREES_PLAINS, VegetationFeatures.FLOWER_PLAIN}, Blocks.GRASS_BLOCK, true));
-        OVERWORLD = new SimpleConvertEffect(Optional.of(Biomes.SUNFLOWER_PLAINS), mappers, generators, spawners, null);
+        OVERWORLD = new SimpleConvertEffect(Optional.of(Biomes.SUNFLOWER_PLAINS), mappers, generators, spawners);
     }
 }

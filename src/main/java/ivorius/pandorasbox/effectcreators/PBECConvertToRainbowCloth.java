@@ -50,7 +50,7 @@ public record PBECConvertToRainbowCloth(DValue range, IValue rainbowComplexity, 
         for (int i = 0; i < colors.length; i++)
             colors[i] = random.nextInt(BuiltInRegistries.BLOCK.get(tag).map(HolderSet.ListBacked::size).orElse(16));
 
-        return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.empty(), Collections.singletonList(new RangeTaggedMapper(tag, colors, ringSize)), Collections.emptyList(), Collections.emptyList(), null));
+        return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.empty(), Collections.singletonList(new RangeTaggedMapper(tag, colors, ringSize)), Collections.emptyList(), Collections.emptyList()));
     }
 
     @Override
