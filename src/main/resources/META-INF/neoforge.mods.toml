@@ -1,0 +1,56 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[accessTransformers]]
+## The file is relative to the output directory of the resources, or the root path inside the jar when compiled
+## The 'resources' directory represents the root output directory of the resources
+file="META-INF/accesstransformer.cfg"
+
+[properties]
+"connector:placeholder" = true
+
+[[mods]]
+modId = "pandorasbox"
+version = "${version}"
+displayName = "Pandora's Box"
+authors = "Ivorius, Alexandra"
+description = '''
+Adds Pandora's Box to the game. What does it do? There's only one way to find out...
+'''
+# A file name (in the root of the mod JAR) containing a logo for display
+logoFile="icon.png" #optional
+# A text field displayed in the mod UI
+credits="Ivorius: Original Creator; Alexandra: Development, Visuals" #optional
+
+[[dependencies.pandorasbox]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1.131,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.pandorasbox]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1,1.21.2)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.pandorasbox]]
+modId = "atlas-core"
+type = "required"
+versionRange = "[1.1.2-BETA-1-1.21.1,)"
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependencies.pandorasbox]]
+modId = "fabric-api"
+mandatory = true
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"
+
+[[mixins]]
+config = "pandorasbox.mixins.json"
