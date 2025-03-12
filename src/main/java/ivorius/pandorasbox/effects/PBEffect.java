@@ -22,7 +22,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DoubleHighBlockItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -108,7 +107,7 @@ public abstract class PBEffect {
         if (level.isClientSide())
             return false;
 
-        if (block.getLightBlock() > 0)
+        if (block.getLightBlock(level, pos) > 0)
             return false;
         if(level.loadedAndEntityCanStandOn(pos.below(), entity) && !level.isClientSide()) {
             level.addFreshEntity(entity);
@@ -122,7 +121,7 @@ public abstract class PBEffect {
         if (level.isClientSide())
             return false;
 
-        return !(block.getLightBlock() > 0 || level.getBlockState(pos.below()).getLightBlock() > 0 || level.getBlockState(pos.below(2)).getLightBlock() > 0);
+        return !(block.getLightBlock(level, pos) > 0 || level.getBlockState(pos.below()).getLightBlock(level, pos) > 0 || level.getBlockState(pos.below(2)).getLightBlock(level, pos) > 0);
     }
 
     public static void combinedEffectDuration(LivingEntity entity, MobEffectInstance[] mobEffects) {

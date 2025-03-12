@@ -40,6 +40,11 @@ import java.util.stream.Stream;
 public class PandorasBox implements ModInitializer {
     public static final String MOD_ID = "pandorasbox";
     public static final TagKey<Item> PANDORA_ITEMS = register(Registries.ITEM, "pandoras_box_misc");
+    public static final TagKey<Item> PIE_FOODS = registerC(Registries.ITEM, "foods/pie");
+    public static final TagKey<Item> BREWING_FUEL = registerVanilla(Registries.ITEM, "brewing_fuel");
+    public static final TagKey<Block> OBSIDIANS = registerC(Registries.BLOCK, "obsidians");
+    public static final TagKey<Block> NORMAL_OBSIDIANS = registerC(Registries.BLOCK, "obsidians/normal");
+    public static final TagKey<Block> CRYING_OBSIDIANS = registerC(Registries.BLOCK, "obsidians/crying");
     public static final TagKey<Block> ALL_TERRACOTTA = register(Registries.BLOCK, "all_terracotta");
     public static PandoraConfig CONFIG;
     public static PrefixLogger logger = new PrefixLogger(LogManager.getLogger());
@@ -49,6 +54,14 @@ public class PandorasBox implements ModInitializer {
 
     private static <T> TagKey<T> register(ResourceKey<? extends Registry<T>> owner, String tagId) {
         return TagKey.create(owner, ResourceLocation.fromNamespaceAndPath(MOD_ID, tagId));
+    }
+
+    private static <T> TagKey<T> registerC(ResourceKey<? extends Registry<T>> owner, String tagId) {
+        return TagKey.create(owner, ResourceLocation.fromNamespaceAndPath("c", tagId));
+    }
+
+    private static <T> TagKey<T> registerVanilla(ResourceKey<? extends Registry<T>> owner, String tagId) {
+        return TagKey.create(owner, ResourceLocation.withDefaultNamespace(tagId));
     }
 
     /**

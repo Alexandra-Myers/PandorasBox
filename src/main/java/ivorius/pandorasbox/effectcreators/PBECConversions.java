@@ -67,7 +67,7 @@ public class PBECConversions {
         spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("enderman", 1.0f / (20 * 20)));
         generators = new ArrayList<>();
-        generators.add(new GenerateGeneric(0.02, new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.CHORUS_FLOWER), Either.left(Blocks.CHORUS_PLANT)}, EndFeatures.CHORUS_PLANT, Blocks.END_STONE));
+        generators.add(new GenerateGeneric(0.02, new Either[] {Either.right(PandorasBox.OBSIDIANS), Either.left(Blocks.CHORUS_FLOWER), Either.left(Blocks.CHORUS_PLANT)}, EndFeatures.CHORUS_PLANT, Blocks.END_STONE));
         END = new SimpleConvertEffect(Optional.of(Biomes.END_BARRENS), mappers, generators, spawners);
 
         mappers = new ArrayList<>();
@@ -81,7 +81,7 @@ public class PBECConversions {
         mappers = new ArrayList<>();
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.SNOW), Either.right(BlockTags.FIRE), Either.right(BlockTags.FLOWERS), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS)}, Blocks.AIR));
         mappers.add(new HeavenlyMapper(new Either[] {Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.BASE_STONE_NETHER), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE)}));
-        mappers.add(new SimpleConvertMapper(new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
+        mappers.add(new SimpleConvertMapper(new Either[] {Either.right(PandorasBox.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
         spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("sheep", 1.0f / (20 * 20)));
         HEAVENLY = new SimpleConvertEffect(Optional.of(Biomes.LUSH_CAVES), mappers, Collections.emptyList(), spawners);
@@ -94,7 +94,7 @@ public class PBECConversions {
                 Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.BASE_STONE_NETHER),
                 Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT),
                 Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE)}, Blocks.GRASS_BLOCK, Blocks.DIRT, 0));
-        mappers.add(new SimpleConvertMapper(new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
+        mappers.add(new SimpleConvertMapper(new Either[] {Either.right(PandorasBox.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
         spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("pbspecial_colorful_sheep", 1.0f / (20 * 20)));
         generators = new ArrayList<>();
@@ -130,7 +130,7 @@ public class PBECConversions {
                 Either.right(BlockTags.BASE_STONE_NETHER), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM),
                 Either.right(BlockTags.DIRT), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS),
                 Either.left(Blocks.END_STONE)}, Blocks.MYCELIUM, Blocks.DIRT, 0));
-        mappers.add(new SimpleConvertMapper(new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
+        mappers.add(new SimpleConvertMapper(new Either[] {Either.right(PandorasBox.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
         spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("mooshroom", 1.0f / (20 * 20)));
         generators = new ArrayList<>();
@@ -145,7 +145,7 @@ public class PBECConversions {
                 Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.BASE_STONE_NETHER),
                 Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT),
                 Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE)}, Blocks.GRASS_BLOCK, Blocks.DIRT, 0));
-        mappers.add(new SimpleConvertMapper(new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
+        mappers.add(new SimpleConvertMapper(new Either[] {Either.right(PandorasBox.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
         spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("pig", 1.0f / (30 * 30)));
         spawners.add(new SpawnRandom("cow", 1.0f / (30 * 30)));

@@ -2,7 +2,6 @@ package ivorius.pandorasbox.mixin;
 
 import ivorius.pandorasbox.init.MobEffectInit;
 import net.minecraft.core.Holder;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -21,9 +20,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class LivingEntityMixin extends Entity {
     @Shadow public abstract boolean hasEffect(Holder<MobEffect> holder);
 
-    @Shadow public abstract boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float f);
-
     @Shadow @Nullable public abstract MobEffectInstance getEffect(Holder<MobEffect> holder);
+
+    @Shadow public abstract boolean hurt(DamageSource damageSource, float f);
 
     public LivingEntityMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -34,9 +33,7 @@ public abstract class LivingEntityMixin extends Entity {
         if (hasEffect(MobEffectInit.SHRUNK)) {
             MobEffectInstance mobEffectInstance = getEffect(MobEffectInit.SHRUNK);
             if (mobEffectInstance.getAmplifier() > 0 && entity.getBoundingBox().intersects(getBoundingBox().minX, getBoundingBox().maxY, getBoundingBox().minZ, getBoundingBox().maxX, getBoundingBox().maxY, getBoundingBox().maxZ)) {
-                if (level() instanceof ServerLevel serverLevel) {
-                    hurtServer(serverLevel, damageSources().cramming(), 0.2F * mobEffectInstance.getAmplifier());
-                }
+                hurt(damageSources().cramming(), 0.2F * mobEffectInstance.getAmplifier());
                 ci.cancel();
             }
         }

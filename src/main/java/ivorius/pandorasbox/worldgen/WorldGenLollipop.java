@@ -40,7 +40,7 @@ public class WorldGenLollipop extends TreeFeature implements AccessibleTreeFeatu
     @Override
     public boolean place(Level world, RandomSource rand, BlockPos position) {
         int l = rand.nextInt(addition) + 5;
-        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.WOOL);
+        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.WOOL);
 
         boolean flag = true;
 

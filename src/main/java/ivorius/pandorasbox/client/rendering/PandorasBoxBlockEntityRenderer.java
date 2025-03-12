@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -17,9 +16,6 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
     public final PandorasBoxBlockEntityModel model;
     public PandorasBoxBlockEntityRenderer(BlockEntityRendererProvider.Context berpContext) {
         model = new PandorasBoxBlockEntityModel(berpContext.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
-    }
-    public PandorasBoxBlockEntityRenderer(EntityModelSet entityModelSet) {
-        model = new PandorasBoxBlockEntityModel(entityModelSet.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
     }
 
     @Override
@@ -34,8 +30,5 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
         model.renderToBuffer(poseStack, builder, i, j, 0xFFFFFFFF);
         poseStack.popPose();
-    }
-    public void renderItem(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
-        render(poseStack, multiBufferSource, 0, i, j);
     }
 }

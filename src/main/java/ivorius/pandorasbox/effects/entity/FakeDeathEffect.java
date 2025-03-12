@@ -23,10 +23,10 @@ public record FakeDeathEffect() implements EntityEffect {
             if (prevRatio < expectedDeath) {
                 if (entity instanceof ServerPlayer player) {
                     ServerPlayNetworking.send(player, new PandorasBox.ClientboundUpdateFakeDeathPacket());
-                    entity.hurtServer(serverLevel, entity.damageSources().genericKill(), 0.1F);
+                    entity.hurt(entity.damageSources().genericKill(), 0.1F);
                     entity.setPose(Pose.DYING);
                 } else {
-                    entity.kill(serverLevel);
+                    entity.kill();
                     entity.setHealth(entity.getMaxHealth());
                 }
             }

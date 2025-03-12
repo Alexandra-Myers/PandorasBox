@@ -45,7 +45,7 @@ public enum NetherBiome implements StringRepresentable {
                     return;
                 } else if (isBlockAnyOf(block, Either.left(Blocks.GRANITE), Either.left(Blocks.ANDESITE), Either.left(Blocks.TUFF))) {
                     setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.ICE), Either.left(Blocks.WATER))) {
+                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(PandorasBox.OBSIDIANS), Either.left(Blocks.ICE), Either.left(Blocks.WATER))) {
                     Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                     BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                     if (integer.isPresent()) {
@@ -84,8 +84,8 @@ public enum NetherBiome implements StringRepresentable {
                     BlockState blockBelowState = world.getBlockState(posBelow);
 
                     if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
-                        configuredFeatureRegistry.getValueOrThrow(VegetationFeatures.PATCH_BROWN_MUSHROOM).place(world, world.getChunkSource().getGenerator(), random, pos);
+                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                        configuredFeatureRegistry.getOrThrow(VegetationFeatures.PATCH_BROWN_MUSHROOM).place(world, world.getChunkSource().getGenerator(), random, pos);
                     }
                 }
                 if (random.nextDouble() < Math.pow(0.03, expFromRatio(newRatio))) {
@@ -93,8 +93,8 @@ public enum NetherBiome implements StringRepresentable {
                     BlockState blockBelowState = world.getBlockState(posBelow);
 
                     if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
-                        Objects.requireNonNull(configuredFeatureRegistry.getValueOrThrow(VegetationFeatures.PATCH_RED_MUSHROOM)).place(world, world.getChunkSource().getGenerator(), random, pos);
+                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                        Objects.requireNonNull(configuredFeatureRegistry.getOrThrow(VegetationFeatures.PATCH_RED_MUSHROOM)).place(world, world.getChunkSource().getGenerator(), random, pos);
                     }
                 }
             } else {
@@ -126,7 +126,7 @@ public enum NetherBiome implements StringRepresentable {
                 if (random.nextDouble() < (discardNetherrackChance / 100) * Math.pow(1 + (discardNetherrackChance * 2), newRatio * 100)) return;
                 if (isBlockAnyOf(block, Either.left(Blocks.GRANITE), Either.left(Blocks.ANDESITE), Either.left(Blocks.TUFF))) {
                     setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.ICE), Either.left(Blocks.WATER))) {
+                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(PandorasBox.OBSIDIANS), Either.left(Blocks.ICE), Either.left(Blocks.WATER))) {
                     Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                     BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                     if (integer.isPresent()) {
@@ -180,8 +180,8 @@ public enum NetherBiome implements StringRepresentable {
 //TODO - Somehow make this performance not atrocious?
 //                if (random.nextDouble() < Math.pow(0.05, expFromRatio(newRatio))) {
 //                    ChunkGenerator chunkGenerator = world.getChunkSource().getGenerator();
-//                    Registry<Structure> structureRegistry = world.registryAccess().lookupOrThrow(Registries.STRUCTURE);
-//                    StructureStart start = structureRegistry.getValueOrThrow(BuiltinStructures.NETHER_FOSSIL).generate(structureRegistry.getOrThrow(BuiltinStructures.NETHER_FOSSIL),
+//                    Registry<Structure> structureRegistry = world.registryAccess().registryOrThrow(Registries.STRUCTURE);
+//                    StructureStart start = structureRegistry.getOrThrow(BuiltinStructures.NETHER_FOSSIL).generate(structureRegistry.getOrThrow(BuiltinStructures.NETHER_FOSSIL),
 //                            Level.NETHER,
 //                            world.registryAccess(),
 //                            chunkGenerator,
@@ -212,7 +212,7 @@ public enum NetherBiome implements StringRepresentable {
                     return;
                 } else if (isBlockAnyOf(block, Either.left(Blocks.GRANITE), Either.left(Blocks.ANDESITE), Either.left(Blocks.TUFF), Either.right(BlockTags.SAND))) {
                     setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.ICE), Either.left(Blocks.WATER))) {
+                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(PandorasBox.OBSIDIANS), Either.left(Blocks.ICE), Either.left(Blocks.WATER))) {
                     Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                     BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                     if (integer.isPresent()) {
@@ -251,8 +251,8 @@ public enum NetherBiome implements StringRepresentable {
                     BlockState blockBelowState = world.getBlockState(posBelow);
 
                     if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
-                        configuredFeatureRegistry.getValueOrThrow(SMALL_BASALT_COLUMNS).place(world, world.getChunkSource().getGenerator(), random, pos);
+                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                        configuredFeatureRegistry.getOrThrow(SMALL_BASALT_COLUMNS).place(world, world.getChunkSource().getGenerator(), random, pos);
                     }
                 }
                 if (random.nextDouble() < Math.pow(0.03, expFromRatio(newRatio))) {
@@ -260,8 +260,8 @@ public enum NetherBiome implements StringRepresentable {
                     BlockState blockBelowState = world.getBlockState(posBelow);
 
                     if (blockState.isAir() && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
-                        configuredFeatureRegistry.getValueOrThrow(LARGE_BASALT_COLUMNS).place(world, world.getChunkSource().getGenerator(), random, pos);
+                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+                        configuredFeatureRegistry.getOrThrow(LARGE_BASALT_COLUMNS).place(world, world.getChunkSource().getGenerator(), random, pos);
                     }
                 }
             } else {
@@ -291,7 +291,7 @@ public enum NetherBiome implements StringRepresentable {
                     return;
                 } else if (isBlockAnyOf(block, Either.left(Blocks.GRANITE), Either.left(Blocks.ANDESITE), Either.left(Blocks.TUFF))) {
                     setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.ICE), Either.left(Blocks.WATER))) {
+                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(PandorasBox.OBSIDIANS), Either.left(Blocks.ICE), Either.left(Blocks.WATER))) {
                     Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                     BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                     if (integer.isPresent()) {
@@ -336,9 +336,9 @@ public enum NetherBiome implements StringRepresentable {
                     BlockState blockBelowState = world.getBlockState(posBelow);
 
                     if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                         setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
-                        configuredFeatureRegistry.getValueOrThrow(CRIMSON_FUNGUS_PLANTED).place(world, world.getChunkSource().getGenerator(), random, pos);
+                        configuredFeatureRegistry.getOrThrow(CRIMSON_FUNGUS_PLANTED).place(world, world.getChunkSource().getGenerator(), random, pos);
                     }
                 }
                 if (random.nextDouble() < Math.pow(0.05, expFromRatio(newRatio))) {
@@ -346,9 +346,9 @@ public enum NetherBiome implements StringRepresentable {
                     BlockState blockBelowState = world.getBlockState(posBelow);
 
                     if (blockState.isAir() && !blockBelowState.is(Blocks.NETHER_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                         setBlockSafe(world, posBelow, Blocks.CRIMSON_NYLIUM.defaultBlockState());
-                        configuredFeatureRegistry.getValueOrThrow(CRIMSON_FOREST_VEGETATION).place(world, world.getChunkSource().getGenerator(), random, pos);
+                        configuredFeatureRegistry.getOrThrow(CRIMSON_FOREST_VEGETATION).place(world, world.getChunkSource().getGenerator(), random, pos);
                     }
                 }
             } else {
@@ -380,7 +380,7 @@ public enum NetherBiome implements StringRepresentable {
                     return;
                 } else if (isBlockAnyOf(block, Either.left(Blocks.GRANITE), Either.left(Blocks.ANDESITE), Either.left(Blocks.TUFF))) {
                     setBlockSafe(world, pos, Blocks.BLACKSTONE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.ICE), Either.left(Blocks.WATER))) {
+                } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(PandorasBox.OBSIDIANS), Either.left(Blocks.ICE), Either.left(Blocks.WATER))) {
                     Optional<Integer> integer = blockState.getOptionalValue(LiquidBlock.LEVEL);
                     BlockState blockState2 = Blocks.LAVA.defaultBlockState();
                     if (integer.isPresent()) {
@@ -425,9 +425,9 @@ public enum NetherBiome implements StringRepresentable {
                     BlockState blockBelowState = world.getBlockState(posBelow);
 
                     if (blockState.isAir() && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                         setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
-                        configuredFeatureRegistry.getValueOrThrow(WARPED_FUNGUS_PLANTED).place(world, world.getChunkSource().getGenerator(), random, pos);
+                        configuredFeatureRegistry.getOrThrow(WARPED_FUNGUS_PLANTED).place(world, world.getChunkSource().getGenerator(), random, pos);
                     }
                 }
                 if (random.nextDouble() < Math.pow(0.05, expFromRatio(newRatio))) {
@@ -435,9 +435,9 @@ public enum NetherBiome implements StringRepresentable {
                     BlockState blockBelowState = world.getBlockState(posBelow);
 
                     if (blockState.isAir() && !blockBelowState.is(Blocks.WARPED_WART_BLOCK) && blockBelowState.isRedstoneConductor(world, posBelow)) {
-                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+                        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
                         setBlockSafe(world, posBelow, Blocks.WARPED_NYLIUM.defaultBlockState());
-                        configuredFeatureRegistry.getValueOrThrow(WARPED_FOREST_VEGETION).place(world, world.getChunkSource().getGenerator(), random, pos);
+                        configuredFeatureRegistry.getOrThrow(WARPED_FOREST_VEGETION).place(world, world.getChunkSource().getGenerator(), random, pos);
                     }
                 }
             } else {
@@ -453,8 +453,8 @@ public enum NetherBiome implements StringRepresentable {
     };
         
     public static void createGlowstoneBlobs(ServerLevel world, BlockPos pos, RandomSource random) {
-        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
-        configuredFeatureRegistry.getValueOrThrow(GLOWSTONE_EXTRA).place(world, world.getChunkSource().getGenerator(), random, pos);
+        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+        configuredFeatureRegistry.getOrThrow(GLOWSTONE_EXTRA).place(world, world.getChunkSource().getGenerator(), random, pos);
     }
     public static final Codec<NetherBiome> CODEC = StringRepresentable.fromEnum(NetherBiome::values);
     public final String name;

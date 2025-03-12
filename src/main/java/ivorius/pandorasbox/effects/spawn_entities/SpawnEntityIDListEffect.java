@@ -160,17 +160,17 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
         try {
             String trunkEntityID = ResourceLocation.parse(entityID).getPath();
             if ("pbspecial_colorful_sheep".equals(trunkEntityID)){
-                Sheep sheep = EntityType.SHEEP.create(world, EntitySpawnReason.COMMAND);
+                Sheep sheep = EntityType.SHEEP.create(world);
 
                 assert sheep != null;
                 sheep.setColor(DyeColor.byId(random.nextInt(16)));
                 if (random.nextInt(32 * 32) == 0) sheep.setCustomName(Component.literal("jeb_"));
                 sheep.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                sheep.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
+                sheep.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), MobSpawnType.COMMAND, null);
 
                 return sheep;
             } else if ("pbspecial_hogfather".equals(trunkEntityID)){
-                Zombie santa = EntityType.ZOMBIE.create(world, EntitySpawnReason.COMMAND);
+                Zombie santa = EntityType.ZOMBIE.create(world);
                 ItemStack helmet = new ItemStack(Items.LEATHER_HELMET);
                 helmet.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
                 ItemStack chestPlate = new ItemStack(Items.LEATHER_CHESTPLATE);
@@ -189,18 +189,18 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
 
                 santa.setCustomName(Component.literal("Hogfather"));
                 santa.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                santa.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
+                santa.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), MobSpawnType.COMMAND, null);
 
                 return santa;
             } else if ("pbspecial_experience".equals(trunkEntityID)) {
                 return new ExperienceOrb(world, x, y, z, 10);
             } else if ("pbspecial_wolf_tamed".equals(trunkEntityID)) {
                 Player owner = getPlayer(world, pbEntity);
-                Wolf wolf = EntityType.WOLF.create(world, EntitySpawnReason.COMMAND);
+                Wolf wolf = EntityType.WOLF.create(world);
 
                 assert wolf != null;
                 wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                wolf.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
+                wolf.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), MobSpawnType.COMMAND, null);
 
 
                 if (owner != null) {
@@ -214,11 +214,11 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             } else if ("pbspecial_cat_tamed".equals(trunkEntityID)) {
                 Player owner = getPlayer(world, pbEntity);
 
-                Cat cat = EntityType.CAT.create(world, EntitySpawnReason.COMMAND);
+                Cat cat = EntityType.CAT.create(world);
 
                 assert cat != null;
                 cat.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                cat.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                cat.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null);
 
                 if (owner != null) {
                     cat.tame(owner);
@@ -229,12 +229,12 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             } else if ("pbspecial_parrot_tamed".equals(trunkEntityID)) {
                 Player owner = getPlayer(world, pbEntity);
 
-                Parrot parrot = EntityType.PARROT.create(world, EntitySpawnReason.COMMAND);
+                Parrot parrot = EntityType.PARROT.create(world);
 
                 assert parrot != null;
                 parrot.setVariant(Parrot.Variant.byId(random.nextInt(5)));
                 parrot.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                parrot.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                parrot.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null);
 
                 if (owner != null) {
                     parrot.tame(owner);
@@ -259,23 +259,23 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
 
                 return new FireworkRocketEntity(world, x, y, z,stack);
             } else if ("pbspecial_angry_wolf".equals(trunkEntityID)) {
-                Wolf wolf = EntityType.WOLF.create(world, EntitySpawnReason.COMMAND);
+                Wolf wolf = EntityType.WOLF.create(world);
                 assert wolf != null;
-                wolf.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                wolf.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null);
                 wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 wolf.setTarget(world.getNearestPlayer(x, y, z, 40.0, false));
 
                 return wolf;
             } else if ("pbspecial_charged_creeper".equals(trunkEntityID)) {
-                Creeper creeper = EntityType.CREEPER.create(world, EntitySpawnReason.COMMAND);
+                Creeper creeper = EntityType.CREEPER.create(world);
                 assert creeper != null;
-                creeper.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                creeper.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null);
                 creeper.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
                 creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
                 return creeper;
             }
-            EntityType<?> entity = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.tryParse(entityID));
-            Entity entity1 = entity.create(world, EntitySpawnReason.COMMAND);
+            EntityType<?> entity = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.tryParse(entityID));
+            Entity entity1 = entity.create(world);
             assert entity1 != null;
             entity1.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
             Player owner = getPlayer(world, pbEntity);
@@ -286,7 +286,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             if(entity1 instanceof Hoglin hoglin)
                 hoglin.setImmuneToZombification(true);
             if (entity1 instanceof Mob mob)
-                mob.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                mob.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null);
 
             return entity1;
         } catch (Exception ex) {

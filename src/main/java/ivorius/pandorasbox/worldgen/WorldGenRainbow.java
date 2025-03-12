@@ -46,7 +46,7 @@ public class WorldGenRainbow extends TreeFeature implements AccessibleTreeFeatur
         int par3 = position.getX();
         int par4 = position.getY();
         int par5 = position.getZ();
-        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.WOOL);
+        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.WOOL);
 
         if(world == null) return false;
         if (world.getBlockState(position).getBlock() == soil && world.getBlockState(position.above()).isAir()) {

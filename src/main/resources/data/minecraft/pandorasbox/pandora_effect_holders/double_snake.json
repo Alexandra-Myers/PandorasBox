@@ -281,10 +281,6 @@
             "tag": "#c:storage_blocks/slime"
           },
           {
-            "weight": 2.0,
-            "tag": "#c:storage_blocks/resin"
-          },
-          {
             "weight": 5.0,
             "block": "minecraft:dragon_egg"
           },
@@ -620,10 +616,6 @@
           {
             "weight": 2.0,
             "tag": "#c:storage_blocks/slime"
-          },
-          {
-            "weight": 2.0,
-            "tag": "#c:storage_blocks/resin"
           },
           {
             "weight": 5.0,

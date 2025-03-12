@@ -59,7 +59,7 @@ public record PBECConvertToHFT(DValue range, TagKey<Block> tag) implements PBEff
 
         Integer[] metaTypes = new Integer[random.nextInt(3) + 2];
         for (int i = 0; i < metaTypes.length; i++) {
-            metaTypes[i] = random.nextInt(BuiltInRegistries.BLOCK.get(tag).map(HolderSet.ListBacked::size).orElse(32));
+            metaTypes[i] = random.nextInt(BuiltInRegistries.BLOCK.getTag(tag).map(HolderSet.ListBacked::size).orElse(32));
         }
         List<BlockMapper> adjMappers = new ArrayList<>(HFT_MAPPERS);
         adjMappers.add(new SetAllSolid(Blocks.AIR, Optional.of(new RandomTaggedMapper(Optional.empty(), tag, metaTypes))));

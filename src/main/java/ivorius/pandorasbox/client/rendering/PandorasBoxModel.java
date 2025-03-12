@@ -12,20 +12,29 @@
 
 package ivorius.pandorasbox.client.rendering;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import ivorius.pandorasbox.PandorasBox;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
-public class PandorasBoxModel extends EntityModel<PandorasBoxRenderState> {
+public class PandorasBoxModel extends EntityModel<PandorasBoxEntity> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandoras_box"), "main");
+    private final ModelPart feet;
+    private final ModelPart body;
+    private final ModelPart joint;
     private final ModelPart top;
 
     public PandorasBoxModel(ModelPart root) {
-        super(root);
+        this.feet = root.getChild("feet");
+        this.body = root.getChild("body");
+        this.joint = root.getChild("joint");
         this.top = root.getChild("top");
     }
 
@@ -57,7 +66,15 @@ public class PandorasBoxModel extends EntityModel<PandorasBoxRenderState> {
     }
 
     @Override
-    public void setupAnim(PandorasBoxRenderState entityRenderState) {
-        top.xRot = entityRenderState.xRot;
+    public void setupAnim(PandorasBoxEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        top.xRot = entity.getXRot();
+    }
+
+    @Override
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int rgba) {
+        feet.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
+        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
+        joint.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
+        top.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
     }
 }

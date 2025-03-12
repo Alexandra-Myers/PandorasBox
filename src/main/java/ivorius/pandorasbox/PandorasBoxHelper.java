@@ -22,7 +22,6 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
@@ -30,14 +29,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.Consumable;
-import net.minecraft.world.item.component.Consumables;
-import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
-import net.minecraft.world.item.consume_effects.TeleportRandomlyConsumeEffect;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.tags.ItemTags;
@@ -326,9 +320,9 @@ public class PandorasBoxHelper {
         addBlockTags(0.5, ConventionalBlockTags.NETHERITE_SCRAP_ORES, BlockTags.DIAMOND_ORES, BlockTags.EMERALD_ORES, BlockTags.GOLD_ORES);
         addBlockTags(1.0, BlockTags.IRON_ORES);
         addBlocks(2.0, Blocks.TNT, Blocks.GLOWSTONE, Blocks.SHROOMLIGHT, Blocks.SPONGE);
-        addBlockTags(2.0, ConventionalBlockTags.STORAGE_BLOCKS_COAL, ConventionalBlockTags.STORAGE_BLOCKS_COPPER, ConventionalBlockTags.STORAGE_BLOCKS_LAPIS, ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, ConventionalBlockTags.STORAGE_BLOCKS_SLIME, ConventionalBlockTags.STORAGE_BLOCKS_RESIN);
+        addBlockTags(2.0, ConventionalBlockTags.STORAGE_BLOCKS_COAL, ConventionalBlockTags.STORAGE_BLOCKS_COPPER, ConventionalBlockTags.STORAGE_BLOCKS_LAPIS, ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, ConventionalBlockTags.STORAGE_BLOCKS_SLIME);
         addBlocks(5.0, Blocks.DRAGON_EGG, Blocks.NOTE_BLOCK, Blocks.REDSTONE_LAMP, Blocks.SEA_LANTERN, Blocks.SNOW, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.CHISELED_BOOKSHELF);
-        addBlockTags(5.0, ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, ConventionalBlockTags.STORAGE_BLOCKS_DRIED_KELP, ConventionalBlockTags.NORMAL_OBSIDIANS, ConventionalBlockTags.CRYING_OBSIDIANS);
+        addBlockTags(5.0, ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, ConventionalBlockTags.STORAGE_BLOCKS_DRIED_KELP, PandorasBox.NORMAL_OBSIDIANS, PandorasBox.CRYING_OBSIDIANS);
 
         addItems(10.0, Items.CLAY_BALL, Items.FISHING_ROD, Items.FLINT, Items.EGG, Items.PAPER, Items.TORCH, Items.SOUL_TORCH);
         addTags(10.0, ItemTags.COALS, ConventionalItemTags.COPPER_INGOTS,
@@ -340,7 +334,7 @@ public class PandorasBoxHelper {
                 ConventionalItemTags.RAW_MEAT_FOODS, ConventionalItemTags.RAW_FISH_FOODS,
                 ConventionalItemTags.COOKED_MEAT_FOODS, ConventionalItemTags.COOKED_FISH_FOODS,
                 ConventionalItemTags.BREAD_FOODS, ConventionalItemTags.COOKIE_FOODS,
-                ConventionalItemTags.BERRY_FOODS, ConventionalItemTags.PIE_FOODS,
+                ConventionalItemTags.BERRY_FOODS, PandorasBox.PIE_FOODS,
                 ConventionalItemTags.FOOD_POISONING_FOODS, ConventionalItemTags.CANDY_FOODS,
                 ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS);
         addItems(10.0, Items.HONEYCOMB, Items.MUSHROOM_STEW, Items.APPLE, Items.RABBIT_FOOT, Items.RABBIT_HIDE, Items.RABBIT_STEW, Items.HONEY_BOTTLE);
@@ -351,7 +345,7 @@ public class PandorasBoxHelper {
                 ConventionalItemTags.SLIME_BALLS);
         addItems(8.0, Items.NAME_TAG, Items.NAUTILUS_SHELL, Items.INK_SAC, Items.GLOW_INK_SAC, Items.ARMADILLO_SCUTE, Items.LANTERN, Items.SOUL_LANTERN, Items.SPYGLASS);
         addTags(6.0, ConventionalItemTags.IRON_INGOTS, ConventionalItemTags.IRON_NUGGETS, ConventionalItemTags.GLOWSTONE_DUSTS,
-                ConventionalItemTags.AMETHYST_GEMS, ConventionalItemTags.RODS, ItemTags.BREWING_FUEL);
+                ConventionalItemTags.AMETHYST_GEMS, ConventionalItemTags.RODS, PandorasBox.BREWING_FUEL);
         addItems(6.0, Items.WIND_CHARGE, Items.CLOCK, Items.GHAST_TEAR, Items.ENDER_EYE, Items.GLISTERING_MELON_SLICE, Items.FERMENTED_SPIDER_EYE, Items.MAGMA_CREAM, Items.GOLDEN_CARROT, Items.TURTLE_SCUTE, Items.PHANTOM_MEMBRANE);
         addItems(4.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
         addItems(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE);
@@ -381,7 +375,7 @@ public class PandorasBoxHelper {
         addEquipmentSet(6.0, Items.TURTLE_HELMET, Items.IRON_BOOTS, Items.TRIDENT, Items.IRON_SWORD, new ItemStack(Items.BREAD, 48));
         addEquipmentSet(0.1, Items.DIAMOND_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.TRIDENT, Items.MACE, Items.IRON_AXE, new ItemStack(Items.COOKED_BEEF, 8));
 
-        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.WOOL);
+        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.WOOL);
         for(Holder<Block> block : blocks)
             if(RandomSource.create().nextDouble() > 0.8)
                 addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(block.value(), 16), new ItemStack(block.value(), 16), new ItemStack(block.value(), 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
@@ -424,23 +418,6 @@ public class PandorasBoxHelper {
             if ((i++) == num)
                 return t;
         throw new InternalError();
-    }
-
-    public static void createRandomFoodProperties(ItemStack stack, RandomSource random) {
-        FoodProperties.Builder builder = new FoodProperties.Builder();
-        Consumable original = stack.getOrDefault(DataComponents.CONSUMABLE, Consumables.defaultFood().build());
-        Consumable.Builder consumableBuilder = Consumables.defaultFood().animation(original.animation()).sound(original.sound());
-        if (random.nextBoolean()) builder.alwaysEdible();
-        if (random.nextDouble() > 0.7) consumableBuilder.consumeSeconds(0.8F);
-        builder.nutrition(random.nextIntBetweenInclusive(1, 10));
-        builder.saturationModifier((float) (0.9 + (random.nextDouble() - random.nextDouble()) * 0.75));
-        if (random.nextDouble() > 0.95) {
-            List<WeightedPotion>[] posOrNegative = new List[] {buffs, debuffs};
-            consumableBuilder.onConsume(new ApplyStatusEffectsConsumeEffect(WeightedSelector.selectItem(random, posOrNegative[random.nextInt(2)]).build(random), (float) random.nextGaussian()));
-        }
-        if (random.nextDouble() > 0.7) consumableBuilder.onConsume(new TeleportRandomlyConsumeEffect());
-        stack.set(DataComponents.FOOD, builder.build());
-        stack.set(DataComponents.CONSUMABLE, consumableBuilder.build());
     }
 
     public static BlockState getRandomBlockState(RandomSource rand, Block block, int unified) {

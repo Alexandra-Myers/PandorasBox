@@ -7,8 +7,8 @@ package ivorius.pandorasbox.random;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import ivorius.pandorasbox.utils.LateBoundIdMapper;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ZValue
 {
-    ExtraCodecs.LateBoundIdMapper<ResourceLocation, MapCodec<? extends ZValue>> VALUE_MAPPER = new ExtraCodecs.LateBoundIdMapper<>();
+    LateBoundIdMapper<ResourceLocation, MapCodec<? extends ZValue>> VALUE_MAPPER = new LateBoundIdMapper<>();
     Codec<ZValue> CODEC = VALUE_MAPPER.codec(ResourceLocation.CODEC)
             .dispatch(ZValue::codec, mapCodec -> mapCodec);
     static void bootstrap() {

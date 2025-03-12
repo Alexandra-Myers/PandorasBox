@@ -13,8 +13,7 @@ import net.minecraft.world.entity.MobCategory;
 public class EntityInit {
     public static final EntityType<PandorasBoxEntity> BOX = register("pandoras_box", EntityType.Builder.<PandorasBoxEntity>of(PandorasBoxEntity::new, MobCategory.MISC).fireImmune().noSummon().sized(0.6f, 0.6f));
     private static <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> entityType) {
-        ResourceKey<EntityType<?>> resourceKey = ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, name));
-        return Registry.register(BuiltInRegistries.ENTITY_TYPE, resourceKey, entityType.build(resourceKey));
+        return Registry.register(BuiltInRegistries.ENTITY_TYPE, ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, name)), entityType.build(name));
     }
     public static void registerEntities() {
 

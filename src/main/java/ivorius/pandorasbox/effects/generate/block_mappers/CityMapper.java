@@ -176,7 +176,7 @@ public record CityMapper(Either<Block, TagKey<Block>>[] targets, List<EntityType
                 return;
             }
             if ((IvMathHelper.compareOffsets(currentPos.getX(), originX, width - 1) && currentPos.getZ() == originZ)) {
-                setBlockSafe(world, currentPos.above(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.getApproximateNearest(originX - currentPos.getX(), 0, 0)));
+                setBlockSafe(world, currentPos.above(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.getNearest(originX - currentPos.getX(), 0, 0)));
                 ChestBlockEntity chestBlockEntity = (ChestBlockEntity) world.getBlockEntity(currentPos.above());
 
                 if (chestBlockEntity != null) {

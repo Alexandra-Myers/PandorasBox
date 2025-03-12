@@ -12,13 +12,31 @@
 
 package ivorius.pandorasbox.client.rendering;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
 
 public class PandorasBoxBlockEntityModel extends Model {
+    private final ModelPart feet;
+    private final ModelPart body;
+    private final ModelPart joint;
+    private final ModelPart top;
 
     public PandorasBoxBlockEntityModel(ModelPart root) {
-        super(root, RenderType::entityCutoutNoCull);
+        super(RenderType::entityCutoutNoCull);
+        this.feet = root.getChild("feet");
+        this.body = root.getChild("body");
+        this.joint = root.getChild("joint");
+        this.top = root.getChild("top");
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int rgba) {
+        feet.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
+        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
+        joint.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
+        top.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
     }
 }

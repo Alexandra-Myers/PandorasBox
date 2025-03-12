@@ -34,7 +34,7 @@ public record GenerateHomo() implements FeatureGenerator {
             treeFeature.place(serverLevel, random, pos);
         } else if (blockState.isAir() && Blocks.POPPY.defaultBlockState().canSurvive(serverLevel, pos)) {
             if (random.nextInt(3 * 3) == 0) {
-                HolderSet.Named<Block> flowers = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.SMALL_FLOWERS);
+                HolderSet.Named<Block> flowers = BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.SMALL_FLOWERS);
                 int flowerIndex = random.nextInt(flowers.size());
 
                 setBlockSafe(serverLevel, pos, flowers.get(flowerIndex).value().defaultBlockState());

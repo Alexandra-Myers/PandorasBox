@@ -27,7 +27,7 @@ public record GenerateHFT(Integer[] groundMetas) implements FeatureGenerator {
     public static final MapCodec<GenerateHFT> CODEC = PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("ground_metas").xmap(GenerateHFT::new, GenerateHFT::groundMetas);
     @Override
     public void finalGenerate(ServerLevel serverLevel, BlockPos pos, BlockState blockState, RandomSource random, PandorasBoxEntity entity, Vec3 effectCenter, int pass, int unifiedSeed, double range) {
-        HolderSet.Named<Block> terracotta = BuiltInRegistries.BLOCK.getOrThrow(PandorasBox.ALL_TERRACOTTA);
+        HolderSet.Named<Block> terracotta = BuiltInRegistries.BLOCK.getOrCreateTag(PandorasBox.ALL_TERRACOTTA);
         Block placeBlock = terracotta.get(groundMetas[random.nextInt(groundMetas.length)] % terracotta.size()).value();
         if (random.nextInt(10 * 10) == 0) {
             int[] lolliColors = new int[random.nextInt(4) + 1];

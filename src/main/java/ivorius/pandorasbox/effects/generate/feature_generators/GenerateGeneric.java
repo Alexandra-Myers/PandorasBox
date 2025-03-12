@@ -43,9 +43,9 @@ public record GenerateGeneric(double baseChance, Either<Block, TagKey<Block>>[] 
 
         if (serverLevel.getBlockState(pos).isAir() && (isBlockAnyOf(blockBelowState.getBlock(), set) == force) && blockBelowState.isRedstoneConductor(serverLevel, posBelow)) {
             setBlockSafe(serverLevel, posBelow, placeBlock.defaultBlockState());
-            Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = serverLevel.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
+            Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = serverLevel.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
             int index = random.nextInt(featureSet.length);
-            configuredFeatureRegistry.getValueOrThrow(featureSet[index]).place(serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
+            configuredFeatureRegistry.getOrThrow(featureSet[index]).place(serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
         }
     }
 

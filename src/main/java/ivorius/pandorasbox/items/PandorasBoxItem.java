@@ -7,9 +7,9 @@ package ivorius.pandorasbox.items;
 
 import ivorius.pandorasbox.component.PBEffectComponent;
 import ivorius.pandorasbox.init.ComponentInit;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -26,17 +26,13 @@ public class PandorasBoxItem extends BlockItem {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if (itemstack.has(DataComponents.CONSUMABLE) || itemstack.has(DataComponents.EQUIPPABLE)) {
-            InteractionResult original = super.use(world, player, hand);
-            if (original.consumesAction()) return original;
-        }
         itemstack.getOrDefault(ComponentInit.EFFECT_COMPONENT, PBEffectComponent.DEFAULT).createEffect(world, player, player.blockPosition(), true);
         if (!player.getAbilities().instabuild) {
             itemstack.shrink(1);
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.success(itemstack);
     }
     public @NotNull InteractionResult useOn(@NotNull UseOnContext p_40581_) {
         return this.place(new BlockPlaceContext(p_40581_));

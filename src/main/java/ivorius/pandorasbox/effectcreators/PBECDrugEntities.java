@@ -16,7 +16,6 @@ import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.psychedelicraft.entity.drug.influence.DrugInfluence;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +33,7 @@ public record PBECDrugEntities(IValue time, IValue number, DValue range, float c
             instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECDrugEntities::time),
                             IValue.CODEC.fieldOf("number").forGetter(PBECDrugEntities::number),
                             DValue.CODEC.fieldOf("range").forGetter(PBECDrugEntities::range),
-                            ExtraCodecs.floatRange(0, 1).fieldOf("chance_for_more_effects").forGetter(PBECDrugEntities::chanceForMoreEffects),
+                            Codec.floatRange(0, 1).fieldOf("chance_for_more_effects").forGetter(PBECDrugEntities::chanceForMoreEffects),
                             PsychedelicraftHooks.WeightedDrugType.DRUG_TYPE_CODEC.listOf().fieldOf("drug_types").forGetter(PBECDrugEntities::drugTypes),
                             RecordCodecBuilder.<Vector3f>create((i) -> i.group(Codec.FLOAT.fieldOf("r").forGetter(Vector3f::x), Codec.FLOAT.fieldOf("g").forGetter(Vector3f::y), Codec.FLOAT.fieldOf("b").forGetter(Vector3f::z)).apply(i, Vector3f::new))
                                     .optionalFieldOf("color").forGetter(PBECDrugEntities::color))

@@ -49,7 +49,7 @@ public record PBECConvertToCity(DValue range, List<WeightedEntity> entityIDs) im
         CITY_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.FLOWERS), Either.right(BlockTags.SNOW), Either.right(BlockTags.FIRE), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS)}, Blocks.AIR));
         CITY_MAPPERS.add(new CityMapper(CITY_TARGETS, Collections.emptyList()));
         CITY_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.right(PandorasBox.ALL_TERRACOTTA)}, Blocks.CYAN_TERRACOTTA));
-        CITY_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
+        CITY_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.right(PandorasBox.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
         CITY_SPAWNERS = new ArrayList<>();
         CITY_SPAWNERS.add(new SpawnRandom("villager", 1.0f / (20 * 20)));
     }
@@ -66,7 +66,7 @@ public record PBECConvertToCity(DValue range, List<WeightedEntity> entityIDs) im
         WeightedEntity[] entitySelection = PandorasBoxHelper.getRandomEntityList(random, entityIDs);
         List<EntityType<?>> entities = new ArrayList<>();
         for (WeightedEntity entity : entitySelection) {
-            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.tryParse(entity.entityID()));
+            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.tryParse(entity.entityID()));
             entities.add(type);
         }
 

@@ -266,7 +266,7 @@ public class WorldGenColorfulTree extends TreeFeature implements AccessibleTreeF
         this.level = worldIn;
         this.origin = position;
         this.random = new Random(rand.nextLong());
-        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.WOOL);
+        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.WOOL);
         trunk = blocks.get(metas[rand.nextInt(metas.length)]).value();
 
         if(level == null) return false;

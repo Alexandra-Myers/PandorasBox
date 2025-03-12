@@ -29,9 +29,9 @@ public record GenTreesEffect(boolean requiresSolidGround, double chancePerBlock,
 
     @Override
     public void generateGenerator(ResourceKey<ConfiguredFeature<?, ?>> generator, ServerLevel serverLevel, RandomSource randomSource, BlockPos blockPos) {
-        Optional<Registry<ConfiguredFeature<?, ?>>> configuredFeatureRegistry = serverLevel.registryAccess().lookup(Registries.CONFIGURED_FEATURE);
+        Optional<Registry<ConfiguredFeature<?, ?>>> configuredFeatureRegistry = serverLevel.registryAccess().registry(Registries.CONFIGURED_FEATURE);
         if (configuredFeatureRegistry.isEmpty()) return;
-        ConfiguredFeature<?, ?> feature = configuredFeatureRegistry.get().getValueOrThrow(generator);
+        ConfiguredFeature<?, ?> feature = configuredFeatureRegistry.get().getOrThrow(generator);
         feature.place(serverLevel, serverLevel.getChunkSource().getGenerator(), randomSource, blockPos);
     }
 }

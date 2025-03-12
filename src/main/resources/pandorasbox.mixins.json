@@ -10,7 +10,7 @@
     "client.GuiMixin",
     "client.KeyboardInputMixin",
     "client.MinecraftMixin",
-    "client.SpecialModelRenderersMixin"
+    "client.RendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

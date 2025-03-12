@@ -39,7 +39,7 @@ public class PBECRegistry {
     }
 
     public static PBEffect createRandomEffect(Level world, RandomSource random, double x, double y, double z, boolean multi) {
-        Registry<EffectHolder> effectHolders = world.registryAccess().lookupOrThrow(Init.EFFECT_HOLDER_REGISTRY_KEY);
+        Registry<EffectHolder> effectHolders = world.registryAccess().registryOrThrow(Init.EFFECT_HOLDER_REGISTRY_KEY);
         List<EffectHolder> fixedChanceHolders = effectHolders.stream().filter(effectHolder -> effectHolder.fixedChance() != -1).toList();
         List<EffectHolder> positiveEffects = effectHolders.stream().filter(effectHolder -> !fixedChanceHolders.contains(effectHolder) && effectHolder.isGood()).toList();
         List<EffectHolder> negativeEffects = effectHolders.stream().filter(effectHolder -> !fixedChanceHolders.contains(effectHolder) && !effectHolder.isGood()).toList();
