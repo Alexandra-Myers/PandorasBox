@@ -22,13 +22,16 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -418,6 +421,21 @@ public class PandorasBoxHelper {
             if ((i++) == num)
                 return t;
         throw new InternalError();
+    }
+
+    public static void createRandomFoodProperties(ItemStack stack, RandomSource random) {
+        FoodProperties.Builder builder = new FoodProperties.Builder();
+        if (random.nextBoolean()) builder.alwaysEdible();
+        if (random.nextDouble() > 0.7) builder.fast();
+        builder.nutrition(random.nextIntBetweenInclusive(1, 10));
+        builder.saturationModifier((float) (0.9 + (random.nextDouble() - random.nextDouble()) * 0.75));
+        if (random.nextDouble() > 0.95) {
+            List<WeightedPotion>[] posOrNegative = new List[] {buffs, debuffs};
+            double probability = random.nextGaussian();
+            List<MobEffectInstance> effects = WeightedSelector.selectItem(random, posOrNegative[random.nextInt(2)]).build(random);
+            for (MobEffectInstance effect : effects) builder.effect(effect, (float) probability);
+        }
+        stack.set(DataComponents.FOOD, builder.build());
     }
 
     public static BlockState getRandomBlockState(RandomSource rand, Block block, int unified) {

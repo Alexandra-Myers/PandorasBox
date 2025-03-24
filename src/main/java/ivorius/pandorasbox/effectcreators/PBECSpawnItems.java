@@ -39,11 +39,12 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items, ZValue spawnsFromEffectCenter, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) implements PBEffectCreator {
+public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items, ZValue canBeFood, ZValue spawnsFromEffectCenter, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) implements PBEffectCreator {
     public static final MapCodec<PBECSpawnItems> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(IValue.CODEC.fieldOf("number").forGetter(PBECSpawnItems::number),
                             IValue.CODEC.fieldOf("ticks_per_item").forGetter(PBECSpawnItems::ticksPerItem),
                             RandomizedItemStack.LIST_CODEC.fieldOf("items").forGetter(PBECSpawnItems::items),
+                            ZValue.CODEC.optionalFieldOf("can_be_food", new ZConstant(false)).forGetter(PBECSpawnItems::canBeFood),
                             ZValue.CODEC.fieldOf("spawns_from_effect_center").forGetter(PBECSpawnItems::spawnsFromEffectCenter),
                             ValueThrow.CODEC.optionalFieldOf("value_throw").forGetter(PBECSpawnItems::valueThrow),
                             ValueSpawn.CODEC.optionalFieldOf("value_spawn").forGetter(PBECSpawnItems::valueSpawn))
@@ -65,11 +66,12 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
         throw new RuntimeException("Both spawnRange and throwStrength are null!");
     }
 
-    public static ItemStack[] getItemStacks(RandomSource random, RegistryAccess registryAccess, List<RandomizedItemStack> items, int number, boolean split, boolean mixUp, int enchantLevel, boolean giveNames) {
+    public static ItemStack[] getItemStacks(RandomSource random, RegistryAccess registryAccess, List<RandomizedItemStack> items, int number, boolean split, boolean mixUp, int enchantLevel, boolean giveNames, boolean isFood) {
         ItemStack[] stacks = new ItemStack[number];
         for (int i = 0; i < number; i++) {
             RandomizedItemStack wrcc = mixUp ? WeightedSelector.selectItem(random, items) : items.get(i);
             ItemStack stack = wrcc.itemStack().copy();
+            if (isFood) PandorasBoxHelper.createRandomFoodProperties(stack, random);
             stack.setCount(wrcc.min() + random.nextInt(wrcc.max() - wrcc.min() + 1));
             Registry<Enchantment> enchantmentRegistry = registryAccess.registryOrThrow(Registries.ENCHANTMENT);
 
@@ -106,8 +108,9 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int number = this.number.getValue(random);
         int ticksPerItem = this.ticksPerItem.getValue(random);
+        boolean isFood = this.canBeFood.getValue(random);
 
-        ItemStack[] stacks = getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, items), number, random.nextInt(3) != 0, true, 0, false);
+        ItemStack[] stacks = getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, items), number, random.nextInt(3) != 0, true, 0, false, isFood);
         return constructEffect(random, stacks, number * ticksPerItem + 1, valueThrow.orElse(null), valueSpawn.orElse(null), spawnsFromEffectCenter);
     }
 

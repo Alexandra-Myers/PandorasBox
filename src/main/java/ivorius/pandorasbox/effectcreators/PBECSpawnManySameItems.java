@@ -41,7 +41,7 @@ public record PBECSpawnManySameItems(IValue ticksPerStack, ZValue spawnsFromEffe
         int ticksPerStack = this.ticksPerStack.getValue(random);
         int number = random.nextInt(5) + 5;
 
-        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, items), number, true, true, 0, false);
+        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, items), number, true, true, 0, false, false);
         return PBECSpawnItems.constructEffect(random, stacks, number * ticksPerStack + 1, valueThrow.orElse(null), valueSpawn.orElse(null), spawnsFromEffectCenter);
     }
 
