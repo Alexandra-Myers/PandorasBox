@@ -71,6 +71,7 @@ public class PBEffectInit {
         registerBlockMapperType(IceMapper.CODEC, "convert_ice");
         registerBlockMapperType(SimpleConvertMapper.CODEC, "convert_simple");
         registerBlockMapperType(SurfaceMapper.CODEC, "convert_surface");
+        registerBlockMapperType(SurfaceMapper.EXTRA_CODEC, "convert_limit_height");
         registerBlockMapperType(RandomTaggedMapper.CODEC, "convert_random");
         registerBlockMapperType(RangeTaggedMapper.CODEC, "convert_ranged");
         registerBlockMapperType(SetAllSolid.CODEC, "convert_all");

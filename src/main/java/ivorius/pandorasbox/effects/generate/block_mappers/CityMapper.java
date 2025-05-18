@@ -43,7 +43,7 @@ public record CityMapper(Either<Block, TagKey<Block>>[] targets, List<EntityType
 
     @Override
     public boolean matches(ServerLevel serverLevel, PandorasBoxEntity entity, BlockPos blockPos, BlockState state, RandomSource random) {
-        return isBlockAnyOf(state.getBlock(), targets);
+        return targets.length == 0 || isBlockAnyOf(state.getBlock(), targets);
     }
 
     @Override

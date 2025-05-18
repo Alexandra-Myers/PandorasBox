@@ -38,7 +38,6 @@ public record PBEffectComponent(List<Holder<EffectHolder>> holders) implements T
 
     @Override
     public void addToTooltip(Item.TooltipContext tooltipContext, Consumer<Component> consumer, TooltipFlag tooltipFlag, DataComponentGetter dataComponentGetter) {
-        consumer.accept(Component.empty());
         if (holders.isEmpty()) consumer.accept(Component.translatable("component.pandora_effects.random").withStyle(ChatFormatting.BLUE));
         else {
             consumer.accept(Component.translatable("component.pandora_effects.holders").withStyle(ChatFormatting.BLUE));
@@ -46,6 +45,5 @@ public record PBEffectComponent(List<Holder<EffectHolder>> holders) implements T
                 consumer.accept(Component.literal(" - ").append(holder.value().component()).withStyle(ChatFormatting.GRAY));
             }
         }
-        consumer.accept(Component.empty());
     }
 }

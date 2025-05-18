@@ -53,10 +53,16 @@
             "minecraft:netherrack"
           ],
           "to_replace": "minecraft:sand",
-          "type": "pandorasbox:convert_simple"
+          "max_blocks_beneath_surface": 3,
+          "type": "pandorasbox:convert_limit_height"
         },
         {
           "targets": [
+            "#minecraft:sand",
+            "#minecraft:wither_summon_base_blocks",
+            "#minecraft:nylium",
+            "#minecraft:dirt",
+            "minecraft:netherrack",
             "#pandorasbox:all_terracotta",
             "#c:stones",
             "#minecraft:base_stone_nether",

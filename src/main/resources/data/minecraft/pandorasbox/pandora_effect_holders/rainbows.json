@@ -42,7 +42,24 @@
           "surface_block": "minecraft:grass_block",
           "under_block": "minecraft:dirt",
           "discard_surface_chance": 0.0,
+          "max_blocks_beneath_surface": 3,
           "type": "pandorasbox:convert_surface"
+        },
+        {
+          "targets": [
+            "#pandorasbox:all_terracotta",
+            "#c:stones",
+            "#c:cobblestones",
+            "#minecraft:base_stone_nether",
+            "#minecraft:wither_summon_base_blocks",
+            "#minecraft:nylium",
+            "#minecraft:dirt",
+            "#minecraft:sand",
+            "#c:sandstone/blocks",
+            "minecraft:end_stone"
+          ],
+          "to_replace": "minecraft:stone",
+          "type": "pandorasbox:convert_simple"
         },
         {
           "targets": [

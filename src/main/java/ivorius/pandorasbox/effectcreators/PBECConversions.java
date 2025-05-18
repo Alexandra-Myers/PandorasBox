@@ -15,7 +15,9 @@ import net.minecraft.data.worldgen.features.EndFeatures;
 import net.minecraft.data.worldgen.features.TreeFeatures;
 import net.minecraft.data.worldgen.features.VegetationFeatures;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
@@ -55,8 +57,8 @@ public class PBECConversions {
         mappers.add(new SimpleConvertMapper(new Either[] {Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.FERN)}, Blocks.SHORT_DRY_GRASS));
         mappers.add(new SimpleConvertMapper(new Either[] {Either.left(Blocks.TALL_GRASS), Either.left(Blocks.LARGE_FERN)}, Blocks.TALL_DRY_GRASS));
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.LEAVES), Either.right(BlockTags.FLOWERS), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.RED_MUSHROOM_BLOCK), Either.left(Blocks.MUSHROOM_STEM), Either.right(BlockTags.LOGS)}, Blocks.AIR));
-        mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.SAND), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT), Either.left(Blocks.NETHERRACK)}, Blocks.SAND));
-        mappers.add(new SimpleConvertMapper(new Either[] {Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(BlockTags.BASE_STONE_NETHER), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE)}, Blocks.SANDSTONE));
+        mappers.add(new SurfaceMapper(new Either[] {Either.right(BlockTags.SAND), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT), Either.left(Blocks.NETHERRACK)}, Blocks.SAND, 3));
+        mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.SAND), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT), Either.left(Blocks.NETHERRACK), Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(BlockTags.BASE_STONE_NETHER), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE)}, Blocks.SANDSTONE));
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.ICE)}, Blocks.WATER));
         spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("camel", 1.0f / (20 * 20)));
@@ -99,10 +101,12 @@ public class PBECConversions {
                 Either.left(Blocks.SHORT_DRY_GRASS), Either.left(Blocks.TALL_DRY_GRASS), Either.left(Blocks.DEAD_BUSH),
                 Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM),
                 Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK), Either.left(Blocks.MUSHROOM_STEM)}, Blocks.AIR));
-        mappers.add(new SurfaceMapper(new Either[] {Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES),
+        Either<Block, TagKey<Block>>[] baseReplace = new Either[] {Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES),
                 Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.BASE_STONE_NETHER),
                 Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT),
-                Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE)}, Blocks.GRASS_BLOCK, Blocks.DIRT, 0));
+                Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE)};
+        mappers.add(new SurfaceMapper(baseReplace, Blocks.GRASS_BLOCK, Blocks.DIRT, 0, 3));
+        mappers.add(new SimpleConvertMapper(baseReplace, Blocks.STONE));
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
         spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("pbspecial_colorful_sheep", 1.0f / (20 * 20)));
@@ -135,10 +139,12 @@ public class PBECConversions {
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.FLOWERS),
                 Either.right(BlockTags.SNOW), Either.right(BlockTags.FIRE), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN),
                 Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SHORT_DRY_GRASS), Either.left(Blocks.TALL_DRY_GRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.BUSH), Either.left(Blocks.FIREFLY_BUSH)}, Blocks.AIR));
-        mappers.add(new SurfaceMapper(new Either[] {Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES),
+        baseReplace = new Either[] {Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES),
                 Either.right(BlockTags.BASE_STONE_NETHER), Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM),
                 Either.right(BlockTags.DIRT), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS),
-                Either.left(Blocks.END_STONE)}, Blocks.MYCELIUM, Blocks.DIRT, 0));
+                Either.left(Blocks.END_STONE)};
+        mappers.add(new SurfaceMapper(baseReplace, Blocks.MYCELIUM, Blocks.DIRT, 0, 3));
+        mappers.add(new SimpleConvertMapper(baseReplace, Blocks.STONE));
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
         spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("mooshroom", 1.0f / (20 * 20)));
@@ -150,10 +156,12 @@ public class PBECConversions {
         mappers = new ArrayList<>();
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.SNOW), Either.right(BlockTags.FIRE), Either.left(Blocks.SHORT_DRY_GRASS), Either.left(Blocks.TALL_DRY_GRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM),
                 Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK), Either.left(Blocks.MUSHROOM_STEM)}, Blocks.AIR));
-        mappers.add(new SurfaceMapper(new Either[] {Either.right(PandorasBox.ALL_TERRACOTTA),
+        baseReplace = new Either[] {Either.right(PandorasBox.ALL_TERRACOTTA),
                 Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.BASE_STONE_NETHER),
                 Either.right(BlockTags.WITHER_SUMMON_BASE_BLOCKS), Either.right(BlockTags.NYLIUM), Either.right(BlockTags.DIRT),
-                Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE)}, Blocks.GRASS_BLOCK, Blocks.DIRT, 0));
+                Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE)};
+        mappers.add(new SurfaceMapper(baseReplace, Blocks.GRASS_BLOCK, Blocks.DIRT, 0, 3));
+        mappers.add(new SimpleConvertMapper(baseReplace, Blocks.STONE));
         mappers.add(new SimpleConvertMapper(new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
         spawners = new ArrayList<>();
         spawners.add(new SpawnRandom("pig", 1.0f / (30 * 30)));

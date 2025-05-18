@@ -7,6 +7,7 @@ package ivorius.pandorasbox.block;
 
 import com.mojang.serialization.MapCodec;
 import ivorius.pandorasbox.component.PBEffectComponent;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.BlockEntityInit;
 import ivorius.pandorasbox.init.ComponentInit;
 import net.minecraft.core.BlockPos;
@@ -70,7 +71,8 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
         BlockEntity blockEntity = level.getBlockEntity(pos);
         PBEffectComponent effectComponent = PBEffectComponent.DEFAULT;
         if (blockEntity != null) effectComponent = blockEntity.components().getOrDefault(ComponentInit.EFFECT_COMPONENT, effectComponent);
-        effectComponent.createEffect(level, player, pos, false);
+        PandorasBoxEntity result = effectComponent.createEffect(level, player, pos, false);
+        if (result == null) return InteractionResult.PASS;
         level.removeBlock(pos, false);
         level.removeBlockEntity(pos);
 
