@@ -12,18 +12,28 @@
       "mappers": [
         {
           "targets": [
+            "minecraft:short_grass",
+            "minecraft:fern"
+          ],
+          "to_replace": "minecraft:short_dry_grass",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "minecraft:tall_grass",
+            "minecraft:large_fern"
+          ],
+          "to_replace": "minecraft:tall_dry_grass",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
             "#minecraft:leaves",
             "#minecraft:flowers",
             "#minecraft:snow",
-            "minecraft:ice",
-            "minecraft:water",
             "minecraft:vine",
-            "minecraft:short_grass",
-            "minecraft:tall_grass",
-            "minecraft:fern",
-            "minecraft:large_fern",
-            "minecraft:seagrass",
-            "minecraft:tall_seagrass",
+            "minecraft:bush",
+            "minecraft:firefly_bush",
             "minecraft:brown_mushroom",
             "minecraft:brown_mushroom_block",
             "minecraft:red_mushroom",
@@ -55,6 +65,13 @@
           ],
           "to_replace": "minecraft:sandstone",
           "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "#minecraft:ice"
+          ],
+          "to_replace": "minecraft:water",
+          "type": "pandorasbox:convert_simple"
         }
       ],
       "generators": [
@@ -72,7 +89,8 @@
         },
         {
           "feature_set": [
-            "minecraft:patch_dead_bush"
+            "minecraft:patch_dead_bush",
+            "minecraft:patch_dry_grass"
           ],
           "placed": "minecraft:sand",
           "force": false,
@@ -86,7 +104,27 @@
       "spawners": [
         {
           "entity_id": "minecraft:camel",
-          "chance": 0.0025,
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:pig",
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:cow",
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:sheep",
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:chicken",
+          "chance": 0.0011111111,
           "type": "pandorasbox:spawn_random"
         }
       ],

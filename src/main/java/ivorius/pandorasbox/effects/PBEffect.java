@@ -20,9 +20,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DoubleHighBlockItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -73,8 +73,8 @@ public abstract class PBEffect {
     }
 
     public static Player getPlayer(Level level, PandorasBoxEntity box) {
-        Player player = box.getBoxOwner();
-        return player == null ? getRandomNearbyPlayer(level, box) : player;
+        EntityReference<LivingEntity> ownerReference = box.getOwnerReference();
+        return ownerReference == null || !(box.getOwner() instanceof Player player) ? getRandomNearbyPlayer(level, box) : player;
     }
 
     @SafeVarargs
@@ -103,13 +103,13 @@ public abstract class PBEffect {
         return entity;
     }
 
-    public static boolean canSpawnEntity(Level level, BlockState block, BlockPos pos, Entity entity) {
+    public static boolean canSpawnEntity(Level level, BlockPos pos, Entity entity) {
         if(entity == null) return false;
         if (level.isClientSide())
             return false;
-
-        if (block.getLightBlock() > 0)
+        if (entity.isInWall())
             return false;
+
         if(level.loadedAndEntityCanStandOn(pos.below(), entity) && !level.isClientSide()) {
             level.addFreshEntity(entity);
             return true;

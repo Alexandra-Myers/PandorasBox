@@ -52,7 +52,7 @@ public enum NetherBiome implements StringRepresentable {
                         blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                     }
                     setBlockSafe(world, pos, blockState2);
-                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.SHORT_DRY_GRASS), Either.left(Blocks.TALL_DRY_GRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.BUSH), Either.left(Blocks.FIREFLY_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Either.left(Blocks.CLAY))) {
                     setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
@@ -106,7 +106,7 @@ public enum NetherBiome implements StringRepresentable {
                         lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (20 * 20), pos));
 
                 for (Entity entity1 : entities) {
-                    canSpawnEntity(world, blockState, pos, entity1);
+                    canSpawnEntity(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
@@ -133,7 +133,7 @@ public enum NetherBiome implements StringRepresentable {
                         blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                     }
                     setBlockSafe(world, pos, blockState2);
-                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.SHORT_DRY_GRASS), Either.left(Blocks.TALL_DRY_GRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.BUSH), Either.left(Blocks.FIREFLY_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.SAND), Either.left(Blocks.CLAY))) {
                     setBlockSafe(world, pos, Blocks.SOUL_SAND.defaultBlockState());
@@ -169,7 +169,7 @@ public enum NetherBiome implements StringRepresentable {
                         lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos));
 
                 for (Entity entity1 : entities) {
-                    canSpawnEntity(world, blockState, pos, entity1);
+                    canSpawnEntity(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
@@ -219,7 +219,7 @@ public enum NetherBiome implements StringRepresentable {
                         blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                     }
                     setBlockSafe(world, pos, blockState2);
-                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.SHORT_DRY_GRASS), Either.left(Blocks.TALL_DRY_GRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.BUSH), Either.left(Blocks.FIREFLY_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Either.left(Blocks.CLAY))) {
                     setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
@@ -270,7 +270,7 @@ public enum NetherBiome implements StringRepresentable {
                         lazilySpawnEntity(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos));
 
                 for (Entity entity1 : entities) {
-                    canSpawnEntity(world, blockState, pos, entity1);
+                    canSpawnEntity(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
@@ -298,7 +298,7 @@ public enum NetherBiome implements StringRepresentable {
                         blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                     }
                     setBlockSafe(world, pos, blockState2);
-                } else if (isBlockAnyOf(block, Either.right(BlockTags.LOGS_THAT_BURN), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.LOGS_THAT_BURN), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.SHORT_DRY_GRASS), Either.left(Blocks.TALL_DRY_GRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.BUSH), Either.left(Blocks.FIREFLY_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Either.left(Blocks.CLAY))) {
                     setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
@@ -359,7 +359,7 @@ public enum NetherBiome implements StringRepresentable {
                         lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (10 * 10), pos));
 
                 for (Entity entity1 : entities) {
-                    canSpawnEntity(world, blockState, pos, entity1);
+                    canSpawnEntity(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
@@ -387,7 +387,7 @@ public enum NetherBiome implements StringRepresentable {
                         blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                     }
                     setBlockSafe(world, pos, blockState2);
-                } else if (isBlockAnyOf(block, Either.right(BlockTags.LOGS_THAT_BURN), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.LOGS_THAT_BURN), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.SHORT_DRY_GRASS), Either.left(Blocks.TALL_DRY_GRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.BUSH), Either.left(Blocks.FIREFLY_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Either.left(Blocks.CLAY))) {
                     setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
@@ -446,7 +446,7 @@ public enum NetherBiome implements StringRepresentable {
                         lazilySpawnEntity(world, entity, random, "enderman", 1.0f / (15 * 15), pos));
 
                 for (Entity entity1 : entities) {
-                    canSpawnEntity(world, blockState, pos, entity1);
+                    canSpawnEntity(world, pos, entity1);
                 }
             }
         }

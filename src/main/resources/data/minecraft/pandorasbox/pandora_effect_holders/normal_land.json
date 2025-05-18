@@ -14,6 +14,9 @@
           "targets": [
             "#minecraft:snow",
             "#minecraft:fire",
+            "minecraft:short_dry_grass",
+            "minecraft:tall_dry_grass",
+            "minecraft:dead_bush",
             "minecraft:brown_mushroom",
             "minecraft:red_mushroom",
             "minecraft:brown_mushroom_block",
@@ -55,8 +58,15 @@
         {
           "feature_set": [
             "minecraft:patch_grass",
+            "minecraft:patch_tall_grass",
+            "minecraft:patch_bush",
+            "minecraft:patch_firefly_bush",
+            "minecraft:wildflowers_birch_forest",
             "minecraft:patch_sunflower",
-            "minecraft:trees_plains",
+            {
+              "weight": 3,
+              "key": "minecraft:trees_plains"
+            },
             "minecraft:flower_plain"
           ],
           "placed": "minecraft:grass_block",

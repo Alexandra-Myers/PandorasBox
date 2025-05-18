@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
+import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.EntityInit;
 import net.minecraft.util.RandomSource;
@@ -47,7 +48,7 @@ public class PBEffectDuplicateBox extends PBEffectNormal {
 
             newBox.setBoxEffect(effect);
             newBox.setBoxWaitingTime(40);
-            newBox.moveTo(box.getX(), box.getY(), box.getZ(), box.getYRot(), box.getXRot());
+            SpawnEntityIDListEffect.moveTo(newBox, box.position(), box.getYRot(), box.getXRot());
 
             if (spawnMode == MODE_BOX_IN_BOX) {
                 newBox.beginFloating();

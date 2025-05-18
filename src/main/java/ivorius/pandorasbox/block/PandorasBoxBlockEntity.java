@@ -42,7 +42,7 @@ public class PandorasBoxBlockEntity extends BlockEntity {
 
     @Override
     public void loadAdditional(CompoundTag compoundNBT, HolderLookup.Provider provider) {
-        rotationYaw = compoundNBT.getFloat("boxRotationYaw");
+        rotationYaw = compoundNBT.getFloat("boxRotationYaw").orElse(0.0F);
         super.loadAdditional(compoundNBT, provider);
     }
 

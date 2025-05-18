@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 
 public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<PandorasBoxBlockEntity> {
     public static final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
@@ -23,7 +24,7 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
     }
 
     @Override
-    public void render(PandorasBoxBlockEntity blockEntity, float p_112308_, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
+    public void render(PandorasBoxBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, Vec3 vec3) {
         render(poseStack, multiBufferSource, blockEntity.getRotationYaw(), i, j);
     }
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, float yRot, int i, int j) {

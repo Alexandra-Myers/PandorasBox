@@ -18,7 +18,7 @@ public record RandomLightningsPositionEffect() implements PositionEffect {
     public void doEffect(ServerLevel serverLevel, PandorasBoxEntity entity, RandomSource random, float newRatio, float prevRatio, double x, double y, double z) {
         LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(serverLevel, EntitySpawnReason.NATURAL);
         if (lightningBolt == null) return;
-        lightningBolt.moveTo(Vec3.atBottomCenterOf(BlockPos.containing(x, y, z)));
+        lightningBolt.setPos(Vec3.atBottomCenterOf(BlockPos.containing(x, y, z)));
         serverLevel.addFreshEntity(lightningBolt);
     }
 

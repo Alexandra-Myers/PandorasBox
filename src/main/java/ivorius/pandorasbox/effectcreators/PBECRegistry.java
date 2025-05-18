@@ -9,6 +9,7 @@ import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectMulti;
+import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.EntityInit;
 import ivorius.pandorasbox.init.Init;
@@ -18,6 +19,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
 
@@ -126,11 +128,11 @@ public class PBECRegistry {
 
             pandorasBox.setBoxEffect(effect);
             pandorasBox.setBoxWaitingTime(40);
-            pandorasBox.moveTo(pos, player.getYRot() + 180.0f, 0.0f);
+            SpawnEntityIDListEffect.moveTo(pandorasBox, new Vec3(pos), player.getYRot() + 180.0f, 0.0f);
 
             pandorasBox.beginFloating();
 
-            pandorasBox.setBoxOwner(player);
+            pandorasBox.setOwner(player);
 
             world.addFreshEntity(pandorasBox);
 

@@ -85,7 +85,7 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
 
                 if (!enchantments.isEmpty()) {
                     for (EnchantmentInstance enchantment : enchantments) {
-                        stack.enchant(enchantment.enchantment, enchantment.level);
+                        stack.enchant(enchantment.enchantment(), enchantment.level());
                     }
                 }
             }

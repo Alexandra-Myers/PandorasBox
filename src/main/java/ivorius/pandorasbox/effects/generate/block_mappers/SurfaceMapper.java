@@ -38,7 +38,7 @@ public record SurfaceMapper(Either<Block, TagKey<Block>>[] targets, Block surfac
     @Override
     public void convertBlock(ServerLevel serverLevel, BlockPos blockPos, BlockState state, RandomSource random, PandorasBoxEntity entity, Vec3 effectCenter, int pass, int unifiedSeed, double range) {
         BlockState blockAboveState = serverLevel.getBlockState(blockPos.above());
-        if ((blockAboveState.isAir() || blockAboveState.canBeReplaced()) && random.nextDouble() > discardSurfaceChance) setBlockSafe(serverLevel, blockPos, PandorasBoxHelper.getRandomBlockState(random, surfaceBlock, unifiedSeed));
+        if ((blockAboveState.isAir() || blockAboveState.canBeReplaced() || !blockAboveState.isRedstoneConductor(serverLevel, blockPos.above())) && random.nextDouble() > discardSurfaceChance) setBlockSafe(serverLevel, blockPos, PandorasBoxHelper.getRandomBlockState(random, surfaceBlock, unifiedSeed));
         else setBlockSafe(serverLevel, blockPos, PandorasBoxHelper.getRandomBlockState(random, underBlock, unifiedSeed));
     }
 

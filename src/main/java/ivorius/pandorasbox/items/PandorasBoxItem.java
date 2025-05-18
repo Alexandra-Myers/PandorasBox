@@ -14,8 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +26,7 @@ public class PandorasBoxItem extends BlockItem {
     @Override
     public @NotNull InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if (itemstack.has(DataComponents.CONSUMABLE) || itemstack.has(DataComponents.EQUIPPABLE)) {
+        if (itemstack.has(DataComponents.CONSUMABLE) || itemstack.has(DataComponents.EQUIPPABLE) || itemstack.has(DataComponents.BLOCKS_ATTACKS)) {
             InteractionResult original = super.use(world, player, hand);
             if (original.consumesAction()) return original;
         }
@@ -37,8 +35,5 @@ public class PandorasBoxItem extends BlockItem {
             itemstack.shrink(1);
         }
         return InteractionResult.SUCCESS;
-    }
-    public @NotNull InteractionResult useOn(@NotNull UseOnContext p_40581_) {
-        return this.place(new BlockPlaceContext(p_40581_));
     }
 }

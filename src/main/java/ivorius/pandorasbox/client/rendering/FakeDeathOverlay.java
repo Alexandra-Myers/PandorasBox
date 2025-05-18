@@ -1,9 +1,9 @@
 package ivorius.pandorasbox.client.rendering;
 
-import com.mojang.blaze3d.vertex.BufferUploader;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.DeathScreen;
@@ -28,8 +28,8 @@ public class FakeDeathOverlay extends Overlay {
             wasMouseReleased = true;
             minecraft.mouseHandler.releaseMouse();
         }
+        KeyMapping.releaseAll();
 
-        BufferUploader.reset();
         screen.init(minecraft, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
         minecraft.noRender = false;
         minecraft.setOverlay(this);

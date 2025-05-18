@@ -23,7 +23,7 @@ public record SpawnRandom(String entityID, float chance) implements EntitySpawne
     @Override
     public void spawnEntities(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, int unifiedSeed) {
         Entity generatedEntity = lazilySpawnEntity(level, entity, random, entityID, chance, pos);
-        canSpawnEntity(level, level.getBlockState(pos), pos, generatedEntity);
+        canSpawnEntity(level, pos, generatedEntity);
     }
 
     @Override

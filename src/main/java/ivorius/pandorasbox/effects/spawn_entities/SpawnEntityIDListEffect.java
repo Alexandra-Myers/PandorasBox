@@ -24,8 +24,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Parrot;
-import net.minecraft.world.entity.animal.Sheep;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.sheep.Sheep;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Zombie;
@@ -42,6 +42,7 @@ import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -163,24 +164,26 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 Sheep sheep = EntityType.SHEEP.create(world, EntitySpawnReason.COMMAND);
 
                 assert sheep != null;
-                sheep.setColor(DyeColor.byId(random.nextInt(16)));
                 if (random.nextInt(32 * 32) == 0) sheep.setCustomName(Component.literal("jeb_"));
-                sheep.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                moveTo(sheep, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
                 sheep.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
+                sheep.setColor(DyeColor.byId(random.nextInt(16)));
 
                 return sheep;
             } else if ("pbspecial_hogfather".equals(trunkEntityID)){
                 Zombie santa = EntityType.ZOMBIE.create(world, EntitySpawnReason.COMMAND);
                 ItemStack helmet = new ItemStack(Items.LEATHER_HELMET);
-                helmet.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                helmet.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
                 ItemStack chestPlate = new ItemStack(Items.LEATHER_CHESTPLATE);
-                chestPlate.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                chestPlate.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
                 ItemStack leggings = new ItemStack(Items.LEATHER_LEGGINGS);
-                leggings.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                leggings.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
                 ItemStack boots = new ItemStack(Items.LEATHER_BOOTS);
-                boots.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                boots.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
 
                 assert santa != null;
+                moveTo(santa, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
+                santa.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
                 santa.setItemSlot(EquipmentSlot.HEAD, helmet);
                 santa.setItemSlot(EquipmentSlot.CHEST, chestPlate);
                 santa.setItemSlot(EquipmentSlot.LEGS, leggings);
@@ -188,8 +191,6 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 santa.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STICK));
 
                 santa.setCustomName(Component.literal("Hogfather"));
-                santa.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                santa.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
 
                 return santa;
             } else if ("pbspecial_experience".equals(trunkEntityID)) {
@@ -199,7 +200,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 Wolf wolf = EntityType.WOLF.create(world, EntitySpawnReason.COMMAND);
 
                 assert wolf != null;
-                wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                moveTo(wolf, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
                 wolf.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
 
 
@@ -217,7 +218,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 Cat cat = EntityType.CAT.create(world, EntitySpawnReason.COMMAND);
 
                 assert cat != null;
-                cat.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                moveTo(cat, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
                 cat.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
 
                 if (owner != null) {
@@ -232,8 +233,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 Parrot parrot = EntityType.PARROT.create(world, EntitySpawnReason.COMMAND);
 
                 assert parrot != null;
-                parrot.setVariant(Parrot.Variant.byId(random.nextInt(5)));
-                parrot.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                moveTo(parrot, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
                 parrot.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
 
                 if (owner != null) {
@@ -262,7 +262,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 Wolf wolf = EntityType.WOLF.create(world, EntitySpawnReason.COMMAND);
                 assert wolf != null;
                 wolf.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
-                wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                moveTo(wolf, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
                 wolf.setTarget(world.getNearestPlayer(x, y, z, 40.0, false));
 
                 return wolf;
@@ -270,14 +270,14 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 Creeper creeper = EntityType.CREEPER.create(world, EntitySpawnReason.COMMAND);
                 assert creeper != null;
                 creeper.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
-                creeper.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                moveTo(creeper, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
                 creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
                 return creeper;
             }
             EntityType<?> entity = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.tryParse(entityID));
             Entity entity1 = entity.create(world, EntitySpawnReason.COMMAND);
             assert entity1 != null;
-            entity1.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+            moveTo(entity1, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
             Player owner = getPlayer(world, pbEntity);
             if (owner != null && entity1.getY() - owner.getY() > entity.clientTrackingRange() * 16)
                 entity1.setPos(entity1.getX(), owner.getY() + entity.clientTrackingRange() * 16 - 1, entity1.getZ());
@@ -294,6 +294,11 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
         }
 
         return null;
+    }
+
+    public static void moveTo(Entity entity, Vec3 pos, float yRot, float xRot) {
+        entity.setPos(pos);
+        entity.forceSetRotation(yRot, xRot);
     }
 
     public static Fireworks createRandomFirework(RandomSource random) {

@@ -52,7 +52,27 @@
       "spawners": [
         {
           "entity_id": "minecraft:snow_golem",
-          "chance": 0.0025,
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:pig",
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:cow",
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:sheep",
+          "chance": 0.0011111111,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:chicken",
+          "chance": 0.0011111111,
           "type": "pandorasbox:spawn_random"
         }
       ],
