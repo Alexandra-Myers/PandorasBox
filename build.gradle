@@ -3,11 +3,11 @@ plugins {
     id 'maven-publish'
 }
 
-version = project.mod_version
+version = "$project.mod_version.$project.sub_version"
 group = project.maven_group
 
 base {
-    archivesName = project.archives_base_name
+    archivesName = "$project.archives_base_name-$project.minecraft_version-Fabric"
 }
 
 configurations {
@@ -57,8 +57,8 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation "net.atlas:atlas-core:1.1.2-BETA-3-1.21.4"
-    modCompileOnly "maven.modrinth:psychedelicraft:1.8.0-beta.8+1.21"
+    modImplementation "maven.modrinth:atlas-core:${project.atlas_core_version}-${project.minecraft_version}"
+    modCompileOnly "maven.modrinth:psychedelicraft:1.8.2+1.21.4"
 	modApi "com.terraformersmc:modmenu:13.0.0-beta.1"
 	modApi "me.shedaniel.cloth:cloth-config-fabric:17.0.144"
 

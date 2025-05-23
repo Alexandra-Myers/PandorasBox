@@ -16,8 +16,8 @@ public record DrugEntityEffect(List<DrugInfluence> drugs) implements EntityEffec
     @Override
     public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
         for (DrugInfluence effect : drugs) {
-            float prevStrength = (float) (prevRatio * strength * effect.getMaxInfluence());
-            float newStrength = (float) (newRatio * strength * effect.getMaxInfluence());
+            float prevStrength = (float) (prevRatio * strength * effect.getTargetInfluence());
+            float newStrength = (float) (newRatio * strength * effect.getTargetInfluence());
             float drugStrength = newStrength - prevStrength;
 
             if (drugStrength > 0)

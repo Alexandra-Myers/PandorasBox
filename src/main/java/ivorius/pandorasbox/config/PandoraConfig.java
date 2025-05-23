@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.InputStream;
 import java.util.*;
 
 public class PandoraConfig extends AtlasConfig {
@@ -27,11 +26,6 @@ public class PandoraConfig extends AtlasConfig {
 	public PandoraConfig() {
 		super(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandoras-box"));
 		declareDefaultForMod(PandorasBox.MOD_ID);
-	}
-
-	@Override
-	protected InputStream getDefaultedConfig() {
-		return Thread.currentThread().getContextClassLoader().getResourceAsStream(name.getPath() + ".json");
 	}
 
 	@Override
