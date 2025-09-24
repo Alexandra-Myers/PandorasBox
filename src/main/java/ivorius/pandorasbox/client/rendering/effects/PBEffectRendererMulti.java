@@ -18,11 +18,11 @@ import java.util.List;
  */
 public class PBEffectRendererMulti implements PBEffectRenderer<PBEffectMulti> {
     @Override
-    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectMulti effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer, int packedLightIn) {
+    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectMulti effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer, int packedLightIn, float height) {
         Arrays.stream(effect.effects).toList().forEach(pbEffect -> {
             PBEffectRenderer renderer1 = PBEffectRenderingRegistry.rendererForEffect(pbEffect);
             if (renderer1 != null && !pbEffect.isDone(renderState.effectTicksExisted)) {
-                renderer1.renderBox(renderer, renderState, pbEffect, partialTicks, poseStack, multiBufferSource, consumer, packedLightIn);
+                renderer1.renderBox(renderer, renderState, pbEffect, partialTicks, poseStack, multiBufferSource, consumer, packedLightIn, height);
 
             }
         });

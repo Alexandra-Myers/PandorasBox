@@ -10,6 +10,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.*;
+import org.joml.Vector3f;
+
+import java.util.Set;
 
 @Environment(EnvType.CLIENT)
 public class PandorasBoxSpecialRenderer implements NoDataSpecialModelRenderer {
@@ -21,7 +24,12 @@ public class PandorasBoxSpecialRenderer implements NoDataSpecialModelRenderer {
 
 	@Override
 	public void render(ItemDisplayContext itemDisplayContext, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, boolean bl) {
-		renderer.renderItem(poseStack, multiBufferSource, i, j);
+		this.renderer.renderItem(poseStack, multiBufferSource, i, j);
+	}
+
+	@Override
+	public void getExtents(Set<Vector3f> set) {
+		this.renderer.getExtents(set);
 	}
 
 	@Environment(EnvType.CLIENT)

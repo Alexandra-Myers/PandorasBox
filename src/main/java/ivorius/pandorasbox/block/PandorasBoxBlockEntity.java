@@ -13,6 +13,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,22 +37,20 @@ public class PandorasBoxBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        compoundTag.putFloat("boxRotationYaw", rotationYaw);
-        super.saveAdditional(compoundTag, provider);
+    protected void saveAdditional(ValueOutput valueOutput) {
+        valueOutput.putFloat("boxRotationYaw", rotationYaw);
+        super.saveAdditional(valueOutput);
     }
 
     @Override
-    public void loadAdditional(CompoundTag compoundNBT, HolderLookup.Provider provider) {
-        rotationYaw = compoundNBT.getFloat("boxRotationYaw").orElse(0.0F);
-        super.loadAdditional(compoundNBT, provider);
+    public void loadAdditional(ValueInput valueInput) {
+        rotationYaw = valueInput.getFloatOr("boxRotationYaw", 0);
+        super.loadAdditional(valueInput);
     }
 
     @Override
     public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        CompoundTag compoundTag = super.getUpdateTag(provider);
-        saveAdditional(compoundTag, provider);
-        return compoundTag;
+        return saveCustomOnly(provider);
     }
 
     @Override

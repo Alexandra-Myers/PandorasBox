@@ -48,6 +48,7 @@ public class PBEffectDuplicateBox extends PBEffectNormal {
 
             newBox.setBoxEffect(effect);
             newBox.setBoxWaitingTime(40);
+            newBox.setRenderItem(box.getRenderItem());
             SpawnEntityIDListEffect.moveTo(newBox, box.position(), box.getYRot(), box.getXRot());
 
             if (spawnMode == MODE_BOX_IN_BOX) {

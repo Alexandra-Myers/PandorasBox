@@ -15,7 +15,7 @@ import java.util.List;
  * Created by lukas on 05.12.14.
  */
 public interface PBEffectRenderer<E extends PBEffect> {
-    void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, E effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer, int packedLightIn);
+    void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, E effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer, int packedLightIn, float height);
 
     List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> getLayers(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, E effect, PandorasBoxModel model, float partialTicks);
 }

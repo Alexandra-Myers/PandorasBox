@@ -82,6 +82,16 @@ public class PBEffectMulti extends PBEffect {
     }
 
     @Override
+    public int getMaxTicksAlive() {
+        int highestLength = 0;
+        for (int i = 0; i < effects.length; i++) {
+            int effectTicks = effects[i].getMaxTicksAlive() + delays[i];
+            if (effectTicks >= highestLength) highestLength = effectTicks;
+        }
+        return highestLength;
+    }
+
+    @Override
     public @NotNull MapCodec<? extends PBEffect> codec() {
         return CODEC;
     }

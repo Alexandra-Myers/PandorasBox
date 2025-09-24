@@ -10,19 +10,19 @@ import org.joml.Matrix4f;
 public class IvRenderHelper {
     public static final float width = 2.5f;
 
-    public static void renderLights(float ticks, float scale, int color, float alpha, int number, PoseStack poseStack, MultiBufferSource multiBufferSource) {
+    public static void renderLights(float ticks, float scale, float height, int color, float alpha, int number, PoseStack poseStack, MultiBufferSource multiBufferSource) {
         RandomSource randomSource = RandomSource.create(432L);
-        renderRays(ticks, scale, color, alpha, number, poseStack, multiBufferSource.getBuffer(RenderType.dragonRays()), randomSource);
-        renderRays(ticks, scale, color, alpha, number, poseStack, multiBufferSource.getBuffer(RenderType.dragonRaysDepth()), randomSource);
+        renderRays(ticks, scale, height, color, alpha, number, poseStack, multiBufferSource.getBuffer(RenderType.dragonRays()), randomSource);
+        renderRays(ticks, scale, height, color, alpha, number, poseStack, multiBufferSource.getBuffer(RenderType.dragonRaysDepth()), randomSource);
     }
-    private static void renderRays(float ticks, float scale, int color, float alpha, int number, PoseStack poseStack, VertexConsumer vertexConsumer, RandomSource randomSource) {
+    private static void renderRays(float ticks, float scale, float height, int color, float alpha, int number, PoseStack poseStack, VertexConsumer vertexConsumer, RandomSource randomSource) {
         int r = color >> 16 & 255;
         int g = color >> 8 & 255;
         int b = color & 255;
         float usedTicks = ticks / 200.0F;
         float m = Math.min(usedTicks > 0.8F ? (usedTicks - 0.8F) / 0.2F : 0.0F, 1.0F);
         poseStack.pushPose();
-        poseStack.translate(0.0, 1.0, 0.0);
+        poseStack.translate(0.0, height + 0.1, 0.0);
         poseStack.scale(scale, scale, scale);
 
         for(int n = 0; n < number; ++n) {

@@ -71,7 +71,7 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
         BlockEntity blockEntity = level.getBlockEntity(pos);
         PBEffectComponent effectComponent = PBEffectComponent.DEFAULT;
         if (blockEntity != null) effectComponent = blockEntity.components().getOrDefault(ComponentInit.EFFECT_COMPONENT, effectComponent);
-        PandorasBoxEntity result = effectComponent.createEffect(level, player, pos, false);
+        PandorasBoxEntity result = effectComponent.createEffect(level, player, pos, false, ItemStack.EMPTY);
         if (result == null) return InteractionResult.PASS;
         level.removeBlock(pos, false);
         level.removeBlockEntity(pos);

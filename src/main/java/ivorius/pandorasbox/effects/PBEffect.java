@@ -152,5 +152,7 @@ public abstract class PBEffect {
 
     public abstract int getTicksExistedForEffect(PBEffect identityEffect, int ticksAlive);
 
+    public abstract int getMaxTicksAlive();
+
     public abstract @NotNull MapCodec<? extends PBEffect> codec();
 }

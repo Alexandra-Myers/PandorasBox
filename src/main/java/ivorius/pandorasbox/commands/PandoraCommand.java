@@ -51,9 +51,9 @@ public class PandoraCommand {
         PandorasBoxEntity box;
 
         if (effectCreator != null) {
-            box = PBECRegistry.spawnPandorasBox(player.level(), player.getCommandSenderWorld().random, effectCreator, player);
+            box = PBECRegistry.spawnPandorasBox(player.level(), player.level().random, effectCreator, player);
         } else
-            box = PBECRegistry.spawnPandorasBox(player.level(), player.getCommandSenderWorld().random, true, player);
+            box = PBECRegistry.spawnPandorasBox(player.level(), player.level().random, true, player);
 
         if (box != null) {
             if (invisible) {

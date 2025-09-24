@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplode> {
     @Override
-    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectExplode effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer, int packedLightIn) {
+    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectExplode effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer, int packedLightIn, float height) {
         int lightColor = effect.burning ? 0xff0088 : 0xbb3399;
 
         float timePassed = Math.min((float) renderState.effectTicksExisted / (float) effect.maxTicksAlive, 1F);
@@ -24,7 +24,7 @@ public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplo
         timePassed *= timePassed;
 
         float scale = (timePassed * 0.3f) * effect.explosionRadius * 0.3f;
-        IvRenderHelper.renderLights(renderState.entityTickCount + partialTicks, scale, lightColor, timePassed * 255F, 10, poseStack, multiBufferSource);
+        IvRenderHelper.renderLights(renderState.entityTickCount + partialTicks, scale, height, lightColor, timePassed * 255F, 10, poseStack, multiBufferSource);
     }
 
     @Override

@@ -12,15 +12,18 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
+
+import java.util.Set;
 
 public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<PandorasBoxBlockEntity> {
     public static final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
-    public final PandorasBoxBlockEntityModel model;
+    public final PandorasBoxModel model;
     public PandorasBoxBlockEntityRenderer(BlockEntityRendererProvider.Context berpContext) {
-        model = new PandorasBoxBlockEntityModel(berpContext.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
+        this.model = new PandorasBoxModel(berpContext.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
     }
     public PandorasBoxBlockEntityRenderer(EntityModelSet entityModelSet) {
-        model = new PandorasBoxBlockEntityModel(entityModelSet.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
+        this.model = new PandorasBoxModel(entityModelSet.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
     }
 
     @Override
@@ -33,10 +36,18 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
         poseStack.translate(0.5f, 1.5f, 0.5f);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        model.renderToBuffer(poseStack, builder, i, j, 0xFFFFFFFF);
+        this.model.renderToBuffer(poseStack, builder, i, j, 0xFFFFFFFF);
         poseStack.popPose();
     }
     public void renderItem(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
         render(poseStack, multiBufferSource, 0, i, j);
+    }
+
+    public void getExtents(Set<Vector3f> set) {
+        PoseStack poseStack = new PoseStack();
+        poseStack.translate(0.5F, 1.5F, 0.5F);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
+        poseStack.mulPose(Axis.YP.rotationDegrees(0));
+        this.model.root().getExtentsForGui(poseStack, set);
     }
 }

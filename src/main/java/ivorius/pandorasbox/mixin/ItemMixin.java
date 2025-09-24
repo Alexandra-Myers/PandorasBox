@@ -19,7 +19,7 @@ public class ItemMixin {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         InteractionResult result = original.call(level, player, interactionHand);
         if (!result.consumesAction() && itemStack.has(ComponentInit.EFFECT_COMPONENT)) {
-            PandorasBoxEntity resultBox = itemStack.get(ComponentInit.EFFECT_COMPONENT).createEffect(level, player, player.blockPosition(), true);
+            PandorasBoxEntity resultBox = itemStack.get(ComponentInit.EFFECT_COMPONENT).createEffect(level, player, player.blockPosition(), true, itemStack);
             if (resultBox == null) return result;
             if (!player.getAbilities().instabuild) {
                 itemStack.shrink(1);
