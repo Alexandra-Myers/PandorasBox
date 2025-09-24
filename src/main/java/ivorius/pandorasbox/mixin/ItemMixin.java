@@ -2,7 +2,6 @@ package ivorius.pandorasbox.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import ivorius.pandorasbox.component.PBEffectComponent;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.ComponentInit;
 import net.minecraft.world.InteractionHand;
