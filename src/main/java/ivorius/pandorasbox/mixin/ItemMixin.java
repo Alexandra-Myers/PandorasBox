@@ -21,9 +21,7 @@ public class ItemMixin {
         if (!result.consumesAction() && itemStack.has(ComponentInit.EFFECT_COMPONENT)) {
             PandorasBoxEntity resultBox = itemStack.get(ComponentInit.EFFECT_COMPONENT).createEffect(level, player, player.blockPosition(), true, itemStack);
             if (resultBox == null) return result;
-            if (!player.getAbilities().instabuild) {
-                itemStack.shrink(1);
-            }
+            if (!player.getAbilities().instabuild) itemStack.shrink(1);
             return InteractionResult.SUCCESS;
         } else return result;
     }

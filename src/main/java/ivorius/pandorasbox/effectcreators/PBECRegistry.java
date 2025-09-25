@@ -18,6 +18,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -94,21 +95,21 @@ public class PBECRegistry {
         return creator.constructEffect(world, x, y, z, random);
     }
 
-    public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, boolean multi, Player player, BlockPos pos, boolean floatAway) {
+    public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, ItemStack heldItem, Optional<ItemStack> renderItem, boolean multi, Player player, BlockPos pos, boolean floatAway) {
         PBEffect effect = createRandomEffect(world, random, pos.getX(), pos.getY() + 1.2, pos.getZ(), multi);
-        return spawnPandorasBox(world, effect, player, pos, floatAway, true);
+        return spawnPandorasBox(world, effect, heldItem, renderItem, player, pos, floatAway, true);
     }
-    public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, boolean multi, Player player) {
+    public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, Optional<ItemStack> renderItem, boolean multi, Player player) {
         PBEffect effect = createRandomEffect(world, random, player.getX(), player.getY() + 1.2, player.getZ(), multi);
-        return spawnPandorasBox(world, effect, player, null, true, true);
+        return spawnPandorasBox(world, effect, ItemStack.EMPTY, renderItem, player, null, true, true);
     }
 
-    public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, PBEffectCreator creator, Player player) {
+    public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, Optional<ItemStack> renderItem, PBEffectCreator creator, Player player) {
         PBEffect effect = createEffect(world, random, player.getX(), player.getY() + 1.2, player.getZ(), creator);
-        return spawnPandorasBox(world, effect, player, null, true, false);
+        return spawnPandorasBox(world, effect, ItemStack.EMPTY, renderItem, player, null, true, false);
     }
 
-    public static PandorasBoxEntity spawnPandorasBox(Level world, PBEffect effect, Player player, BlockPos pos, boolean floatAway, boolean canGenerateMoreEffectsAfterwards) {
+    public static PandorasBoxEntity spawnPandorasBox(Level world, PBEffect effect, ItemStack heldItem, Optional<ItemStack> renderItem, Player player, BlockPos pos, boolean floatAway, boolean canGenerateMoreEffectsAfterwards) {
         if (effect != null && !world.isClientSide()) {
             PandorasBoxEntity pandorasBox = new PandorasBoxEntity(EntityInit.BOX, world, canGenerateMoreEffectsAfterwards, !floatAway);
 
@@ -129,6 +130,11 @@ public class PBECRegistry {
             pandorasBox.setBoxEffect(effect);
             pandorasBox.setBoxWaitingTime(40);
             SpawnEntityIDListEffect.moveTo(pandorasBox, new Vec3(pos), player.getYRot() + 180.0f, 0.0f);
+            if (renderItem.isPresent()) {
+                ItemStack chosen = heldItem.copyWithCount(1);
+                if (!renderItem.get().isEmpty()) chosen = renderItem.get();
+                pandorasBox.setRenderItem(chosen);
+            }
 
             pandorasBox.beginFloating();
 

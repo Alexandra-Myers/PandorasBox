@@ -32,26 +32,14 @@ public record PBEffectComponent(List<Holder<EffectHolder>> holders, Optional<Ite
 
     public PandorasBoxEntity createEffect(Level level, Player player, BlockPos pos, boolean floatAway, ItemStack heldStack) {
         if (level.isClientSide) return null;
-        else if (holders.isEmpty()) {
-            PandorasBoxEntity pandorasBoxEntity = PBECRegistry.spawnPandorasBox(level, level.random, true, player, pos, floatAway);
-            if (renderItem.isPresent()) {
-                ItemStack chosen = heldStack;
-                if (!renderItem.get().isEmpty()) chosen = renderItem.get();
-                pandorasBoxEntity.setRenderItem(chosen);
-            }
-            return pandorasBoxEntity;
-        } else {
+        else if (holders.isEmpty())
+            return PBECRegistry.spawnPandorasBox(level, level.random, heldStack, renderItem, true, player, pos, floatAway);
+        else {
             List<PBEffect> pbEffects  = new ArrayList<>();
             for (Holder<EffectHolder> holder : holders) {
                 pbEffects.add(holder.value().effectCreator.constructEffect(level, pos.getX(), pos.getY() + 1.2, pos.getZ(), level.random));
             }
-            PandorasBoxEntity pandorasBoxEntity = PBECRegistry.spawnPandorasBox(level, new PBEffectMulti(pbEffects.toArray(new PBEffect[0]), new int[pbEffects.size()]), player, pos, floatAway, false);
-            if (renderItem.isPresent()) {
-                ItemStack chosen = heldStack;
-                if (!renderItem.get().isEmpty()) chosen = renderItem.get();
-                pandorasBoxEntity.setRenderItem(chosen);
-            }
-            return pandorasBoxEntity;
+            return PBECRegistry.spawnPandorasBox(level, new PBEffectMulti(pbEffects.toArray(new PBEffect[0]), new int[pbEffects.size()]), heldStack, renderItem, player, pos, floatAway, false);
         }
     }
 

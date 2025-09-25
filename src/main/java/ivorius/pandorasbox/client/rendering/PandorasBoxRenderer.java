@@ -134,6 +134,7 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
         entityRenderState.entityTickCount = entity.tickCount;
         entityRenderState.boxDeathTicks = entity.getDeathTicks();
         entityRenderState.pbEffect = entity.getBoxEffect();
+        PandorasBox.logger.info(entity.getRenderItem().toString());
         this.itemModelResolver.updateForNonLiving(entityRenderState.renderItem, entity.getRenderItem(), ItemDisplayContext.GROUND, entity);
         entityRenderState.invisibleToPlayer = entity.isInvisibleTo(Minecraft.getInstance().player);
     }
