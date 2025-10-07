@@ -325,7 +325,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
 
     public float getRatioBoxOpen(float partialTicks) {
         if (getFloatProgress() >= 0.0f)
-            return Mth.clamp(((getFloatProgress() + partialTicks * 0.025f - 0.5f) * 2.0f), 0.0f, 1.0f);
+            return Mth.clamp(((getFloatProgress() + partialTicks * 0.025f - 0.5f) * 2.0f), -0.025f, 1.0f);
         else
             return 1.0f;
     }

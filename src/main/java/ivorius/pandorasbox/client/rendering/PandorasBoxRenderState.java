@@ -15,4 +15,9 @@ public class PandorasBoxRenderState extends EntityRenderState {
     public boolean invisibleToPlayer;
     public PBEffect pbEffect;
     public ItemStackRenderState renderItem = new ItemStackRenderState();
+    static final PandorasBoxRenderState BLOCK_ENTITY_STATE;
+    static {
+        BLOCK_ENTITY_STATE = new PandorasBoxRenderState();
+        BLOCK_ENTITY_STATE.xRot = (float) (-0.025F * 2F / 3F * Math.PI);
+    }
 }

@@ -75,13 +75,8 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
         int packedOverlay = OverlayTexture.NO_OVERLAY;
         height += renderState.renderItem.isEmpty() ? 1 : -0.25F;
         poseStack.translate(0, 0.5F + height, 0);
-        if (renderState.renderItem.isEmpty()) {
-            poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
-            model.setupAnim(renderState);
-        } else {
-            poseStack.mulPose(YP.rotation((float) (progress * 4 * Math.PI)));
-            poseStack.mulPose(Axis.XP.rotationDegrees(renderState.xRot));
-        }
+        if (renderState.renderItem.isEmpty()) poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
+        else poseStack.mulPose(YP.rotation((float) (progress * 4 * Math.PI)));
         boolean visible = !renderState.isInvisible;
         boolean visibleToPlayer = !visible && !renderState.invisibleToPlayer;
         RenderType renderType = getRenderType(visible, visibleToPlayer);
@@ -127,7 +122,7 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
     @Override
     public void extractRenderState(PandorasBoxEntity entity, PandorasBoxRenderState entityRenderState, float partialTicks) {
         super.extractRenderState(entity, entityRenderState, partialTicks);
-        entityRenderState.xRot = entity.getRatioBoxOpen(partialTicks) * 120.0f / 180.0f * 3.1415926f;
+        entityRenderState.xRot = (float) (entity.getRatioBoxOpen(partialTicks) * 2F / 3F * Math.PI);
         entityRenderState.yRot = entity.getYRot();
         entityRenderState.boxScale = entity.getCurrentScale();
         entityRenderState.partialTicks = partialTicks;
@@ -135,7 +130,6 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
         entityRenderState.entityTickCount = entity.tickCount;
         entityRenderState.boxDeathTicks = entity.getDeathTicks();
         entityRenderState.pbEffect = entity.getBoxEffect();
-        PandorasBox.logger.info(entity.getRenderItem().toString());
         this.itemModelResolver.updateForNonLiving(entityRenderState.renderItem, entity.getRenderItem(), ItemDisplayContext.GROUND, entity);
         entityRenderState.invisibleToPlayer = entity.isInvisibleTo(Minecraft.getInstance().player);
     }

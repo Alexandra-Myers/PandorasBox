@@ -33,7 +33,7 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
         poseStack.translate(0.5f, 1.5f, 0.5f);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        submitNodeCollector.submitModel(model, new PandorasBoxRenderState(), poseStack, RenderType.entityCutoutNoCull(texture), packedLightIn, overlayTexture, outlineColor, crumblingOverlay);
+        submitNodeCollector.submitModel(model, PandorasBoxRenderState.BLOCK_ENTITY_STATE, poseStack, RenderType.entityCutoutNoCull(texture), packedLightIn, overlayTexture, outlineColor, crumblingOverlay);
         poseStack.popPose();
     }
     public void renderItem(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, int overlayTexture, int outlineColor) {
