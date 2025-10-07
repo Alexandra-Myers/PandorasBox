@@ -1,12 +1,11 @@
 package ivorius.pandorasbox.client.rendering.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import ivorius.pandorasbox.client.rendering.PandorasBoxModel;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderState;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
 import ivorius.pandorasbox.effects.PBEffectExplode;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.List;
  */
 public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplode> {
     @Override
-    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectExplode effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer, int packedLightIn, float height) {
+    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectExplode effect, float partialTicks, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, float height) {
         int lightColor = effect.burning ? 0xff0088 : 0xbb3399;
 
         float timePassed = Math.min((float) renderState.effectTicksExisted / (float) effect.maxTicksAlive, 1F);
@@ -24,7 +23,7 @@ public class PBEffectRendererExplosion implements PBEffectRenderer<PBEffectExplo
         timePassed *= timePassed;
 
         float scale = (timePassed * 0.3f) * effect.explosionRadius * 0.3f;
-        IvRenderHelper.renderLights(renderState.entityTickCount + partialTicks, scale, height, lightColor, timePassed * 255F, 10, poseStack, multiBufferSource);
+        IvRenderHelper.renderLights(renderState.entityTickCount + partialTicks, scale, height, lightColor, timePassed * 255F, 10, poseStack, submitNodeCollector);
     }
 
     @Override

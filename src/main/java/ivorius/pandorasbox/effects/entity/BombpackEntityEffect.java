@@ -21,7 +21,7 @@ public record BombpackEntityEffect() implements EntityEffect {
             primedTnt.setFuse(60 + random.nextInt(160));
 
             serverLevel.addFreshEntity(primedTnt);
-            primedTnt.startRiding(entity, true);
+            primedTnt.startRiding(entity, true, true);
         }
     }
 

@@ -5,11 +5,11 @@ import com.mojang.serialization.MapCodec;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.*;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.Set;
@@ -23,13 +23,13 @@ public class PandorasBoxSpecialRenderer implements NoDataSpecialModelRenderer {
 	}
 
 	@Override
-	public void render(ItemDisplayContext itemDisplayContext, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, boolean bl) {
-		this.renderer.renderItem(poseStack, multiBufferSource, i, j);
+	public void getExtents(Set<Vector3f> set) {
+		this.renderer.getExtents(set);
 	}
 
 	@Override
-	public void getExtents(Set<Vector3f> set) {
-		this.renderer.getExtents(set);
+	public void submit(ItemDisplayContext itemDisplayContext, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, int overlayTexture, boolean bl, int outlineColor) {
+		this.renderer.renderItem(poseStack, submitNodeCollector, packedLightIn, overlayTexture, outlineColor);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -37,13 +37,13 @@ public class PandorasBoxSpecialRenderer implements NoDataSpecialModelRenderer {
 		public static final MapCodec<PandorasBoxSpecialRenderer.Unbaked> MAP_CODEC = MapCodec.unit(new Unbaked());
 
 		@Override
-		public MapCodec<PandorasBoxSpecialRenderer.Unbaked> type() {
-			return MAP_CODEC;
+		public @Nullable SpecialModelRenderer<?> bake(BakingContext bakingContext) {
+			return new PandorasBoxSpecialRenderer(new PandorasBoxBlockEntityRenderer(bakingContext.entityModelSet()));
 		}
 
 		@Override
-		public SpecialModelRenderer<?> bake(EntityModelSet entityModelSet) {
-			return new PandorasBoxSpecialRenderer(new PandorasBoxBlockEntityRenderer(entityModelSet));
+		public MapCodec<PandorasBoxSpecialRenderer.Unbaked> type() {
+			return MAP_CODEC;
 		}
 	}
 }

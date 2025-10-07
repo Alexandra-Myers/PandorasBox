@@ -6,7 +6,6 @@
 package ivorius.pandorasbox.client.rendering;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderer;
@@ -16,13 +15,14 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -58,8 +58,9 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
     }
 
     @Override
-    public void render(PandorasBoxRenderState renderState, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn) {
-        super.render(renderState, poseStack, multiBufferSource, packedLightIn);
+    public void submit(PandorasBoxRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        super.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
+        int packedLightIn = renderState.lightCoords;
         poseStack.pushPose();
         poseStack.mulPose(YP.rotationDegrees(-renderState.yRot));
 
@@ -85,14 +86,13 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
         boolean visibleToPlayer = !visible && !renderState.invisibleToPlayer;
         RenderType renderType = getRenderType(visible, visibleToPlayer);
         if (renderType != null) {
-            VertexConsumer consumer = multiBufferSource.getBuffer(renderType);
-            if (renderState.renderItem.isEmpty()) model.renderToBuffer(poseStack, consumer, packedLightIn, packedOverlay, 0xFFFFFFFF);
-            else renderState.renderItem.render(poseStack, multiBufferSource, packedLightIn, packedOverlay);
+            if (renderState.renderItem.isEmpty()) submitNodeCollector.submitModel(model, renderState, poseStack, renderType, packedLightIn, packedOverlay, renderState.outlineColor, null);
+            else renderState.renderItem.submit(poseStack, submitNodeCollector, packedLightIn, packedOverlay, renderState.outlineColor);
             if (!effect.isDone(renderState.effectTicksExisted) && renderState.boxDeathTicks < 0) {
                 List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> layers = new ArrayList<>();
                 PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForEffect(effect);
                 if (renderer != null) {
-                    renderer.renderBox(this, renderState, effect, renderState.partialTicks, poseStack, multiBufferSource, consumer, packedLightIn, height);
+                    renderer.renderBox(this, renderState, effect, renderState.partialTicks, poseStack, submitNodeCollector, packedLightIn, height);
                     List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> renderLayers = renderer.getLayers(this, renderState, effect, model, renderState.partialTicks);
                     if (renderLayers != null) {
                         layers.addAll(renderLayers);
@@ -100,13 +100,14 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
                 }
 
                 for (RenderLayer<PandorasBoxRenderState, PandorasBoxModel> renderLayer : layers) {
-                    renderLayer.render(poseStack, multiBufferSource, packedLightIn, renderState, 0, 0);
+                    renderLayer.submit(poseStack, submitNodeCollector, packedLightIn, renderState, 0, 0);
                 }
             }
         }
 
         poseStack.popPose();
     }
+
     @Nullable
     protected RenderType getRenderType(boolean visible, boolean visibleToPlayer) {
         ResourceLocation resourceLocation = this.texture;

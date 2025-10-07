@@ -103,7 +103,7 @@ public class PBEffectGenWorldSnake extends PBEffectNormal {
 
     @Override
     public void doEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             int requiredRange = Mth.ceil(size);
 
             float f1 = Mth.cos(-dirYaw * 0.017453292F - (float) Math.PI);

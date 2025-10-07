@@ -42,7 +42,7 @@ public class PBEffectDuplicateBox extends PBEffectNormal {
 
     @Override
     public void setUpEffect(Level level, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             PBEffect effect = PBECRegistry.createRandomEffect(level, random, box.getX(), box.getY(), box.getZ(), true);
             PandorasBoxEntity newBox = new PandorasBoxEntity(EntityInit.BOX, level, true, true);
 

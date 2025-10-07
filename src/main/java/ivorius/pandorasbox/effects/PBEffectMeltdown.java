@@ -83,7 +83,7 @@ public final class PBEffectMeltdown extends PBEffect {
             effectStartTicks[0] = 0;
         }
         rand = random.nextInt(MELTDOWN_CREATORS.length * 16);
-        if (!level.isClientSide && rand < MELTDOWN_CREATORS.length) {
+        if (!level.isClientSide() && rand < MELTDOWN_CREATORS.length) {
             double xP = (random.nextDouble() - 0.5) * range;
             double yP = (random.nextDouble() - 0.5) * range * 0.25;
             double zP = (random.nextDouble() - 0.5) * range;
@@ -112,7 +112,7 @@ public final class PBEffectMeltdown extends PBEffect {
             }
             Vec3 currentCenter = effectCenters[i];
             effects[i].doTick(entity, currentCenter, ticksForEffect);
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 if (ticksForEffect == 0) {
                     for (int e = 0; e < 300; e++) {
                         double xDir = (random.nextDouble() - random.nextDouble()) * 2.0;
@@ -164,7 +164,7 @@ public final class PBEffectMeltdown extends PBEffect {
                 }
             }
         }
-        if (!entity.isInvisible() && level.isClientSide) {
+        if (!entity.isInvisible() && level.isClientSide()) {
             for (int e = 0; e < Math.min(ticksAlive, 20); e++) {
                 double xP = (random.nextDouble() - random.nextDouble()) * 0.5;
                 double yP = (random.nextDouble() - random.nextDouble()) * 0.5;
@@ -179,7 +179,7 @@ public final class PBEffectMeltdown extends PBEffect {
                 level.addParticle(ParticleTypes.FLAME, xO, entity.getY() + yP, zO, random.nextDouble() * xDif, random.nextDouble() * 0.4, random.nextDouble() * zDif);
             }
         }
-        if (!level.isClientSide && ticksAlive == maxTicksAlive - 1)
+        if (!level.isClientSide() && ticksAlive == maxTicksAlive - 1)
             level.explode(entity, entity.getX(), entity.getY(), entity.getZ(), 10, true, Level.ExplosionInteraction.MOB);
     }
 

@@ -1,12 +1,11 @@
 package ivorius.pandorasbox.client.rendering.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import ivorius.pandorasbox.client.rendering.PandorasBoxModel;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderState;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
 import ivorius.pandorasbox.effects.PBEffectMulti;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 
 import java.util.ArrayList;
@@ -18,11 +17,11 @@ import java.util.List;
  */
 public class PBEffectRendererMulti implements PBEffectRenderer<PBEffectMulti> {
     @Override
-    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectMulti effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer, int packedLightIn, float height) {
+    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectMulti effect, float partialTicks, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, float height) {
         Arrays.stream(effect.effects).toList().forEach(pbEffect -> {
             PBEffectRenderer renderer1 = PBEffectRenderingRegistry.rendererForEffect(pbEffect);
             if (renderer1 != null && !pbEffect.isDone(renderState.effectTicksExisted)) {
-                renderer1.renderBox(renderer, renderState, pbEffect, partialTicks, poseStack, multiBufferSource, consumer, packedLightIn, height);
+                renderer1.renderBox(renderer, renderState, pbEffect, partialTicks, poseStack, submitNodeCollector, packedLightIn, height);
 
             }
         });

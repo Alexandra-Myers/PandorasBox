@@ -31,7 +31,7 @@ public record PBEffectComponent(List<Holder<EffectHolder>> holders, Optional<Ite
     public static final Codec<PBEffectComponent> CODEC = Codec.withAlternative(FULL_CODEC, EffectHolder.CODEC.listOf().orElse(Collections.emptyList()).xmap(holders -> new PBEffectComponent(holders, Optional.empty()), PBEffectComponent::holders));
 
     public PandorasBoxEntity createEffect(Level level, Player player, BlockPos pos, boolean floatAway, ItemStack heldStack) {
-        if (level.isClientSide) return null;
+        if (level.isClientSide()) return null;
         else if (holders.isEmpty())
             return PBECRegistry.spawnPandorasBox(level, level.random, heldStack, renderItem, true, player, pos, floatAway);
         else {

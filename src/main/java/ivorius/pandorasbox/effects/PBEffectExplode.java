@@ -51,7 +51,7 @@ public class PBEffectExplode extends PBEffectNormal {
     public void finalizeEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random) {
         super.finalizeEffect(level, entity, effectCenter, random);
 
-        if (!level.isClientSide)
+        if (!level.isClientSide())
             level.explode(entity, entity.getX(), entity.getY(), entity.getZ(), explosionRadius, burning, interaction);
     }
 

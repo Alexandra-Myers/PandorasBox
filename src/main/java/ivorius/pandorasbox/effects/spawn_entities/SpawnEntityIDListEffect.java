@@ -74,7 +74,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             if (previousEntity != null) {
                 world.addFreshEntity(previousEntity);
                 assert newEntity != null;
-                previousEntity.startRiding(newEntity, true);
+                previousEntity.startRiding(newEntity, true, true);
             }
 
             previousEntity = newEntity;
@@ -298,7 +298,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
 
     public static void moveTo(Entity entity, Vec3 pos, float yRot, float xRot) {
         entity.setPos(pos);
-        entity.forceSetRotation(yRot, xRot);
+        entity.forceSetRotation(yRot, true, xRot, true);
     }
 
     public static Fireworks createRandomFirework(RandomSource random) {

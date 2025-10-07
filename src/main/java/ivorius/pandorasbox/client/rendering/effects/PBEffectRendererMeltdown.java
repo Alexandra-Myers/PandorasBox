@@ -1,14 +1,13 @@
 package ivorius.pandorasbox.client.rendering.effects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.client.rendering.PandorasBoxModel;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderState;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
 import ivorius.pandorasbox.effects.PBEffectMeltdown;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +25,7 @@ public class PBEffectRendererMeltdown implements PBEffectRenderer<PBEffectMeltdo
     public ResourceLocation meltdownTexture3 = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box_unstable_3.png");
 
     @Override
-    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectMeltdown effect, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer consumer, int packedLightIn, float height) {
+    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PBEffectMeltdown effect, float partialTicks, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, float height) {
         int lightColor = 0xff6611;
 
         float timePassed = Math.min((float) renderState.effectTicksExisted / effect.getMaxTicksAlive(), 1F);
@@ -36,17 +35,16 @@ public class PBEffectRendererMeltdown implements PBEffectRenderer<PBEffectMeltdo
             timePassed *= timePassed * 0.5F;
 
             float scale = (timePassed * 0.3f) * effect.getRange() * 0.3f;
-            IvRenderHelper.renderLights(renderState.entityTickCount + partialTicks, scale, height, lightColor, timePassed * 255F, 10, poseStack, multiBufferSource);
+            IvRenderHelper.renderLights(renderState.entityTickCount + partialTicks, scale, height, lightColor, timePassed * 255F, 10, poseStack, submitNodeCollector);
         }
         Arrays.stream(effect.getEffects()).toList().forEach(pbEffect -> {
             PBEffectRenderer renderer1 = PBEffectRenderingRegistry.rendererForEffect(pbEffect);
             if (renderer1 != null && !pbEffect.isDone(renderState.effectTicksExisted))
-                renderer1.renderBox(renderer, renderState, pbEffect, partialTicks, poseStack, multiBufferSource, consumer, packedLightIn, height);
+                renderer1.renderBox(renderer, renderState, pbEffect, partialTicks, poseStack, submitNodeCollector, packedLightIn, height);
         });
         if (!renderState.renderItem.isEmpty()) return;
         timePassed = Math.min((float) renderState.effectTicksExisted / effect.getMaxTicksAlive(), 1F);
-        VertexConsumer newConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTextureForProgress(timePassed)));
-        renderer.model.renderToBuffer(poseStack, newConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        submitNodeCollector.submitModel(renderer.model, renderState, poseStack, RenderType.entityTranslucent(getTextureForProgress(timePassed)), packedLightIn, OverlayTexture.NO_OVERLAY, renderState.outlineColor, null);
     }
 
     @Override

@@ -139,11 +139,11 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
             PBEffect effect = getBoxEffect();
 
             if (effect == null) {
-                if (!level.isClientSide)
+                if (!level.isClientSide())
                     remove(RemovalReason.DISCARDED);
             } else {
                 if (effect.isDone(effectTicksExisted)) {
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide()) {
                         boolean isCompletelyDone = true;
 
                         if (canGenerateMoreEffectsAfterwards && effect.canGenerateMoreEffectsAfterwards(this))
@@ -242,7 +242,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
 
         int deathTicks = getDeathTicks();
         if (deathTicks >= 0) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 if (deathTicks >= 30)
                     remove(RemovalReason.DISCARDED);
             } else {
@@ -275,7 +275,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
     }
 
     public void setOwner(@Nullable LivingEntity entity) {
-        entityData.set(DATA_OWNER_UUID, Optional.ofNullable(entity).map(EntityReference::new));
+        entityData.set(DATA_OWNER_UUID, Optional.ofNullable(entity).map(EntityReference::of));
     }
 
     @Override

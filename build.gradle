@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'fabric-loom' version '1.11-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -59,7 +59,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "maven.modrinth:atlas-core:${project.atlas_core_version}"
     modCompileOnly "maven.modrinth:psychedelicraft:${project.psychedelicraft_version}"
-    modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
     modApi "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
 
     // Uncomment the following line to enable the deprecated Fabric API modules.
