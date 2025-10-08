@@ -36,6 +36,7 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
         poseStack.translate(0.5f, 1.5f, 0.5f);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+        this.model.setupAnim(PandorasBoxRenderState.BLOCK_ENTITY_STATE);
         this.model.renderToBuffer(poseStack, builder, i, j, 0xFFFFFFFF);
         poseStack.popPose();
     }
