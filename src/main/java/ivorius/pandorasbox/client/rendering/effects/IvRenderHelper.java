@@ -19,6 +19,9 @@ public class IvRenderHelper {
         int r = color >> 16 & 255;
         int g = color >> 8 & 255;
         int b = color & 255;
+        int brtRed = Math.min(r + 30, 255);
+        int brtGreen = Math.min(g + 30, 255);
+        int brtBlue = Math.min(b + 30, 255);
         float usedTicks = ticks / 200.0F;
         float m = Math.min(usedTicks > 0.8F ? (usedTicks - 0.8F) / 0.2F : 0.0F, 1.0F);
         poseStack.pushPose();
@@ -42,15 +45,17 @@ public class IvRenderHelper {
                 float o = randomSource.nextFloat() * 20.0F + 5.0F + m * 10.0F;
                 float p = randomSource.nextFloat() * 2.0F + 1.0F + m * 2.0F;
                 Matrix4f matrix4f = poseStack.last().pose();
-                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha));
-                vertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha), o, p);
-                vertex1(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha), o, p);
-                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha));
-                vertex1(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha), o, p);
-                vertex2(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha), o, p);
-                baseVertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha));
-                vertex2(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha), o, p);
-                vertex(vertexConsumer, matrix4f, r, g, b, (int) (alpha * lightAlpha), o, p);
+                int finalAlpha = (int) (alpha * lightAlpha);
+                int weakerAlpha = (int) (finalAlpha * 0.5);
+                baseVertex(vertexConsumer, matrix4f, r, g, b, finalAlpha);
+                vertex(vertexConsumer, matrix4f, brtRed, brtGreen, brtBlue, weakerAlpha, o, p);
+                vertex1(vertexConsumer, matrix4f, brtRed, brtGreen, brtBlue, weakerAlpha, o, p);
+                baseVertex(vertexConsumer, matrix4f, r, g, b, finalAlpha);
+                vertex1(vertexConsumer, matrix4f, brtRed, brtGreen, brtBlue, weakerAlpha, o, p);
+                vertex2(vertexConsumer, matrix4f, brtRed, brtGreen, brtBlue, weakerAlpha, o, p);
+                baseVertex(vertexConsumer, matrix4f, r, g, b, finalAlpha);
+                vertex2(vertexConsumer, matrix4f, brtRed, brtGreen, brtBlue, weakerAlpha, o, p);
+                vertex(vertexConsumer, matrix4f, brtRed, brtGreen, brtBlue, weakerAlpha, o, p);
             }
         }
         poseStack.popPose();
@@ -59,14 +64,14 @@ public class IvRenderHelper {
         vertexConsumer.addVertex(matrix4f, 0.0F, 0.0F, 0.0F).setColor(r, g, b, alpha);
     }
     private static void vertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, int r, int g, int b, int alpha, float y, float x) {
-        vertexConsumer.addVertex(matrix4f, -width * x, y, -0.5F * x).setColor(Math.min(r + 30, 255), Math.min(g + 30, 255), Math.min(b + 30, 255), (int) (alpha * 0.5));
+        vertexConsumer.addVertex(matrix4f, -width * x, y, -0.5F * x).setColor(r, g, b, alpha);
     }
 
     private static void vertex1(VertexConsumer vertexConsumer, Matrix4f matrix4f, int r, int g, int b, int alpha, float y, float x) {
-        vertexConsumer.addVertex(matrix4f, width * x, y, -0.5F * x).setColor(Math.min(r + 30, 255), Math.min(g + 30, 255), Math.min(b + 30, 255), (int) (alpha * 0.5));
+        vertexConsumer.addVertex(matrix4f, width * x, y, -0.5F * x).setColor(r, g, b, alpha);
     }
 
     private static void vertex2(VertexConsumer vertexConsumer, Matrix4f matrix4f, int r, int g, int b, int alpha, float y, float x) {
-        vertexConsumer.addVertex(matrix4f, 0.0F, y, x).setColor(Math.min(r + 30, 255), Math.min(g + 30, 255), Math.min(b + 30, 255), (int) (alpha * 0.5));
+        vertexConsumer.addVertex(matrix4f, 0.0F, y, x).setColor(r, g, b, alpha);
     }
 }
