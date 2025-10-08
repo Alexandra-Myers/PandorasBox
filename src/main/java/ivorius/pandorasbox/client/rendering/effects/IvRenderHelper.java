@@ -24,6 +24,9 @@ public class IvRenderHelper {
                     int red = color >> 16 & 255;
                     int green = color >> 8 & 255;
                     int blue = color & 255;
+                    int brtRed = Math.min(red + 30, 255);
+                    int brtGreen = Math.min(green + 30, 255);
+                    int brtBlue = Math.min(blue + 30, 255);
                     RandomSource randomSource = RandomSource.create(432L);
                     Vector3f vector3f = new Vector3f();
                     Vector3f vector3f2 = new Vector3f();
@@ -55,15 +58,16 @@ public class IvRenderHelper {
                             vector3f3.set(width * m, h, -0.5F * m);
                             vector3f4.set(0.0F, h, m);
                             int finalAlpha = (int) (alpha * lightAlpha);
+                            int weakerAlpha = (int) (finalAlpha * 0.5);
                             vertexConsumer.addVertex(pose, vector3f).setColor(red, green, blue, finalAlpha);
-                            vertexConsumer.addVertex(pose, vector3f2).setColor(red, green, blue, 0);
-                            vertexConsumer.addVertex(pose, vector3f3).setColor(red, green, blue, 0);
+                            vertexConsumer.addVertex(pose, vector3f2).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
+                            vertexConsumer.addVertex(pose, vector3f3).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
                             vertexConsumer.addVertex(pose, vector3f).setColor(red, green, blue, finalAlpha);
-                            vertexConsumer.addVertex(pose, vector3f3).setColor(red, green, blue, 0);
-                            vertexConsumer.addVertex(pose, vector3f4).setColor(red, green, blue, 0);
+                            vertexConsumer.addVertex(pose, vector3f3).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
+                            vertexConsumer.addVertex(pose, vector3f4).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
                             vertexConsumer.addVertex(pose, vector3f).setColor(red, green, blue, finalAlpha);
-                            vertexConsumer.addVertex(pose, vector3f4).setColor(red, green, blue, 0);
-                            vertexConsumer.addVertex(pose, vector3f2).setColor(red, green, blue, 0);
+                            vertexConsumer.addVertex(pose, vector3f4).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
+                            vertexConsumer.addVertex(pose, vector3f2).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
                         }
                     }
                 }
