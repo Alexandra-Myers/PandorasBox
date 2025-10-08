@@ -10,6 +10,7 @@ import ivorius.pandorasbox.component.PBEffectComponent;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.BlockEntityInit;
 import ivorius.pandorasbox.init.ComponentInit;
+import ivorius.pandorasbox.init.ItemInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -70,8 +71,12 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult rayTraceResult) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         PBEffectComponent effectComponent = PBEffectComponent.DEFAULT;
-        if (blockEntity != null) effectComponent = blockEntity.components().getOrDefault(ComponentInit.EFFECT_COMPONENT, effectComponent);
-        PandorasBoxEntity result = effectComponent.createEffect(level, player, pos, false, ItemStack.EMPTY);
+        ItemStack stack = ItemInit.PBI.getDefaultInstance();
+        if (blockEntity != null) {
+            effectComponent = blockEntity.components().getOrDefault(ComponentInit.EFFECT_COMPONENT, effectComponent);
+            stack.applyComponents(blockEntity.components());
+        }
+        PandorasBoxEntity result = effectComponent.createEffect(level, player, pos, false, stack);
         if (result == null) return InteractionResult.PASS;
         level.removeBlock(pos, false);
         level.removeBlockEntity(pos);
