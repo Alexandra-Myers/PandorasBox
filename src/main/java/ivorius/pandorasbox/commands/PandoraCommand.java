@@ -9,6 +9,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
@@ -38,16 +39,13 @@ public class PandoraCommand {
 
     @SuppressWarnings("unchecked")
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext) {
-        String[] args = new String[] {"first", "second", "third"};
         Map<String, ArgumentType<?>> realArgs = MapUtils.buildHashMapFromAlignedArrays(new String[]{"player", "effect", "render_item", "invisible"}, new ArgumentType[]{EntityArgument.player(), ResourceArgument.resource(commandBuildContext, Init.EFFECT_HOLDER_REGISTRY_KEY), ItemArgument.item(commandBuildContext), BoolArgumentType.bool()});
-        Command<CommandSourceStack> cmd = context -> createBox(context, Argument.argumentMap(context, args));
+        OptsArgument optsArgument = OptsArgument.fromMap(realArgs);
+        Command<CommandSourceStack> cmd = context -> createBox(context, Argument.argumentMap(optsArgument, context, "arguments"));
         dispatcher.register(Commands.literal("pandora")
                 .requires(cs -> cs.hasPermission(2))
                 .executes(PandoraCommand::createBox)
-                .then(Commands.argument("first", OptsArgument.fromMap(realArgs)).executes(cmd)
-                        .then(Commands.argument("second", OptsArgument.fromMap(realArgs)).executes(cmd)
-                                .then(Commands.argument("third", OptsArgument.fromMap(realArgs)).executes(cmd)
-                                        .then(Commands.argument("fourth", OptsArgument.fromMap(realArgs)).executes(cmd))))));
+                .then(Commands.argument("arguments", StringArgumentType.greedyString()).suggests(optsArgument::suggestions).executes(cmd)));
     }
     public static int createBox(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
         return createBox(commandContext.getSource().getPlayerOrException(), null, Optional.empty(), false);
