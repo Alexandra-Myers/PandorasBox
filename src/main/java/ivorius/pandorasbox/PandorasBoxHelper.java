@@ -22,12 +22,14 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
@@ -38,6 +40,7 @@ import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.TeleportRandomlyConsumeEffect;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.tags.ItemTags;
@@ -143,8 +146,8 @@ public class PandorasBoxHelper {
 
     public static void addItems(double weight, Object... items) {
         for (Object object : items) {
-            if (object instanceof Item item) {
-                addItem(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight));
+            if (object instanceof ItemLike item) {
+                addItem(new RandomizedItemStack(item, 1, item.asItem().getDefaultMaxStackSize(), weight));
             } else if (object instanceof ItemStack itemStack) {
                 addItem(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, itemStack.getMaxStackSize(), weight)));
             }
@@ -153,8 +156,8 @@ public class PandorasBoxHelper {
 
     public static void addItemsMinMax(double weight, int min, int max, Object... items) {
         for (Object object : items) {
-            if (object instanceof Item item) {
-                addItem(new RandomizedItemStack(item, min, max, weight));
+            if (object instanceof ItemLike itemLike) {
+                addItem(new RandomizedItemStack(itemLike, min, max, weight));
             } else if (object instanceof ItemStack itemStack) {
                 addItem(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(min, max, weight)));
             }
@@ -162,14 +165,19 @@ public class PandorasBoxHelper {
     }
 
     public static void addEquipmentSet(double weight, Object... items) {
+        addEquipmentSet(weight, DataComponentPatch.EMPTY, items);
+    }
+
+    public static void addEquipmentSet(double weight, DataComponentPatch forAll, Object... items) {
         ItemStack[] set = new ItemStack[items.length];
 
         for (int i = 0; i < set.length; i++) {
-            if (items[i] instanceof Item item) {
+            if (items[i] instanceof ItemLike item) {
                 set[i] = new ItemStack(item);
             } else if (items[i] instanceof ItemStack itemStack) {
                 set[i] = itemStack;
-            }
+            } else continue;
+            set[i].applyComponents(forAll);
         }
 
         equipmentSets.add(new WeightedSet(weight, set));
@@ -190,20 +198,34 @@ public class PandorasBoxHelper {
     }
 
     public static void addEnchantableArmor(double weight, Object... items) {
+        addEnchantableArmor(weight, DataComponentPatch.EMPTY, items);
+    }
+
+    public static void addEnchantableArmor(double weight, DataComponentPatch forAll, Object... items) {
         for (Object object : items) {
-            if (object instanceof Item item) {
-                enchantableArmorList.add(Either.left(new RandomizedItemStack(item, 1, 1, weight)));
+            if (object instanceof ItemLike item) {
+                ItemStack itemStack = new ItemStack(item);
+                itemStack.applyComponents(forAll);
+                enchantableArmorList.add(Either.left(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, 1, weight))));
             } else if (object instanceof ItemStack itemStack) {
+                itemStack.applyComponents(forAll);
                 enchantableArmorList.add(Either.left(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, 1, weight))));
             }
         }
     }
 
     public static void addEnchantableTools(double weight, Object... items) {
+        addEnchantableTools(weight, DataComponentPatch.EMPTY, items);
+    }
+
+    public static void addEnchantableTools(double weight, DataComponentPatch forAll, Object... items) {
         for (Object object : items) {
-            if (object instanceof Item item) {
-                enchantableToolList.add(Either.left(new RandomizedItemStack(item, 1, 1, weight)));
+            if (object instanceof ItemLike item) {
+                ItemStack itemStack = new ItemStack(item);
+                itemStack.applyComponents(forAll);
+                enchantableToolList.add(Either.left(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, 1, weight))));
             } else if (object instanceof ItemStack itemStack) {
+                itemStack.applyComponents(forAll);
                 enchantableToolList.add(Either.left(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, 1, weight))));
             }
         }
@@ -354,9 +376,10 @@ public class PandorasBoxHelper {
                 ConventionalItemTags.AMETHYST_GEMS, ConventionalItemTags.RODS, ItemTags.BREWING_FUEL);
         addItems(6.0, Items.WIND_CHARGE, Items.CLOCK, Items.GHAST_TEAR, Items.ENDER_EYE, Items.GLISTERING_MELON_SLICE, Items.FERMENTED_SPIDER_EYE, Items.MAGMA_CREAM, Items.GOLDEN_CARROT, Items.TURTLE_SCUTE, Items.PHANTOM_MEMBRANE);
         addItems(4.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
+        addItems(5.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.COPPER_SWORD, Items.COPPER_PICKAXE, Items.COPPER_SHOVEL, Items.COPPER_AXE, Items.COPPER_HOE);
         addItems(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE);
         addItems(4.0, Items.TURTLE_HELMET, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
-        addItems(4.0, Items.COMPASS, Items.LEAD, Items.CHORUS_FRUIT, Items.HEART_OF_THE_SEA);
+        addItems(4.0, Items.COPPER_HORSE_ARMOR, Items.COMPASS, Items.LEAD, Items.CHORUS_FRUIT, Items.HEART_OF_THE_SEA);
         addItems(3.0, Items.SHIELD, Items.WOLF_ARMOR, Items.LEATHER_HORSE_ARMOR, Items.IRON_HORSE_ARMOR, Items.GOLDEN_HORSE_ARMOR);
         addTagsMinMax(5.0, 1, 1, ConventionalItemTags.CHESTS, ConventionalItemTags.BARRELS);
         addTagsMinMax(2.0, 1, 1, ItemTags.ANVIL);
@@ -370,12 +393,14 @@ public class PandorasBoxHelper {
         addTagsMinMax(10.0, 1, 1, ConventionalItemTags.DYES);
 
         addEquipmentSet(10.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
+        addEquipmentSet(8.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.COPPER_SWORD, Items.COPPER_PICKAXE, Items.COPPER_SHOVEL, Items.COPPER_AXE, Items.COPPER_HOE);
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
         addEquipmentSet(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE);
         addEquipmentSet(2.0, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
         addEquipmentSet(1.0, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS, Items.NETHERITE_SWORD, Items.NETHERITE_PICKAXE, Items.NETHERITE_SHOVEL, Items.NETHERITE_AXE, Items.NETHERITE_HOE);
-        addEquipmentSet(6.0, Items.CROSSBOW, Items.BOW, new ItemStack(Items.ARROW, 64), Items.IRON_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.IRON_AXE, new ItemStack(Items.APPLE, 8));
-        addEquipmentSet(6.0, Items.IRON_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.DIAMOND_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.STONE_SWORD, new ItemStack(Items.BREAD, 8), new ItemStack(Items.TORCH, 32));
+        addEquipmentSet(6.0, Items.CROSSBOW, Items.BOW, new ItemStack(Items.ARROW, 64), Items.IRON_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.LEATHER_BOOTS, Items.IRON_AXE, new ItemStack(Items.APPLE, 8));
+        addEquipmentSet(6.0, Items.IRON_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.DIAMOND_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.STONE_SWORD, new ItemStack(Items.BREAD, 8), new ItemStack(Items.TORCH, 32));
+        addEquipmentSet(3.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.IRON_BOOTS, Items.SHIELD, Items.COPPER_SWORD, Items.IRON_PICKAXE, Items.IRON_AXE, Items.COPPER_SHOVEL, Items.COPPER_HOE, new ItemStack(Items.COAL, 36), new ItemStack(Items.TORCH, 64), new ItemStack(Items.BREAD, 48));
         addEquipmentSet(8.0, Items.LEATHER_HELMET, Items.IRON_HOE, new ItemStack(Items.WHEAT_SEEDS, 32), new ItemStack(Items.PUMPKIN_SEEDS, 4), new ItemStack(Items.MELON_SEEDS, 4), new ItemStack(Items.BLUE_DYE, 8), new ItemStack(Items.DIRT, 32), Items.WATER_BUCKET, Items.WATER_BUCKET);
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.DIAMOND_AXE, new ItemStack(Items.COOKED_BEEF, 16));
         addEquipmentSet(6.0, Items.TURTLE_HELMET, Items.IRON_BOOTS, Items.TRIDENT, Items.IRON_SWORD, new ItemStack(Items.BREAD, 48));
@@ -386,11 +411,11 @@ public class PandorasBoxHelper {
             if(RandomSource.create().nextDouble() > 0.8)
                 addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(block.value(), 16), new ItemStack(block.value(), 16), new ItemStack(block.value(), 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
 
-        addEquipmentLevelsInOrder(Items.WOODEN_SWORD, Items.WOODEN_SWORD, Items.GOLDEN_SWORD, Items.STONE_SWORD, Items.IRON_SWORD, Items.DIAMOND_SWORD, Items.NETHERITE_SWORD);
-        addEquipmentLevelsInOrder(Items.WOODEN_AXE, Items.WOODEN_AXE, Items.GOLDEN_AXE, Items.STONE_AXE, Items.IRON_AXE, Items.DIAMOND_AXE, Items.NETHERITE_AXE);
-        addEquipmentLevelsInOrder(Items.WOODEN_PICKAXE, Items.WOODEN_PICKAXE, Items.GOLDEN_PICKAXE, Items.STONE_PICKAXE, Items.IRON_PICKAXE, Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE);
-        addEquipmentLevelsInOrder(Items.WOODEN_SHOVEL, Items.WOODEN_SHOVEL, Items.GOLDEN_SHOVEL, Items.STONE_SHOVEL, Items.IRON_SHOVEL, Items.DIAMOND_SHOVEL, Items.NETHERITE_SHOVEL);
-        addEquipmentLevelsInOrder(Items.WOODEN_HOE, Items.WOODEN_HOE, Items.GOLDEN_HOE, Items.STONE_HOE, Items.IRON_HOE, Items.DIAMOND_HOE, Items.NETHERITE_HOE);
+        addEquipmentLevelsInOrder(Items.WOODEN_SWORD, Items.WOODEN_SWORD, Items.GOLDEN_SWORD, Items.STONE_SWORD, Items.COPPER_SWORD, Items.IRON_SWORD, Items.DIAMOND_SWORD, Items.NETHERITE_SWORD);
+        addEquipmentLevelsInOrder(Items.WOODEN_AXE, Items.WOODEN_AXE, Items.GOLDEN_AXE, Items.STONE_AXE, Items.COPPER_AXE, Items.IRON_AXE, Items.DIAMOND_AXE, Items.NETHERITE_AXE);
+        addEquipmentLevelsInOrder(Items.WOODEN_PICKAXE, Items.WOODEN_PICKAXE, Items.GOLDEN_PICKAXE, Items.STONE_PICKAXE, Items.COPPER_PICKAXE, Items.IRON_PICKAXE, Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE);
+        addEquipmentLevelsInOrder(Items.WOODEN_SHOVEL, Items.WOODEN_SHOVEL, Items.GOLDEN_SHOVEL, Items.STONE_SHOVEL, Items.COPPER_SHOVEL, Items.IRON_SHOVEL, Items.DIAMOND_SHOVEL, Items.NETHERITE_SHOVEL);
+        addEquipmentLevelsInOrder(Items.WOODEN_HOE, Items.WOODEN_HOE, Items.GOLDEN_HOE, Items.STONE_HOE, Items.COPPER_HOE, Items.IRON_HOE, Items.DIAMOND_HOE, Items.NETHERITE_HOE);
 
         addPotions(buffs, 5.0, 1, 3, 20 * 30, 20 * 60, HolderSet.direct(MobEffects.HERO_OF_THE_VILLAGE, MobEffects.REGENERATION, MobEffects.TRIAL_OMEN, MobEffects.WEAVING, MobEffects.NAUSEA, MobEffects.BLINDNESS, MobEffects.HUNGER));
         addPotions(buffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.REGENERATION, MobEffects.SPEED, MobEffects.STRENGTH, MobEffects.JUMP_BOOST, MobEffects.RESISTANCE, MobEffects.WATER_BREATHING, MobEffects.FIRE_RESISTANCE, MobEffects.NIGHT_VISION, MobEffects.INVISIBILITY, MobEffects.ABSORPTION, MobEffects.SLOW_FALLING, MobEffects.DOLPHINS_GRACE, MobEffects.INFESTED, MobEffects.OOZING, MobEffects.WEAVING, MobEffects.WIND_CHARGED);
@@ -401,6 +426,10 @@ public class PandorasBoxHelper {
         addEnchantableArmor(10.0, Items.IRON_HELMET, Items.GOLDEN_HELMET, Items.DIAMOND_HELMET, Items.IRON_CHESTPLATE, Items.GOLDEN_CHESTPLATE, Items.DIAMOND_CHESTPLATE, Items.IRON_LEGGINGS, Items.GOLDEN_LEGGINGS, Items.DIAMOND_LEGGINGS, Items.IRON_BOOTS, Items.GOLDEN_BOOTS, Items.DIAMOND_BOOTS, Items.TURTLE_HELMET);
 
         addEnchantableTools(10.0, Items.IRON_SWORD, Items.GOLDEN_SWORD, Items.DIAMOND_SWORD, Items.IRON_SHOVEL, Items.GOLDEN_SHOVEL, Items.DIAMOND_SHOVEL, Items.IRON_PICKAXE, Items.GOLDEN_PICKAXE, Items.DIAMOND_PICKAXE, Items.IRON_AXE, Items.GOLDEN_AXE, Items.DIAMOND_AXE, Items.BOW, Items.CROSSBOW, Items.TRIDENT);
+
+        addEnchantableArmor(1.5, DataComponentPatch.builder().set(DataComponents.UNBREAKABLE, Unit.INSTANCE).build(), Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS);
+
+        addEnchantableTools(1.5, DataComponentPatch.builder().set(DataComponents.UNBREAKABLE, Unit.INSTANCE).build(), Items.COPPER_SWORD, Items.COPPER_SHOVEL, Items.COPPER_PICKAXE, Items.COPPER_AXE, Items.COPPER_HOE);
 
         addEnchantableArmor(1.0, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS);
 

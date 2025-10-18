@@ -71,6 +71,7 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
         for (int i = 0; i < number; i++) {
             RandomizedItemStack wrcc = mixUp ? WeightedSelector.selectItem(random, items) : items.get(i);
             ItemStack stack = wrcc.itemStack().copy();
+            if (wrcc.max() > stack.getMaxStackSize()) stack.set(DataComponents.MAX_STACK_SIZE, wrcc.max());
             if (isFood) PandorasBoxHelper.createRandomFoodProperties(stack, random);
             stack.setCount(wrcc.min() + random.nextInt(wrcc.max() - wrcc.min() + 1));
             Registry<Enchantment> enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);

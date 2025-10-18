@@ -46,6 +46,74 @@
         ]
       },
       {
+        "weight": 8.0,
+        "set": [
+          {
+            "id": "minecraft:copper_helmet",
+            "count": 1,
+            "components": {
+              "minecraft:unbreakable": {}
+            }
+          },
+          {
+            "id": "minecraft:copper_chestplate",
+            "count": 1,
+            "components": {
+              "minecraft:unbreakable": {}
+            }
+          },
+          {
+            "id": "minecraft:copper_leggings",
+            "count": 1,
+            "components": {
+              "minecraft:unbreakable": {}
+            }
+          },
+          {
+            "id": "minecraft:copper_boots",
+            "count": 1,
+            "components": {
+              "minecraft:unbreakable": {}
+            }
+          },
+          {
+            "id": "minecraft:copper_sword",
+            "count": 1,
+            "components": {
+              "minecraft:unbreakable": {}
+            }
+          },
+          {
+            "id": "minecraft:copper_pickaxe",
+            "count": 1,
+            "components": {
+              "minecraft:unbreakable": {}
+            }
+          },
+          {
+            "id": "minecraft:copper_shovel",
+            "count": 1,
+            "components": {
+              "minecraft:unbreakable": {}
+            }
+          },
+          {
+            "id": "minecraft:copper_axe",
+            "count": 1,
+            "components": {
+              "minecraft:unbreakable": {}
+            }
+          },
+          {
+            "id": "minecraft:copper_hoe",
+            "count": 1,
+            "components": {
+              "minecraft:unbreakable": {}
+            }
+          }
+        ]
+      },
+      {
         "weight": 6.0,
         "set": [
           {
@@ -229,11 +297,11 @@
             "count": 1
           },
           {
-            "id": "minecraft:leather_chestplate",
+            "id": "minecraft:copper_chestplate",
             "count": 1
           },
           {
-            "id": "minecraft:leather_leggings",
+            "id": "minecraft:copper_leggings",
             "count": 1
           },
           {
@@ -258,15 +326,15 @@
             "count": 1
           },
           {
-            "id": "minecraft:leather_chestplate",
+            "id": "minecraft:copper_chestplate",
             "count": 1
           },
           {
-            "id": "minecraft:leather_leggings",
+            "id": "minecraft:copper_leggings",
             "count": 1
           },
           {
-            "id": "minecraft:leather_boots",
+            "id": "minecraft:copper_boots",
             "count": 1
           },
           {
@@ -350,6 +418,63 @@
           {
             "id": "minecraft:cooked_beef",
             "count": 16
+          }
+        ]
+      },
+      {
+        "weight": 3.0,
+        "set": [
+          {
+            "id": "minecraft:copper_helmet",
+            "count": 1
+          },
+          {
+            "id": "minecraft:copper_chestplate",
+            "count": 1
+          },
+          {
+            "id": "minecraft:copper_leggings",
+            "count": 1
+          },
+          {
+            "id": "minecraft:iron_boots",
+            "count": 1
+          },
+          {
+            "id": "minecraft:shield",
+            "count": 1
+          },
+          {
+            "id": "minecraft:copper_sword",
+            "count": 1
+          },
+          {
+            "id": "minecraft:iron_pickaxe",
+            "count": 1
+          },
+          {
+            "id": "minecraft:iron_axe",
+            "count": 1
+          },
+          {
+            "id": "minecraft:copper_shovel",
+            "count": 1
+          },
+          {
+            "id": "minecraft:copper_hoe",
+            "count": 1
+          },
+          {
+            "id": "minecraft:coal",
+            "count": 36
+          },
+          {
+            "id": "minecraft:torch",
+            "count": 64
+          },
+          {
+            "id": "minecraft:bread",
+            "count": 48
           }
         ]
       },

@@ -34,7 +34,7 @@
       "type": "minecraft:linear"
     },
     "enchantment_level": {
-      "min_value": 1,
+      "min_value": 5,
       "max_value": 30,
       "base": 10.0,
       "type": "minecraft:exponential"
@@ -810,6 +810,86 @@
         "min_count": 1,
         "max_count": 1,
         "weight": 2.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_horse_armor"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 4.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_helmet"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 6.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_chestplate"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 6.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_leggings"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 6.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_boots"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 6.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_sword"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 6.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_pickaxe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 6.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_shovel"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 6.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_axe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 6.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_hoe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 6.0
       },
       {
         "stack": {

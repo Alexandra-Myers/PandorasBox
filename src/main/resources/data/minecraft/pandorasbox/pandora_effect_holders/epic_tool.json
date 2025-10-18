@@ -34,12 +34,23 @@
       "type": "minecraft:linear"
     },
     "enchantment_level": {
-      "min_value": 1,
+      "min_value": 5,
       "max_value": 30,
       "base": 10.0,
       "type": "minecraft:exponential"
     },
     "items": [
+      {
+        "stack": {
+          "id": "minecraft:copper_sword",
+          "components": {
+            "minecraft:unbreakable": {}
+          }
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.5
+      },
       {
         "stack": {
           "id": "minecraft:iron_sword"
@@ -63,6 +74,17 @@
         "min_count": 1,
         "max_count": 1,
         "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_shovel",
+          "components": {
+            "minecraft:unbreakable": {}
+          }
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.5
       },
       {
         "stack": {
@@ -90,6 +112,17 @@
       },
       {
         "stack": {
+          "id": "minecraft:copper_pickaxe",
+          "components": {
+            "minecraft:unbreakable": {}
+          }
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.5
+      },
+      {
+        "stack": {
           "id": "minecraft:iron_pickaxe"
         },
         "min_count": 1,
@@ -114,6 +147,17 @@
       },
       {
         "stack": {
+          "id": "minecraft:copper_axe",
+          "components": {
+            "minecraft:unbreakable": {}
+          }
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.5
+      },
+      {
+        "stack": {
           "id": "minecraft:iron_axe"
         },
         "min_count": 1,
@@ -131,6 +175,41 @@
       {
         "stack": {
           "id": "minecraft:diamond_axe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_hoe",
+          "components": {
+            "minecraft:unbreakable": {}
+          }
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.5
+      },
+      {
+        "stack": {
+          "id": "minecraft:iron_hoe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_hoe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_hoe"
         },
         "min_count": 1,
         "max_count": 1,
