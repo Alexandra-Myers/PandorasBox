@@ -11,7 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.utils.WeightedWithRandomCount;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Arrays;
 
@@ -24,6 +24,8 @@ public record WeightedEntity(String entityID, WeightedWithRandomCount count) imp
             "pbspecial_hogfather",
             "pbspecial_angry_wolf",
             "pbspecial_charged_creeper",
+            "pbspecial_zombie_horseman",
+            "pbspecial_nautilus_jockey",
             "pbspecial_fireworks",
             "pbspecial_tnt",
             "pbspecial_invisible_tnt",
@@ -32,13 +34,13 @@ public record WeightedEntity(String entityID, WeightedWithRandomCount count) imp
             "pbspecial_wolf_tamed",
             "pbspecial_experience"
     };
-    public static final Codec<String> ID_CODEC = ResourceLocation.CODEC.validate(resourceLocation -> BuiltInRegistries.ENTITY_TYPE.containsKey(resourceLocation) || Arrays.asList(PB_SPECIAL_LOCS).contains(resourceLocation.getPath()) ? DataResult.success(resourceLocation) : DataResult.error(() -> "Unknown registry key in " + Registries.ENTITY_TYPE + "found, and was not a pbspecial entity! Input: " + resourceLocation)).xmap(ResourceLocation::toString, ResourceLocation::tryParse);
+    public static final Codec<String> ID_CODEC = Identifier.CODEC.validate(identifier -> BuiltInRegistries.ENTITY_TYPE.containsKey(identifier) || Arrays.asList(PB_SPECIAL_LOCS).contains(identifier.getPath()) ? DataResult.success(identifier) : DataResult.error(() -> "Unknown registry key in " + Registries.ENTITY_TYPE + " found, and was not a pbspecial entity! Input: " + identifier)).xmap(Identifier::toString, Identifier::tryParse);
     public static final Codec<WeightedEntity> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(ID_CODEC.fieldOf("entity").forGetter(WeightedEntity::entityID),
                             WeightedWithRandomCount.CODEC_FORCE.forGetter(WeightedEntity::count))
                     .apply(instance, WeightedEntity::new));
     public static final Codec<WeightedEntity> NO_SPECIAL_CODEC = RecordCodecBuilder.create(instance ->
-            instance.group(ResourceLocation.CODEC.validate(resourceLocation -> BuiltInRegistries.ENTITY_TYPE.containsKey(resourceLocation) ? DataResult.success(resourceLocation) : DataResult.error(() -> "Unknown registry key in " + Registries.ENTITY_TYPE + ": " + resourceLocation)).xmap(ResourceLocation::toString, ResourceLocation::tryParse).fieldOf("entity").forGetter(WeightedEntity::entityID),
+            instance.group(Identifier.CODEC.validate(identifier -> BuiltInRegistries.ENTITY_TYPE.containsKey(identifier) ? DataResult.success(identifier) : DataResult.error(() -> "Unknown registry key in " + Registries.ENTITY_TYPE + ": " + identifier)).xmap(Identifier::toString, Identifier::tryParse).fieldOf("entity").forGetter(WeightedEntity::entityID),
                             WeightedWithRandomCount.CODEC_FORCE.forGetter(WeightedEntity::count))
                     .apply(instance, WeightedEntity::new));
     public WeightedEntity(double weight, String entityID, int minNumber, int maxNumber) {

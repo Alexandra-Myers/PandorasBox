@@ -738,6 +738,14 @@
       },
       {
         "stack": {
+          "id": "minecraft:wooden_spear"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 4.0
+      },
+      {
+        "stack": {
           "id": "minecraft:golden_helmet"
         },
         "min_count": 1,
@@ -803,6 +811,14 @@
       {
         "stack": {
           "id": "minecraft:golden_hoe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 4.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_spear"
         },
         "min_count": 1,
         "max_count": 1,
@@ -890,6 +906,14 @@
       },
       {
         "stack": {
+          "id": "minecraft:iron_spear"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 4.0
+      },
+      {
+        "stack": {
           "id": "minecraft:compass"
         },
         "min_count": 1,
@@ -961,6 +985,22 @@
         "weight": 3.0
       },
       {
+        "stack": {
+          "id": "minecraft:iron_nautilus_armor"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 3.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_nautilus_armor"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 3.0
+      },
+      {
         "tag": "#c:chests",
         "max_count": 1,
         "weight": 5.0
@@ -990,6 +1030,14 @@
         "min_count": 1,
         "max_count": 1,
         "weight": 2.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_nautilus_armor"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 4.0
       },
       {
         "stack": {
@@ -1066,6 +1114,14 @@
       {
         "stack": {
           "id": "minecraft:copper_hoe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 6.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:copper_spear"
         },
         "min_count": 1,
         "max_count": 1,
@@ -1189,6 +1245,14 @@
       },
       {
         "stack": {
+          "id": "minecraft:diamond_nautilus_armor"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 4.0
+      },
+      {
+        "stack": {
           "id": "minecraft:diamond_horse_armor"
         },
         "min_count": 1,
@@ -1269,6 +1333,30 @@
       },
       {
         "stack": {
+          "id": "minecraft:diamond_spear"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 2.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_nautilus_armor"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 0.2
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_horse_armor"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 0.2
+      },
+      {
+        "stack": {
           "id": "minecraft:netherite_helmet"
         },
         "min_count": 1,
@@ -1334,6 +1422,14 @@
       {
         "stack": {
           "id": "minecraft:netherite_hoe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 0.2
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_spear"
         },
         "min_count": 1,
         "max_count": 1,

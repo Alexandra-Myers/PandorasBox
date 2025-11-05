@@ -8,23 +8,23 @@ import net.atlas.atlascore.config.AtlasConfig;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class PandoraConfig extends AtlasConfig {
-	public static Map<ResourceLocation, List<ResourceLocation>> defaultTables;
-	public static final Codec<Map<ResourceLocation, List<ResourceLocation>>> tableMapCodec = Codec.unboundedMap(ResourceLocation.CODEC, Codec.withAlternative(Codec.list(ResourceLocation.CODEC), ResourceLocation.CODEC, Collections::singletonList));
-	public TagHolder<Map<ResourceLocation, List<ResourceLocation>>> tables;
+	public static Map<Identifier, List<Identifier>> defaultTables;
+	public static final Codec<Map<Identifier, List<Identifier>>> tableMapCodec = Codec.unboundedMap(Identifier.CODEC, Codec.withAlternative(Codec.list(Identifier.CODEC), Identifier.CODEC, Collections::singletonList));
+	public TagHolder<Map<Identifier, List<Identifier>>> tables;
 	public DoubleHolder boxLongevity;
 	public DoubleHolder boxIntensity;
 	public DoubleHolder goodEffectChance;
 	public IntegerHolder maxEffectsPerBox;
 	private Category balancing;
 	public PandoraConfig() {
-		super(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandoras-box"));
+		super(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandoras-box"));
 		declareDefaultForMod(PandorasBox.MOD_ID);
 	}
 
@@ -91,22 +91,22 @@ public class PandoraConfig extends AtlasConfig {
 	}
 	static {
 		defaultTables = new HashMap<>();
-		defaultTables.put(ResourceLocation.parse("chests/pandora_inject"), List.of(
-				ResourceLocation.withDefaultNamespace("chests/abandoned_mineshaft"),
-				ResourceLocation.withDefaultNamespace("chests/jungle_temple"),
-				ResourceLocation.withDefaultNamespace("chests/simple_dungeon"),
-				ResourceLocation.withDefaultNamespace("chests/desert_pyramid"),
-				ResourceLocation.withDefaultNamespace("chests/stronghold_corridor"),
-				ResourceLocation.withDefaultNamespace("chests/stronghold_crossing"),
-				ResourceLocation.withDefaultNamespace("chests/stronghold_library"),
-				ResourceLocation.withDefaultNamespace("chests/bastion_bridge"),
-				ResourceLocation.withDefaultNamespace("chests/bastion_hoglin_stable"),
-				ResourceLocation.withDefaultNamespace("chests/bastion_other")
+		defaultTables.put(Identifier.parse("chests/pandora_inject"), List.of(
+				Identifier.withDefaultNamespace("chests/abandoned_mineshaft"),
+				Identifier.withDefaultNamespace("chests/jungle_temple"),
+				Identifier.withDefaultNamespace("chests/simple_dungeon"),
+				Identifier.withDefaultNamespace("chests/desert_pyramid"),
+				Identifier.withDefaultNamespace("chests/stronghold_corridor"),
+				Identifier.withDefaultNamespace("chests/stronghold_crossing"),
+				Identifier.withDefaultNamespace("chests/stronghold_library"),
+				Identifier.withDefaultNamespace("chests/bastion_bridge"),
+				Identifier.withDefaultNamespace("chests/bastion_hoglin_stable"),
+				Identifier.withDefaultNamespace("chests/bastion_other")
 		));
-		defaultTables.put(ResourceLocation.parse("chests/pandora_inject_common"), List.of(
-				ResourceLocation.withDefaultNamespace("chests/ancient_city"),
-				ResourceLocation.withDefaultNamespace("chests/bastion_treasure"),
-				ResourceLocation.withDefaultNamespace("chests/end_city_treasure")
+		defaultTables.put(Identifier.parse("chests/pandora_inject_common"), List.of(
+				Identifier.withDefaultNamespace("chests/ancient_city"),
+				Identifier.withDefaultNamespace("chests/bastion_treasure"),
+				Identifier.withDefaultNamespace("chests/end_city_treasure")
 		));
 	}
 }

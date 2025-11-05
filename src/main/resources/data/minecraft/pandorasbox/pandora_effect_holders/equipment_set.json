@@ -42,6 +42,10 @@
           {
             "id": "minecraft:wooden_hoe",
             "count": 1
+          },
+          {
+            "id": "minecraft:wooden_spear",
+            "count": 1
           }
         ]
       },
@@ -110,6 +114,13 @@
             "components": {
               "minecraft:unbreakable": {}
             }
+          },
+          {
+            "id": "minecraft:copper_spear",
+            "count": 1,
+            "components": {
+              "minecraft:unbreakable": {}
+            }
           }
         ]
       },
@@ -150,6 +161,10 @@
           },
           {
             "id": "minecraft:iron_hoe",
+            "count": 1
+          },
+          {
+            "id": "minecraft:iron_spear",
             "count": 1
           }
         ]
@@ -192,6 +207,10 @@
           {
             "id": "minecraft:golden_hoe",
             "count": 1
+          },
+          {
+            "id": "minecraft:golden_spear",
+            "count": 1
           }
         ]
       },
@@ -233,6 +252,10 @@
           {
             "id": "minecraft:diamond_hoe",
             "count": 1
+          },
+          {
+            "id": "minecraft:diamond_spear",
+            "count": 1
           }
         ]
       },
@@ -273,6 +296,10 @@
           },
           {
             "id": "minecraft:netherite_hoe",
+            "count": 1
+          },
+          {
+            "id": "minecraft:netherite_spear",
             "count": 1
           }
         ]

@@ -115,9 +115,15 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure<StructureTar
                         double nextDist = Mth.sqrt((xP * xP + 3 * 3) + (zP * zP + 3 * 3));
 
                         if (nextDist >= targetSize && random.nextDouble() < entityDensity) {
-                            Entity newEntity = SpawnEntityIDListEffect.createEntity(level, entity, random, entityToSpawn, offset.getX() + 0.5, offset.getY() + 1.5, offset.getZ() + 0.5);
-                            assert newEntity != null;
-                            level.addFreshEntity(newEntity);
+                            Entity[] toAdd = SpawnEntityIDListEffect.createEntity(level, entity, random, entityToSpawn, offset.getX() + 0.5, offset.getY() + 1.5, offset.getZ() + 0.5);
+                            Entity previousEntity = null;
+                            for (Entity newEntity : toAdd) {
+                                if (newEntity != null) {
+                                    level.addFreshEntity(newEntity);
+                                    if (previousEntity != null) previousEntity.startRiding(newEntity, true, true);
+                                    previousEntity = newEntity;
+                                }
+                            }
                         }
                     }
                 }

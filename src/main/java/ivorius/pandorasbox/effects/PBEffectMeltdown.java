@@ -3,9 +3,11 @@ package ivorius.pandorasbox.effects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -19,6 +21,7 @@ import static ivorius.pandorasbox.effects.PBEffects.MELTDOWN_CREATORS;
  * Created by Alexandra on 18.10.24.
  */
 public final class PBEffectMeltdown extends PBEffect {
+    public static final Identifier MELTDOWN = Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "render_meltdown");
     public static final MapCodec<PBEffectMeltdown> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(PBNBTHelper.arrayCodec(PBEffect.CODEC, () -> new PBEffect[0]).fieldOf("effects").forGetter(PBEffectMeltdown::getEffects),
                             PBNBTHelper.arrayCodec(Vec3.CODEC, () -> new Vec3[0]).fieldOf("effect_centers").forGetter(PBEffectMeltdown::getEffectCenters),
@@ -206,5 +209,10 @@ public final class PBEffectMeltdown extends PBEffect {
     @Override
     public @NotNull MapCodec<? extends PBEffect> codec() {
         return CODEC;
+    }
+
+    @Override
+    public Identifier rendererIdentifierForEffect() {
+        return MELTDOWN;
     }
 }

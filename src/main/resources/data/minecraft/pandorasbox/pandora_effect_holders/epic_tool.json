@@ -217,6 +217,41 @@
       },
       {
         "stack": {
+          "id": "minecraft:copper_spear",
+          "components": {
+            "minecraft:unbreakable": {}
+          }
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.5
+      },
+      {
+        "stack": {
+          "id": "minecraft:iron_spear"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_spear"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_spear"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
           "id": "minecraft:bow"
         },
         "min_count": 1,
@@ -274,6 +309,14 @@
       {
         "stack": {
           "id": "minecraft:netherite_hoe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:netherite_spear"
         },
         "min_count": 1,
         "max_count": 1,

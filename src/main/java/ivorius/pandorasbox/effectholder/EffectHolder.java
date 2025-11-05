@@ -7,12 +7,12 @@ import ivorius.pandorasbox.init.Init;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryFixedCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 
 public abstract class EffectHolder {
-    public static final ExtraCodecs.LateBoundIdMapper<ResourceLocation, MapCodec<? extends EffectHolder>> HOLDER_MAPPER = new ExtraCodecs.LateBoundIdMapper<>();
-    public static final Codec<EffectHolder> DIRECT_CODEC = HOLDER_MAPPER.codec(ResourceLocation.CODEC)
+    public static final ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends EffectHolder>> HOLDER_MAPPER = new ExtraCodecs.LateBoundIdMapper<>();
+    public static final Codec<EffectHolder> DIRECT_CODEC = HOLDER_MAPPER.codec(Identifier.CODEC)
             .dispatch(EffectHolder::codec, mapCodec -> mapCodec);
     public static final Codec<Holder<EffectHolder>> CODEC = RegistryFixedCodec.create(Init.EFFECT_HOLDER_REGISTRY_KEY);
     public final PBEffectCreator effectCreator;
@@ -29,9 +29,9 @@ public abstract class EffectHolder {
     }
 
     public static void bootstrap() {
-        HOLDER_MAPPER.put(ResourceLocation.withDefaultNamespace("fixed_chance"), FixedChanceEffectHolder.CODEC);
-        HOLDER_MAPPER.put(ResourceLocation.withDefaultNamespace("fixed_chance_marked"), FixedChancePositiveOrNegativeEffectHolder.CODEC);
-        HOLDER_MAPPER.put(ResourceLocation.withDefaultNamespace("positive_or_negative"), PositiveOrNegativeEffectHolder.CODEC);
+        HOLDER_MAPPER.put(Identifier.withDefaultNamespace("fixed_chance"), FixedChanceEffectHolder.CODEC);
+        HOLDER_MAPPER.put(Identifier.withDefaultNamespace("fixed_chance_marked"), FixedChancePositiveOrNegativeEffectHolder.CODEC);
+        HOLDER_MAPPER.put(Identifier.withDefaultNamespace("positive_or_negative"), PositiveOrNegativeEffectHolder.CODEC);
     }
     public abstract boolean canBeGoodOrBad();
     public abstract boolean isGood();

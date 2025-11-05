@@ -20,7 +20,7 @@ import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.weighted.WeightedEntity;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -66,7 +66,7 @@ public record PBECConvertToCity(DValue range, List<WeightedEntity> entityIDs) im
         WeightedEntity[] entitySelection = PandorasBoxHelper.getRandomEntityList(random, entityIDs);
         List<EntityType<?>> entities = new ArrayList<>();
         for (WeightedEntity entity : entitySelection) {
-            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.tryParse(entity.entityID()));
+            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.tryParse(entity.entityID()));
             entities.add(type);
         }
 

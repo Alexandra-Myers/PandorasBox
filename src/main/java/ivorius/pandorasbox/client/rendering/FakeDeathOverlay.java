@@ -2,7 +2,7 @@ package ivorius.pandorasbox.client.rendering;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -30,7 +30,7 @@ public class FakeDeathOverlay extends Overlay {
         }
         KeyMapping.releaseAll();
 
-        screen.init(minecraft, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
+        screen.init(minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
         minecraft.noRender = false;
         minecraft.setOverlay(this);
     }

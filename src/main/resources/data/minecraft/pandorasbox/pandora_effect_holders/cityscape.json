@@ -52,6 +52,12 @@
         "weight": 7.5
       },
       {
+        "entity": "minecraft:parched",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 7.5
+      },
+      {
         "entity": "minecraft:wither_skeleton",
         "min_count": 2,
         "max_count": 5,

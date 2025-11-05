@@ -1,8 +1,9 @@
 package ivorius.pandorasbox.client.rendering.effects;
 
 import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.RandomSource;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -11,8 +12,8 @@ public class IvRenderHelper {
     public static final float width = 2.5f;
 
     public static void renderLights(float ticks, float scale, float height, int color, float alpha, int number, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
-        submitRays(ticks, scale, height, color, alpha, number, poseStack, submitNodeCollector, RenderType.dragonRays());
-        submitRays(ticks, scale, height, color, alpha, number, poseStack, submitNodeCollector, RenderType.dragonRaysDepth());
+        submitRays(ticks, scale, height, color, alpha, number, poseStack, submitNodeCollector, RenderTypes.dragonRays());
+        submitRays(ticks, scale, height, color, alpha, number, poseStack, submitNodeCollector, RenderTypes.dragonRaysDepth());
     }
     private static void submitRays(float ticks, float scale, float height, int color, float alpha, int number, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, RenderType renderType) {
         submitNodeCollector.submitCustomGeometry(

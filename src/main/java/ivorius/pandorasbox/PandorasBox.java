@@ -28,7 +28,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -48,7 +48,7 @@ public class PandorasBox implements ModInitializer {
     }
 
     private static <T> TagKey<T> register(ResourceKey<? extends Registry<T>> owner, String tagId) {
-        return TagKey.create(owner, ResourceLocation.fromNamespaceAndPath(MOD_ID, tagId));
+        return TagKey.create(owner, Identifier.fromNamespaceAndPath(MOD_ID, tagId));
     }
 
     /**
@@ -77,7 +77,7 @@ public class PandorasBox implements ModInitializer {
         PBEffects.registerEffectCreators();
     }
     public record ClientboundUpdateFakeDeathPacket() implements CustomPacketPayload {
-        public static final Type<ClientboundUpdateFakeDeathPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MOD_ID, "fake_death_overlay"));
+        public static final Type<ClientboundUpdateFakeDeathPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(MOD_ID, "fake_death_overlay"));
         public static final StreamCodec<FriendlyByteBuf, ClientboundUpdateFakeDeathPacket> CODEC = CustomPacketPayload.codec(ClientboundUpdateFakeDeathPacket::write, ClientboundUpdateFakeDeathPacket::new);
 
         public ClientboundUpdateFakeDeathPacket(FriendlyByteBuf buf) {

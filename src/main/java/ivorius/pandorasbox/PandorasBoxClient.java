@@ -4,10 +4,8 @@ import ivorius.pandorasbox.client.rendering.FakeDeathOverlay;
 import ivorius.pandorasbox.client.rendering.PandorasBoxBlockEntityRenderer;
 import ivorius.pandorasbox.client.rendering.PandorasBoxModel;
 import ivorius.pandorasbox.client.rendering.PandorasBoxRenderer;
-import ivorius.pandorasbox.client.rendering.effects.PBEffectRendererExplosion;
-import ivorius.pandorasbox.client.rendering.effects.PBEffectRendererMeltdown;
-import ivorius.pandorasbox.client.rendering.effects.PBEffectRendererMulti;
-import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderingRegistry;
+import ivorius.pandorasbox.client.rendering.effects.*;
+import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectExplode;
 import ivorius.pandorasbox.effects.PBEffectMeltdown;
 import ivorius.pandorasbox.effects.PBEffectMulti;
@@ -35,15 +33,16 @@ public class PandorasBoxClient implements ClientModInitializer {
 
         EntityModelLayerRegistry.registerModelLayer(PandorasBoxModel.LAYER_LOCATION, PandorasBoxModel::createBodyLayer);
         BlockEntityRenderers.register(BlockEntityInit.BEPB, PandorasBoxBlockEntityRenderer::new);
-        PBEffectRenderingRegistry.registerRenderer(PBEffectExplode.class, new PBEffectRendererExplosion());
-        PBEffectRenderingRegistry.registerRenderer(PBEffectMeltdown.class, new PBEffectRendererMeltdown());
-        PBEffectRenderingRegistry.registerRenderer(PBEffectMulti.class, new PBEffectRendererMulti());
+        PBEffectRenderingRegistry.registerRenderer(PBEffect.DEFAULT, new PBEffectRenderer<>());
+        PBEffectRenderingRegistry.registerRenderer(PBEffectExplode.EXPLODE, new PBEffectRendererExplosion());
+        PBEffectRenderingRegistry.registerRenderer(PBEffectMeltdown.MELTDOWN, new PBEffectRendererMeltdown());
+        PBEffectRenderingRegistry.registerRenderer(PBEffectMulti.MULTI, new PBEffectRendererMulti());
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> initPB());
         ClientPlayNetworking.registerGlobalReceiver(PandorasBox.ClientboundUpdateFakeDeathPacket.TYPE, (clientboundUpdateFakeDeathPacket, context) -> {
             if (context.client().getOverlay() != null) {
-                cached = new FakeDeathOverlay(new DeathScreen(null, context.player().level().getLevelData().isHardcore()));
+                cached = new FakeDeathOverlay(new DeathScreen(null, context.player().level().getLevelData().isHardcore(), context.player()));
             } else {
-                context.client().setOverlay(new FakeDeathOverlay(new DeathScreen(null, context.player().level().getLevelData().isHardcore())));
+                context.client().setOverlay(new FakeDeathOverlay(new DeathScreen(null, context.player().level().getLevelData().isHardcore(), context.player())));
             }
         });
     }

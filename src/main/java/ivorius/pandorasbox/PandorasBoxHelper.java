@@ -278,7 +278,7 @@ public class PandorasBoxHelper {
         addEntities(landMobs, 10.0, 2, 8, "spider");
         addEntities(landMobs, 10.0, 2, 5, "skeleton");
         addEntities(landMobs, 10.0, 2, 5, "pillager");
-        addEntities(landMobs, 7.5, 2, 5, "stray");
+        addEntities(landMobs, 7.5, 2, 5, "stray", "parched");
         addEntities(landMobs, 5.0, 2, 5, "wither_skeleton");
         addEntities(landMobs, 10.0, 2, 8, "creeper");
         addEntities(landMobs, 6.0, 2, 8, "slime");
@@ -298,6 +298,7 @@ public class PandorasBoxHelper {
         addEntities(landMobs, 3.0, 1, 1, "evoker");
         addEntities(landMobs, 2.0, 2, 3, "piglin_brute");
         addEntities(landMobs, 1.0, 1, 1, "ravager");
+        addEntities(landMobs, 1.0, 4, 4, "pbspecial_zombie_horseman");
         mobs.addAll(landMobs);
         addEntities(mobs, 1.0, 1, 1, "wither");
         addEntities(mobs, 4.0, 2, 5, "blaze");
@@ -327,11 +328,12 @@ public class PandorasBoxHelper {
         addEntities(creatures, 3.0, 3, 6, "piglin");
         addEntities(creatures, 3.0, 2, 4, "iron_golem");
 
-        addEntities(waterCreatures, 6.0, 6, 20, "squid", "glow_squid", "dolphin", "cod", "salmon", "pufferfish", "turtle", "tropical_fish", "axolotl", "tadpole");
+        addEntities(waterCreatures, 6.0, 6, 20, "squid", "glow_squid", "dolphin", "cod", "salmon", "pufferfish", "turtle", "tropical_fish", "axolotl", "tadpole", "nautilus");
 
         addEntities(waterMobs, 6.0, 3, 10, "drowned");
         addEntities(waterMobs, 6.0, 3, 10, "guardian");
         addEntities(waterMobs, 5.0, 1, 1, "elder_guardian");
+        addEntities(waterMobs, 1.0, 2, 3, "pbspecial_nautilus_jockey");
 
         addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_wolf_tamed");
         addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_cat_tamed");
@@ -375,12 +377,12 @@ public class PandorasBoxHelper {
         addTags(6.0, ConventionalItemTags.IRON_INGOTS, ConventionalItemTags.IRON_NUGGETS, ConventionalItemTags.GLOWSTONE_DUSTS,
                 ConventionalItemTags.AMETHYST_GEMS, ConventionalItemTags.RODS, ItemTags.BREWING_FUEL);
         addItems(6.0, Items.WIND_CHARGE, Items.CLOCK, Items.GHAST_TEAR, Items.ENDER_EYE, Items.GLISTERING_MELON_SLICE, Items.FERMENTED_SPIDER_EYE, Items.MAGMA_CREAM, Items.GOLDEN_CARROT, Items.TURTLE_SCUTE, Items.PHANTOM_MEMBRANE);
-        addItems(4.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
-        addItems(5.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.COPPER_SWORD, Items.COPPER_PICKAXE, Items.COPPER_SHOVEL, Items.COPPER_AXE, Items.COPPER_HOE);
-        addItems(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE);
-        addItems(4.0, Items.TURTLE_HELMET, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
-        addItems(4.0, Items.COPPER_HORSE_ARMOR, Items.COMPASS, Items.LEAD, Items.CHORUS_FRUIT, Items.HEART_OF_THE_SEA);
-        addItems(3.0, Items.SHIELD, Items.WOLF_ARMOR, Items.LEATHER_HORSE_ARMOR, Items.IRON_HORSE_ARMOR, Items.GOLDEN_HORSE_ARMOR);
+        addItems(4.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE, Items.WOODEN_SPEAR);
+        addItems(5.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.COPPER_SWORD, Items.COPPER_PICKAXE, Items.COPPER_SHOVEL, Items.COPPER_AXE, Items.COPPER_HOE, Items.COPPER_SPEAR);
+        addItems(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE, Items.GOLDEN_SPEAR);
+        addItems(4.0, Items.TURTLE_HELMET, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE, Items.IRON_SPEAR);
+        addItems(4.0, Items.COPPER_HORSE_ARMOR, Items.COPPER_NAUTILUS_ARMOR, Items.COMPASS, Items.LEAD, Items.CHORUS_FRUIT, Items.HEART_OF_THE_SEA);
+        addItems(3.0, Items.SHIELD, Items.WOLF_ARMOR, Items.LEATHER_HORSE_ARMOR, Items.IRON_HORSE_ARMOR, Items.GOLDEN_HORSE_ARMOR, Items.IRON_NAUTILUS_ARMOR, Items.GOLDEN_NAUTILUS_ARMOR);
         addTagsMinMax(5.0, 1, 1, ConventionalItemTags.CHESTS, ConventionalItemTags.BARRELS);
         addTagsMinMax(2.0, 1, 1, ItemTags.ANVIL);
         addItemsMinMax(2.0, 1, 1, Items.NETHER_STAR, Items.BEACON, Items.DISPENSER, Items.JUKEBOX, Items.ENCHANTING_TABLE);
@@ -388,16 +390,16 @@ public class PandorasBoxHelper {
         addItems(2.0, Items.PRISMARINE_SHARD, Items.OMINOUS_BOTTLE);
         addItemsMinMax(0.5, 1, 5, Items.NETHERITE_SCRAP, Items.DISC_FRAGMENT_5, Items.ECHO_SHARD, Items.RECOVERY_COMPASS);
         addItems(1.0, Items.ELYTRA, Items.DRAGON_BREATH);
-        addItems(2.0, Items.DIAMOND_HORSE_ARMOR, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
-        addItems(0.2, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS, Items.NETHERITE_SWORD, Items.NETHERITE_PICKAXE, Items.NETHERITE_SHOVEL, Items.NETHERITE_AXE, Items.NETHERITE_HOE);
+        addItems(2.0, Items.DIAMOND_HORSE_ARMOR, Items.DIAMOND_NAUTILUS_ARMOR, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE, Items.DIAMOND_SPEAR);
+        addItems(0.2, Items.NETHERITE_HORSE_ARMOR, Items.NETHERITE_NAUTILUS_ARMOR, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS, Items.NETHERITE_SWORD, Items.NETHERITE_PICKAXE, Items.NETHERITE_SHOVEL, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.NETHERITE_SPEAR);
         addTagsMinMax(10.0, 1, 1, ConventionalItemTags.DYES);
 
-        addEquipmentSet(10.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
-        addEquipmentSet(8.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.COPPER_SWORD, Items.COPPER_PICKAXE, Items.COPPER_SHOVEL, Items.COPPER_AXE, Items.COPPER_HOE);
-        addEquipmentSet(6.0, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
-        addEquipmentSet(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE);
-        addEquipmentSet(2.0, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
-        addEquipmentSet(1.0, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS, Items.NETHERITE_SWORD, Items.NETHERITE_PICKAXE, Items.NETHERITE_SHOVEL, Items.NETHERITE_AXE, Items.NETHERITE_HOE);
+        addEquipmentSet(10.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE, Items.WOODEN_SPEAR);
+        addEquipmentSet(8.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.COPPER_SWORD, Items.COPPER_PICKAXE, Items.COPPER_SHOVEL, Items.COPPER_AXE, Items.COPPER_HOE, Items.COPPER_SPEAR);
+        addEquipmentSet(6.0, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE, Items.IRON_SPEAR);
+        addEquipmentSet(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE, Items.GOLDEN_SPEAR);
+        addEquipmentSet(2.0, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE, Items.DIAMOND_SPEAR);
+        addEquipmentSet(1.0, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS, Items.NETHERITE_SWORD, Items.NETHERITE_PICKAXE, Items.NETHERITE_SHOVEL, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.NETHERITE_SPEAR);
         addEquipmentSet(6.0, Items.CROSSBOW, Items.BOW, new ItemStack(Items.ARROW, 64), Items.IRON_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.LEATHER_BOOTS, Items.IRON_AXE, new ItemStack(Items.APPLE, 8));
         addEquipmentSet(6.0, Items.IRON_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.DIAMOND_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.STONE_SWORD, new ItemStack(Items.BREAD, 8), new ItemStack(Items.TORCH, 32));
         addEquipmentSet(3.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.IRON_BOOTS, Items.SHIELD, Items.COPPER_SWORD, Items.IRON_PICKAXE, Items.IRON_AXE, Items.COPPER_SHOVEL, Items.COPPER_HOE, new ItemStack(Items.COAL, 36), new ItemStack(Items.TORCH, 64), new ItemStack(Items.BREAD, 48));
@@ -416,6 +418,7 @@ public class PandorasBoxHelper {
         addEquipmentLevelsInOrder(Items.WOODEN_PICKAXE, Items.WOODEN_PICKAXE, Items.GOLDEN_PICKAXE, Items.STONE_PICKAXE, Items.COPPER_PICKAXE, Items.IRON_PICKAXE, Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE);
         addEquipmentLevelsInOrder(Items.WOODEN_SHOVEL, Items.WOODEN_SHOVEL, Items.GOLDEN_SHOVEL, Items.STONE_SHOVEL, Items.COPPER_SHOVEL, Items.IRON_SHOVEL, Items.DIAMOND_SHOVEL, Items.NETHERITE_SHOVEL);
         addEquipmentLevelsInOrder(Items.WOODEN_HOE, Items.WOODEN_HOE, Items.GOLDEN_HOE, Items.STONE_HOE, Items.COPPER_HOE, Items.IRON_HOE, Items.DIAMOND_HOE, Items.NETHERITE_HOE);
+        addEquipmentLevelsInOrder(Items.WOODEN_SPEAR, Items.WOODEN_SPEAR, Items.GOLDEN_SPEAR, Items.STONE_SPEAR, Items.COPPER_SPEAR, Items.IRON_SPEAR, Items.DIAMOND_SPEAR, Items.NETHERITE_SPEAR);
 
         addPotions(buffs, 5.0, 1, 3, 20 * 30, 20 * 60, HolderSet.direct(MobEffects.HERO_OF_THE_VILLAGE, MobEffects.REGENERATION, MobEffects.TRIAL_OMEN, MobEffects.WEAVING, MobEffects.NAUSEA, MobEffects.BLINDNESS, MobEffects.HUNGER));
         addPotions(buffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.REGENERATION, MobEffects.SPEED, MobEffects.STRENGTH, MobEffects.JUMP_BOOST, MobEffects.RESISTANCE, MobEffects.WATER_BREATHING, MobEffects.FIRE_RESISTANCE, MobEffects.NIGHT_VISION, MobEffects.INVISIBILITY, MobEffects.ABSORPTION, MobEffects.SLOW_FALLING, MobEffects.DOLPHINS_GRACE, MobEffects.INFESTED, MobEffects.OOZING, MobEffects.WEAVING, MobEffects.WIND_CHARGED);
@@ -425,15 +428,15 @@ public class PandorasBoxHelper {
 
         addEnchantableArmor(10.0, Items.IRON_HELMET, Items.GOLDEN_HELMET, Items.DIAMOND_HELMET, Items.IRON_CHESTPLATE, Items.GOLDEN_CHESTPLATE, Items.DIAMOND_CHESTPLATE, Items.IRON_LEGGINGS, Items.GOLDEN_LEGGINGS, Items.DIAMOND_LEGGINGS, Items.IRON_BOOTS, Items.GOLDEN_BOOTS, Items.DIAMOND_BOOTS, Items.TURTLE_HELMET);
 
-        addEnchantableTools(10.0, Items.IRON_SWORD, Items.GOLDEN_SWORD, Items.DIAMOND_SWORD, Items.IRON_SHOVEL, Items.GOLDEN_SHOVEL, Items.DIAMOND_SHOVEL, Items.IRON_PICKAXE, Items.GOLDEN_PICKAXE, Items.DIAMOND_PICKAXE, Items.IRON_AXE, Items.GOLDEN_AXE, Items.DIAMOND_AXE, Items.BOW, Items.CROSSBOW, Items.TRIDENT);
+        addEnchantableTools(10.0, Items.IRON_SWORD, Items.GOLDEN_SWORD, Items.DIAMOND_SWORD, Items.IRON_SHOVEL, Items.GOLDEN_SHOVEL, Items.DIAMOND_SHOVEL, Items.IRON_PICKAXE, Items.GOLDEN_PICKAXE, Items.DIAMOND_PICKAXE, Items.IRON_AXE, Items.GOLDEN_AXE, Items.DIAMOND_AXE, Items.IRON_HOE, Items.GOLDEN_HOE, Items.DIAMOND_HOE, Items.IRON_SPEAR, Items.GOLDEN_SPEAR, Items.DIAMOND_SPEAR, Items.BOW, Items.CROSSBOW, Items.TRIDENT);
 
         addEnchantableArmor(1.5, DataComponentPatch.builder().set(DataComponents.UNBREAKABLE, Unit.INSTANCE).build(), Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS);
 
-        addEnchantableTools(1.5, DataComponentPatch.builder().set(DataComponents.UNBREAKABLE, Unit.INSTANCE).build(), Items.COPPER_SWORD, Items.COPPER_SHOVEL, Items.COPPER_PICKAXE, Items.COPPER_AXE, Items.COPPER_HOE);
+        addEnchantableTools(1.5, DataComponentPatch.builder().set(DataComponents.UNBREAKABLE, Unit.INSTANCE).build(), Items.COPPER_SWORD, Items.COPPER_SHOVEL, Items.COPPER_PICKAXE, Items.COPPER_AXE, Items.COPPER_HOE, Items.COPPER_SPEAR);
 
         addEnchantableArmor(1.0, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS);
 
-        addEnchantableTools(1.0, Items.NETHERITE_SWORD, Items.NETHERITE_SHOVEL, Items.NETHERITE_PICKAXE, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.TRIDENT);
+        addEnchantableTools(1.0, Items.NETHERITE_SWORD, Items.NETHERITE_SHOVEL, Items.NETHERITE_PICKAXE, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.NETHERITE_SPEAR, Items.TRIDENT);
 
         addEnchantableTools(0.1, Items.MACE);
 

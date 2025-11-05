@@ -2,6 +2,7 @@ package ivorius.pandorasbox.effects.structure;
 
 import com.mojang.datafixers.util.Function5;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Vec3i;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +65,7 @@ public class Structure {
     }
 
     public record Empty() implements StructureConfiguration {
-        public static final Codec<Empty> CODEC = Codec.unit(Empty::new);
+        public static final Codec<Empty> CODEC = MapCodec.unitCodec(Empty::new);
 
         @Override
         public @NotNull Codec<? extends StructureConfiguration> codec() {

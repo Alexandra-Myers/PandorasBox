@@ -30,6 +30,7 @@ import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
@@ -43,7 +44,7 @@ public class PandoraCommand {
         OptsArgument optsArgument = OptsArgument.fromMap(realArgs);
         Command<CommandSourceStack> cmd = context -> createBox(context, Argument.argumentMap(optsArgument, context, "arguments"));
         dispatcher.register(Commands.literal("pandora")
-                .requires(cs -> cs.hasPermission(2))
+                .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
                 .executes(PandoraCommand::createBox)
                 .then(Commands.argument("arguments", StringArgumentType.greedyString()).suggests(optsArgument::suggestions).executes(cmd)));
     }

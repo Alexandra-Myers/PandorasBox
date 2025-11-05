@@ -7,7 +7,7 @@ package ivorius.pandorasbox.random;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
@@ -17,15 +17,15 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface IValue
 {
-    ExtraCodecs.LateBoundIdMapper<ResourceLocation, MapCodec<? extends IValue>> VALUE_MAPPER = new ExtraCodecs.LateBoundIdMapper<>();
-    Codec<IValue> CODEC = VALUE_MAPPER.codec(ResourceLocation.CODEC)
+    ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends IValue>> VALUE_MAPPER = new ExtraCodecs.LateBoundIdMapper<>();
+    Codec<IValue> CODEC = VALUE_MAPPER.codec(Identifier.CODEC)
             .dispatch(IValue::codec, mapCodec -> mapCodec);
     static void bootstrap() {
-        VALUE_MAPPER.put(ResourceLocation.withDefaultNamespace("weighted"), IWeighted.CODEC);
-        VALUE_MAPPER.put(ResourceLocation.withDefaultNamespace("linear"), ILinear.CODEC);
-        VALUE_MAPPER.put(ResourceLocation.withDefaultNamespace("flags"), IFlags.CODEC);
-        VALUE_MAPPER.put(ResourceLocation.withDefaultNamespace("constant"), IConstant.CODEC);
-        VALUE_MAPPER.put(ResourceLocation.withDefaultNamespace("exponential"), IExp.CODEC);
+        VALUE_MAPPER.put(Identifier.withDefaultNamespace("weighted"), IWeighted.CODEC);
+        VALUE_MAPPER.put(Identifier.withDefaultNamespace("linear"), ILinear.CODEC);
+        VALUE_MAPPER.put(Identifier.withDefaultNamespace("flags"), IFlags.CODEC);
+        VALUE_MAPPER.put(Identifier.withDefaultNamespace("constant"), IConstant.CODEC);
+        VALUE_MAPPER.put(Identifier.withDefaultNamespace("exponential"), IExp.CODEC);
     }
     int getValue(RandomSource random);
     @NotNull MapCodec<? extends IValue> codec();
