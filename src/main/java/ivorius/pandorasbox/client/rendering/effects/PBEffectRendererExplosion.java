@@ -17,15 +17,15 @@ import java.util.List;
  */
 public class PBEffectRendererExplosion extends PBEffectRenderer<PBEffectExplode, ExplodeEffectRenderState> {
     @Override
-    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, ExplodeEffectRenderState effectRenderState, float partialTicks, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, float height) {
+    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, ExplodeEffectRenderState effectRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, float height, float timePassed) {
         int lightColor = effectRenderState.burning ? 0xff0088 : 0xbb3399;
 
-        float timePassed = Math.min((float) renderState.effectTicksExisted / (float) effectRenderState.maxTicksAlive, 1F);
-        timePassed *= timePassed;
-        timePassed *= timePassed;
+        float renderProgress = timePassed;
+        renderProgress *= renderProgress;
+        renderProgress *= renderProgress;
 
-        float scale = (timePassed * 0.3f) * effectRenderState.explosionRadius * 0.3f;
-        IvRenderHelper.renderLights(renderState.entityTickCount + partialTicks, scale, height, lightColor, timePassed * 255F, 10, poseStack, submitNodeCollector);
+        float scale = (renderProgress * 0.3f) * effectRenderState.explosionRadius * 0.3f;
+        IvRenderHelper.renderLights(effectRenderState.effectTicksExisted + renderState.partialTicks, scale, height, lightColor, renderProgress * 255F, 10, poseStack, submitNodeCollector);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class PBEffectRendererExplosion extends PBEffectRenderer<PBEffectExplode,
     }
 
     @Override
-    public List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> getLayers(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, ExplodeEffectRenderState effectRenderState, PandorasBoxModel model, float partialTicks) {
+    public List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> getLayers(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, ExplodeEffectRenderState effectRenderState, PandorasBoxModel model) {
         return null;
     }
 

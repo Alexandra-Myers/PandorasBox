@@ -10,7 +10,6 @@ public class PandorasBoxRenderState extends EntityRenderState {
     public float boxScale;
     public float partialTicks;
     public int entityTickCount;
-    public int effectTicksExisted;
     public int boxDeathTicks;
     public boolean invisibleToPlayer;
     public PandoraEffectRenderState pandoraEffectRenderState;

@@ -15,11 +15,11 @@ import java.util.List;
  * Created by lukas on 05.12.14.
  */
 public class PBEffectRenderer<PE extends PBEffect, PERS extends PandoraEffectRenderState> {
-    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PERS effectRenderState, float partialTicks, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, float height) {
+    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PERS effectRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, float height, float timePassed) {
 
     }
 
-    public List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> getLayers(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PERS effectRenderState, PandorasBoxModel model, float partialTicks) {
+    public List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> getLayers(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, PERS effectRenderState, PandorasBoxModel model) {
         return null;
     }
 
@@ -31,5 +31,11 @@ public class PBEffectRenderer<PE extends PBEffect, PERS extends PandoraEffectRen
         pandoraEffectRenderState.renderer = pandoraEffect.rendererIdentifierForEffect();
         pandoraEffectRenderState.maxTicksAlive = pandoraEffect.getMaxTicksAlive();
         pandoraEffectRenderState.isDone = pandoraEffect.isDone(effectTicksExisted);
+        pandoraEffectRenderState.effectTicksExisted = effectTicksExisted;
+        pandoraEffectRenderState.rendersAnyways = rendersAfterDone();
+    }
+
+    public boolean rendersAfterDone() {
+        return false;
     }
 }

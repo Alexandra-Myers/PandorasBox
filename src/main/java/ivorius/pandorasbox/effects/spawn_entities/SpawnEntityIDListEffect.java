@@ -161,6 +161,12 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 movementSpeed.addPermanentModifier(new AttributeModifier(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_speed"), movementSpeedP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
             }
 
+            AttributeInstance stepHeight = livingEntity.getAttribute(Attributes.STEP_HEIGHT);
+            if (stepHeight != null) {
+                double stepHeightP = random.nextDouble() * buffLevel * 0.5;
+                stepHeight.addPermanentModifier(new AttributeModifier(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_step_height"), stepHeightP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+            }
+
             AttributeInstance attackDamage = livingEntity.getAttribute(Attributes.ATTACK_DAMAGE);
             if (attackDamage != null) {
                 double attackDamageP = random.nextDouble() * buffLevel * 0.25;

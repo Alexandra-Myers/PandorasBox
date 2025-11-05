@@ -20,26 +20,21 @@ import java.util.List;
  */
 public class PBEffectRendererMulti extends PBEffectRenderer<PBEffectMulti, MultiEffectRenderState> {
     @Override
-    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, MultiEffectRenderState effectRenderState, float partialTicks, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, float height) {
+    public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, MultiEffectRenderState effectRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, float height, float timePassed) {
         Arrays.stream(effectRenderState.effects).toList().forEach(pandoraEffectRenderState -> {
             PBEffectRenderer renderer1 = PBEffectRenderingRegistry.rendererForEffect(pandoraEffectRenderState);
-            if (renderer1 != null && !pandoraEffectRenderState.isDone) {
-                renderer1.renderBox(renderer, renderState, pandoraEffectRenderState, partialTicks, poseStack, submitNodeCollector, packedLightIn, height);
-
-            }
+            renderer1.renderBox(renderer, renderState, pandoraEffectRenderState, poseStack, submitNodeCollector, packedLightIn, height, ((pandoraEffectRenderState.effectTicksExisted + renderState.partialTicks) % pandoraEffectRenderState.maxTicksAlive) / pandoraEffectRenderState.maxTicksAlive);
         });
     }
 
     @Override
-    public List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> getLayers(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, MultiEffectRenderState effectRenderState, PandorasBoxModel model, float partialTicks) {
+    public List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> getLayers(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, MultiEffectRenderState effectRenderState, PandorasBoxModel model) {
         List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> layers = new ArrayList<>();
         Arrays.stream(effectRenderState.effects).toList().forEach(pandoraEffectRenderState -> {
             PBEffectRenderer renderer1 = PBEffectRenderingRegistry.rendererForEffect(pandoraEffectRenderState);
-            if (renderer1 != null && !pandoraEffectRenderState.isDone) {
-                List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> renderLayers = renderer1.getLayers(renderer, renderState, pandoraEffectRenderState, model, partialTicks);
-                if (renderLayers != null) {
-                    layers.addAll(renderLayers);
-                }
+            List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> renderLayers = renderer1.getLayers(renderer, renderState, pandoraEffectRenderState, model);
+            if (renderLayers != null) {
+                layers.addAll(renderLayers);
             }
         });
         return layers;
@@ -56,8 +51,10 @@ public class PBEffectRendererMulti extends PBEffectRenderer<PBEffectMulti, Multi
         List<PandoraEffectRenderState> effectRenderStates = new ArrayList<>();
         for (PBEffect effect : pandoraEffect.getEffects()) {
             PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForID(effect.rendererIdentifierForEffect());
+            int ticksExistedForEffect = pandoraEffect.getTicksExistedForEffect(effect, effectTicksExisted);
+            if (effect.isDone(ticksExistedForEffect) && !renderer.rendersAfterDone()) continue;
             PandoraEffectRenderState renderState = renderer.createRenderState();
-            renderer.extractRenderState(boxRenderState, renderState, effect, pandoraEffect.getTicksExistedForEffect(effect, effectTicksExisted));
+            renderer.extractRenderState(boxRenderState, renderState, effect, ticksExistedForEffect);
             effectRenderStates.add(renderState);
         }
         pandoraEffectRenderState.effects = effectRenderStates.toArray(PandoraEffectRenderState[]::new);
