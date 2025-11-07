@@ -98,20 +98,20 @@ public enum NetherBiome implements StringRepresentable {
                     }
                 }
             } else {
-                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                ArrayListExtensions<Entity[]> entities = new ArrayListExtensions<>();
                 entities.addAll(
-                        lazilySpawnEntity(world, entity, random, "piglin", 1.0f / (30 * 30), pos),
-                        lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos),
-                        lazilySpawnEntity(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos),
-                        lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (20 * 20), pos));
+                        lazilyCreateEntities(world, entity, random, "piglin", 1.0f / (30 * 30), pos),
+                        lazilyCreateEntities(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos),
+                        lazilyCreateEntities(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos),
+                        lazilyCreateEntities(world, entity, random, "hoglin", 1.0f / (20 * 20), pos));
 
-                for (Entity entity1 : entities) {
-                    canSpawnEntity(world, pos, entity1);
+                for (Entity[] entity1 : entities) {
+                    canSpawnEntities(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
-                    lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
-                    lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
                 }
             }
         }
@@ -163,18 +163,18 @@ public enum NetherBiome implements StringRepresentable {
                     }
                 }
             } else {
-                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                ArrayListExtensions<Entity[]> entities = new ArrayListExtensions<>();
                 entities.addAll(
-                        lazilySpawnEntity(world, entity, random, "skeleton", 1.0f / (15 * 15), pos),
-                        lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos));
+                        lazilyCreateEntities(world, entity, random, "skeleton", 1.0f / (15 * 15), pos),
+                        lazilyCreateEntities(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos));
 
-                for (Entity entity1 : entities) {
-                    canSpawnEntity(world, pos, entity1);
+                for (Entity[] entity1 : entities) {
+                    canSpawnEntities(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
-                    lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
-                    lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
                 }
             }
 //TODO - Somehow make this performance not atrocious?
@@ -265,17 +265,17 @@ public enum NetherBiome implements StringRepresentable {
                     }
                 }
             } else {
-                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                ArrayListExtensions<Entity[]> entities = new ArrayListExtensions<>();
                 entities.addAll(
-                        lazilySpawnEntity(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos));
+                        lazilyCreateEntities(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos));
 
-                for (Entity entity1 : entities) {
-                    canSpawnEntity(world, pos, entity1);
+                for (Entity[] entity1 : entities) {
+                    canSpawnEntities(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
-                    lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
-                    lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
                 }
             }
         }
@@ -352,19 +352,19 @@ public enum NetherBiome implements StringRepresentable {
                     }
                 }
             } else {
-                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                ArrayListExtensions<Entity[]> entities = new ArrayListExtensions<>();
                 entities.addAll(
-                        lazilySpawnEntity(world, entity, random, "piglin", 1.0f / (10 * 10), pos),
-                        lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (25 * 25), pos),
-                        lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (10 * 10), pos));
+                        lazilyCreateEntities(world, entity, random, "piglin", 1.0f / (10 * 10), pos),
+                        lazilyCreateEntities(world, entity, random, "zombified_piglin", 1.0f / (25 * 25), pos),
+                        lazilyCreateEntities(world, entity, random, "hoglin", 1.0f / (10 * 10), pos));
 
-                for (Entity entity1 : entities) {
-                    canSpawnEntity(world, pos, entity1);
+                for (Entity[] entity1 : entities) {
+                    canSpawnEntities(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
-                    lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
-                    lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
                 }
             }
         }
@@ -441,12 +441,12 @@ public enum NetherBiome implements StringRepresentable {
                     }
                 }
             } else {
-                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                ArrayListExtensions<Entity[]> entities = new ArrayListExtensions<>();
                 entities.addAll(
-                        lazilySpawnEntity(world, entity, random, "enderman", 1.0f / (15 * 15), pos));
+                        lazilyCreateEntities(world, entity, random, "enderman", 1.0f / (15 * 15), pos));
 
-                for (Entity entity1 : entities) {
-                    canSpawnEntity(world, pos, entity1);
+                for (Entity[] entity1 : entities) {
+                    canSpawnEntities(world, pos, entity1);
                 }
             }
         }

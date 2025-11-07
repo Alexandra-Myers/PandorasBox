@@ -231,10 +231,10 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
                         level.addParticle(ParticleTypes.PORTAL, getX() + xP, yCenter + yP, getZ() + zP, xDir, yDir, zDir);
                     }
                 }
-
-                effectTicksExisted++;
-                setEffectTicksExisted(effectTicksExisted);
             }
+
+            effectTicksExisted++;
+            setEffectTicksExisted(effectTicksExisted);
         } else {
             timeBoxWaiting--;
             setBoxWaitingTime(timeBoxWaiting);

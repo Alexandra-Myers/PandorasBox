@@ -3,9 +3,12 @@ package ivorius.pandorasbox.effects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.PowerParticleOption;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -19,6 +22,7 @@ import static ivorius.pandorasbox.effects.PBEffects.MELTDOWN_CREATORS;
  * Created by Alexandra on 18.10.24.
  */
 public final class PBEffectMeltdown extends PBEffect {
+    public static final ResourceLocation MELTDOWN = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "render_meltdown");
     public static final MapCodec<PBEffectMeltdown> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(PBNBTHelper.arrayCodec(PBEffect.CODEC, () -> new PBEffect[0]).fieldOf("effects").forGetter(PBEffectMeltdown::getEffects),
                             PBNBTHelper.arrayCodec(Vec3.CODEC, () -> new Vec3[0]).fieldOf("effect_centers").forGetter(PBEffectMeltdown::getEffectCenters),
@@ -80,7 +84,7 @@ public final class PBEffectMeltdown extends PBEffect {
             double zP = (random.nextDouble() - 0.5) * range;
             Vec3 newEffectCenter = effectCenter.add(xP, yP, zP);
             effectCenters[0] = newEffectCenter;
-            effectStartTicks[0] = 0;
+            effectStartTicks[0] = 5;
         }
         rand = random.nextInt(MELTDOWN_CREATORS.length * 16);
         if (!level.isClientSide() && rand < MELTDOWN_CREATORS.length) {
@@ -92,7 +96,7 @@ public final class PBEffectMeltdown extends PBEffect {
             if (indexToOverwrite != null) {
                 effects[indexToOverwrite] = pbEffect;
                 effectCenters[indexToOverwrite] = newEffectCenter;
-                effectStartTicks[indexToOverwrite] = ticksAlive;
+                effectStartTicks[indexToOverwrite] = ticksAlive + 5;
                 indexToOverwrite = null;
             } else {
                 effects = Arrays.copyOf(effects, effects.length + 1);
@@ -100,20 +104,59 @@ public final class PBEffectMeltdown extends PBEffect {
                 effectCenters = Arrays.copyOf(effectCenters, effectCenters.length + 1);
                 effectCenters[effectCenters.length - 1] = newEffectCenter;
                 effectStartTicks = Arrays.copyOf(effectStartTicks, effectStartTicks.length + 1);
-                effectStartTicks[effectStartTicks.length - 1] = ticksAlive;
+                effectStartTicks[effectStartTicks.length - 1] = ticksAlive + 5;
             }
             entity.setBoxEffect(this);
         }
         for (int i = 0; i < effects.length; i++) {
             int ticksForEffect = ticksAlive - effectStartTicks[i];
+            Vec3 currentCenter = effectCenters[i];
+            if (ticksForEffect < 5) {
+                if (level.isClientSide()) {
+                    Vec3 baseDiff = currentCenter.subtract(effectCenter);
+                    Vec3 delta = baseDiff.normalize().scale(2.5);
+                    for (int e = 0; e < 50; e++) {
+                        double speedFactor = 1 + (random.nextDouble() - 0.5);
+                        double xDir = delta.x * speedFactor;
+                        double yDir = delta.y * speedFactor;
+                        double zDir = delta.z * speedFactor;
+                        double xP = (random.nextDouble() - 0.5) * entity.getBbWidth() * 2;
+                        double yP = (random.nextDouble() - 0.5) * entity.getBbHeight() * 2;
+                        double zP = (random.nextDouble() - 0.5) * entity.getBbWidth() * 2;
+
+                        level.addParticle(ParticleTypes.SMOKE, effectCenter.x + xP, effectCenter.y + yP, effectCenter.z + zP, -xDir, -yDir, -zDir);
+                    }
+                    for (int e = 0; e < 10; e++) {
+                        double speedFactor = 1 + (random.nextDouble() - 0.5);
+                        double xDir = delta.x * speedFactor;
+                        double yDir = delta.y * speedFactor;
+                        double zDir = delta.z * speedFactor;
+                        double xP = (random.nextDouble() - 0.5) * entity.getBbWidth() / 2;
+                        double yP = (random.nextDouble() - 0.5) * entity.getBbHeight() / 2;
+                        double zP = (random.nextDouble() - 0.5) * entity.getBbWidth() / 2;
+
+                        level.addParticle(ParticleTypes.FLAME, effectCenter.x + xP, effectCenter.y + yP, effectCenter.z + zP, -xDir, -yDir, -zDir);
+                    }
+                    for (int e = 0; e < 10; e++) {
+                        double speedFactor = 1 + (random.nextDouble() - 0.5);
+                        double xDir = delta.x * speedFactor;
+                        double yDir = delta.y * speedFactor;
+                        double zDir = delta.z * speedFactor;
+                        double xP = (random.nextDouble() - 0.5) * entity.getBbWidth() / 2;
+                        double yP = (random.nextDouble() - 0.5) * entity.getBbHeight() / 2;
+                        double zP = (random.nextDouble() - 0.5) * entity.getBbWidth() / 2;
+
+                        level.addParticle(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1), effectCenter.x + xP, effectCenter.y + yP, effectCenter.z + zP, -xDir, -yDir, -zDir);
+                    }
+                }
+            }
             if (effects[i].isDone(ticksForEffect)) {
                 if (indexToOverwrite == null) indexToOverwrite = i;
                 continue;
             }
-            Vec3 currentCenter = effectCenters[i];
             effects[i].doTick(entity, currentCenter, ticksForEffect);
             if (level.isClientSide()) {
-                if (ticksForEffect == 0) {
+                if (ticksForEffect >= 0 && ticksForEffect < 5) {
                     for (int e = 0; e < 300; e++) {
                         double xDir = (random.nextDouble() - random.nextDouble()) * 2.0;
                         double yDir = random.nextDouble() + 2.0;
@@ -206,5 +249,10 @@ public final class PBEffectMeltdown extends PBEffect {
     @Override
     public @NotNull MapCodec<? extends PBEffect> codec() {
         return CODEC;
+    }
+
+    @Override
+    public ResourceLocation rendererResourceLocationForEffect() {
+        return MELTDOWN;
     }
 }

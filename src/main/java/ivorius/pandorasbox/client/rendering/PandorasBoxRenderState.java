@@ -1,6 +1,6 @@
 package ivorius.pandorasbox.client.rendering;
 
-import ivorius.pandorasbox.effects.PBEffect;
+import ivorius.pandorasbox.client.rendering.effects.renderstate.PandoraEffectRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 
@@ -10,10 +10,9 @@ public class PandorasBoxRenderState extends EntityRenderState {
     public float boxScale;
     public float partialTicks;
     public int entityTickCount;
-    public int effectTicksExisted;
     public int boxDeathTicks;
     public boolean invisibleToPlayer;
-    public PBEffect pbEffect;
+    public PandoraEffectRenderState pandoraEffectRenderState;
     public ItemStackRenderState renderItem = new ItemStackRenderState();
     static final PandorasBoxRenderState BLOCK_ENTITY_STATE;
     static {

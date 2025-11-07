@@ -21,7 +21,7 @@ public record SpawnFlying(String entityID, float chance) implements EntitySpawne
     @Override
     public void spawnEntities(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, int unifiedSeed) {
         if (canSpawnFlyingEntity(level, level.getBlockState(pos), pos)) {
-            lazilySpawnFlyingEntity(level, entity, random, entityID, chance, pos);
+            lazilySpawnFlyingEntities(level, entity, random, entityID, chance, pos);
         }
     }
 
