@@ -1,0 +1,384 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "range": {
+          "min": 10.0,
+          "max": 15.0,
+          "type": "minecraft:linear"
+        },
+        "blocks": [
+          {
+            "tag": "#minecraft:planks",
+            "weight": 30.0
+          },
+          {
+            "tag": "#minecraft:wool",
+            "weight": 30.0
+          },
+          {
+            "tag": "#minecraft:leaves",
+            "weight": 30.0
+          },
+          {
+            "tag": "#minecraft:logs",
+            "weight": 30.0
+          },
+          {
+            "tag": "#minecraft:stone_bricks",
+            "weight": 30.0
+          },
+          {
+            "block": "minecraft:prismarine",
+            "weight": 15.0
+          },
+          {
+            "block": "minecraft:quartz_block",
+            "weight": 15.0
+          },
+          {
+            "block": "minecraft:smooth_quartz",
+            "weight": 15.0
+          },
+          {
+            "block": "minecraft:gravel",
+            "weight": 10.0
+          },
+          {
+            "block": "minecraft:pumpkin",
+            "weight": 10.0
+          },
+          {
+            "block": "minecraft:carved_pumpkin",
+            "weight": 10.0
+          },
+          {
+            "block": "minecraft:clay",
+            "weight": 10.0
+          },
+          {
+            "block": "minecraft:polished_deepslate",
+            "weight": 10.0
+          },
+          {
+            "block": "minecraft:deepslate_tiles",
+            "weight": 10.0
+          },
+          {
+            "block": "minecraft:nether_bricks",
+            "weight": 10.0
+          },
+          {
+            "block": "minecraft:bricks",
+            "weight": 10.0
+          },
+          {
+            "block": "minecraft:end_stone",
+            "weight": 10.0
+          },
+          {
+            "block": "minecraft:end_stone_bricks",
+            "weight": 10.0
+          },
+          {
+            "tag": "#c:cobblestones",
+            "weight": 10.0
+          },
+          {
+            "tag": "#minecraft:nylium",
+            "weight": 10.0
+          },
+          {
+            "tag": "#pandorasbox:all_terracotta",
+            "weight": 10.0
+          },
+          {
+            "tag": "#c:player_workstations/crafting_tables",
+            "weight": 10.0
+          },
+          {
+            "tag": "#c:player_workstations/furnaces",
+            "weight": 10.0
+          },
+          {
+            "tag": "#minecraft:base_stone_nether",
+            "weight": 10.0
+          },
+          {
+            "tag": "#minecraft:dirt",
+            "weight": 10.0
+          },
+          {
+            "tag": "#minecraft:slabs",
+            "weight": 10.0
+          },
+          {
+            "tag": "#minecraft:stairs",
+            "weight": 10.0
+          },
+          {
+            "tag": "#minecraft:sand",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:stones",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:wither_summon_base_blocks",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:ores/quartz",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:coal_ores",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:copper_ores",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:lapis_ores",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:redstone_ores",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:iron_ores",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:snow",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:chests",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:barrels",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:sandstone/blocks",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:villager_job_sites",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:rails",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:concretes",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:concrete_powder",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:saplings",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:flower_pots",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:glass_blocks",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:glass_panes",
+            "weight": 8.0
+          },
+          {
+            "block": "minecraft:dragon_egg",
+            "weight": 5.0
+          },
+          {
+            "block": "minecraft:note_block",
+            "weight": 5.0
+          },
+          {
+            "block": "minecraft:redstone_lamp",
+            "weight": 5.0
+          },
+          {
+            "block": "minecraft:sea_lantern",
+            "weight": 5.0
+          },
+          {
+            "block": "minecraft:snow",
+            "weight": 5.0
+          },
+          {
+            "block": "minecraft:bookshelf",
+            "weight": 5.0
+          },
+          {
+            "block": "minecraft:jack_o_lantern",
+            "weight": 5.0
+          },
+          {
+            "block": "minecraft:melon",
+            "weight": 5.0
+          },
+          {
+            "block": "minecraft:chiseled_bookshelf",
+            "weight": 5.0
+          },
+          {
+            "tag": "#c:storage_blocks/wheat",
+            "weight": 5.0
+          },
+          {
+            "tag": "#c:storage_blocks/dried_kelp",
+            "weight": 5.0
+          },
+          {
+            "tag": "#c:obsidians/normal",
+            "weight": 5.0
+          },
+          {
+            "tag": "#c:obsidians/crying",
+            "weight": 5.0
+          },
+          {
+            "block": "minecraft:lodestone",
+            "weight": 2.0
+          },
+          {
+            "block": "minecraft:tnt",
+            "weight": 2.0
+          },
+          {
+            "block": "minecraft:glowstone",
+            "weight": 2.0
+          },
+          {
+            "block": "minecraft:shroomlight",
+            "weight": 2.0
+          },
+          {
+            "block": "minecraft:sponge",
+            "weight": 2.0
+          },
+          {
+            "tag": "#c:storage_blocks/coal",
+            "weight": 2.0
+          },
+          {
+            "tag": "#c:storage_blocks/copper",
+            "weight": 2.0
+          },
+          {
+            "tag": "#c:storage_blocks/lapis",
+            "weight": 2.0
+          },
+          {
+            "tag": "#c:storage_blocks/redstone",
+            "weight": 2.0
+          },
+          {
+            "tag": "#c:storage_blocks/slime",
+            "weight": 2.0
+          },
+          {
+            "tag": "#c:storage_blocks/resin",
+            "weight": 2.0
+          },
+          {
+            "tag": "#c:ores/netherite_scrap",
+            "weight": 0.5
+          },
+          {
+            "tag": "#minecraft:diamond_ores",
+            "weight": 0.5
+          },
+          {
+            "tag": "#minecraft:emerald_ores",
+            "weight": 0.5
+          },
+          {
+            "tag": "#minecraft:gold_ores",
+            "weight": 0.5
+          },
+          {
+            "tag": "#c:storage_blocks/netherite",
+            "weight": 0.2
+          },
+          {
+            "tag": "#c:storage_blocks/diamond",
+            "weight": 0.2
+          },
+          {
+            "tag": "#c:storage_blocks/emerald",
+            "weight": 0.2
+          },
+          {
+            "tag": "#c:storage_blocks/gold",
+            "weight": 0.2
+          },
+          {
+            "tag": "#c:storage_blocks/iron",
+            "weight": 0.2
+          }
+        ],
+        "type": "pandorasbox:transform_blocks"
+      },
+      {
+        "range": {
+          "min": 10.0,
+          "max": 20.0,
+          "type": "minecraft:gaussian"
+        },
+        "chance_per_block": {
+          "min": 3.0517578125E-5,
+          "max": 0.004629629664123058,
+          "type": "minecraft:linear"
+        },
+        "requires_solid_ground": {
+          "guaranteed": false,
+          "type": "minecraft:constant"
+        },
+        "possible_tree_flags": {
+          "min_flags": 1,
+          "flags": [
+            0,
+            1,
+            2,
+            5,
+            6,
+            7
+          ],
+          "chances": [
+            1.0,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "type": "minecraft:flags"
+        },
+        "type": "pandorasbox:gen_trees"
+      }
+    ],
+    "delays": [
+      0,
+      20
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

@@ -111,7 +111,7 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
         int ticksPerItem = this.ticksPerItem.getValue(random);
         boolean isFood = this.canBeFood.getValue(random);
 
-        ItemStack[] stacks = getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, items), number, random.nextInt(3) != 0, true, 0, false, isFood);
+        ItemStack[] stacks = getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, BuiltInRegistries.BLOCK, items), number, random.nextInt(3) != 0, true, 0, false, isFood);
         return constructEffect(random, stacks, number * ticksPerItem + 1, valueThrow.orElse(null), valueSpawn.orElse(null), spawnsFromEffectCenter);
     }
 

@@ -1,0 +1,94 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "range": {
+          "min": 10.0,
+          "max": 15.0,
+          "type": "minecraft:linear"
+        },
+        "chance_for_more_effects": 0.1,
+        "convert_effect": {
+          "biome": "minecraft:snowy_taiga",
+          "exclusions": [],
+          "mappers": [
+            {
+              "targets": [
+                "minecraft:water"
+              ],
+              "to_replace": "minecraft:ice",
+              "type": "pandorasbox:convert_simple"
+            },
+            {
+              "type": "pandorasbox:christmas_gifts"
+            },
+            {
+              "targets": [
+                "#minecraft:fire"
+              ],
+              "to_replace": "minecraft:air",
+              "type": "pandorasbox:convert_simple"
+            },
+            {
+              "fluid_target": "minecraft:lava",
+              "to_replace": "minecraft:cobblestone",
+              "type": "pandorasbox:chill_lava"
+            },
+            {
+              "targets": [
+                "minecraft:magma_block"
+              ],
+              "to_replace": "minecraft:cobblestone",
+              "type": "pandorasbox:convert_simple"
+            },
+            {
+              "targets": [
+                "minecraft:lava"
+              ],
+              "to_replace": "minecraft:obsidian",
+              "type": "pandorasbox:convert_simple"
+            }
+          ],
+          "generators": [],
+          "spawners": [
+            {
+              "entity_id": "minecraft:pbspecial_hogfather",
+              "chance": 4.4444445E-5,
+              "type": "pandorasbox:spawn_random"
+            },
+            {
+              "entity_id": "minecraft:snow_golem",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            }
+          ]
+        },
+        "type": "pandorasbox:convert_generic"
+      },
+      {
+        "time": {
+          "min": 30,
+          "max": 60,
+          "type": "minecraft:linear"
+        },
+        "world_time": {
+          "min": 15000,
+          "max": 20000,
+          "type": "minecraft:linear"
+        },
+        "add": {
+          "guaranteed": false,
+          "type": "minecraft:constant"
+        },
+        "type": "pandorasbox:set_time"
+      }
+    ],
+    "delays": [
+      0,
+      0
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

@@ -1,0 +1,22 @@
+{
+  "effect_creator": {
+    "time": {
+      "min": 80,
+      "max": 150,
+      "type": "minecraft:linear"
+    },
+    "number": {
+      "min": 10,
+      "max": 48,
+      "type": "minecraft:linear"
+    },
+    "range": {
+      "min": 10.0,
+      "max": 30.0,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:spawn_lightning"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

@@ -1,0 +1,18 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 10.0,
+      "max": 15.0,
+      "type": "minecraft:linear"
+    },
+    "chance_to_discard_netherrack": {
+      "min": 0.0,
+      "max": 0.3,
+      "type": "minecraft:linear"
+    },
+    "biome": "nether_wastes",
+    "type": "pandorasbox:convert_to_nether"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

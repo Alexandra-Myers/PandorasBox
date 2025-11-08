@@ -1,0 +1,164 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 10.0,
+      "max": 20.0,
+      "type": "minecraft:linear"
+    },
+    "entities": [
+      {
+        "entity": "minecraft:zombie",
+        "min_count": 3,
+        "max_count": 10,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:drowned",
+        "min_count": 3,
+        "max_count": 10,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:husk",
+        "min_count": 3,
+        "max_count": 10,
+        "weight": 7.5
+      },
+      {
+        "entity": "minecraft:spider",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:skeleton",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:pillager",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:stray",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 7.5
+      },
+      {
+        "entity": "minecraft:parched",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 7.5
+      },
+      {
+        "entity": "minecraft:wither_skeleton",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 5.0
+      },
+      {
+        "entity": "minecraft:creeper",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:slime",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 6.0
+      },
+      {
+        "entity": "minecraft:zombified_piglin",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 6.0
+      },
+      {
+        "entity": "minecraft:hoglin",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 6.0
+      },
+      {
+        "entity": "minecraft:enderman",
+        "min_count": 2,
+        "max_count": 6,
+        "weight": 6.0
+      },
+      {
+        "entity": "minecraft:cave_spider",
+        "min_count": 2,
+        "max_count": 4,
+        "weight": 5.0
+      },
+      {
+        "entity": "minecraft:silverfish",
+        "min_count": 10,
+        "max_count": 20,
+        "weight": 5.0
+      },
+      {
+        "entity": "minecraft:magma_cube",
+        "min_count": 2,
+        "max_count": 6,
+        "weight": 5.0
+      },
+      {
+        "entity": "minecraft:vindicator",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:zoglin",
+        "min_count": 2,
+        "max_count": 4,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:witch",
+        "min_count": 2,
+        "max_count": 4,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:endermite",
+        "min_count": 10,
+        "max_count": 20,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:breeze",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:evoker",
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 3.0
+      },
+      {
+        "entity": "minecraft:piglin_brute",
+        "min_count": 2,
+        "max_count": 3,
+        "weight": 2.0
+      },
+      {
+        "entity": "minecraft:ravager",
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      }
+    ],
+    "type": "pandorasbox:convert_to_city"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

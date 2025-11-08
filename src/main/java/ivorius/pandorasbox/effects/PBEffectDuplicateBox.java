@@ -7,10 +7,13 @@ import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.EntityInit;
+import ivorius.pandorasbox.init.Init;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 /**
  * Created by lukas on 03.12.14.
@@ -43,7 +46,7 @@ public class PBEffectDuplicateBox extends PBEffectNormal {
     @Override
     public void setUpEffect(Level level, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random) {
         if (!level.isClientSide()) {
-            PBEffect effect = PBECRegistry.createRandomEffect(level, random, box.getX(), box.getY(), box.getZ(), true);
+            PBEffect effect = PBECRegistry.createRandomEffect(level, random, box.getX(), box.getY(), box.getZ(), true, Optional.empty(), Init.EFFECT_HOLDER_REGISTRY_KEY);
             PandorasBoxEntity newBox = new PandorasBoxEntity(EntityInit.BOX, level, true, true);
 
             newBox.setBoxEffect(effect);

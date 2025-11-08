@@ -3,8 +3,11 @@
     "block.pandorasbox.pandoras_box": "Pandora's Box",
     "item.pandorasbox.pandoras_box": "Pandora's Box",
 
-    "component.pandora_effects.random": "Random Effects",
-    "component.pandora_effects.holders": "Held Effects: ",
+    "component.pandora_effects.random": "Has Random Effects",
+    "component.pandora_effects.random_selection": "Selects Random Effects From:",
+    "component.pandora_effects.holders": "Held Effects:",
+
+    "effect_holder.pandorasbox.empty": "??? - Odd Effect",
 
     "effect_holder.pandorasbox.all_rainbow": "All Rainbow",
     "effect_holder.pandorasbox.animal_farm": "Animal Farm",
@@ -106,7 +109,7 @@
     "effect_holder.psychedelicraft.drugs": "Drugged",
 
     "effect.pandorasbox.shrunk": "Shrunken",
-    "tag.item.pandorasbox.pandoras_box_misc": "Miscellaneous Box Loot",
+    "tag.item.pandorasbox.pandoras_items_misc_common": "Miscellaneous Box Loot",
 
     "argument.pandora_effect.id.invalid": "Unknown box effect '%s'",
     "text.pandorasbox.fake": "Just kidding, %s!",

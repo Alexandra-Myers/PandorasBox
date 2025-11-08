@@ -1,0 +1,25 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 10.0,
+      "max": 20.0,
+      "type": "minecraft:gaussian"
+    },
+    "lava_block": "minecraft:lava",
+    "cage_blocks": [
+      {
+        "weight": 100.0,
+        "block": "minecraft:nether_brick_wall"
+      }
+    ],
+    "floor_blocks": [
+      {
+        "weight": 100.0,
+        "tag": "#c:obsidians/crying"
+      }
+    ],
+    "type": "pandorasbox:lava_cage"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

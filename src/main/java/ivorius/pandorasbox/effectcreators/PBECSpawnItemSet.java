@@ -41,7 +41,7 @@ public record PBECSpawnItemSet(IValue ticksPerItem, ZValue spawnsFromEffectCente
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int ticksPerItem = this.ticksPerItem.getValue(random);
 
-        ItemStack[] itemSet = WeightedSelector.selectItem(random, items).set();
+        ItemStack[] itemSet = WeightedSelector.selectItem(random, items).equipmentSet().set();
         ItemStack[] stacks = new ItemStack[itemSet.length];
         for (int i = 0; i < itemSet.length; i++) {
             stacks[i] = itemSet[i].copy();

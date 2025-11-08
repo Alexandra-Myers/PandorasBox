@@ -1,0 +1,234 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "range": {
+          "min": 10.0,
+          "max": 15.0,
+          "type": "minecraft:linear"
+        },
+        "chance_for_more_effects": 0.1,
+        "convert_effect": {
+          "biome": "minecraft:lush_caves",
+          "exclusions": [],
+          "mappers": [
+            {
+              "targets": [
+                "#minecraft:snow",
+                "#minecraft:fire",
+                "#minecraft:flowers",
+                "minecraft:short_grass",
+                "minecraft:tall_grass",
+                "minecraft:fern",
+                "minecraft:large_fern",
+                "minecraft:short_dry_grass",
+                "minecraft:tall_dry_grass",
+                "minecraft:dead_bush",
+                "minecraft:bush",
+                "minecraft:firefly_bush"
+              ],
+              "to_replace": "minecraft:air",
+              "type": "pandorasbox:convert_simple"
+            },
+            {
+              "targets": [
+                "#pandorasbox:all_terracotta",
+                "#c:stones",
+                "#c:cobblestones",
+                "#minecraft:base_stone_nether",
+                "#minecraft:wither_summon_base_blocks",
+                "#minecraft:nylium",
+                "#minecraft:dirt",
+                "#minecraft:sand",
+                "#c:sandstone/blocks",
+                "minecraft:end_stone"
+              ],
+              "type": "pandorasbox:heavenly"
+            },
+            {
+              "targets": [
+                "#c:obsidians",
+                "minecraft:lava",
+                "minecraft:ice"
+              ],
+              "to_replace": "minecraft:water",
+              "type": "pandorasbox:convert_simple"
+            }
+          ],
+          "generators": [],
+          "spawners": [
+            {
+              "entity_id": "minecraft:sheep",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            }
+          ]
+        },
+        "type": "pandorasbox:convert_generic"
+      },
+      {
+        "ticks_per_item": {
+          "min": 1,
+          "max": 5,
+          "type": "minecraft:linear"
+        },
+        "spawn_from_effect_center": {
+          "guaranteed": true,
+          "type": "minecraft:constant"
+        },
+        "sets": [
+          {
+            "weight": 10.0,
+            "set": "pandorasbox:leather_equipment"
+          },
+          {
+            "weight": 8.0,
+            "set": "pandorasbox:copper_equipment"
+          },
+          {
+            "weight": 6.0,
+            "set": "pandorasbox:iron_equipment"
+          },
+          {
+            "weight": 4.0,
+            "set": "pandorasbox:golden_equipment"
+          },
+          {
+            "weight": 2.0,
+            "set": "pandorasbox:diamond_equipment"
+          },
+          {
+            "weight": 1.0,
+            "set": "pandorasbox:netherite_equipment"
+          },
+          {
+            "weight": 6.0,
+            "set": "pandorasbox:bowmaster"
+          },
+          {
+            "weight": 6.0,
+            "set": "pandorasbox:midgame_miner"
+          },
+          {
+            "weight": 3.0,
+            "set": "pandorasbox:early_miner"
+          },
+          {
+            "weight": 8.0,
+            "set": "pandorasbox:farmers_dream"
+          },
+          {
+            "weight": 6.0,
+            "set": "pandorasbox:glass_cannon"
+          },
+          {
+            "weight": 6.0,
+            "set": "pandorasbox:underseas_explorer"
+          },
+          {
+            "weight": 0.1,
+            "set": "pandorasbox:the_fighter"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_white_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_orange_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_magenta_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_light_blue_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_yellow_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_lime_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_pink_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_gray_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_light_gray_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_cyan_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_purple_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_blue_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_brown_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_green_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_red_wool"
+          },
+          {
+            "weight": 1.2,
+            "set": "pandorasbox:redstoners_dream_black_wool"
+          }
+        ],
+        "value_throw": {
+          "throw_strength_horizontal": {
+            "min": 0.05,
+            "max": 0.2,
+            "type": "minecraft:linear"
+          },
+          "throw_strength_vertical": {
+            "min": 0.2,
+            "max": 1.0,
+            "type": "minecraft:linear"
+          }
+        },
+        "type": "pandorasbox:spawn_item_set"
+      },
+      {
+        "range": {
+          "min": 10.0,
+          "max": 25.0,
+          "type": "minecraft:linear"
+        },
+        "time": {
+          "min": 15,
+          "max": 100,
+          "type": "minecraft:linear"
+        },
+        "type": "pandorasbox:apply_bombpack"
+      }
+    ],
+    "delays": [
+      0,
+      0,
+      0
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

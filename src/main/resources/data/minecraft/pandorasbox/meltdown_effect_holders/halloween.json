@@ -1,0 +1,66 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "range": {
+          "min": 10.0,
+          "max": 15.0,
+          "type": "minecraft:linear"
+        },
+        "chance_for_more_effects": 0.1,
+        "convert_effect": {
+          "biome": "minecraft:soul_sand_valley",
+          "exclusions": [],
+          "mappers": [
+            {
+              "type": "pandorasbox:halloween"
+            }
+          ],
+          "generators": [],
+          "spawners": [
+            {
+              "entity_id": "minecraft:zombified_piglin",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            },
+            {
+              "entity_id": "minecraft:enderman",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            },
+            {
+              "entity_id": "minecraft:phantom",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            }
+          ]
+        },
+        "type": "pandorasbox:convert_generic"
+      },
+      {
+        "time": {
+          "min": 30,
+          "max": 60,
+          "type": "minecraft:linear"
+        },
+        "world_time": {
+          "min": 15000,
+          "max": 20000,
+          "type": "minecraft:linear"
+        },
+        "add": {
+          "guaranteed": false,
+          "type": "minecraft:constant"
+        },
+        "type": "pandorasbox:set_time"
+      }
+    ],
+    "delays": [
+      0,
+      0
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

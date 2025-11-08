@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:wind_charge",
+    "minecraft:clock",
+    "minecraft:ghast_tear",
+    "minecraft:ender_eye",
+    "minecraft:glistering_melon_slice",
+    "minecraft:fermented_spider_eye",
+    "minecraft:magma_cream",
+    "minecraft:golden_carrot",
+    "minecraft:turtle_scute",
+    "minecraft:phantom_membrane",
+    "#minecraft:brewing_fuel",
+    "#c:ingots/iron",
+    "#c:nuggets/iron",
+    "#c:dusts/glowstone",
+    "#c:gems/amethyst",
+    "#c:gems/lapis",
+    "#c:rods"
+  ]
+}

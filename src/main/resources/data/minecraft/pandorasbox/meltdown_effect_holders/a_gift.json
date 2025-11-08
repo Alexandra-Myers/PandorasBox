@@ -1,0 +1,146 @@
+{
+  "effect_creator": {
+    "ticks_per_item": {
+      "min": 2,
+      "max": 20,
+      "type": "minecraft:linear"
+    },
+    "spawn_from_effect_center": {
+      "guaranteed": true,
+      "type": "minecraft:constant"
+    },
+    "sets": [
+      {
+        "weight": 10.0,
+        "set": "pandorasbox:leather_equipment"
+      },
+      {
+        "weight": 8.0,
+        "set": "pandorasbox:copper_equipment"
+      },
+      {
+        "weight": 6.0,
+        "set": "pandorasbox:iron_equipment"
+      },
+      {
+        "weight": 4.0,
+        "set": "pandorasbox:golden_equipment"
+      },
+      {
+        "weight": 2.0,
+        "set": "pandorasbox:diamond_equipment"
+      },
+      {
+        "weight": 1.0,
+        "set": "pandorasbox:netherite_equipment"
+      },
+      {
+        "weight": 6.0,
+        "set": "pandorasbox:bowmaster"
+      },
+      {
+        "weight": 6.0,
+        "set": "pandorasbox:midgame_miner"
+      },
+      {
+        "weight": 3.0,
+        "set": "pandorasbox:early_miner"
+      },
+      {
+        "weight": 8.0,
+        "set": "pandorasbox:farmers_dream"
+      },
+      {
+        "weight": 6.0,
+        "set": "pandorasbox:glass_cannon"
+      },
+      {
+        "weight": 6.0,
+        "set": "pandorasbox:underseas_explorer"
+      },
+      {
+        "weight": 0.1,
+        "set": "pandorasbox:the_fighter"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_white_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_orange_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_magenta_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_light_blue_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_yellow_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_lime_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_pink_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_gray_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_light_gray_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_cyan_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_purple_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_blue_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_brown_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_green_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_red_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_black_wool"
+      }
+    ],
+    "value_throw": {
+      "throw_strength_horizontal": {
+        "min": 0.05,
+        "max": 0.2,
+        "type": "minecraft:linear"
+      },
+      "throw_strength_vertical": {
+        "min": 0.2,
+        "max": 1.0,
+        "type": "minecraft:linear"
+      }
+    },
+    "type": "pandorasbox:spawn_item_set"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

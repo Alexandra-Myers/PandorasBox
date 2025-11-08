@@ -1,0 +1,82 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 10.0,
+      "max": 15.0,
+      "type": "minecraft:linear"
+    },
+    "chance_for_more_effects": 0.1,
+    "convert_effect": {
+      "biome": "minecraft:end_barrens",
+      "exclusions": [],
+      "mappers": [
+        {
+          "targets": [
+            "#minecraft:leaves",
+            "#minecraft:flowers",
+            "#minecraft:snow",
+            "minecraft:ice",
+            "minecraft:water",
+            "minecraft:vine",
+            "minecraft:short_grass",
+            "minecraft:tall_grass",
+            "minecraft:fern",
+            "minecraft:large_fern",
+            "minecraft:short_dry_grass",
+            "minecraft:tall_dry_grass",
+            "minecraft:dead_bush",
+            "minecraft:bush",
+            "minecraft:firefly_bush",
+            "minecraft:brown_mushroom_block",
+            "minecraft:red_mushroom_block",
+            "minecraft:mushroom_stem",
+            "#minecraft:logs"
+          ],
+          "to_replace": "minecraft:obsidian",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "targets": [
+            "minecraft:brown_mushroom",
+            "minecraft:red_mushroom"
+          ],
+          "to_replace": "minecraft:air",
+          "type": "pandorasbox:convert_simple"
+        },
+        {
+          "to_replace": "minecraft:end_stone",
+          "type": "pandorasbox:convert_all"
+        }
+      ],
+      "generators": [
+        {
+          "base_chance": 0.02,
+          "block_set": [
+            "#c:obsidians",
+            "minecraft:chorus_flower",
+            "minecraft:chorus_plant"
+          ],
+          "feature_set": [
+            {
+              "weight": 1.0,
+              "key": "minecraft:chorus_plant"
+            }
+          ],
+          "placed": "minecraft:end_stone",
+          "force": false,
+          "type": "pandorasbox:generate_feature"
+        }
+      ],
+      "spawners": [
+        {
+          "entity_id": "minecraft:enderman",
+          "chance": 0.0025,
+          "type": "pandorasbox:spawn_random"
+        }
+      ]
+    },
+    "type": "pandorasbox:convert_generic"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

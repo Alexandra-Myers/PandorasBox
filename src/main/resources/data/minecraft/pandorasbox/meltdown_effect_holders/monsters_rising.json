@@ -1,0 +1,260 @@
+{
+  "effect_creator": {
+    "time": {
+      "min": 5,
+      "max": 10,
+      "type": "minecraft:linear"
+    },
+    "number": {
+      "values": [
+        2,
+        3,
+        4
+      ],
+      "weights": [
+        80,
+        40,
+        5
+      ],
+      "type": "minecraft:weighted"
+    },
+    "named_entities": {
+      "value": 1,
+      "type": "minecraft:constant"
+    },
+    "equipment_level": {
+      "min": 2,
+      "max": 6,
+      "type": "minecraft:linear"
+    },
+    "buff_level": {
+      "min": 2,
+      "max": 10,
+      "type": "minecraft:linear"
+    },
+    "spawn_from_effect_center": {
+      "guaranteed": true,
+      "type": "minecraft:constant"
+    },
+    "entities": [
+      {
+        "entity": "minecraft:zombie",
+        "min_count": 3,
+        "max_count": 10,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:drowned",
+        "min_count": 3,
+        "max_count": 10,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:husk",
+        "min_count": 3,
+        "max_count": 10,
+        "weight": 7.5
+      },
+      {
+        "entity": "minecraft:spider",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:skeleton",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:pillager",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:stray",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 7.5
+      },
+      {
+        "entity": "minecraft:parched",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 7.5
+      },
+      {
+        "entity": "minecraft:wither_skeleton",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 5.0
+      },
+      {
+        "entity": "minecraft:creeper",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 10.0
+      },
+      {
+        "entity": "minecraft:slime",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 6.0
+      },
+      {
+        "entity": "minecraft:zombified_piglin",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 6.0
+      },
+      {
+        "entity": "minecraft:hoglin",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 6.0
+      },
+      {
+        "entity": "minecraft:enderman",
+        "min_count": 2,
+        "max_count": 6,
+        "weight": 6.0
+      },
+      {
+        "entity": "minecraft:cave_spider",
+        "min_count": 2,
+        "max_count": 4,
+        "weight": 5.0
+      },
+      {
+        "entity": "minecraft:silverfish",
+        "min_count": 10,
+        "max_count": 20,
+        "weight": 5.0
+      },
+      {
+        "entity": "minecraft:magma_cube",
+        "min_count": 2,
+        "max_count": 6,
+        "weight": 5.0
+      },
+      {
+        "entity": "minecraft:vindicator",
+        "min_count": 2,
+        "max_count": 8,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:zoglin",
+        "min_count": 2,
+        "max_count": 4,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:witch",
+        "min_count": 2,
+        "max_count": 4,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:endermite",
+        "min_count": 10,
+        "max_count": 20,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:pbspecial_angry_wolf",
+        "min_count": 2,
+        "max_count": 6,
+        "weight": 5.0
+      },
+      {
+        "entity": "minecraft:pbspecial_charged_creeper",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:breeze",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:evoker",
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 3.0
+      },
+      {
+        "entity": "minecraft:piglin_brute",
+        "min_count": 2,
+        "max_count": 3,
+        "weight": 2.0
+      },
+      {
+        "entity": "minecraft:ravager",
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "entity": "minecraft:pbspecial_zombie_horseman",
+        "min_count": 4,
+        "max_count": 4,
+        "weight": 1.0
+      },
+      {
+        "entity": "minecraft:wither",
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 1.0
+      },
+      {
+        "entity": "minecraft:blaze",
+        "min_count": 2,
+        "max_count": 5,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:ghast",
+        "min_count": 1,
+        "max_count": 4,
+        "weight": 4.0
+      },
+      {
+        "entity": "minecraft:phantom",
+        "min_count": 1,
+        "max_count": 4,
+        "weight": 4.0
+      }
+    ],
+    "value_throw": {
+      "throw_strength_horizontal": {
+        "min": 0.1,
+        "max": 0.4,
+        "type": "minecraft:linear"
+      },
+      "throw_strength_vertical": {
+        "min": 0.2,
+        "max": 1.0,
+        "type": "minecraft:linear"
+      }
+    },
+    "value_spawn": {
+      "spawn_range": {
+        "min": 8.0,
+        "max": 30.0,
+        "type": "minecraft:linear"
+      },
+      "spawn_shift": {
+        "value": 0.0,
+        "type": "minecraft:constant"
+      }
+    },
+    "type": "pandorasbox:spawn_entities"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

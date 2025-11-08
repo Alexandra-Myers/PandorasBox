@@ -8,7 +8,6 @@ package ivorius.pandorasbox.effectcreators;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectGenerate;
@@ -16,7 +15,9 @@ import ivorius.pandorasbox.effects.generate.SimpleConvertEffect;
 import ivorius.pandorasbox.effects.generate.block_mappers.*;
 import ivorius.pandorasbox.effects.generate.entity_spawners.EntitySpawner;
 import ivorius.pandorasbox.effects.generate.entity_spawners.SpawnRandom;
+import ivorius.pandorasbox.init.PandoraBlockTags;
 import ivorius.pandorasbox.random.DValue;
+import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.weighted.WeightedEntity;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,8 +48,8 @@ public record PBECConvertToCity(DValue range, List<WeightedEntity> entityIDs) im
     static {
         CITY_MAPPERS = new ArrayList<>();
         CITY_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.right(BlockTags.FLOWERS), Either.right(BlockTags.SNOW), Either.right(BlockTags.FIRE), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SHORT_DRY_GRASS), Either.left(Blocks.TALL_DRY_GRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.BUSH), Either.left(Blocks.FIREFLY_BUSH)}, Blocks.AIR));
-        CITY_MAPPERS.add(new CityMapper(CITY_TARGETS, Collections.emptyList()));
-        CITY_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.right(PandorasBox.ALL_TERRACOTTA)}, Blocks.CYAN_TERRACOTTA));
+        CITY_MAPPERS.add(new CityMapper(CITY_TARGETS, Collections.emptyList(), Collections.emptyList(), new EitherArrayList<>(Collections.emptyList())));
+        CITY_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.right(PandoraBlockTags.ALL_TERRACOTTA)}, Blocks.CYAN_TERRACOTTA));
         CITY_MAPPERS.add(new SimpleConvertMapper(new Either[] {Either.right(ConventionalBlockTags.OBSIDIANS), Either.left(Blocks.LAVA), Either.left(Blocks.ICE)}, Blocks.WATER));
         CITY_SPAWNERS = new ArrayList<>();
         CITY_SPAWNERS.add(new SpawnRandom("villager", 1.0f / (20 * 20)));
@@ -71,7 +72,7 @@ public record PBECConvertToCity(DValue range, List<WeightedEntity> entityIDs) im
         }
 
         List<BlockMapper> adjMappers = new ArrayList<>(CITY_MAPPERS);
-        adjMappers.set(1, new CityMapper(CITY_TARGETS, entities));
+        adjMappers.set(1, new CityMapper(CITY_TARGETS, entities, PandorasBoxHelper.equipmentSets, PandorasBoxHelper.items));
 
         return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.of(Biomes.PLAINS), adjMappers, Collections.emptyList(), CITY_SPAWNERS));
     }

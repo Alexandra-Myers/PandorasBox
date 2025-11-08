@@ -36,8 +36,8 @@ public record PBECCover(DValue range, ZValue overSurface, EitherArrayList<Weight
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random)
     {
         double range = this.range.getValue(random);
-        boolean overSurface = this.overSurface.getValue(random);
         int time = Mth.floor((random.nextDouble() * 7.0 + 3.0) * range);
+        boolean overSurface = this.overSurface.getValue(random);
 
         Block[] selection = PandorasBoxHelper.getRandomBlockList(random, PandorasBoxHelper.assembleBlocks(blocks));
 

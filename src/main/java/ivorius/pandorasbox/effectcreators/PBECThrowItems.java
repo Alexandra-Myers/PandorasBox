@@ -43,7 +43,7 @@ public record PBECThrowItems(IValue time, DValue range, DValue throwChancePerIte
         double deletionChance = this.deletionChancePerThrow.getValue(random);
         int smuggledIn = this.smuggledInItems.getValue(random);
 
-        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, items), smuggledIn, random.nextInt(3) != 0, true, 0, false, false);
+        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, BuiltInRegistries.BLOCK, items), smuggledIn, random.nextInt(3) != 0, true, 0, false, false);
 
         return new PBEffectEntityBased(time, range, new ThrowItemsEntityEffect(chancePerItem, deletionChance, stacks));
     }

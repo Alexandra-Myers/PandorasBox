@@ -2,8 +2,8 @@ package ivorius.pandorasbox.effects.generate;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.PandoraBlockTags;
 import net.atlas.atlascore.util.ArrayListExtensions;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
@@ -62,7 +62,7 @@ public enum NetherBiome implements StringRepresentable {
                     setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.SAND))) {
                     setBlockSafe(world, pos, Blocks.SOUL_SAND.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
+                } else if (isBlockAnyOf(block, Either.right(PandoraBlockTags.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
                 } else if (world.getBlockState(pos).isAir()) {
                     if (random.nextInt(25) == 0) {
@@ -141,7 +141,7 @@ public enum NetherBiome implements StringRepresentable {
                     setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.GOLD_ORES))) {
                     setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(BlockTags.DIRT))) {
+                } else if (isBlockAnyOf(block, Either.right(PandoraBlockTags.ALL_TERRACOTTA), Either.right(BlockTags.DIRT))) {
                     setBlockSafe(world, pos, Blocks.SOUL_SOIL.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
@@ -227,7 +227,7 @@ public enum NetherBiome implements StringRepresentable {
                     setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.GOLD_ORES))) {
                     setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(BlockTags.DIRT))) {
+                } else if (isBlockAnyOf(block, Either.right(PandoraBlockTags.ALL_TERRACOTTA), Either.right(BlockTags.DIRT))) {
                     setBlockSafe(world, pos, Blocks.BASALT.defaultBlockState());
                 }  else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
@@ -306,7 +306,7 @@ public enum NetherBiome implements StringRepresentable {
                     setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.GOLD_ORES))) {
                     setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
+                } else if (isBlockAnyOf(block, Either.right(PandoraBlockTags.ALL_TERRACOTTA), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     if (random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir())
                         setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
                     else
@@ -395,7 +395,7 @@ public enum NetherBiome implements StringRepresentable {
                     setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.GOLD_ORES))) {
                     setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
+                } else if (isBlockAnyOf(block, Either.right(PandoraBlockTags.ALL_TERRACOTTA), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     if (random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir())
                         setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
                     else

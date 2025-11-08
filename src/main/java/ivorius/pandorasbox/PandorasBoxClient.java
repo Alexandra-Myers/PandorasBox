@@ -20,8 +20,6 @@ import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
-import static ivorius.pandorasbox.PandorasBox.initPB;
-
 public class PandorasBoxClient implements ClientModInitializer {
     public static Overlay cached = null;
     /**
@@ -37,7 +35,7 @@ public class PandorasBoxClient implements ClientModInitializer {
         PBEffectRenderingRegistry.registerRenderer(PBEffectExplode.EXPLODE, new PBEffectRendererExplosion());
         PBEffectRenderingRegistry.registerRenderer(PBEffectMeltdown.MELTDOWN, new PBEffectRendererMeltdown());
         PBEffectRenderingRegistry.registerRenderer(PBEffectMulti.MULTI, new PBEffectRendererMulti());
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> initPB());
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> PandorasBoxHelper.initialize());
         ClientPlayNetworking.registerGlobalReceiver(PandorasBox.ClientboundUpdateFakeDeathPacket.TYPE, (clientboundUpdateFakeDeathPacket, context) -> {
             if (context.client().getOverlay() != null) {
                 cached = new FakeDeathOverlay(new DeathScreen(null, context.player().level().getLevelData().isHardcore(), context.player()));

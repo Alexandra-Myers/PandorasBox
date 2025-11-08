@@ -6,740 +6,119 @@
     "sets": [
       {
         "weight": 10.0,
-        "set": [
-          {
-            "id": "minecraft:leather_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:leather_chestplate",
-            "count": 1
-          },
-          {
-            "id": "minecraft:leather_leggings",
-            "count": 1
-          },
-          {
-            "id": "minecraft:leather_boots",
-            "count": 1
-          },
-          {
-            "id": "minecraft:wooden_sword",
-            "count": 1
-          },
-          {
-            "id": "minecraft:wooden_pickaxe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:wooden_shovel",
-            "count": 1
-          },
-          {
-            "id": "minecraft:wooden_axe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:wooden_hoe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:wooden_spear",
-            "count": 1
-          }
-        ]
+        "set": "pandorasbox:leather_equipment"
       },
       {
         "weight": 8.0,
-        "set": [
-          {
-            "id": "minecraft:copper_helmet",
-            "count": 1,
-            "components": {
-              "minecraft:unbreakable": {}
-            }
-          },
-          {
-            "id": "minecraft:copper_chestplate",
-            "count": 1,
-            "components": {
-              "minecraft:unbreakable": {}
-            }
-          },
-          {
-            "id": "minecraft:copper_leggings",
-            "count": 1,
-            "components": {
-              "minecraft:unbreakable": {}
-            }
-          },
-          {
-            "id": "minecraft:copper_boots",
-            "count": 1,
-            "components": {
-              "minecraft:unbreakable": {}
-            }
-          },
-          {
-            "id": "minecraft:copper_sword",
-            "count": 1,
-            "components": {
-              "minecraft:unbreakable": {}
-            }
-          },
-          {
-            "id": "minecraft:copper_pickaxe",
-            "count": 1,
-            "components": {
-              "minecraft:unbreakable": {}
-            }
-          },
-          {
-            "id": "minecraft:copper_shovel",
-            "count": 1,
-            "components": {
-              "minecraft:unbreakable": {}
-            }
-          },
-          {
-            "id": "minecraft:copper_axe",
-            "count": 1,
-            "components": {
-              "minecraft:unbreakable": {}
-            }
-          },
-          {
-            "id": "minecraft:copper_hoe",
-            "count": 1,
-            "components": {
-              "minecraft:unbreakable": {}
-            }
-          },
-          {
-            "id": "minecraft:copper_spear",
-            "count": 1,
-            "components": {
-              "minecraft:unbreakable": {}
-            }
-          }
-        ]
+        "set": "pandorasbox:copper_equipment"
       },
       {
         "weight": 6.0,
-        "set": [
-          {
-            "id": "minecraft:iron_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_chestplate",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_leggings",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_boots",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_sword",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_pickaxe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_shovel",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_axe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_hoe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_spear",
-            "count": 1
-          }
-        ]
+        "set": "pandorasbox:iron_equipment"
       },
       {
         "weight": 4.0,
-        "set": [
-          {
-            "id": "minecraft:golden_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:golden_chestplate",
-            "count": 1
-          },
-          {
-            "id": "minecraft:golden_leggings",
-            "count": 1
-          },
-          {
-            "id": "minecraft:golden_boots",
-            "count": 1
-          },
-          {
-            "id": "minecraft:golden_sword",
-            "count": 1
-          },
-          {
-            "id": "minecraft:golden_pickaxe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:golden_shovel",
-            "count": 1
-          },
-          {
-            "id": "minecraft:golden_axe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:golden_hoe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:golden_spear",
-            "count": 1
-          }
-        ]
+        "set": "pandorasbox:golden_equipment"
       },
       {
         "weight": 2.0,
-        "set": [
-          {
-            "id": "minecraft:diamond_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:diamond_chestplate",
-            "count": 1
-          },
-          {
-            "id": "minecraft:diamond_leggings",
-            "count": 1
-          },
-          {
-            "id": "minecraft:diamond_boots",
-            "count": 1
-          },
-          {
-            "id": "minecraft:diamond_sword",
-            "count": 1
-          },
-          {
-            "id": "minecraft:diamond_pickaxe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:diamond_shovel",
-            "count": 1
-          },
-          {
-            "id": "minecraft:diamond_axe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:diamond_hoe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:diamond_spear",
-            "count": 1
-          }
-        ]
+        "set": "pandorasbox:diamond_equipment"
       },
       {
         "weight": 1.0,
-        "set": [
-          {
-            "id": "minecraft:netherite_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:netherite_chestplate",
-            "count": 1
-          },
-          {
-            "id": "minecraft:netherite_leggings",
-            "count": 1
-          },
-          {
-            "id": "minecraft:netherite_boots",
-            "count": 1
-          },
-          {
-            "id": "minecraft:netherite_sword",
-            "count": 1
-          },
-          {
-            "id": "minecraft:netherite_pickaxe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:netherite_shovel",
-            "count": 1
-          },
-          {
-            "id": "minecraft:netherite_axe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:netherite_hoe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:netherite_spear",
-            "count": 1
-          }
-        ]
+        "set": "pandorasbox:netherite_equipment"
       },
       {
         "weight": 6.0,
-        "set": [
-          {
-            "id": "minecraft:crossbow",
-            "count": 1
-          },
-          {
-            "id": "minecraft:bow",
-            "count": 1
-          },
-          {
-            "id": "minecraft:arrow",
-            "count": 64
-          },
-          {
-            "id": "minecraft:iron_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:copper_chestplate",
-            "count": 1
-          },
-          {
-            "id": "minecraft:copper_leggings",
-            "count": 1
-          },
-          {
-            "id": "minecraft:leather_boots",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_axe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:apple",
-            "count": 8
-          }
-        ]
+        "set": "pandorasbox:bowmaster"
       },
       {
         "weight": 6.0,
-        "set": [
-          {
-            "id": "minecraft:iron_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:copper_chestplate",
-            "count": 1
-          },
-          {
-            "id": "minecraft:copper_leggings",
-            "count": 1
-          },
-          {
-            "id": "minecraft:copper_boots",
-            "count": 1
-          },
-          {
-            "id": "minecraft:diamond_pickaxe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_shovel",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_axe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:stone_sword",
-            "count": 1
-          },
-          {
-            "id": "minecraft:bread",
-            "count": 8
-          },
-          {
-            "id": "minecraft:torch",
-            "count": 32
-          }
-        ]
-      },
-      {
-        "weight": 8.0,
-        "set": [
-          {
-            "id": "minecraft:leather_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_hoe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:wheat_seeds",
-            "count": 32
-          },
-          {
-            "id": "minecraft:pumpkin_seeds",
-            "count": 4
-          },
-          {
-            "id": "minecraft:melon_seeds",
-            "count": 4
-          },
-          {
-            "id": "minecraft:blue_dye",
-            "count": 8
-          },
-          {
-            "id": "minecraft:dirt",
-            "count": 32
-          },
-          {
-            "id": "minecraft:water_bucket",
-            "count": 1
-          },
-          {
-            "id": "minecraft:water_bucket",
-            "count": 1
-          }
-        ]
-      },
-      {
-        "weight": 6.0,
-        "set": [
-          {
-            "id": "minecraft:iron_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:diamond_axe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:cooked_beef",
-            "count": 16
-          }
-        ]
+        "set": "pandorasbox:midgame_miner"
       },
       {
         "weight": 3.0,
-        "set": [
-          {
-            "id": "minecraft:copper_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:copper_chestplate",
-            "count": 1
-          },
-          {
-            "id": "minecraft:copper_leggings",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_boots",
-            "count": 1
-          },
-          {
-            "id": "minecraft:shield",
-            "count": 1
-          },
-          {
-            "id": "minecraft:copper_sword",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_pickaxe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_axe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:copper_shovel",
-            "count": 1
-          },
-          {
-            "id": "minecraft:copper_hoe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:coal",
-            "count": 36
-          },
-          {
-            "id": "minecraft:torch",
-            "count": 64
-          },
-          {
-            "id": "minecraft:bread",
-            "count": 48
-          }
-        ]
+        "set": "pandorasbox:early_miner"
+      },
+      {
+        "weight": 8.0,
+        "set": "pandorasbox:farmers_dream"
       },
       {
         "weight": 6.0,
-        "set": [
-          {
-            "id": "minecraft:turtle_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_boots",
-            "count": 1
-          },
-          {
-            "id": "minecraft:trident",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_sword",
-            "count": 1
-          },
-          {
-            "id": "minecraft:bread",
-            "count": 48
-          }
-        ]
+        "set": "pandorasbox:glass_cannon"
+      },
+      {
+        "weight": 6.0,
+        "set": "pandorasbox:underseas_explorer"
       },
       {
         "weight": 0.1,
-        "set": [
-          {
-            "id": "minecraft:diamond_helmet",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_chestplate",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_leggings",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_boots",
-            "count": 1
-          },
-          {
-            "id": "minecraft:trident",
-            "count": 1
-          },
-          {
-            "id": "minecraft:mace",
-            "count": 1
-          },
-          {
-            "id": "minecraft:iron_axe",
-            "count": 1
-          },
-          {
-            "id": "minecraft:cooked_beef",
-            "count": 8
-          }
-        ]
+        "set": "pandorasbox:the_fighter"
       },
       {
-        "weight": 6.0,
-        "set": [
-          {
-            "id": "minecraft:redstone",
-            "count": 64
-          },
-          {
-            "id": "minecraft:white_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:white_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:white_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:redstone_block",
-            "count": 8
-          },
-          {
-            "id": "minecraft:redstone_torch",
-            "count": 8
-          }
-        ]
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_white_wool"
       },
       {
-        "weight": 6.0,
-        "set": [
-          {
-            "id": "minecraft:redstone",
-            "count": 64
-          },
-          {
-            "id": "minecraft:magenta_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:magenta_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:magenta_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:redstone_block",
-            "count": 8
-          },
-          {
-            "id": "minecraft:redstone_torch",
-            "count": 8
-          }
-        ]
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_orange_wool"
       },
       {
-        "weight": 6.0,
-        "set": [
-          {
-            "id": "minecraft:redstone",
-            "count": 64
-          },
-          {
-            "id": "minecraft:pink_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:pink_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:pink_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:redstone_block",
-            "count": 8
-          },
-          {
-            "id": "minecraft:redstone_torch",
-            "count": 8
-          }
-        ]
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_magenta_wool"
       },
       {
-        "weight": 6.0,
-        "set": [
-          {
-            "id": "minecraft:redstone",
-            "count": 64
-          },
-          {
-            "id": "minecraft:gray_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:gray_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:gray_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:redstone_block",
-            "count": 8
-          },
-          {
-            "id": "minecraft:redstone_torch",
-            "count": 8
-          }
-        ]
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_light_blue_wool"
       },
       {
-        "weight": 6.0,
-        "set": [
-          {
-            "id": "minecraft:redstone",
-            "count": 64
-          },
-          {
-            "id": "minecraft:purple_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:purple_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:purple_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:redstone_block",
-            "count": 8
-          },
-          {
-            "id": "minecraft:redstone_torch",
-            "count": 8
-          }
-        ]
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_yellow_wool"
       },
       {
-        "weight": 6.0,
-        "set": [
-          {
-            "id": "minecraft:redstone",
-            "count": 64
-          },
-          {
-            "id": "minecraft:green_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:green_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:green_wool",
-            "count": 16
-          },
-          {
-            "id": "minecraft:redstone_block",
-            "count": 8
-          },
-          {
-            "id": "minecraft:redstone_torch",
-            "count": 8
-          }
-        ]
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_lime_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_pink_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_gray_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_light_gray_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_cyan_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_purple_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_blue_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_brown_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_green_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_red_wool"
+      },
+      {
+        "weight": 1.2,
+        "set": "pandorasbox:redstoners_dream_black_wool"
       }
     ],
     "value_throw": {

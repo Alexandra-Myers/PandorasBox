@@ -1,6 +1,15 @@
 package ivorius.pandorasbox.init;
 
 import ivorius.pandorasbox.effectcreators.*;
+import ivorius.pandorasbox.effectcreators.generate.*;
+import ivorius.pandorasbox.effectcreators.generate.block_mappers.*;
+import ivorius.pandorasbox.effectcreators.generate.feature_generators.DirectGeneratorCreator;
+import ivorius.pandorasbox.effectcreators.generate.feature_generators.HFTGeneratorCreator;
+import ivorius.pandorasbox.effectcreators.generate.flags.DirectGenerateByFlagCreator;
+import ivorius.pandorasbox.effectcreators.generate.flags.GenCoverCreator;
+import ivorius.pandorasbox.effectcreators.generate.two_dimensional.DirectGenerate2DCreator;
+import ivorius.pandorasbox.effectcreators.generate.two_dimensional.GenDomeCreator;
+import ivorius.pandorasbox.effectcreators.generate.two_dimensional.GenHeightNoiseCreator;
 import ivorius.pandorasbox.effects.*;
 import ivorius.pandorasbox.effects.entity.*;
 import ivorius.pandorasbox.effects.generate.*;
@@ -104,6 +113,7 @@ public class PBEffectInit {
         registerBoxEffectCreatorType(PBECDuplicateBox.CODEC, "duplicate_box");
         registerBoxEffectCreatorType(PBECExplosion.CODEC, "box_explosion");
         registerBoxEffectCreatorType(PBECFakeDeath.CODEC, "fake_death");
+        registerBoxEffectCreatorType(PBECGenerate.CODEC, "generate");
         registerBoxEffectCreatorType(PBECGenTrees.CODEC, "gen_trees");
         registerBoxEffectCreatorType(PBECGenTreesOdd.CODEC, "gen_trees_odd");
         registerBoxEffectCreatorType(PBECHeightNoise.CODEC, "height_noise");
@@ -132,6 +142,27 @@ public class PBEffectInit {
         registerBoxEffectCreatorType(PBECThrowItems.CODEC, "throw_items");
         registerBoxEffectCreatorType(PBECTransform.CODEC, "transform_blocks");
         registerBoxEffectCreatorType(PBECWorldSnake.CODEC, "world_snake");
+        registerGenFlagsEffectCreatorType(DirectGenerateByFlagCreator.CODEC, "direct");
+        registerGenFlagsEffectCreatorType(GenCoverCreator.CODEC, "prepare_gen_cover");
+        registerGenTwoDimensionalEffectCreatorType(DirectGenerate2DCreator.CODEC, "direct");
+        registerGenTwoDimensionalEffectCreatorType(GenDomeCreator.CODEC, "prepare_gen_dome");
+        registerGenTwoDimensionalEffectCreatorType(GenHeightNoiseCreator.CODEC, "prepare_gen_height_noise");
+        registerGenerateEffectCreatorType(SimpleConvertEffectCreator.CODEC, "prepare_gen_convert");
+        registerGenerateEffectCreatorType(NetherConvertEffectCreator.CODEC, "prepare_gen_convert_to_nether");
+        registerGenerateEffectCreatorType(GenLavaCagesEffectCreator.CODEC, "prepare_gen_lava_cages");
+        registerGenerateEffectCreatorType(GenPoolEffectCreator.CODEC, "prepare_gen_pool");
+        registerGenerateEffectCreatorType(GenReplaceEffectCreator.CODEC, "prepare_gen_replace");
+        registerGenerateEffectCreatorType(GenTransformEffectCreator.CODEC, "prepare_gen_transform");
+        registerGenerateEffectCreatorType(GenTreesEffectCreator.CODEC, "prepare_gen_trees");
+        registerGenerateEffectCreatorType(GenTreesOddEffectCreator.CODEC, "prepare_gen_trees_odd");
+        registerBlockMapperCreatorType(CityMapperCreator.CODEC, "prepare_create_city");
+        registerBlockMapperCreatorType(CreateFarmMapperCreator.CODEC, "prepare_create_farm");
+        registerBlockMapperCreatorType(DirectMapperCreator.CODEC, "direct");
+        registerBlockMapperCreatorType(RandomTaggedMapperCreator.CODEC, "prepare_convert_random");
+        registerBlockMapperCreatorType(RangeTaggedMapperCreator.CODEC, "prepare_convert_ranged");
+        registerBlockMapperCreatorType(SetAllSolidCreator.CODEC, "prepare_convert_all");
+        registerFeatureGeneratorCreatorType(DirectGeneratorCreator.CODEC, "direct");
+        registerFeatureGeneratorCreatorType(HFTGeneratorCreator.CODEC, "prepare_hft");
     }
     public static void registerPandora() {
 

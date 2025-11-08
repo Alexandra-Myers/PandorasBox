@@ -44,7 +44,7 @@ public record ChrismasGiftsMapper() implements BlockMapper {
                 ChestBlockEntity chestBlockEntity = (ChestBlockEntity) serverLevel.getBlockEntity(pos);
 
                 if (chestBlockEntity != null) {
-                    Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, PandorasBoxHelper.blocksAndItems);
+                    Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, BuiltInRegistries.BLOCK, PandorasBoxHelper.blocksAndItems);
                     RandomizedItemStack chestContent = WeightedSelector.selectItem(random, itemSelection);
                     ItemStack stack = chestContent.itemStack().copy();
                     if (chestContent.max() > stack.getMaxStackSize()) stack.set(DataComponents.MAX_STACK_SIZE, chestContent.max());

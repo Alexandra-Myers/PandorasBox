@@ -1,0 +1,305 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "range": {
+          "min": 10.0,
+          "max": 15.0,
+          "type": "minecraft:linear"
+        },
+        "chance_for_more_effects": 0.1,
+        "convert_effect": {
+          "biome": "minecraft:flower_forest",
+          "exclusions": [],
+          "mappers": [
+            {
+              "targets": [
+                "#minecraft:snow",
+                "#minecraft:fire",
+                "minecraft:short_dry_grass",
+                "minecraft:tall_dry_grass",
+                "minecraft:dead_bush",
+                "minecraft:brown_mushroom",
+                "minecraft:red_mushroom",
+                "minecraft:brown_mushroom_block",
+                "minecraft:red_mushroom_block",
+                "minecraft:mushroom_stem"
+              ],
+              "to_replace": "minecraft:air",
+              "type": "pandorasbox:convert_simple"
+            },
+            {
+              "targets": [
+                "#pandorasbox:all_terracotta",
+                "#c:stones",
+                "#c:cobblestones",
+                "#minecraft:base_stone_nether",
+                "#minecraft:wither_summon_base_blocks",
+                "#minecraft:nylium",
+                "#minecraft:dirt",
+                "#minecraft:sand",
+                "#c:sandstone/blocks",
+                "minecraft:end_stone"
+              ],
+              "surface_block": "minecraft:grass_block",
+              "under_block": "minecraft:dirt",
+              "discard_surface_chance": 0.0,
+              "max_blocks_beneath_surface": 3,
+              "type": "pandorasbox:convert_surface"
+            },
+            {
+              "targets": [
+                "#pandorasbox:all_terracotta",
+                "#c:stones",
+                "#c:cobblestones",
+                "#minecraft:base_stone_nether",
+                "#minecraft:wither_summon_base_blocks",
+                "#minecraft:nylium",
+                "#minecraft:dirt",
+                "#minecraft:sand",
+                "#c:sandstone/blocks",
+                "minecraft:end_stone"
+              ],
+              "to_replace": "minecraft:stone",
+              "type": "pandorasbox:convert_simple"
+            },
+            {
+              "targets": [
+                "#c:obsidians",
+                "minecraft:lava",
+                "minecraft:ice"
+              ],
+              "to_replace": "minecraft:water",
+              "type": "pandorasbox:convert_simple"
+            }
+          ],
+          "generators": [
+            {
+              "type": "pandorasbox:generate_homo"
+            }
+          ],
+          "spawners": [
+            {
+              "entity_id": "minecraft:pbspecial_colorful_sheep",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            }
+          ]
+        },
+        "type": "pandorasbox:convert_generic"
+      },
+      {
+        "groups": {
+          "min": 1,
+          "max": 4,
+          "type": "minecraft:linear"
+        },
+        "spawn_from_effect_center": {
+          "guaranteed": true,
+          "type": "minecraft:constant"
+        },
+        "entities": [
+          {
+            "entity": "minecraft:pig",
+            "min_count": 3,
+            "max_count": 10,
+            "weight": 10.0
+          },
+          {
+            "entity": "minecraft:sheep",
+            "min_count": 3,
+            "max_count": 10,
+            "weight": 10.0
+          },
+          {
+            "entity": "minecraft:cow",
+            "min_count": 3,
+            "max_count": 10,
+            "weight": 10.0
+          },
+          {
+            "entity": "minecraft:chicken",
+            "min_count": 3,
+            "max_count": 10,
+            "weight": 10.0
+          },
+          {
+            "entity": "minecraft:wolf",
+            "min_count": 2,
+            "max_count": 6,
+            "weight": 6.0
+          },
+          {
+            "entity": "minecraft:panda",
+            "min_count": 2,
+            "max_count": 6,
+            "weight": 6.0
+          },
+          {
+            "entity": "minecraft:polar_bear",
+            "min_count": 2,
+            "max_count": 2,
+            "weight": 6.0
+          },
+          {
+            "entity": "minecraft:sniffer",
+            "min_count": 2,
+            "max_count": 2,
+            "weight": 6.0
+          },
+          {
+            "entity": "minecraft:fox",
+            "min_count": 2,
+            "max_count": 6,
+            "weight": 6.0
+          },
+          {
+            "entity": "minecraft:allay",
+            "min_count": 2,
+            "max_count": 6,
+            "weight": 6.0
+          },
+          {
+            "entity": "minecraft:bat",
+            "min_count": 4,
+            "max_count": 10,
+            "weight": 5.0
+          },
+          {
+            "entity": "minecraft:bee",
+            "min_count": 4,
+            "max_count": 10,
+            "weight": 5.0
+          },
+          {
+            "entity": "minecraft:frog",
+            "min_count": 4,
+            "max_count": 10,
+            "weight": 6.0
+          },
+          {
+            "entity": "minecraft:rabbit",
+            "min_count": 6,
+            "max_count": 20,
+            "weight": 7.0
+          },
+          {
+            "entity": "minecraft:mooshroom",
+            "min_count": 3,
+            "max_count": 7,
+            "weight": 4.0
+          },
+          {
+            "entity": "minecraft:snow_golem",
+            "min_count": 3,
+            "max_count": 7,
+            "weight": 4.0
+          },
+          {
+            "entity": "minecraft:horse",
+            "min_count": 2,
+            "max_count": 5,
+            "weight": 4.0
+          },
+          {
+            "entity": "minecraft:donkey",
+            "min_count": 2,
+            "max_count": 5,
+            "weight": 4.0
+          },
+          {
+            "entity": "minecraft:mule",
+            "min_count": 2,
+            "max_count": 5,
+            "weight": 4.0
+          },
+          {
+            "entity": "minecraft:llama",
+            "min_count": 2,
+            "max_count": 5,
+            "weight": 4.0
+          },
+          {
+            "entity": "minecraft:ocelot",
+            "min_count": 2,
+            "max_count": 6,
+            "weight": 4.0
+          },
+          {
+            "entity": "minecraft:cat",
+            "min_count": 2,
+            "max_count": 6,
+            "weight": 4.0
+          },
+          {
+            "entity": "minecraft:parrot",
+            "min_count": 2,
+            "max_count": 6,
+            "weight": 4.0
+          },
+          {
+            "entity": "minecraft:wandering_trader",
+            "min_count": 3,
+            "max_count": 6,
+            "weight": 3.0
+          },
+          {
+            "entity": "minecraft:villager",
+            "min_count": 3,
+            "max_count": 6,
+            "weight": 3.0
+          },
+          {
+            "entity": "minecraft:goat",
+            "min_count": 3,
+            "max_count": 6,
+            "weight": 3.0
+          },
+          {
+            "entity": "minecraft:piglin",
+            "min_count": 3,
+            "max_count": 6,
+            "weight": 3.0
+          },
+          {
+            "entity": "minecraft:iron_golem",
+            "min_count": 2,
+            "max_count": 4,
+            "weight": 3.0
+          }
+        ],
+        "value_throw": {
+          "throw_strength_horizontal": {
+            "min": 0.1,
+            "max": 0.4,
+            "type": "minecraft:linear"
+          },
+          "throw_strength_vertical": {
+            "min": 0.2,
+            "max": 1.0,
+            "type": "minecraft:linear"
+          }
+        },
+        "value_spawn": {
+          "spawn_range": {
+            "min": 8.0,
+            "max": 30.0,
+            "type": "minecraft:linear"
+          },
+          "spawn_shift": {
+            "value": 0.0,
+            "type": "minecraft:constant"
+          }
+        },
+        "type": "pandorasbox:spawn_army"
+      }
+    ],
+    "delays": [
+      10,
+      0
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}
