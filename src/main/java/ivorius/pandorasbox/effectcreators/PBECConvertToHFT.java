@@ -19,6 +19,8 @@ import ivorius.pandorasbox.effects.generate.block_mappers.SimpleConvertMapper;
 import ivorius.pandorasbox.effects.generate.feature_generators.GenerateHFT;
 import ivorius.pandorasbox.init.PandoraBlockTags;
 import ivorius.pandorasbox.random.DValue;
+import ivorius.pandorasbox.random.ILinear;
+import ivorius.pandorasbox.random.IValue;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -64,7 +66,7 @@ public record PBECConvertToHFT(DValue range, TagKey<Block> tag) implements PBEff
         List<BlockMapper> adjMappers = new ArrayList<>(HFT_MAPPERS);
         adjMappers.add(new SetAllSolid(Blocks.AIR, Optional.of(new RandomTaggedMapper(Optional.empty(), tag, metaTypes))));
 
-        return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.of(Biomes.CHERRY_GROVE), EXCLUDED_TARGETS, adjMappers, Collections.singletonList(new GenerateHFT(PandoraBlockTags.ALL_TERRACOTTA, metaTypes)), Collections.emptyList()));
+        return new PBEffectGenerate(time, range, 3, PandorasBoxHelper.getRandomUnifiedSeed(random), new SimpleConvertEffect(Optional.of(Biomes.CHERRY_GROVE), EXCLUDED_TARGETS, adjMappers, Collections.singletonList(new GenerateHFT(PandoraBlockTags.ALL_TERRACOTTA, metaTypes, new ILinear(1, 4))), Collections.emptyList()));
     }
 
     @Override

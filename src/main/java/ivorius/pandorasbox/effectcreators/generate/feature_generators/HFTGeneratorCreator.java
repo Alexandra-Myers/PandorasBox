@@ -14,10 +14,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-public record HFTGeneratorCreator(TagKey<Block> blocks, IValue variantCount) implements FeatureGeneratorCreator {
+public record HFTGeneratorCreator(TagKey<Block> blocks, IValue variantCount, IValue colorVariantCount) implements FeatureGeneratorCreator {
     public static final MapCodec<HFTGeneratorCreator> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(TagKey.codec(Registries.BLOCK).fieldOf("blocks").forGetter(HFTGeneratorCreator::blocks),
-                            IValue.CODEC.fieldOf("variant_count").forGetter(HFTGeneratorCreator::variantCount))
+                            IValue.CODEC.fieldOf("variant_count").forGetter(HFTGeneratorCreator::variantCount),
+                            IValue.CODEC.fieldOf("color_variant_count").forGetter(HFTGeneratorCreator::colorVariantCount))
                     .apply(instance, HFTGeneratorCreator::new));
 
     @Override
@@ -26,7 +27,7 @@ public record HFTGeneratorCreator(TagKey<Block> blocks, IValue variantCount) imp
         for (int i = 0; i < metaTypes.length; i++) {
             metaTypes[i] = random.nextInt(BuiltInRegistries.BLOCK.get(blocks).map(HolderSet.ListBacked::size).orElse(32));
         }
-        return new GenerateHFT(blocks, metaTypes);
+        return new GenerateHFT(blocks, metaTypes, colorVariantCount);
     }
 
     @Override

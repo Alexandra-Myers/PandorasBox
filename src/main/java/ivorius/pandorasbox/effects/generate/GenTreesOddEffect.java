@@ -44,6 +44,6 @@ public record GenTreesOddEffect(boolean requiresSolidGround, double chancePerBlo
         Optional<Registry<ConfiguredFeature<?, ?>>> configuredFeatureRegistry = serverLevel.registryAccess().lookup(Registries.CONFIGURED_FEATURE);
         if (configuredFeatureRegistry.isEmpty()) return;
         ConfiguredFeature<?, ?> feature = configuredFeatureRegistry.get().getValueOrThrow(generator);
-        TreeFeatureExtensions.placeWithBlockOverrides(feature, serverLevel, serverLevel.getChunkSource().getGenerator(), randomSource, blockPos, trunkBlock.defaultBlockState(), leavesBlock.defaultBlockState());
+        TreeFeatureExtensions.placeWithBlockOverrides(feature, serverLevel, serverLevel.getChunkSource().getGenerator(), randomSource, blockPos, trunkBlock.defaultBlockState(), leavesBlock.defaultBlockState(), null);
     }
 }

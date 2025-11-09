@@ -1,0 +1,11 @@
+{
+  "type": "pandorasbox:lollipop",
+  "config": {
+    "size": {
+      "min": 5,
+      "max": 24,
+      "type": "minecraft:linear"
+    },
+    "blocks": "#minecraft:wool"
+  }
+}
