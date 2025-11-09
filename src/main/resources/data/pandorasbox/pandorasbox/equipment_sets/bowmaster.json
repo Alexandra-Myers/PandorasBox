@@ -1,0 +1,44 @@
+{
+  "weight": 6.0,
+  "items": [
+    {
+      "id": "minecraft:crossbow",
+      "count": 1
+    },
+    {
+      "id": "minecraft:bow",
+      "count": 1
+    },
+    {
+      "id": "minecraft:arrow",
+      "count": 64
+    },
+    {
+      "id": "minecraft:iron_helmet",
+      "count": 1
+    },
+    {
+      "id": "minecraft:copper_chestplate",
+      "count": 1
+    },
+    {
+      "id": "minecraft:copper_leggings",
+      "count": 1
+    },
+    {
+      "id": "minecraft:leather_boots",
+      "count": 1
+    },
+    {
+      "id": "minecraft:iron_axe",
+      "count": 1
+    },
+    {
+      "id": "minecraft:apple",
+      "count": 8
+    }
+  ],
+  "name": {
+    "translate": "pandora_equipment_set.pandorasbox.bowmaster"
+  }
+}

@@ -15,7 +15,7 @@
           "max": 30.0,
           "type": "minecraft:linear"
         },
-        "floor_blocks": [
+        "dome_blocks": [
           {
             "weight": 100.0,
             "tag": "#c:glass_blocks/colorless"

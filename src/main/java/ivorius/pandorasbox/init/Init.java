@@ -6,8 +6,6 @@ import ivorius.pandorasbox.effectcreators.PBEffectCreator;
 import ivorius.pandorasbox.effectcreators.generate.GenerateEffectCreator;
 import ivorius.pandorasbox.effectcreators.generate.block_mappers.BlockMapperCreator;
 import ivorius.pandorasbox.effectcreators.generate.feature_generators.FeatureGeneratorCreator;
-import ivorius.pandorasbox.effectcreators.generate.flags.GenerateByFlagCreator;
-import ivorius.pandorasbox.effectcreators.generate.two_dimensional.Generate2DCreator;
 import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.effects.*;
 import ivorius.pandorasbox.effects.entity.EntityEffect;
@@ -19,6 +17,7 @@ import ivorius.pandorasbox.effects.generate.flags.GenerateByFlag;
 import ivorius.pandorasbox.effects.generate.two_dimensional.Generate2D;
 import ivorius.pandorasbox.effects.position.PositionEffect;
 import ivorius.pandorasbox.effects.spawn_entities.SpawnEntitiesEffect;
+import ivorius.pandorasbox.utils.EquipmentSet;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -27,6 +26,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 
 public class Init {
+    public static final ResourceKey<Registry<EquipmentSet>> EQUIPMENT_SET_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "equipment_sets"));
     public static final ResourceKey<Registry<EffectHolder>> EFFECT_HOLDER_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandora_effect_holders"));
     public static final ResourceKey<Registry<EffectHolder>> MELTDOWN_EFFECT_HOLDER_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "meltdown_effect_holders"));
 
@@ -59,12 +59,6 @@ public class Init {
 
     public static final ResourceKey<Registry<MapCodec<? extends FeatureGenerator>>> FEATURE_GENERATOR_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "feature_generators_convert"));
     public static final Registry<MapCodec<? extends FeatureGenerator>> FEATURE_GENERATOR_TYPE_REGISTRY = FabricRegistryBuilder.createDefaulted(FEATURE_GENERATOR_TYPE_REGISTRY_KEY, Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "generate_feature")).attribute(RegistryAttribute.SYNCED).buildAndRegister();
-
-    public static final ResourceKey<Registry<MapCodec<? extends GenerateByFlagCreator>>> GEN_FLAGS_EFFECT_CREATOR_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "gen_by_flag_effects_creators"));
-    public static final Registry<MapCodec<? extends GenerateByFlagCreator>> GEN_FLAGS_EFFECT_CREATOR_TYPE_REGISTRY = FabricRegistryBuilder.createDefaulted(GEN_FLAGS_EFFECT_CREATOR_TYPE_REGISTRY_KEY, Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "prepare_gen_cover")).attribute(RegistryAttribute.SYNCED).buildAndRegister();
-
-    public static final ResourceKey<Registry<MapCodec<? extends Generate2DCreator>>> GEN_2D_EFFECT_CREATOR_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "gen_two_dimensional_effects_creators"));
-    public static final Registry<MapCodec<? extends Generate2DCreator>> GEN_2D_EFFECT_CREATOR_TYPE_REGISTRY = FabricRegistryBuilder.createDefaulted(GEN_2D_EFFECT_CREATOR_TYPE_REGISTRY_KEY, Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "prepare_gen_dome")).attribute(RegistryAttribute.SYNCED).buildAndRegister();
 
     public static final ResourceKey<Registry<MapCodec<? extends GenerateEffectCreator>>> GENERATE_EFFECT_CREATOR_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "generate_effects_creators"));
     public static final Registry<MapCodec<? extends GenerateEffectCreator>> GENERATE_EFFECT_CREATOR_TYPE_REGISTRY = FabricRegistryBuilder.createDefaulted(GENERATE_EFFECT_CREATOR_TYPE_REGISTRY_KEY, Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "prepare_gen_convert")).attribute(RegistryAttribute.SYNCED).buildAndRegister();
@@ -108,12 +102,6 @@ public class Init {
     public static MapCodec<? extends FeatureGenerator> registerFeatureGeneratorType(MapCodec<? extends FeatureGenerator> mapCodec, String name) {
         return Registry.register(FEATURE_GENERATOR_TYPE_REGISTRY, ResourceKey.create(FEATURE_GENERATOR_TYPE_REGISTRY_KEY, Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, name)), mapCodec);
     }
-    public static MapCodec<? extends GenerateByFlagCreator> registerGenFlagsEffectCreatorType(MapCodec<? extends GenerateByFlagCreator> mapCodec, String name) {
-        return Registry.register(GEN_FLAGS_EFFECT_CREATOR_TYPE_REGISTRY, ResourceKey.create(GEN_FLAGS_EFFECT_CREATOR_TYPE_REGISTRY_KEY, Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, name)), mapCodec);
-    }
-    public static MapCodec<? extends Generate2DCreator> registerGenTwoDimensionalEffectCreatorType(MapCodec<? extends Generate2DCreator> mapCodec, String name) {
-        return Registry.register(GEN_2D_EFFECT_CREATOR_TYPE_REGISTRY, ResourceKey.create(GEN_2D_EFFECT_CREATOR_TYPE_REGISTRY_KEY, Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, name)), mapCodec);
-    }
     public static MapCodec<? extends GenerateEffectCreator> registerGenerateEffectCreatorType(MapCodec<? extends GenerateEffectCreator> mapCodec, String name) {
         return Registry.register(GENERATE_EFFECT_CREATOR_TYPE_REGISTRY, ResourceKey.create(GENERATE_EFFECT_CREATOR_TYPE_REGISTRY_KEY, Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, name)), mapCodec);
     }
@@ -137,6 +125,7 @@ public class Init {
         EntityInit.registerEntities();
         MobEffectInit.registerEffects();
         PBEffectInit.registerPandora();
+        DynamicRegistries.registerSynced(EQUIPMENT_SET_REGISTRY_KEY, EquipmentSet.CODEC);
         DynamicRegistries.registerSynced(EFFECT_HOLDER_REGISTRY_KEY, EffectHolder.DIRECT_CODEC);
         DynamicRegistries.registerSynced(MELTDOWN_EFFECT_HOLDER_REGISTRY_KEY, EffectHolder.DIRECT_CODEC_NO_TOOLTIP);
     }

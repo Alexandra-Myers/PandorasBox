@@ -10,122 +10,35 @@
       "type": "minecraft:constant"
     },
     "sets": [
-      {
-        "weight": 10.0,
-        "set": "pandorasbox:leather_equipment"
-      },
-      {
-        "weight": 8.0,
-        "set": "pandorasbox:copper_equipment"
-      },
-      {
-        "weight": 6.0,
-        "set": "pandorasbox:iron_equipment"
-      },
-      {
-        "weight": 4.0,
-        "set": "pandorasbox:golden_equipment"
-      },
-      {
-        "weight": 2.0,
-        "set": "pandorasbox:diamond_equipment"
-      },
-      {
-        "weight": 1.0,
-        "set": "pandorasbox:netherite_equipment"
-      },
-      {
-        "weight": 6.0,
-        "set": "pandorasbox:bowmaster"
-      },
-      {
-        "weight": 6.0,
-        "set": "pandorasbox:midgame_miner"
-      },
-      {
-        "weight": 3.0,
-        "set": "pandorasbox:early_miner"
-      },
-      {
-        "weight": 8.0,
-        "set": "pandorasbox:farmers_dream"
-      },
-      {
-        "weight": 6.0,
-        "set": "pandorasbox:glass_cannon"
-      },
-      {
-        "weight": 6.0,
-        "set": "pandorasbox:underseas_explorer"
-      },
-      {
-        "weight": 0.1,
-        "set": "pandorasbox:the_fighter"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_white_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_orange_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_magenta_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_light_blue_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_yellow_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_lime_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_pink_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_gray_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_light_gray_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_cyan_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_purple_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_blue_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_brown_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_green_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_red_wool"
-      },
-      {
-        "weight": 1.2,
-        "set": "pandorasbox:redstoners_dream_black_wool"
-      }
+      "pandorasbox:leather_equipment",
+      "pandorasbox:copper_equipment",
+      "pandorasbox:iron_equipment",
+      "pandorasbox:golden_equipment",
+      "pandorasbox:diamond_equipment",
+      "pandorasbox:netherite_equipment",
+      "pandorasbox:bowmaster",
+      "pandorasbox:midgame_miner",
+      "pandorasbox:early_miner",
+      "pandorasbox:farmers_dream",
+      "pandorasbox:glass_cannon",
+      "pandorasbox:underseas_explorer",
+      "pandorasbox:the_fighter",
+      "pandorasbox:redstoners_dream_white_wool",
+      "pandorasbox:redstoners_dream_orange_wool",
+      "pandorasbox:redstoners_dream_magenta_wool",
+      "pandorasbox:redstoners_dream_light_blue_wool",
+      "pandorasbox:redstoners_dream_yellow_wool",
+      "pandorasbox:redstoners_dream_lime_wool",
+      "pandorasbox:redstoners_dream_pink_wool",
+      "pandorasbox:redstoners_dream_gray_wool",
+      "pandorasbox:redstoners_dream_light_gray_wool",
+      "pandorasbox:redstoners_dream_cyan_wool",
+      "pandorasbox:redstoners_dream_purple_wool",
+      "pandorasbox:redstoners_dream_blue_wool",
+      "pandorasbox:redstoners_dream_brown_wool",
+      "pandorasbox:redstoners_dream_green_wool",
+      "pandorasbox:redstoners_dream_red_wool",
+      "pandorasbox:redstoners_dream_black_wool"
     ],
     "value_throw": {
       "throw_strength_horizontal": {

@@ -7,12 +7,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.generate.block_mappers.BlockMapper;
 import ivorius.pandorasbox.effects.generate.block_mappers.CityMapper;
-import ivorius.pandorasbox.utils.EitherArrayList;
-import ivorius.pandorasbox.utils.PBNBTHelper;
-import ivorius.pandorasbox.utils.RandomizedItemStack;
-import ivorius.pandorasbox.utils.RandomizedItemTag;
+import ivorius.pandorasbox.utils.*;
 import ivorius.pandorasbox.weighted.WeightedEntity;
-import ivorius.pandorasbox.weighted.WeightedSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -26,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public record CityMapperCreator(Either<Block, TagKey<Block>>[] targets, List<WeightedEntity> spawnerEntities, List<WeightedSet> equipmentSets, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items) implements BlockMapperCreator {
+public record CityMapperCreator(Either<Block, TagKey<Block>>[] targets, List<WeightedEntity> spawnerEntities, List<EquipmentSet> equipmentSets, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items) implements BlockMapperCreator {
     public static final MapCodec<CityMapperCreator> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(PBNBTHelper.arrayCodec(Codec.either(BuiltInRegistries.BLOCK.byNameCodec(), TagKey.hashedCodec(Registries.BLOCK)), () -> (Either<Block, TagKey<Block>>[]) new Either[0]).fieldOf("targets").forGetter(CityMapperCreator::targets),
                             WeightedEntity.NO_SPECIAL_CODEC.listOf().fieldOf("spawner_entities").forGetter(CityMapperCreator::spawnerEntities),
-                            WeightedSet.CODEC.listOf().fieldOf("equipment_sets").forGetter(CityMapperCreator::equipmentSets),
+                            EquipmentSet.INDIRECT_CODEC.listOf().fieldOf("equipment_sets").forGetter(CityMapperCreator::equipmentSets),
                             RandomizedItemStack.LIST_CODEC.fieldOf("items").forGetter(CityMapperCreator::items))
                     .apply(instance, CityMapperCreator::new));
 

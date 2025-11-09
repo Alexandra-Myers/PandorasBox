@@ -1,0 +1,48 @@
+{
+  "weight": 4.0,
+  "items": [
+    {
+      "id": "minecraft:golden_helmet",
+      "count": 1
+    },
+    {
+      "id": "minecraft:golden_chestplate",
+      "count": 1
+    },
+    {
+      "id": "minecraft:golden_leggings",
+      "count": 1
+    },
+    {
+      "id": "minecraft:golden_boots",
+      "count": 1
+    },
+    {
+      "id": "minecraft:golden_sword",
+      "count": 1
+    },
+    {
+      "id": "minecraft:golden_pickaxe",
+      "count": 1
+    },
+    {
+      "id": "minecraft:golden_shovel",
+      "count": 1
+    },
+    {
+      "id": "minecraft:golden_axe",
+      "count": 1
+    },
+    {
+      "id": "minecraft:golden_hoe",
+      "count": 1
+    },
+    {
+      "id": "minecraft:golden_spear",
+      "count": 1
+    }
+  ],
+  "name": {
+    "translate": "pandora_equipment_set.pandorasbox.golden_equipment"
+  }
+}

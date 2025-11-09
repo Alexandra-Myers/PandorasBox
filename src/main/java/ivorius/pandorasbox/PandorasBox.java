@@ -19,7 +19,6 @@ import ivorius.pandorasbox.effectcreators.generate.feature_generators.FeatureGen
 import ivorius.pandorasbox.effectcreators.generate.feature_generators.HFTGeneratorCreator;
 import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.effects.generate.block_mappers.CityMapper;
-import ivorius.pandorasbox.effects.generate.block_mappers.CreateFarmMapper;
 import ivorius.pandorasbox.effects.generate.block_mappers.SimpleConvertMapper;
 import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.init.ItemInit;
@@ -28,7 +27,6 @@ import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.ILinear;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ZValue;
-import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.atlas.atlascore.AtlasCore;
 import net.atlas.atlascore.util.PrefixLogger;
 import net.fabricmc.api.ModInitializer;
@@ -65,7 +63,6 @@ import java.util.stream.Stream;
 
 import static ivorius.pandorasbox.effectcreators.PBECConvertToCity.*;
 import static ivorius.pandorasbox.effectcreators.PBECConvertToFarm.FARM_SPAWNERS;
-import static ivorius.pandorasbox.effectcreators.PBECConvertToHFT.HFT_MAPPERS;
 import static net.minecraft.data.worldgen.features.TreeFeatures.*;
 import static net.minecraft.data.worldgen.features.TreeFeatures.BIRCH;
 
@@ -108,7 +105,7 @@ public class PandorasBox implements ModInitializer {
                     if (creators.equals(Arrays.asList(pbecMulti.effects()))) continue;
                     newHolder = holder.wrapEffectCreator(new PBECMulti(creators.toArray(PBEffectCreator[]::new), pbecMulti.delays()));
                 }
-                writeEffectHolderToJSON(effectHolders.getKey(holder), newHolder, "pandora_effect_holders", EffectHolder.DIRECT_CODEC, access);
+                writeToJSON(effectHolders.getKey(holder), newHolder, "pandora_effect_holders", EffectHolder.DIRECT_CODEC, access);
             }
             for (EffectHolder holder : effectHolders1) {
                 EffectHolder newHolder;
@@ -121,7 +118,7 @@ public class PandorasBox implements ModInitializer {
                     if (creators.equals(Arrays.asList(pbecMulti.effects()))) continue;
                     newHolder = holder.wrapEffectCreator(new PBECMulti(creators.toArray(PBEffectCreator[]::new), pbecMulti.delays()));
                 }
-                writeEffectHolderToJSON(effectHolders1.getKey(holder), newHolder, "meltdown_effect_holders", EffectHolder.DIRECT_CODEC_NO_TOOLTIP, access);
+                writeToJSON(effectHolders1.getKey(holder), newHolder, "meltdown_effect_holders", EffectHolder.DIRECT_CODEC_NO_TOOLTIP, access);
             }
         });
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> PandorasBoxHelper.initialize());
@@ -137,7 +134,7 @@ public class PandorasBox implements ModInitializer {
         }
         if (effectCreator instanceof PBECConvertToCity pbecConvertToCity) {
             return new PBECGenerate(pbecConvertToCity.range(), 0.1f, new SimpleConvertEffectCreator(Optional.of(Biomes.PLAINS), CITY_MAPPERS.stream().map(blockMapper -> {
-                if (blockMapper instanceof CityMapper) return new CityMapperCreator(CITY_TARGETS, pbecConvertToCity.entityIDs(), PandorasBoxHelper.equipmentSets, PandorasBoxHelper.items);
+                if (blockMapper instanceof CityMapper) return new CityMapperCreator(CITY_TARGETS, pbecConvertToCity.entityIDs(), PandorasBoxHelper.registeredSets.values().stream().toList(), PandorasBoxHelper.items);
                 else return new DirectMapperCreator(blockMapper);
             }).map(mapper -> (BlockMapperCreator) mapper).toList(), Collections.emptyList(), CITY_SPAWNERS));
         }
@@ -173,7 +170,7 @@ public class PandorasBox implements ModInitializer {
         }
         return effectCreator;
     }
-    public static void writeEffectHolderToJSON(Identifier id, EffectHolder effectHolder, String subLoc, Codec<EffectHolder> codec, RegistryAccess registryAccess) {
+    public static <T> void writeToJSON(Identifier id, T effectHolder, String subLoc, Codec<T> codec, RegistryAccess registryAccess) {
         Path dir = Path.of(FabricLoader.getInstance().getGameDir().toAbsolutePath() + "/" + id.getNamespace() + "/pandorasbox/" + subLoc);
         try {
             Files.createDirectories(dir);

@@ -75,7 +75,7 @@
           "max": 15.0,
           "type": "minecraft:gaussian"
         },
-        "floor_blocks": [
+        "dome_blocks": [
           {
             "weight": 100.0,
             "block": "minecraft:packed_ice"

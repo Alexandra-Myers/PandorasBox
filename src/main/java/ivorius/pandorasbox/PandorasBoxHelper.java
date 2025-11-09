@@ -22,6 +22,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
@@ -63,7 +64,6 @@ public class PandorasBoxHelper {
 
     public static EitherArrayList<RandomizedItemStack, RandomizedItemTag> items = new EitherArrayList<>();
     public static BiMap<Identifier, EquipmentSet> registeredSets = HashBiMap.create();
-    public static List<WeightedSet> equipmentSets = new ArrayList<>();
     public static Hashtable<Item, Hashtable<Integer, ItemStack>> equipmentForLevels = new Hashtable<>();
 
     public static List<WeightedPotion> buffs = new ArrayList<>();
@@ -122,9 +122,8 @@ public class PandorasBoxHelper {
             set[i].applyComponents(forAll);
         }
 
-        EquipmentSet formedSet = new EquipmentSet(set);
+        EquipmentSet formedSet = new EquipmentSet(weight, set, Component.translatable("pandora_equipment_set." + id.getNamespace() + '.' + (id.getPath().endsWith("_wool") ? "redstoners_dream" : id.getPath())));
         registeredSets.put(id, formedSet);
-        equipmentSets.add(new WeightedSet(weight, formedSet));
     }
 
     @SafeVarargs
