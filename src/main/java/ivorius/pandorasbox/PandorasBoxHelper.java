@@ -310,13 +310,18 @@ public class PandorasBoxHelper {
         if (cachedRandomizedStackLists.containsKey(selection)) return cachedRandomizedStackLists.get(selection);
         Map<Holder<Item>, RandomizedItemStack> select = new HashMap<>();
         Consumer<RandomizedItemStack> consumer = randomizedItemStack -> {
+            if (randomizedItemStack.max() > randomizedItemStack.itemStack().getMaxStackSize()) randomizedItemStack.itemStack().set(DataComponents.MAX_STACK_SIZE, randomizedItemStack.max());
             if (!select.containsKey(randomizedItemStack.itemStack().getItemHolder())) select.put(randomizedItemStack.itemStack().getItemHolder(), randomizedItemStack);
         };
         selection.leftSide().forEach(consumer);
         selection.rightSide().stream().map(randomizedItemTag -> {
             List<RandomizedItemStack> edit = new ArrayList<>();
             List<Item> ts = randomizedItemTag.items().map(itemTagKey -> Streams.stream(itemRegistry.getTagOrEmpty(itemTagKey)).map(Holder::value).toList(), blockTagKey -> Streams.stream(blockRegistry.getTagOrEmpty(blockTagKey)).map(blockHolder -> blockHolder.value().asItem()).toList());
-            ts.forEach(item -> edit.add(new RandomizedItemStack(new ItemStack(item), randomizedItemTag.count().copyWithMaxCountOverride(item.getDefaultMaxStackSize()))));
+            ts.forEach(item -> {
+                ItemStack stack = new ItemStack(item);
+                stack.applyComponents(randomizedItemTag.patch());
+                edit.add(new RandomizedItemStack(stack, randomizedItemTag.count().copyWithMaxCountOverride(stack.getMaxStackSize())));
+            });
             return edit;
         }).forEach(col -> col.forEach(consumer));
         List<RandomizedItemStack> output = new ArrayList<>(select.values());
