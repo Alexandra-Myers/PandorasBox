@@ -4,10 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effectcreators.PBECRegistry;
+import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.EntityInit;
 import ivorius.pandorasbox.init.Init;
+import net.minecraft.core.HolderSet;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -21,9 +23,11 @@ import java.util.Optional;
 public class PBEffectDuplicateBox extends PBEffectNormal {
     public static final int MODE_BOX_IN_BOX = 0;
     public static final MapCodec<PBEffectDuplicateBox> CODEC = RecordCodecBuilder.mapCodec(instance ->
-            instance.group(Codec.INT.fieldOf("spawn_mode").forGetter(PBEffectDuplicateBox::getSpawnMode))
+            instance.group(Codec.INT.fieldOf("spawn_mode").forGetter(PBEffectDuplicateBox::getSpawnMode),
+                            EffectHolder.CODEC.fieldOf("included_effect_holders").forGetter(PBEffectDuplicateBox::getIncludedEffectHolders))
                     .apply(instance, PBEffectDuplicateBox::new));
 
+    public HolderSet<EffectHolder> includedEffectHolders;
     public int spawnMode;
 
     public static int timeNeededForSpawnMode(int mode) {
@@ -37,16 +41,27 @@ public class PBEffectDuplicateBox extends PBEffectNormal {
     public PBEffectDuplicateBox(int spawnMode) {
         super(timeNeededForSpawnMode(spawnMode));
         this.spawnMode = spawnMode;
+        this.includedEffectHolders = HolderSet.empty();
+    }
+
+    public PBEffectDuplicateBox(int spawnMode, HolderSet<EffectHolder> includedEffectHolders) {
+        super(timeNeededForSpawnMode(spawnMode));
+        this.spawnMode = spawnMode;
+        this.includedEffectHolders = includedEffectHolders;
     }
 
     public int getSpawnMode() {
         return spawnMode;
     }
 
+    public HolderSet<EffectHolder> getIncludedEffectHolders() {
+        return includedEffectHolders;
+    }
+
     @Override
     public void setUpEffect(Level level, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random) {
         if (!level.isClientSide()) {
-            PBEffect effect = PBECRegistry.createRandomEffect(level, random, box.getX(), box.getY(), box.getZ(), true, Optional.empty(), Init.EFFECT_HOLDER_REGISTRY_KEY);
+            PBEffect effect = PBECRegistry.createRandomEffect(level, random, box.getX(), box.getY(), box.getZ(), true, Optional.of(includedEffectHolders), Init.EFFECT_HOLDER_REGISTRY_KEY);
             PandorasBoxEntity newBox = new PandorasBoxEntity(EntityInit.BOX, level, true, true);
 
             newBox.setBoxEffect(effect);
