@@ -5,7 +5,8 @@
   "mixins": [
     "ItemMixin",
     "ItemStackMixin",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "TreeFeatureMixin"
   ],
   "client": [
     "client.GuiMixin",

@@ -9,8 +9,8 @@
       "type": "minecraft:linear"
     },
     "chance_per_block": {
-      "min": 3.0517578125E-5,
-      "max": 0.004629629664123058,
+      "min": 3.0517578125E-3,
+      "max": 0.4629629664123058,
       "type": "minecraft:linear"
     },
     "requires_solid_ground": {

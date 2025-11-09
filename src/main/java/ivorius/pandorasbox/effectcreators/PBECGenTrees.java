@@ -39,11 +39,11 @@ public record PBECGenTrees(DValue range, DValue chancePerBlock, ZValue requiresS
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         double range = this.range.getValue(random);
         int time = Mth.floor((random.nextDouble() * 7.0 + 3.0) * range);
-        double chancePerBlock = this.chancePerBlock.getValue(random);
         boolean requiresSolidGround = this.requiresSolidGround.getValue(random);
+        double chancePerBlock = this.chancePerBlock.getValue(random) * (!requiresSolidGround ? 0.01 : 1);
         int possibleTreeFlags = this.possibleTreeFlags.getValue(random);
 
-        return new PBEffectGenerate(time, range, 1, PandorasBoxHelper.getRandomUnifiedSeed(random), new GenTreesEffect(requiresSolidGround, chancePerBlock, possibleTreeFlags, List.of(JUNGLE_BUSH, OAK, FANCY_OAK, MEGA_JUNGLE_TREE, JUNGLE_TREE, DARK_OAK, SPRUCE, BIRCH)));
+        return new PBEffectGenerate(time, range, 1, PandorasBoxHelper.getRandomUnifiedSeed(random), new GenTreesEffect(requiresSolidGround, chancePerBlock, possibleTreeFlags, List.of(OAK, FANCY_OAK, JUNGLE_TREE, MEGA_JUNGLE_TREE, JUNGLE_BUSH, DARK_OAK, SPRUCE, BIRCH)));
     }
 
     @Override

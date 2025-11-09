@@ -6,24 +6,29 @@
 package ivorius.pandorasbox;
 
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import ivorius.pandorasbox.commands.PandoraCommand;
 import ivorius.pandorasbox.config.PandoraConfig;
 import ivorius.pandorasbox.effectcreators.*;
-import ivorius.pandorasbox.effectcreators.generate.SimpleConvertEffectCreator;
-import ivorius.pandorasbox.effectcreators.generate.block_mappers.BlockMapperCreator;
-import ivorius.pandorasbox.effectcreators.generate.block_mappers.CityMapperCreator;
-import ivorius.pandorasbox.effectcreators.generate.block_mappers.DirectMapperCreator;
+import ivorius.pandorasbox.effectcreators.generate.*;
+import ivorius.pandorasbox.effectcreators.generate.block_mappers.*;
 import ivorius.pandorasbox.effectcreators.generate.feature_generators.DirectGeneratorCreator;
 import ivorius.pandorasbox.effectcreators.generate.feature_generators.FeatureGeneratorCreator;
+import ivorius.pandorasbox.effectcreators.generate.feature_generators.HFTGeneratorCreator;
 import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.effects.generate.block_mappers.CityMapper;
+import ivorius.pandorasbox.effects.generate.block_mappers.CreateFarmMapper;
+import ivorius.pandorasbox.effects.generate.block_mappers.SimpleConvertMapper;
 import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.init.ItemInit;
+import ivorius.pandorasbox.init.PandoraBlockTags;
 import ivorius.pandorasbox.random.DValue;
+import ivorius.pandorasbox.random.ILinear;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.random.ZValue;
+import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.atlas.atlascore.AtlasCore;
 import net.atlas.atlascore.util.PrefixLogger;
 import net.fabricmc.api.ModInitializer;
@@ -40,8 +45,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.Blocks;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
@@ -57,6 +64,10 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static ivorius.pandorasbox.effectcreators.PBECConvertToCity.*;
+import static ivorius.pandorasbox.effectcreators.PBECConvertToFarm.FARM_SPAWNERS;
+import static ivorius.pandorasbox.effectcreators.PBECConvertToHFT.HFT_MAPPERS;
+import static net.minecraft.data.worldgen.features.TreeFeatures.*;
+import static net.minecraft.data.worldgen.features.TreeFeatures.BIRCH;
 
 public class PandorasBox implements ModInitializer {
     public static final String MOD_ID = "pandorasbox";
@@ -129,6 +140,36 @@ public class PandorasBox implements ModInitializer {
                 if (blockMapper instanceof CityMapper) return new CityMapperCreator(CITY_TARGETS, pbecConvertToCity.entityIDs(), PandorasBoxHelper.equipmentSets, PandorasBoxHelper.items);
                 else return new DirectMapperCreator(blockMapper);
             }).map(mapper -> (BlockMapperCreator) mapper).toList(), Collections.emptyList(), CITY_SPAWNERS));
+        }
+        if (effectCreator instanceof PBECConvertToFarm pbecConvertToFarm) {
+            return new PBECGenerate(pbecConvertToFarm.range(), 0.1f, new SimpleConvertEffectCreator(Optional.of(Biomes.PLAINS), Collections.singletonList(new CreateFarmMapperCreator(pbecConvertToFarm.cropChance())), Collections.emptyList(), FARM_SPAWNERS));
+        }
+        if (effectCreator instanceof PBECConvertToHFT pbecConvertToHFT) {
+            return new PBECGenerate(pbecConvertToHFT.range(), 0.1f, new SimpleConvertEffectCreator(Optional.of(Biomes.CHERRY_GROVE), PBECConvertToHFT.EXCLUDED_TARGETS, List.of(new DirectMapperCreator(new SimpleConvertMapper(new Either[] {Either.left(Blocks.LAVA), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES)}, Blocks.AIR)), new SetAllSolidCreator(Blocks.AIR, Optional.of(new RandomTaggedMapperCreator(Optional.empty(), pbecConvertToHFT.tag(), new ILinear(2, 4))))), Collections.singletonList(new HFTGeneratorCreator(PandoraBlockTags.ALL_TERRACOTTA, new ILinear(2, 4))), Collections.emptyList()));
+        }
+        if (effectCreator instanceof PBECConvertToNether pbecConvertToNether) {
+            return new PBECGenerate(pbecConvertToNether.range(), 0.1f, new NetherConvertEffectCreator(pbecConvertToNether.chanceToDiscardNetherrack(), pbecConvertToNether.biome()));
+        }
+        if (effectCreator instanceof PBECConvertToRainbowCloth pbecConvertToRainbowCloth) {
+            return new PBECGenerate(pbecConvertToRainbowCloth.range(), 0.1f, new SimpleConvertEffectCreator(Optional.empty(), Collections.singletonList(new RangeTaggedMapperCreator(pbecConvertToRainbowCloth.tag(), pbecConvertToRainbowCloth.rainbowComplexity(), pbecConvertToRainbowCloth.ringSize())), Collections.emptyList(), Collections.emptyList()));
+        }
+        if (effectCreator instanceof PBECGenTrees pbecGenTrees) {
+            return new PBECGenerate(pbecGenTrees.range(), 0.15f, new GenTreesEffectCreator(pbecGenTrees.chancePerBlock(), pbecGenTrees.requiresSolidGround(), pbecGenTrees.possibleTreeFlags(), List.of(OAK, FANCY_OAK, JUNGLE_TREE, MEGA_JUNGLE_TREE, JUNGLE_BUSH, DARK_OAK, SPRUCE, BIRCH)));
+        }
+        if (effectCreator instanceof PBECGenTreesOdd pbecGenTreesOdd) {
+            return new PBECGenerate(pbecGenTreesOdd.range(), 0.15f, new GenTreesOddEffectCreator(pbecGenTreesOdd.chancePerBlock(), pbecGenTreesOdd.requiresSolidGround(), pbecGenTreesOdd.possibleTreeFlags(), pbecGenTreesOdd.trunkBlocks(), pbecGenTreesOdd.leafBlocks(), List.of(MEGA_JUNGLE_TREE, JUNGLE_TREE, JUNGLE_BUSH, CHERRY, FANCY_OAK_BEES, DARK_OAK, SPRUCE, BIRCH, MEGA_PINE, MEGA_SPRUCE)));
+        }
+        if (effectCreator instanceof PBECLavaCage pbecLavaCage) {
+            return new PBECGenerate(pbecLavaCage.range(), 0.1f, new GenLavaCagesEffectCreator(pbecLavaCage.lavaBlock(), pbecLavaCage.fillBlock(), pbecLavaCage.cageBlocks(), pbecLavaCage.floorBlocks(), new ILinear(2, 11), new ILinear(2, 6)));
+        }
+        if (effectCreator instanceof PBECPool pbecPool) {
+            return new PBECGenerate(pbecPool.range(), 0.1f, new GenPoolEffectCreator(pbecPool.block(), pbecPool.platformBlocks()));
+        }
+        if (effectCreator instanceof PBECReplace pbecReplace) {
+            return new PBECGenerate(pbecReplace.range(), 0.1f, new GenReplaceEffectCreator(pbecReplace.srcBlocks(), pbecReplace.destBlocks(), pbecReplace.takeRandomNearbyBlocks()));
+        }
+        if (effectCreator instanceof PBECTransform pbecTransform) {
+            return new PBECGenerate(pbecTransform.range(), 0.1f, new GenTransformEffectCreator(pbecTransform.blocks()));
         }
         return effectCreator;
     }
