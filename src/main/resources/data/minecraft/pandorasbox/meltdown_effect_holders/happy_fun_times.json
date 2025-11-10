@@ -1,0 +1,63 @@
+{
+  "effect_creator": {
+    "range": {
+      "min": 10.0,
+      "max": 15.0,
+      "type": "minecraft:linear"
+    },
+    "chance_for_more_effects": 0.1,
+    "generate_effect": {
+      "biome": "minecraft:cherry_grove",
+      "exclusions": [
+        "#minecraft:wool",
+        "#pandorasbox:all_terracotta"
+      ],
+      "mappers": [
+        {
+          "targets": [
+            "minecraft:lava",
+            "#minecraft:logs",
+            "#minecraft:leaves"
+          ],
+          "to_replace": "minecraft:air",
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
+        },
+        {
+          "to_replace": "minecraft:air",
+          "otherwise": {
+            "to_replace": "pandorasbox:all_terracotta",
+            "variant_count": {
+              "min": 2,
+              "max": 4,
+              "type": "minecraft:linear"
+            },
+            "type": "pandorasbox:prepare_convert_random"
+          },
+          "type": "pandorasbox:prepare_convert_all"
+        }
+      ],
+      "generators": [
+        {
+          "blocks": "pandorasbox:all_terracotta",
+          "variant_count": {
+            "min": 2,
+            "max": 4,
+            "type": "minecraft:linear"
+          },
+          "color_variant_count": {
+            "min": 1,
+            "max": 4,
+            "type": "minecraft:linear"
+          },
+          "type": "pandorasbox:prepare_hft"
+        }
+      ],
+      "spawners": [],
+      "type": "pandorasbox:prepare_gen_convert"
+    },
+    "type": "pandorasbox:generate"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

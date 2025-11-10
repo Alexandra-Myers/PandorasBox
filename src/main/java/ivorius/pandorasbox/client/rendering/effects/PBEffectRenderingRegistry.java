@@ -19,9 +19,9 @@ public class PBEffectRenderingRegistry {
     }
 
     public static PBEffectRenderer<?, ?> rendererForEffect(PandoraEffectRenderState renderState) {
-        return rendererForRL(renderState.renderer);
+        return rendererForID(renderState.renderer);
     }
-    public static PBEffectRenderer<?, ?> rendererForRL(ResourceLocation resourceLocation) {
+    public static PBEffectRenderer<?, ?> rendererForID(ResourceLocation resourceLocation) {
         PBEffectRenderer<?, ?> renderer = renderers.get(resourceLocation);
         if (renderer != null)
             return renderer;

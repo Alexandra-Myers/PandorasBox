@@ -1,0 +1,121 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "range": {
+          "min": 10.0,
+          "max": 15.0,
+          "type": "minecraft:linear"
+        },
+        "chance_for_more_effects": 0.1,
+        "generate_effect": {
+          "biome": "minecraft:lush_caves",
+          "exclusions": [],
+          "mappers": [
+            {
+              "targets": [
+                "#minecraft:snow",
+                "#minecraft:fire",
+                "#minecraft:flowers",
+                "minecraft:short_grass",
+                "minecraft:tall_grass",
+                "minecraft:fern",
+                "minecraft:large_fern",
+                "minecraft:short_dry_grass",
+                "minecraft:tall_dry_grass",
+                "minecraft:dead_bush",
+                "minecraft:bush",
+                "minecraft:firefly_bush"
+              ],
+              "to_replace": "minecraft:air",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "#pandorasbox:all_terracotta",
+                "#c:stones",
+                "#c:cobblestones",
+                "#minecraft:base_stone_nether",
+                "#minecraft:wither_summon_base_blocks",
+                "#minecraft:nylium",
+                "#minecraft:dirt",
+                "#minecraft:sand",
+                "#c:sandstone/blocks",
+                "minecraft:end_stone"
+              ],
+              "mapper_type": "pandorasbox:heavenly",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "#c:obsidians",
+                "minecraft:lava",
+                "minecraft:ice"
+              ],
+              "to_replace": "minecraft:water",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            }
+          ],
+          "generators": [],
+          "spawners": [
+            {
+              "entity_id": "minecraft:sheep",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            }
+          ],
+          "type": "pandorasbox:prepare_gen_convert"
+        },
+        "type": "pandorasbox:generate"
+      },
+      {
+        "ticks_per_item": {
+          "min": 1,
+          "max": 5,
+          "type": "minecraft:linear"
+        },
+        "spawn_from_effect_center": {
+          "guaranteed": true,
+          "type": "minecraft:constant"
+        },
+        "equipment_sets": "#pandorasbox:default_sets",
+        "value_throw": {
+          "throw_strength_horizontal": {
+            "min": 0.05,
+            "max": 0.2,
+            "type": "minecraft:linear"
+          },
+          "throw_strength_vertical": {
+            "min": 0.2,
+            "max": 1.0,
+            "type": "minecraft:linear"
+          }
+        },
+        "type": "pandorasbox:spawn_item_set"
+      },
+      {
+        "range": {
+          "min": 10.0,
+          "max": 25.0,
+          "type": "minecraft:linear"
+        },
+        "time": {
+          "min": 15,
+          "max": 100,
+          "type": "minecraft:linear"
+        },
+        "type": "pandorasbox:apply_bombpack"
+      }
+    ],
+    "delays": [
+      0,
+      0,
+      0
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

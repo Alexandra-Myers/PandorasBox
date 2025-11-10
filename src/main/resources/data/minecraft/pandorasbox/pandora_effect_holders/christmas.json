@@ -10,43 +10,52 @@
           "max": 80.0,
           "type": "minecraft:linear"
         },
-        "convert_effect": {
+        "chance_for_more_effects": 0.1,
+        "generate_effect": {
+          "biome": "minecraft:snowy_taiga",
+          "exclusions": [],
           "mappers": [
             {
               "targets": [
                 "minecraft:water"
               ],
               "to_replace": "minecraft:ice",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
-              "type": "pandorasbox:christmas_gifts"
+              "mapper_type": "pandorasbox:christmas_gifts",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
                 "#minecraft:fire"
               ],
               "to_replace": "minecraft:air",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "fluid_target": "minecraft:lava",
               "to_replace": "minecraft:cobblestone",
-              "type": "pandorasbox:chill_lava"
+              "mapper_type": "pandorasbox:chill_lava",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
                 "minecraft:magma_block"
               ],
               "to_replace": "minecraft:cobblestone",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
                 "minecraft:lava"
               ],
               "to_replace": "minecraft:obsidian",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             }
           ],
           "generators": [],
@@ -62,11 +71,9 @@
               "type": "pandorasbox:spawn_random"
             }
           ],
-          "biome": "minecraft:snowy_taiga",
-          "exclusions": []
+          "type": "pandorasbox:prepare_gen_convert"
         },
-        "chance_for_more_effects": 0.1,
-        "type": "pandorasbox:convert_generic"
+        "type": "pandorasbox:generate"
       },
       {
         "time": {

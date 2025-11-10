@@ -1,0 +1,191 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "range": {
+          "min": 10.0,
+          "max": 15.0,
+          "type": "minecraft:linear"
+        },
+        "chance_for_more_effects": 0.1,
+        "generate_effect": {
+          "biome": "minecraft:desert",
+          "exclusions": [],
+          "mappers": [
+            {
+              "targets": [
+                "minecraft:short_grass",
+                "minecraft:fern"
+              ],
+              "to_replace": "minecraft:short_dry_grass",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "minecraft:tall_grass",
+                "minecraft:large_fern"
+              ],
+              "to_replace": "minecraft:tall_dry_grass",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "#minecraft:leaves",
+                "#minecraft:flowers",
+                "minecraft:vine",
+                "minecraft:brown_mushroom",
+                "minecraft:brown_mushroom_block",
+                "minecraft:red_mushroom",
+                "minecraft:red_mushroom_block",
+                "minecraft:mushroom_stem",
+                "#minecraft:logs"
+              ],
+              "to_replace": "minecraft:air",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "#minecraft:sand",
+                "#minecraft:wither_summon_base_blocks",
+                "#minecraft:nylium",
+                "#minecraft:dirt",
+                "minecraft:netherrack"
+              ],
+              "surface_block": "minecraft:sand",
+              "under_block": "minecraft:sand",
+              "discard_surface_chance": 0.0,
+              "max_blocks_beneath_surface": 3,
+              "mapper_type": "pandorasbox:convert_surface",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "#minecraft:sand",
+                "#minecraft:wither_summon_base_blocks",
+                "#minecraft:nylium",
+                "#minecraft:dirt",
+                "minecraft:netherrack",
+                "#pandorasbox:all_terracotta",
+                "#c:stones",
+                "#minecraft:base_stone_nether",
+                "#c:sandstone/blocks",
+                "minecraft:end_stone"
+              ],
+              "to_replace": "minecraft:sandstone",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "#minecraft:ice"
+              ],
+              "to_replace": "minecraft:water",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            }
+          ],
+          "generators": [
+            {
+              "base_chance": 0.03,
+              "block_set": [
+                "#c:sandstone/blocks"
+              ],
+              "feature_set": [
+                {
+                  "weight": 1.0,
+                  "key": "minecraft:patch_cactus"
+                }
+              ],
+              "placed": "minecraft:sand",
+              "force": false,
+              "generator_type": "pandorasbox:generate_feature",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "base_chance": 0.05,
+              "block_set": [
+                "#c:sandstone/blocks"
+              ],
+              "feature_set": [
+                {
+                  "weight": 1.0,
+                  "key": "minecraft:patch_dead_bush"
+                },
+                {
+                  "weight": 1.0,
+                  "key": "minecraft:patch_dry_grass"
+                }
+              ],
+              "placed": "minecraft:sand",
+              "force": false,
+              "generator_type": "pandorasbox:generate_feature",
+              "type": "pandorasbox:direct"
+            }
+          ],
+          "spawners": [
+            {
+              "entity_id": "minecraft:camel",
+              "chance": 0.0025,
+              "type": "pandorasbox:spawn_random"
+            },
+            {
+              "entity_id": "minecraft:pig",
+              "chance": 0.0011111111,
+              "type": "pandorasbox:spawn_random"
+            },
+            {
+              "entity_id": "minecraft:cow",
+              "chance": 0.0011111111,
+              "type": "pandorasbox:spawn_random"
+            },
+            {
+              "entity_id": "minecraft:sheep",
+              "chance": 0.0011111111,
+              "type": "pandorasbox:spawn_random"
+            },
+            {
+              "entity_id": "minecraft:chicken",
+              "chance": 0.0011111111,
+              "type": "pandorasbox:spawn_random"
+            }
+          ],
+          "type": "pandorasbox:prepare_gen_convert"
+        },
+        "type": "pandorasbox:generate"
+      },
+      {
+        "range": {
+          "min": 10.0,
+          "max": 15.0,
+          "type": "minecraft:linear"
+        },
+        "number": {
+          "min": 4,
+          "max": 10,
+          "type": "minecraft:linear"
+        },
+        "blocks": [
+          {
+            "weight": 100.0,
+            "tag": "#c:dyed"
+          },
+          {
+            "weight": 50.0,
+            "tag": "#c:chains"
+          }
+        ],
+        "type": "pandorasbox:create_creative_towers"
+      }
+    ],
+    "delays": [
+      0,
+      0
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

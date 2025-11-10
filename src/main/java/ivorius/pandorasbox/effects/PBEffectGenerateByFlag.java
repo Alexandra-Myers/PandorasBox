@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.generate.flags.GenerateByFlag;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
@@ -19,7 +20,10 @@ import org.jetbrains.annotations.NotNull;
  * Created by lukas on 30.03.14.
  */
 public class PBEffectGenerateByFlag extends PBEffectRangeBased {
-    public static final MapCodec<PBEffectGenerateByFlag> CODEC = produceCodec(instance -> GenerateByFlag.CODEC.fieldOf("generate_by_flag").forGetter(PBEffectGenerateByFlag::getGenerateByFlag), PBEffectGenerateByFlag::new);
+    public static final MapCodec<PBEffectGenerateByFlag> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            PBEffectRangeBased.baseFields(instance)
+                    .and(GenerateByFlag.CODEC.fieldOf("generate_by_flag").forGetter(PBEffectGenerateByFlag::getGenerateByFlag))
+                    .apply(instance, PBEffectGenerateByFlag::new));
     public final GenerateByFlag generateByFlag;
 
     public PBEffectGenerateByFlag(int time, double range, int passes, int unifiedSeed, GenerateByFlag generateByFlag) {

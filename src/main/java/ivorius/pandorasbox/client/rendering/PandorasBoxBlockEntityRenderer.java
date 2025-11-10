@@ -5,11 +5,11 @@ import com.mojang.math.Axis;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.block.PandorasBoxBlockEntity;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +20,7 @@ import org.joml.Vector3f;
 import java.util.Set;
 
 public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<PandorasBoxBlockEntity, PandorasBoxBlockEntityRenderState> {
-    public static final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
+    public static final ResourceLocation PANDORAS_BOX = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
     public final PandorasBoxModel model;
     public PandorasBoxBlockEntityRenderer(BlockEntityRendererProvider.Context berpContext) {
         this.model = new PandorasBoxModel(berpContext.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
@@ -33,7 +33,7 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
         poseStack.translate(0.5f, 1.5f, 0.5f);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        submitNodeCollector.submitModel(model, PandorasBoxRenderState.BLOCK_ENTITY_STATE, poseStack, RenderType.entityCutoutNoCull(texture), packedLightIn, overlayTexture, outlineColor, crumblingOverlay);
+        submitNodeCollector.submitModel(model, PandorasBoxRenderState.BLOCK_ENTITY_STATE, poseStack, RenderType.entityCutoutNoCull(PANDORAS_BOX), packedLightIn, overlayTexture, outlineColor, crumblingOverlay);
         poseStack.popPose();
     }
     public void renderItem(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, int overlayTexture, int outlineColor) {

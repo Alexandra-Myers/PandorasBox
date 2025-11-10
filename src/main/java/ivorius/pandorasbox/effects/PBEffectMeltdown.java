@@ -4,8 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBox;
+import ivorius.pandorasbox.effectcreators.PBECRegistry;
+import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.utils.PBNBTHelper;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.PowerParticleOption;
 import net.minecraft.resources.ResourceLocation;
@@ -15,8 +19,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-
-import static ivorius.pandorasbox.effects.PBEffects.MELTDOWN_CREATORS;
+import java.util.Optional;
 
 /**
  * Created by Alexandra on 18.10.24.
@@ -27,28 +30,32 @@ public final class PBEffectMeltdown extends PBEffect {
             instance.group(PBNBTHelper.arrayCodec(PBEffect.CODEC, () -> new PBEffect[0]).fieldOf("effects").forGetter(PBEffectMeltdown::getEffects),
                             PBNBTHelper.arrayCodec(Vec3.CODEC, () -> new Vec3[0]).fieldOf("effect_centers").forGetter(PBEffectMeltdown::getEffectCenters),
                             PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("effect_start_ticks").forGetter(PBEffectMeltdown::getEffectStartTicks),
+                            EffectHolder.MELTDOWN_CODEC.fieldOf("included_meltdown_holders").forGetter(PBEffectMeltdown::getIncludedEffectHolders),
                             Codec.FLOAT.fieldOf("range").forGetter(PBEffectMeltdown::getRange),
                             Codec.INT.fieldOf("max_ticks_alive").forGetter(PBEffectMeltdown::getMaxTicksAlive))
                     .apply(instance, PBEffectMeltdown::new));
     private PBEffect[] effects;
     private Vec3[] effectCenters;
     private Integer[] effectStartTicks;
+    private final HolderSet<EffectHolder> includedEffectHolders;
     private final float range;
     private final int maxTicksAlive;
     private Integer indexToOverwrite = null;
 
-    public PBEffectMeltdown(PBEffect[] effects, Vec3[] effectCenters, Integer[] effectStartTicks, float range, int maxTicksAlive) {
+    public PBEffectMeltdown(PBEffect[] effects, Vec3[] effectCenters, Integer[] effectStartTicks, HolderSet<EffectHolder> includedEffectHolders, float range, int maxTicksAlive) {
         this.effects = effects;
         this.effectCenters = effectCenters;
         this.effectStartTicks = effectStartTicks;
+        this.includedEffectHolders = includedEffectHolders;
         this.range = range;
         this.maxTicksAlive = maxTicksAlive;
     }
 
-    public PBEffectMeltdown(PBEffect firstEffect, float range, int maxTicksAlive) {
+    public PBEffectMeltdown(PBEffect firstEffect, HolderSet<EffectHolder> includedEffectHolders, float range, int maxTicksAlive) {
         this.effects = new PBEffect[] {firstEffect};
         this.effectCenters = new Vec3[] {Vec3.ZERO};
-        this.effectStartTicks = new Integer[] {0};
+        this.effectStartTicks = new Integer[] {5};
+        this.includedEffectHolders = includedEffectHolders;
         this.range = range;
         this.maxTicksAlive = maxTicksAlive;
     }
@@ -65,6 +72,10 @@ public final class PBEffectMeltdown extends PBEffect {
         return effectStartTicks;
     }
 
+    public HolderSet<EffectHolder> getIncludedEffectHolders() {
+        return includedEffectHolders;
+    }
+
     public float getRange() {
         return range;
     }
@@ -77,7 +88,7 @@ public final class PBEffectMeltdown extends PBEffect {
     public void doTick(PandorasBoxEntity entity, Vec3 effectCenter, int ticksAlive) {
         Level level = entity.level();
         RandomSource random = entity.getRandom();
-        int rand;
+        float rand;
         if (ticksAlive == 0) {
             double xP = (random.nextDouble() - 0.5) * range;
             double yP = (random.nextDouble() - 0.5) * range * 0.25;
@@ -86,13 +97,13 @@ public final class PBEffectMeltdown extends PBEffect {
             effectCenters[0] = newEffectCenter;
             effectStartTicks[0] = 5;
         }
-        rand = random.nextInt(MELTDOWN_CREATORS.length * 16);
-        if (!level.isClientSide() && rand < MELTDOWN_CREATORS.length) {
+        rand = random.nextFloat() * 16;
+        if (!level.isClientSide() && rand < 1) {
             double xP = (random.nextDouble() - 0.5) * range;
             double yP = (random.nextDouble() - 0.5) * range * 0.25;
             double zP = (random.nextDouble() - 0.5) * range;
             Vec3 newEffectCenter = effectCenter.add(xP, yP, zP);
-            PBEffect pbEffect = MELTDOWN_CREATORS[rand].constructEffect(level, newEffectCenter.x, newEffectCenter.y, newEffectCenter.z, random);
+            PBEffect pbEffect = PBECRegistry.createRandomEffect(level, random, newEffectCenter.x, newEffectCenter.y, newEffectCenter.z, false, Optional.of(includedEffectHolders), Init.MELTDOWN_EFFECT_HOLDER_REGISTRY_KEY);
             if (indexToOverwrite != null) {
                 effects[indexToOverwrite] = pbEffect;
                 effectCenters[indexToOverwrite] = newEffectCenter;

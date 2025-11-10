@@ -8,12 +8,13 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public record BombermanEntityEffect(int bombs) implements EntityEffect {
     public static final MapCodec<BombermanEntityEffect> CODEC = Codec.INT.xmap(BombermanEntityEffect::new, BombermanEntityEffect::bombs).fieldOf("bombs");
     @Override
-    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
+    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
         int prevBombs = Mth.floor(prevRatio * bombs);
         int newBombs = Mth.floor(newRatio * bombs);
         int bombs = newBombs - prevBombs;

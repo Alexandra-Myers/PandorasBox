@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -13,7 +14,7 @@ import java.util.Random;
 public record BombpackEntityEffect() implements EntityEffect {
     public static final MapCodec<BombpackEntityEffect> CODEC = MapCodec.unit(BombpackEntityEffect::new);
     @Override
-    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
+    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
         Random itemRandom = new Random(entity.getId());
         double expectedBomb = itemRandom.nextDouble();
         if (newRatio >= expectedBomb && prevRatio < expectedBomb) {

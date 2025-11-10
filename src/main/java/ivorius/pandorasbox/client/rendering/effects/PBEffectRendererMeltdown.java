@@ -42,7 +42,7 @@ public class PBEffectRendererMeltdown extends PBEffectRenderer<PBEffectMeltdown,
         }
         Arrays.stream(effectRenderState.effects).toList().forEach(pandoraEffectRenderState -> {
             PBEffectRenderer renderer1 = PBEffectRenderingRegistry.rendererForEffect(pandoraEffectRenderState);
-            renderer1.renderBox(renderer, renderState, pandoraEffectRenderState, poseStack, submitNodeCollector, packedLightIn, height, ((pandoraEffectRenderState.effectTicksExisted + renderState.partialTicks) % pandoraEffectRenderState.maxTicksAlive) / pandoraEffectRenderState.maxTicksAlive);
+            renderer1.renderBox(renderer, renderState, pandoraEffectRenderState, poseStack, submitNodeCollector, packedLightIn, height, PandorasBoxRenderer.calculateProgress(renderState, pandoraEffectRenderState));
         });
         if (!renderState.renderItem.isEmpty()) return;
         submitNodeCollector.submitModel(renderer.model, renderState, poseStack, RenderType.entityTranslucent(getTextureForProgress(timePassed)), packedLightIn, OverlayTexture.NO_OVERLAY, renderState.outlineColor, null);
@@ -76,7 +76,7 @@ public class PBEffectRendererMeltdown extends PBEffectRenderer<PBEffectMeltdown,
         pandoraEffectRenderState.range = pandoraEffect.getRange();
         List<PandoraEffectRenderState> effectRenderStates = new ArrayList<>();
         for (PBEffect effect : pandoraEffect.getEffects()) {
-            PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForRL(effect.rendererResourceLocationForEffect());
+            PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForID(effect.rendererResourceLocationForEffect());
             int ticksExistedForEffect = pandoraEffect.getTicksExistedForEffect(effect, effectTicksExisted);
             if (effect.isDone(ticksExistedForEffect) && !renderer.rendersAfterDone()) continue;
             PandoraEffectRenderState renderState = renderer.createRenderState();

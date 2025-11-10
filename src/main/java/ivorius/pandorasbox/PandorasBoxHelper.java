@@ -5,31 +5,25 @@
 
 package ivorius.pandorasbox;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Streams;
+import com.google.common.collect.*;
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import ivorius.pandorasbox.init.MobEffectInit;
+import ivorius.pandorasbox.init.PandoraBlockTags;
+import ivorius.pandorasbox.init.PandoraItemTags;
 import ivorius.pandorasbox.random.ILinear;
-import ivorius.pandorasbox.utils.EitherArrayList;
-import ivorius.pandorasbox.utils.RandomizedItemStack;
-import ivorius.pandorasbox.utils.RandomizedItemTag;
-import ivorius.pandorasbox.utils.WeightedWithRandomCount;
+import ivorius.pandorasbox.utils.*;
 import ivorius.pandorasbox.weighted.*;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Unit;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
@@ -40,10 +34,8 @@ import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.TeleportRandomlyConsumeEffect;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -58,42 +50,23 @@ public class PandorasBoxHelper {
             BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.STAIRS_SHAPE);
     public static Object2ObjectLinkedOpenHashMap<EitherArrayList<WeightedBlock, WeightedTag<Block>>, Collection<WeightedBlock>> cachedBlockLists = new Object2ObjectLinkedOpenHashMap<>();
     public static Object2ObjectLinkedOpenHashMap<EitherArrayList<RandomizedItemStack, RandomizedItemTag>, List<RandomizedItemStack>> cachedRandomizedStackLists = new Object2ObjectLinkedOpenHashMap<>();
-    public static List<WeightedEntity> landMobs = new ArrayList<>();
-    public static List<WeightedEntity> mobs = new ArrayList<>();
-    public static List<WeightedEntity> creatures = new ArrayList<>();
-    public static List<WeightedEntity> waterCreatures = new ArrayList<>();
-    public static List<WeightedEntity> waterMobs = new ArrayList<>();
-    public static List<WeightedEntity> tameableCreatures = new ArrayList<>();
 
     public static EitherArrayList<RandomizedItemStack, RandomizedItemTag> blocksAndItems = new EitherArrayList<>();
     public static Multimap<Block, Property<?>> randomizableBlockProperties = HashMultimap.create();
 
     public static EitherArrayList<WeightedBlock, WeightedTag<Block>> blocks = new EitherArrayList<>();
 
-    public static EitherArrayList<RandomizedItemStack, RandomizedItemTag> items = new EitherArrayList<>();
-    public static List<WeightedSet> equipmentSets = new ArrayList<>();
     public static Hashtable<Item, Hashtable<Integer, ItemStack>> equipmentForLevels = new Hashtable<>();
 
     public static List<WeightedPotion> buffs = new ArrayList<>();
     public static List<WeightedPotion> debuffs = new ArrayList<>();
-
-    public static EitherArrayList<RandomizedItemStack, RandomizedItemTag> enchantableArmorList = new EitherArrayList<>();
-    public static EitherArrayList<RandomizedItemStack, RandomizedItemTag> enchantableToolList = new EitherArrayList<>();
-
-    public static EitherArrayList<WeightedBlock, WeightedTag<Block>> heavyBlocks = new EitherArrayList<>();
-
-    public static void addEntities(List<WeightedEntity> list, double weight, int minNumber, int maxNumber, String... entities) {
-        for (String s : entities) {
-            list.add(new WeightedEntity(weight, s, minNumber, maxNumber));
-        }
-    }
 
     @SafeVarargs
     public static void addBlockTags(double weight, TagKey<Block>... blocks) {
         for (TagKey<Block> blockTagKey : blocks) {
             PandorasBoxHelper.blocks.add(Either.right(new WeightedTag<>(weight, blockTagKey)));
 
-            blockTagKey.cast(Registries.ITEM).ifPresent(itemTag -> blocksAndItems.add(Either.right(new RandomizedItemTag(itemTag, new WeightedWithRandomCount(1, Optional.empty(), weight)))));
+            blocksAndItems.add(Either.right(new RandomizedItemTag(Either.right(blockTagKey), new WeightedWithRandomCount(1, Optional.empty(), weight))));
         }
     }
 
@@ -105,82 +78,23 @@ public class PandorasBoxHelper {
             blocksAndItems.add(Either.left(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight)));
         }
     }
-    public static void addBlocks(double weight, List<Block> blocks) {
-        for (Block block : blocks) {
-            PandorasBoxHelper.blocks.add(Either.left(new WeightedBlock(weight, block)));
-
-            Item item = block.asItem();
-            blocksAndItems.add(Either.left(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight)));
-        }
-    }
-
-    public static void addBlocks(EitherArrayList<WeightedBlock, WeightedTag<Block>> list, double weight, Block... blocks) {
-        for (Block block : blocks) {
-            list.add(Either.left(new WeightedBlock(weight, block)));
-        }
-    }
-
-    public static void addItem(RandomizedItemStack randomizedItemStack) {
-        items.add(Either.left(randomizedItemStack));
-        blocksAndItems.add(Either.left(randomizedItemStack));
-    }
 
     public static void addTag(RandomizedItemTag randomizedItemTag) {
-        items.add(Either.right(randomizedItemTag));
         blocksAndItems.add(Either.right(randomizedItemTag));
     }
 
     @SafeVarargs
     public static void addTags(double weight, TagKey<Item>... tags) {
         for (TagKey<Item> tagKey : tags) {
-            addTag(new RandomizedItemTag(tagKey, new WeightedWithRandomCount(1, Optional.empty(), weight)));
+            addTag(new RandomizedItemTag(Either.left(tagKey), new WeightedWithRandomCount(1, Optional.empty(), weight)));
         }
     }
 
     @SafeVarargs
     public static void addTagsMinMax(double weight, int min, int max, TagKey<Item>... tags) {
         for (TagKey<Item> tagKey : tags) {
-            addTag(new RandomizedItemTag(tagKey, new WeightedWithRandomCount(min, max, weight)));
+            addTag(new RandomizedItemTag(Either.left(tagKey), new WeightedWithRandomCount(min, max, weight)));
         }
-    }
-
-    public static void addItems(double weight, Object... items) {
-        for (Object object : items) {
-            if (object instanceof ItemLike item) {
-                addItem(new RandomizedItemStack(item, 1, item.asItem().getDefaultMaxStackSize(), weight));
-            } else if (object instanceof ItemStack itemStack) {
-                addItem(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, itemStack.getMaxStackSize(), weight)));
-            }
-        }
-    }
-
-    public static void addItemsMinMax(double weight, int min, int max, Object... items) {
-        for (Object object : items) {
-            if (object instanceof ItemLike itemLike) {
-                addItem(new RandomizedItemStack(itemLike, min, max, weight));
-            } else if (object instanceof ItemStack itemStack) {
-                addItem(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(min, max, weight)));
-            }
-        }
-    }
-
-    public static void addEquipmentSet(double weight, Object... items) {
-        addEquipmentSet(weight, DataComponentPatch.EMPTY, items);
-    }
-
-    public static void addEquipmentSet(double weight, DataComponentPatch forAll, Object... items) {
-        ItemStack[] set = new ItemStack[items.length];
-
-        for (int i = 0; i < set.length; i++) {
-            if (items[i] instanceof ItemLike item) {
-                set[i] = new ItemStack(item);
-            } else if (items[i] instanceof ItemStack itemStack) {
-                set[i] = itemStack;
-            } else continue;
-            set[i].applyComponents(forAll);
-        }
-
-        equipmentSets.add(new WeightedSet(weight, set));
     }
 
     @SafeVarargs
@@ -194,40 +108,6 @@ public class PandorasBoxHelper {
     public static void addPotions(List<WeightedPotion> list, double weight, int minAmplifier, int maxAmplifier, int minDuration, int maxDuration, HolderSet<MobEffect>... potions) {
         for (HolderSet<MobEffect> effect : potions) {
             list.add(new WeightedPotion(weight, effect, new ILinear(minAmplifier, maxAmplifier), new ILinear(minDuration, maxDuration)));
-        }
-    }
-
-    public static void addEnchantableArmor(double weight, Object... items) {
-        addEnchantableArmor(weight, DataComponentPatch.EMPTY, items);
-    }
-
-    public static void addEnchantableArmor(double weight, DataComponentPatch forAll, Object... items) {
-        for (Object object : items) {
-            if (object instanceof ItemLike item) {
-                ItemStack itemStack = new ItemStack(item);
-                itemStack.applyComponents(forAll);
-                enchantableArmorList.add(Either.left(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, 1, weight))));
-            } else if (object instanceof ItemStack itemStack) {
-                itemStack.applyComponents(forAll);
-                enchantableArmorList.add(Either.left(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, 1, weight))));
-            }
-        }
-    }
-
-    public static void addEnchantableTools(double weight, Object... items) {
-        addEnchantableTools(weight, DataComponentPatch.EMPTY, items);
-    }
-
-    public static void addEnchantableTools(double weight, DataComponentPatch forAll, Object... items) {
-        for (Object object : items) {
-            if (object instanceof ItemLike item) {
-                ItemStack itemStack = new ItemStack(item);
-                itemStack.applyComponents(forAll);
-                enchantableToolList.add(Either.left(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, 1, weight))));
-            } else if (object instanceof ItemStack itemStack) {
-                itemStack.applyComponents(forAll);
-                enchantableToolList.add(Either.left(new RandomizedItemStack(itemStack, new WeightedWithRandomCount(1, 1, weight))));
-            }
         }
     }
 
@@ -256,160 +136,39 @@ public class PandorasBoxHelper {
     public static void initialize() {
         cachedBlockLists.clear();
         cachedRandomizedStackLists.clear();
-        landMobs.clear();
-        mobs.clear();
-        creatures.clear();
-        waterCreatures.clear();
-        waterMobs.clear();
-        tameableCreatures.clear();
         blocks.clear();
         randomizableBlockProperties.clear();
         blocksAndItems.clear();
-        items.clear();
-        equipmentSets.clear();
         equipmentForLevels.clear();
         buffs.clear();
         debuffs.clear();
-        enchantableArmorList.clear();
-        enchantableToolList.clear();
-        heavyBlocks.clear();
-        addEntities(landMobs, 10.0, 3, 10, "zombie", "drowned");
-        addEntities(landMobs, 7.5, 3, 10, "husk");
-        addEntities(landMobs, 10.0, 2, 8, "spider");
-        addEntities(landMobs, 10.0, 2, 5, "skeleton");
-        addEntities(landMobs, 10.0, 2, 5, "pillager");
-        addEntities(landMobs, 7.5, 2, 5, "stray");
-        addEntities(landMobs, 5.0, 2, 5, "wither_skeleton");
-        addEntities(landMobs, 10.0, 2, 8, "creeper");
-        addEntities(landMobs, 6.0, 2, 8, "slime");
-        addEntities(landMobs, 6.0, 2, 8, "zombified_piglin");
-        addEntities(landMobs, 6.0, 2, 8, "hoglin");
-        addEntities(landMobs, 6.0, 2, 6, "enderman");
-        addEntities(landMobs, 5.0, 2, 4, "cave_spider");
-        addEntities(landMobs, 5.0, 10, 20, "silverfish");
-        addEntities(landMobs, 5.0, 2, 6, "magma_cube");
-        addEntities(landMobs, 4.0, 2, 8, "vindicator");
-        addEntities(landMobs, 4.0, 2, 4, "zoglin");
-        addEntities(landMobs, 4.0, 2, 4, "witch");
-        addEntities(landMobs, 4.0, 10, 20, "endermite");
-        addEntities(landMobs, 5.0, 2, 6, "pbspecial_angry_wolf");
-        addEntities(landMobs, 4.0, 2, 5, "pbspecial_charged_creeper");
-        addEntities(landMobs, 4.0, 2, 5, "breeze");
-        addEntities(landMobs, 3.0, 1, 1, "evoker");
-        addEntities(landMobs, 2.0, 2, 3, "piglin_brute");
-        addEntities(landMobs, 1.0, 1, 1, "ravager");
-        mobs.addAll(landMobs);
-        addEntities(mobs, 1.0, 1, 1, "wither");
-        addEntities(mobs, 4.0, 2, 5, "blaze");
-        addEntities(mobs, 4.0, 1, 4, "ghast");
-        addEntities(mobs, 4.0, 1, 4, "phantom");
 
-        addEntities(creatures, 10.0, 3, 10, "pig", "sheep", "cow", "chicken");
-        addEntities(creatures, 6.0, 2, 6, "wolf");
-        addEntities(creatures, 6.0, 2, 6, "panda");
-        addEntities(creatures, 6.0, 2, 2, "polar_bear");
-        addEntities(creatures, 6.0, 2, 2, "sniffer");
-        addEntities(creatures, 6.0, 2, 6, "fox");
-        addEntities(creatures, 6.0, 2, 6, "allay");
-        addEntities(creatures, 5.0, 4, 10, "bat");
-        addEntities(creatures, 5.0, 4, 10, "bee");
-        addEntities(creatures, 6.0, 4, 10, "frog");
-        addEntities(creatures, 7.0, 6, 20, "rabbit");
-        addEntities(creatures, 4.0, 3, 7, "mooshroom");
-        addEntities(creatures, 4.0, 3, 7, "snow_golem");
-        addEntities(creatures, 4.0, 2, 5, "horse", "donkey", "mule");
-        addEntities(creatures, 4.0, 2, 5, "llama");
-        addEntities(creatures, 4.0, 2, 6, "ocelot", "cat");
-        addEntities(creatures, 4.0, 2, 6, "parrot");
-        addEntities(creatures, 3.0, 3, 6, "wandering_trader");
-        addEntities(creatures, 3.0, 3, 6, "villager");
-        addEntities(creatures, 3.0, 3, 6, "goat");
-        addEntities(creatures, 3.0, 3, 6, "piglin");
-        addEntities(creatures, 3.0, 2, 4, "iron_golem");
-
-        addEntities(waterCreatures, 6.0, 6, 20, "squid", "glow_squid", "dolphin", "cod", "salmon", "pufferfish", "turtle", "tropical_fish", "axolotl", "tadpole");
-
-        addEntities(waterMobs, 6.0, 3, 10, "drowned");
-        addEntities(waterMobs, 6.0, 3, 10, "guardian");
-        addEntities(waterMobs, 5.0, 1, 1, "elder_guardian");
-
-        addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_wolf_tamed");
-        addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_cat_tamed");
-        addEntities(tameableCreatures, 4.0, 1, 4, "pbspecial_parrot_tamed");
-
-        addBlockTags(40.0, BlockTags.PLANKS, BlockTags.WOOL, BlockTags.LEAVES, BlockTags.LOGS, BlockTags.SLABS, BlockTags.STAIRS, BlockTags.STONE_BRICKS);
+        addBlockTags(30.0, BlockTags.PLANKS, BlockTags.WOOL, BlockTags.LEAVES, BlockTags.LOGS, BlockTags.STONE_BRICKS);
         addBlocks(15.0, Blocks.PRISMARINE, Blocks.QUARTZ_BLOCK, Blocks.SMOOTH_QUARTZ);
         addBlocks(10.0, Blocks.GRAVEL, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.CLAY, Blocks.POLISHED_DEEPSLATE, Blocks.DEEPSLATE_TILES, Blocks.NETHER_BRICKS, Blocks.BRICKS, Blocks.END_STONE, Blocks.END_STONE_BRICKS);
-        addBlockTags(10.0, ConventionalBlockTags.COBBLESTONES, BlockTags.NYLIUM, PandorasBox.ALL_TERRACOTTA, ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES, BlockTags.BASE_STONE_NETHER, BlockTags.DIRT);
-        addBlockTags(8.0, BlockTags.SAND, ConventionalBlockTags.STONES, BlockTags.WITHER_SUMMON_BASE_BLOCKS, ConventionalBlockTags.QUARTZ_ORES, BlockTags.COAL_ORES, BlockTags.COPPER_ORES, BlockTags.LAPIS_ORES, BlockTags.REDSTONE_ORES, BlockTags.SNOW, ConventionalBlockTags.CHESTS, ConventionalBlockTags.BARRELS, ConventionalBlockTags.SANDSTONE_BLOCKS, ConventionalBlockTags.VILLAGER_JOB_SITES, BlockTags.RAILS, ConventionalBlockTags.CONCRETES, BlockTags.CONCRETE_POWDER, BlockTags.SAPLINGS, BlockTags.FLOWER_POTS, ConventionalBlockTags.GLASS_BLOCKS, ConventionalBlockTags.GLASS_PANES);
-        addBlocks(0.2, Blocks.LODESTONE);
-        addBlockTags(0.2, ConventionalBlockTags.STORAGE_BLOCKS_NETHERITE, ConventionalBlockTags.STORAGE_BLOCKS_DIAMOND, ConventionalBlockTags.STORAGE_BLOCKS_EMERALD, ConventionalBlockTags.STORAGE_BLOCKS_GOLD);
-        addBlocks(0.3, Blocks.IRON_BLOCK);
-        addBlockTags(0.5, ConventionalBlockTags.NETHERITE_SCRAP_ORES, BlockTags.DIAMOND_ORES, BlockTags.EMERALD_ORES, BlockTags.GOLD_ORES);
-        addBlockTags(1.0, BlockTags.IRON_ORES);
-        addBlocks(2.0, Blocks.TNT, Blocks.GLOWSTONE, Blocks.SHROOMLIGHT, Blocks.SPONGE);
-        addBlockTags(2.0, ConventionalBlockTags.STORAGE_BLOCKS_COAL, ConventionalBlockTags.STORAGE_BLOCKS_COPPER, ConventionalBlockTags.STORAGE_BLOCKS_LAPIS, ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, ConventionalBlockTags.STORAGE_BLOCKS_SLIME, ConventionalBlockTags.STORAGE_BLOCKS_RESIN);
+        addBlockTags(10.0, ConventionalBlockTags.COBBLESTONES, BlockTags.NYLIUM, PandoraBlockTags.ALL_TERRACOTTA, ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES, BlockTags.BASE_STONE_NETHER, BlockTags.DIRT, BlockTags.SLABS, BlockTags.STAIRS);
+        addBlockTags(8.0, BlockTags.SAND, ConventionalBlockTags.STONES, BlockTags.WITHER_SUMMON_BASE_BLOCKS, ConventionalBlockTags.QUARTZ_ORES, BlockTags.COAL_ORES, BlockTags.COPPER_ORES, BlockTags.LAPIS_ORES, BlockTags.REDSTONE_ORES, BlockTags.IRON_ORES, BlockTags.SNOW, ConventionalBlockTags.CHESTS, ConventionalBlockTags.BARRELS, ConventionalBlockTags.SANDSTONE_BLOCKS, ConventionalBlockTags.VILLAGER_JOB_SITES, BlockTags.RAILS, ConventionalBlockTags.CONCRETES, BlockTags.CONCRETE_POWDER, BlockTags.SAPLINGS, BlockTags.FLOWER_POTS, ConventionalBlockTags.GLASS_BLOCKS, ConventionalBlockTags.GLASS_PANES);
         addBlocks(5.0, Blocks.DRAGON_EGG, Blocks.NOTE_BLOCK, Blocks.REDSTONE_LAMP, Blocks.SEA_LANTERN, Blocks.SNOW, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.CHISELED_BOOKSHELF);
         addBlockTags(5.0, ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, ConventionalBlockTags.STORAGE_BLOCKS_DRIED_KELP, ConventionalBlockTags.NORMAL_OBSIDIANS, ConventionalBlockTags.CRYING_OBSIDIANS);
+        addBlocks(2.0, Blocks.LODESTONE, Blocks.TNT, Blocks.GLOWSTONE, Blocks.SHROOMLIGHT, Blocks.SPONGE);
+        addBlockTags(2.0, ConventionalBlockTags.STORAGE_BLOCKS_COAL, ConventionalBlockTags.STORAGE_BLOCKS_COPPER, ConventionalBlockTags.STORAGE_BLOCKS_LAPIS, ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, ConventionalBlockTags.STORAGE_BLOCKS_SLIME, ConventionalBlockTags.STORAGE_BLOCKS_RESIN);
+        addBlockTags(0.5, ConventionalBlockTags.NETHERITE_SCRAP_ORES, BlockTags.DIAMOND_ORES, BlockTags.EMERALD_ORES, BlockTags.GOLD_ORES);
+        addBlockTags(0.2, ConventionalBlockTags.STORAGE_BLOCKS_NETHERITE, ConventionalBlockTags.STORAGE_BLOCKS_DIAMOND, ConventionalBlockTags.STORAGE_BLOCKS_EMERALD, ConventionalBlockTags.STORAGE_BLOCKS_GOLD, ConventionalBlockTags.STORAGE_BLOCKS_IRON);
 
-        addItems(10.0, Items.CLAY_BALL, Items.FISHING_ROD, Items.FLINT, Items.EGG, Items.PAPER, Items.TORCH, Items.SOUL_TORCH);
-        addTags(10.0, ItemTags.COALS, ConventionalItemTags.COPPER_INGOTS,
-                ConventionalItemTags.CROPS, ConventionalItemTags.FERTILIZERS,
-                ConventionalItemTags.EMPTY_BUCKETS, ConventionalItemTags.REDSTONE_DUSTS,
-                ConventionalItemTags.WOODEN_RODS, ItemTags.VILLAGER_PLANTABLE_SEEDS,
-                ConventionalItemTags.BRICKS, PandorasBox.PANDORA_ITEMS,
-                ConventionalItemTags.GOLD_NUGGETS, ConventionalItemTags.FISHING_ROD_TOOLS,
-                ConventionalItemTags.RAW_MEAT_FOODS, ConventionalItemTags.RAW_FISH_FOODS,
-                ConventionalItemTags.COOKED_MEAT_FOODS, ConventionalItemTags.COOKED_FISH_FOODS,
-                ConventionalItemTags.BREAD_FOODS, ConventionalItemTags.COOKIE_FOODS,
-                ConventionalItemTags.BERRY_FOODS, ConventionalItemTags.PIE_FOODS,
-                ConventionalItemTags.FOOD_POISONING_FOODS, ConventionalItemTags.CANDY_FOODS,
-                ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS);
-        addItems(10.0, Items.HONEYCOMB, Items.MUSHROOM_STEW, Items.APPLE, Items.RABBIT_FOOT, Items.RABBIT_HIDE, Items.RABBIT_STEW, Items.HONEY_BOTTLE);
-        addItems(8.0,  Items.PAINTING, Items.FLOWER_POT, Items.MINECART, Items.CAULDRON);
-        addTags(8.0, ItemTags.BOATS, ItemTags.BEDS, ConventionalItemTags.LEATHERS,
-                ConventionalItemTags.MILK_BUCKETS, ConventionalItemTags.LAVA_BUCKETS, ConventionalItemTags.WATER_BUCKETS,
-                ConventionalItemTags.BRUSH_TOOLS, ConventionalItemTags.IGNITER_TOOLS, ConventionalItemTags.SOUP_FOODS,
-                ConventionalItemTags.SLIME_BALLS);
-        addItems(8.0, Items.NAME_TAG, Items.NAUTILUS_SHELL, Items.INK_SAC, Items.GLOW_INK_SAC, Items.ARMADILLO_SCUTE, Items.LANTERN, Items.SOUL_LANTERN, Items.SPYGLASS);
-        addTags(6.0, ConventionalItemTags.IRON_INGOTS, ConventionalItemTags.IRON_NUGGETS, ConventionalItemTags.GLOWSTONE_DUSTS,
-                ConventionalItemTags.AMETHYST_GEMS, ConventionalItemTags.RODS, ItemTags.BREWING_FUEL);
-        addItems(6.0, Items.WIND_CHARGE, Items.CLOCK, Items.GHAST_TEAR, Items.ENDER_EYE, Items.GLISTERING_MELON_SLICE, Items.FERMENTED_SPIDER_EYE, Items.MAGMA_CREAM, Items.GOLDEN_CARROT, Items.TURTLE_SCUTE, Items.PHANTOM_MEMBRANE);
-        addItems(4.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
-        addItems(5.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.COPPER_SWORD, Items.COPPER_PICKAXE, Items.COPPER_SHOVEL, Items.COPPER_AXE, Items.COPPER_HOE);
-        addItems(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE);
-        addItems(4.0, Items.TURTLE_HELMET, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
-        addItems(4.0, Items.COPPER_HORSE_ARMOR, Items.COMPASS, Items.LEAD, Items.CHORUS_FRUIT, Items.HEART_OF_THE_SEA);
-        addItems(3.0, Items.SHIELD, Items.WOLF_ARMOR, Items.LEATHER_HORSE_ARMOR, Items.IRON_HORSE_ARMOR, Items.GOLDEN_HORSE_ARMOR);
-        addTagsMinMax(5.0, 1, 1, ConventionalItemTags.CHESTS, ConventionalItemTags.BARRELS);
-        addTagsMinMax(2.0, 1, 1, ItemTags.ANVIL);
-        addItemsMinMax(2.0, 1, 1, Items.NETHER_STAR, Items.BEACON, Items.DISPENSER, Items.JUKEBOX, Items.ENCHANTING_TABLE);
-        addTags(2.0, ConventionalItemTags.MUSIC_DISCS, ConventionalItemTags.DIAMOND_GEMS, ConventionalItemTags.EMERALD_GEMS, ConventionalItemTags.GOLD_INGOTS, ConventionalItemTags.GOLDEN_FOODS, ConventionalItemTags.ENDER_PEARLS, ConventionalItemTags.PRISMARINE_GEMS);
-        addItems(2.0, Items.PRISMARINE_SHARD, Items.OMINOUS_BOTTLE);
-        addItemsMinMax(0.5, 1, 5, Items.NETHERITE_SCRAP, Items.DISC_FRAGMENT_5, Items.ECHO_SHARD, Items.RECOVERY_COMPASS);
-        addItems(1.0, Items.ELYTRA, Items.DRAGON_BREATH);
-        addItems(2.0, Items.DIAMOND_HORSE_ARMOR, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
-        addItems(0.2, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS, Items.NETHERITE_SWORD, Items.NETHERITE_PICKAXE, Items.NETHERITE_SHOVEL, Items.NETHERITE_AXE, Items.NETHERITE_HOE);
+        addTags(10.0, PandoraItemTags.PANDORA_ITEMS_MISC_COMMON);
         addTagsMinMax(10.0, 1, 1, ConventionalItemTags.DYES);
-
-        addEquipmentSet(10.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE);
-        addEquipmentSet(8.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.COPPER_SWORD, Items.COPPER_PICKAXE, Items.COPPER_SHOVEL, Items.COPPER_AXE, Items.COPPER_HOE);
-        addEquipmentSet(6.0, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE);
-        addEquipmentSet(4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE);
-        addEquipmentSet(2.0, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE);
-        addEquipmentSet(1.0, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS, Items.NETHERITE_SWORD, Items.NETHERITE_PICKAXE, Items.NETHERITE_SHOVEL, Items.NETHERITE_AXE, Items.NETHERITE_HOE);
-        addEquipmentSet(6.0, Items.CROSSBOW, Items.BOW, new ItemStack(Items.ARROW, 64), Items.IRON_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.LEATHER_BOOTS, Items.IRON_AXE, new ItemStack(Items.APPLE, 8));
-        addEquipmentSet(6.0, Items.IRON_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.DIAMOND_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.STONE_SWORD, new ItemStack(Items.BREAD, 8), new ItemStack(Items.TORCH, 32));
-        addEquipmentSet(3.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.IRON_BOOTS, Items.SHIELD, Items.COPPER_SWORD, Items.IRON_PICKAXE, Items.IRON_AXE, Items.COPPER_SHOVEL, Items.COPPER_HOE, new ItemStack(Items.COAL, 36), new ItemStack(Items.TORCH, 64), new ItemStack(Items.BREAD, 48));
-        addEquipmentSet(8.0, Items.LEATHER_HELMET, Items.IRON_HOE, new ItemStack(Items.WHEAT_SEEDS, 32), new ItemStack(Items.PUMPKIN_SEEDS, 4), new ItemStack(Items.MELON_SEEDS, 4), new ItemStack(Items.BLUE_DYE, 8), new ItemStack(Items.DIRT, 32), Items.WATER_BUCKET, Items.WATER_BUCKET);
-        addEquipmentSet(6.0, Items.IRON_HELMET, Items.DIAMOND_AXE, new ItemStack(Items.COOKED_BEEF, 16));
-        addEquipmentSet(6.0, Items.TURTLE_HELMET, Items.IRON_BOOTS, Items.TRIDENT, Items.IRON_SWORD, new ItemStack(Items.BREAD, 48));
-        addEquipmentSet(0.1, Items.DIAMOND_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.TRIDENT, Items.MACE, Items.IRON_AXE, new ItemStack(Items.COOKED_BEEF, 8));
-
-        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.WOOL);
-        for(Holder<Block> block : blocks)
-            if(RandomSource.create().nextDouble() > 0.8)
-                addEquipmentSet(6.0, new ItemStack(Items.REDSTONE, 64), new ItemStack(block.value(), 16), new ItemStack(block.value(), 16), new ItemStack(block.value(), 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
+        addTags(8.0, PandoraItemTags.PANDORA_ITEMS_MISC_UNCOMMON);
+        addTags(6.0, PandoraItemTags.PANDORA_ITEMS_MISC_RARE);
+        addTags(4.0, PandoraItemTags.PANDORA_ITEMS_EQUIPMENT_COMMON);
+        addTags(4.0, PandoraItemTags.PANDORA_ITEMS_MISC_VERY_RARE);
+        addTags(3.0, PandoraItemTags.PANDORA_ITEMS_EQUIPMENT_UNCOMMON);
+        addTagsMinMax(5.0, 1, 1, PandoraItemTags.PANDORA_ITEMS_SINGLES_VERY_RARE);
+        addTagsMinMax(2.0, 1, 1, PandoraItemTags.PANDORA_ITEMS_SINGLES_EPIC);
+        addTags(2.0, PandoraItemTags.PANDORA_ITEMS_MISC_EPIC);
+        addTagsMinMax(0.5, 1, 5, PandoraItemTags.PANDORA_ITEMS_LEGENDARY);
+        addTags(1.0, PandoraItemTags.PANDORA_ITEMS_DRAGON);
+        addTags(2.0, PandoraItemTags.PANDORA_ITEMS_EQUIPMENT_RARE);
+        addTags(0.2, PandoraItemTags.PANDORA_ITEMS_EQUIPMENT_VERY_RARE);
 
         addEquipmentLevelsInOrder(Items.WOODEN_SWORD, Items.WOODEN_SWORD, Items.GOLDEN_SWORD, Items.STONE_SWORD, Items.COPPER_SWORD, Items.IRON_SWORD, Items.DIAMOND_SWORD, Items.NETHERITE_SWORD);
         addEquipmentLevelsInOrder(Items.WOODEN_AXE, Items.WOODEN_AXE, Items.GOLDEN_AXE, Items.STONE_AXE, Items.COPPER_AXE, Items.IRON_AXE, Items.DIAMOND_AXE, Items.NETHERITE_AXE);
@@ -422,22 +181,6 @@ public class PandorasBoxHelper {
         addPotions(debuffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.BLINDNESS, MobEffects.NAUSEA, MobEffects.SLOWNESS, MobEffects.MINING_FATIGUE, MobEffects.WEAKNESS, MobEffects.HUNGER, MobEffects.GLOWING);
         addPotions(debuffs, 10.0, 0, 2, 20 * 30, 20 * 60, MobEffects.WITHER, MobEffects.DARKNESS);
         addPotions(debuffs, 6.0, 0, 3, 20 * 30, 20 * 45, MobEffectInit.SHRUNK);
-
-        addEnchantableArmor(10.0, Items.IRON_HELMET, Items.GOLDEN_HELMET, Items.DIAMOND_HELMET, Items.IRON_CHESTPLATE, Items.GOLDEN_CHESTPLATE, Items.DIAMOND_CHESTPLATE, Items.IRON_LEGGINGS, Items.GOLDEN_LEGGINGS, Items.DIAMOND_LEGGINGS, Items.IRON_BOOTS, Items.GOLDEN_BOOTS, Items.DIAMOND_BOOTS, Items.TURTLE_HELMET);
-
-        addEnchantableTools(10.0, Items.IRON_SWORD, Items.GOLDEN_SWORD, Items.DIAMOND_SWORD, Items.IRON_SHOVEL, Items.GOLDEN_SHOVEL, Items.DIAMOND_SHOVEL, Items.IRON_PICKAXE, Items.GOLDEN_PICKAXE, Items.DIAMOND_PICKAXE, Items.IRON_AXE, Items.GOLDEN_AXE, Items.DIAMOND_AXE, Items.IRON_HOE, Items.GOLDEN_HOE, Items.DIAMOND_HOE, Items.BOW, Items.CROSSBOW, Items.TRIDENT);
-
-        addEnchantableArmor(1.5, DataComponentPatch.builder().set(DataComponents.UNBREAKABLE, Unit.INSTANCE).build(), Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS);
-
-        addEnchantableTools(1.5, DataComponentPatch.builder().set(DataComponents.UNBREAKABLE, Unit.INSTANCE).build(), Items.COPPER_SWORD, Items.COPPER_SHOVEL, Items.COPPER_PICKAXE, Items.COPPER_AXE, Items.COPPER_HOE);
-
-        addEnchantableArmor(1.0, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS);
-
-        addEnchantableTools(1.0, Items.NETHERITE_SWORD, Items.NETHERITE_SHOVEL, Items.NETHERITE_PICKAXE, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.TRIDENT);
-
-        addEnchantableTools(0.1, Items.MACE);
-
-        addBlocks(heavyBlocks, 10.0, Blocks.ANVIL);
 
         addAllRandomizableBlockProperties();
     }
@@ -512,7 +255,7 @@ public class PandorasBoxHelper {
         return new ArrayList<>(select.values());
     }
 
-    public static List<RandomizedItemStack> assembleRandomisedStacks(Registry<Item> itemRegistry, EitherArrayList<RandomizedItemStack, RandomizedItemTag> selection) {
+    public static List<RandomizedItemStack> assembleRandomisedStacks(Registry<Item> itemRegistry, Registry<Block> blockRegistry, EitherArrayList<RandomizedItemStack, RandomizedItemTag> selection) {
         if (cachedRandomizedStackLists.containsKey(selection)) return cachedRandomizedStackLists.get(selection);
         Map<Holder<Item>, RandomizedItemStack> select = new HashMap<>();
         Consumer<RandomizedItemStack> consumer = randomizedItemStack -> {
@@ -521,8 +264,12 @@ public class PandorasBoxHelper {
         selection.leftSide().forEach(consumer);
         selection.rightSide().stream().map(randomizedItemTag -> {
             List<RandomizedItemStack> edit = new ArrayList<>();
-            Iterable<Holder<Item>> ts = itemRegistry.getTagOrEmpty(randomizedItemTag.items());
-            Streams.stream(ts).forEach(itemHolder -> edit.add(new RandomizedItemStack(new ItemStack(itemHolder), randomizedItemTag.count().copyWithMaxCountOverride(itemHolder.value().getDefaultMaxStackSize()))));
+            List<Item> ts = randomizedItemTag.items().map(itemTagKey -> Streams.stream(itemRegistry.getTagOrEmpty(itemTagKey)).map(Holder::value).toList(), blockTagKey -> Streams.stream(blockRegistry.getTagOrEmpty(blockTagKey)).map(blockHolder -> blockHolder.value().asItem()).toList());
+            ts.forEach(item -> {
+                ItemStack stack = new ItemStack(item);
+                stack.applyComponents(randomizedItemTag.patch());
+                edit.add(new RandomizedItemStack(stack, randomizedItemTag.count().copyWithMaxCountOverride(stack.getMaxStackSize())));
+            });
             return edit;
         }).forEach(col -> col.forEach(consumer));
         List<RandomizedItemStack> output = new ArrayList<>(select.values());

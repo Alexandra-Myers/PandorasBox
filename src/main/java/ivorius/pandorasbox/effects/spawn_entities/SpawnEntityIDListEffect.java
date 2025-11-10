@@ -143,7 +143,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             if (health != null) {
                 double healthMultiplierP = random.nextDouble() * buffLevel * 0.25;
                 health.addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_health"), healthMultiplierP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-                livingEntity.setHealth(livingEntity.getMaxHealth());
+                livingEntity.setHealth((float) (livingEntity.getHealth() + livingEntity.getHealth() * healthMultiplierP));
             }
 
             AttributeInstance knockbackResistance = livingEntity.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
@@ -290,7 +290,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             } else if ("pbspecial_charged_creeper".equals(trunkEntityID)) {
                 Creeper creeper = EntityType.CREEPER.create(serverLevel, EntitySpawnReason.COMMAND);
                 assert creeper != null;
-                creeper.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                creeper.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
                 moveTo(creeper, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
                 creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
                 return creeper;

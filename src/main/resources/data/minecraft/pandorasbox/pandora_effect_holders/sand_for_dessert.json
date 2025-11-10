@@ -8,7 +8,10 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "convert_effect": {
+    "chance_for_more_effects": 0.1,
+    "generate_effect": {
+      "biome": "minecraft:desert",
+      "exclusions": [],
       "mappers": [
         {
           "targets": [
@@ -16,7 +19,8 @@
             "minecraft:fern"
           ],
           "to_replace": "minecraft:short_dry_grass",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
@@ -24,7 +28,8 @@
             "minecraft:large_fern"
           ],
           "to_replace": "minecraft:tall_dry_grass",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
@@ -42,7 +47,8 @@
             "#minecraft:logs"
           ],
           "to_replace": "minecraft:air",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
@@ -52,9 +58,12 @@
             "#minecraft:dirt",
             "minecraft:netherrack"
           ],
-          "to_replace": "minecraft:sand",
+          "surface_block": "minecraft:sand",
+          "under_block": "minecraft:sand",
+          "discard_surface_chance": 0.0,
           "max_blocks_beneath_surface": 3,
-          "type": "pandorasbox:convert_limit_height"
+          "mapper_type": "pandorasbox:convert_surface",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
@@ -70,41 +79,54 @@
             "minecraft:end_stone"
           ],
           "to_replace": "minecraft:sandstone",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
             "#minecraft:ice"
           ],
           "to_replace": "minecraft:water",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         }
       ],
       "generators": [
         {
-          "feature_set": [
-            "minecraft:patch_cactus"
-          ],
-          "placed": "minecraft:sand",
-          "force": false,
           "base_chance": 0.03,
           "block_set": [
             "#c:sandstone/blocks"
           ],
-          "type": "pandorasbox:generate_feature"
-        },
-        {
           "feature_set": [
-            "minecraft:patch_dead_bush",
-            "minecraft:patch_dry_grass"
+            {
+              "weight": 1.0,
+              "key": "minecraft:patch_cactus"
+            }
           ],
           "placed": "minecraft:sand",
           "force": false,
+          "generator_type": "pandorasbox:generate_feature",
+          "type": "pandorasbox:direct"
+        },
+        {
           "base_chance": 0.05,
           "block_set": [
             "#c:sandstone/blocks"
           ],
-          "type": "pandorasbox:generate_feature"
+          "feature_set": [
+            {
+              "weight": 1.0,
+              "key": "minecraft:patch_dead_bush"
+            },
+            {
+              "weight": 1.0,
+              "key": "minecraft:patch_dry_grass"
+            }
+          ],
+          "placed": "minecraft:sand",
+          "force": false,
+          "generator_type": "pandorasbox:generate_feature",
+          "type": "pandorasbox:direct"
         }
       ],
       "spawners": [
@@ -134,11 +156,9 @@
           "type": "pandorasbox:spawn_random"
         }
       ],
-      "biome": "minecraft:desert",
-      "exclusions": []
+      "type": "pandorasbox:prepare_gen_convert"
     },
-    "chance_for_more_effects": 0.1,
-    "type": "pandorasbox:convert_generic"
+    "type": "pandorasbox:generate"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:nether_star",
+    "minecraft:beacon",
+    "minecraft:dispenser",
+    "minecraft:jukebox",
+    "minecraft:enchanting_table",
+    "#minecraft:anvil"
+  ]
+}

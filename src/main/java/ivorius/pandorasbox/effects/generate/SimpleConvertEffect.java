@@ -36,9 +36,6 @@ public record SimpleConvertEffect(Optional<ResourceKey<Biome>> optionalBiome, Ei
                             FeatureGenerator.CODEC.listOf().fieldOf("generators").forGetter(SimpleConvertEffect::generators),
                             EntitySpawner.CODEC.listOf().fieldOf("spawners").forGetter(SimpleConvertEffect::spawners))
                     .apply(instance, SimpleConvertEffect::new));
-    public SimpleConvertEffect(Optional<ResourceKey<Biome>> optionalBiome, List<BlockMapper> mappers, List<FeatureGenerator> generators, List<EntitySpawner> spawners) {
-        this(optionalBiome, NO_EXCLUSIONS, mappers, generators, spawners);
-    }
 
     @Override
     public void runPostConvert(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, int unifiedSeed) {

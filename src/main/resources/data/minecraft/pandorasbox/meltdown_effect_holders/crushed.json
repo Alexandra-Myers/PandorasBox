@@ -1,0 +1,21 @@
+{
+  "effect_creator": {
+    "time": {
+      "min": 50,
+      "max": 125,
+      "type": "minecraft:linear"
+    },
+    "range": {
+      "min": 20.0,
+      "max": 50.0,
+      "type": "minecraft:linear"
+    },
+    "chance_for_extra_cycles": {
+      "guaranteed": true,
+      "type": "minecraft:constant"
+    },
+    "type": "pandorasbox:crush_entities"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

@@ -5,9 +5,11 @@
   "mixins": [
     "ItemMixin",
     "ItemStackMixin",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "TreeFeatureMixin"
   ],
   "client": [
+    "client.GameRendererMixin",
     "client.GuiMixin",
     "client.KeyboardInputMixin",
     "client.MinecraftMixin",

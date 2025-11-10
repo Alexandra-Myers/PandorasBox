@@ -8,7 +8,14 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "convert_effect": {
+    "chance_for_more_effects": 0.1,
+    "generate_effect": {
+      "biome": "minecraft:end_barrens",
+      "exclusions": [
+        "#c:obsidians",
+        "minecraft:chorus_plant",
+        "minecraft:chorus_flower"
+      ],
       "mappers": [
         {
           "targets": [
@@ -33,7 +40,8 @@
             "#minecraft:logs"
           ],
           "to_replace": "minecraft:obsidian",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
@@ -41,27 +49,33 @@
             "minecraft:red_mushroom"
           ],
           "to_replace": "minecraft:air",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "to_replace": "minecraft:end_stone",
-          "type": "pandorasbox:convert_all"
+          "mapper_type": "pandorasbox:convert_all",
+          "type": "pandorasbox:direct"
         }
       ],
       "generators": [
         {
-          "feature_set": [
-            "minecraft:chorus_plant"
-          ],
-          "placed": "minecraft:end_stone",
-          "force": false,
           "base_chance": 0.02,
           "block_set": [
             "#c:obsidians",
             "minecraft:chorus_flower",
             "minecraft:chorus_plant"
           ],
-          "type": "pandorasbox:generate_feature"
+          "feature_set": [
+            {
+              "weight": 1.0,
+              "key": "minecraft:chorus_plant"
+            }
+          ],
+          "placed": "minecraft:end_stone",
+          "force": false,
+          "generator_type": "pandorasbox:generate_feature",
+          "type": "pandorasbox:direct"
         }
       ],
       "spawners": [
@@ -71,15 +85,9 @@
           "type": "pandorasbox:spawn_random"
         }
       ],
-      "biome": "minecraft:end_barrens",
-      "exclusions": [
-        "#c:obsidians",
-        "minecraft:chorus_plant",
-        "minecraft:chorus_flower"
-      ]
+      "type": "pandorasbox:prepare_gen_convert"
     },
-    "chance_for_more_effects": 0.1,
-    "type": "pandorasbox:convert_generic"
+    "type": "pandorasbox:generate"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

@@ -7,7 +7,6 @@ import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -44,10 +43,9 @@ public record ChrismasGiftsMapper() implements BlockMapper {
                 ChestBlockEntity chestBlockEntity = (ChestBlockEntity) serverLevel.getBlockEntity(pos);
 
                 if (chestBlockEntity != null) {
-                    Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, PandorasBoxHelper.blocksAndItems);
+                    Collection<RandomizedItemStack> itemSelection = PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, BuiltInRegistries.BLOCK, PandorasBoxHelper.blocksAndItems);
                     RandomizedItemStack chestContent = WeightedSelector.selectItem(random, itemSelection);
                     ItemStack stack = chestContent.itemStack().copy();
-                    if (chestContent.max() > stack.getMaxStackSize()) stack.set(DataComponents.MAX_STACK_SIZE, chestContent.max());
                     stack.setCount(chestContent.min() + random.nextInt(chestContent.max() - chestContent.min() + 1));
 
                     chestBlockEntity.setItem(serverLevel.random.nextInt(chestBlockEntity.getContainerSize()), stack);

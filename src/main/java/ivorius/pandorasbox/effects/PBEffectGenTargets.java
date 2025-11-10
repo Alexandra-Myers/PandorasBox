@@ -8,11 +8,11 @@ package ivorius.pandorasbox.effects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
 import ivorius.pandorasbox.effects.structure.StructureTarget;
 import ivorius.pandorasbox.effects.structure.TargetConfiguration;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.PandoraBlockTags;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedEntity;
 import net.minecraft.core.BlockPos;
@@ -108,7 +108,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure<StructureTar
 
                 if (dist < newRange) {
                     if (dist >= prevRange) {
-                        HolderSet.Named<Block> terracottas = BuiltInRegistries.BLOCK.getOrThrow(PandorasBox.ALL_TERRACOTTA);
+                        HolderSet.Named<Block> terracottas = BuiltInRegistries.BLOCK.getOrThrow(PandoraBlockTags.ALL_TERRACOTTA);
                         Vec3i offset = structure.pos.offset(xP, 0, zP);
                         setBlockSafe(level, new BlockPos(offset), terracottas.get(structure.getColors()[Mth.floor(dist)]).value().defaultBlockState());
 

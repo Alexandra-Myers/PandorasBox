@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.generate.two_dimensional.Generate2D;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.BlockPos;
@@ -19,7 +20,10 @@ import org.jetbrains.annotations.NotNull;
  * Created by lukas on 30.03.14.
  */
 public class PBEffectGenerate2D extends PBEffectRangeBased {
-    public static final MapCodec<PBEffectGenerate2D> CODEC = produceCodec(instance -> Generate2D.CODEC.fieldOf("generate_two_dimensional").forGetter(PBEffectGenerate2D::getGenerate2D), PBEffectGenerate2D::new);
+    public static final MapCodec<PBEffectGenerate2D> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            PBEffectRangeBased.baseFields(instance)
+                    .and(Generate2D.CODEC.fieldOf("generate_two_dimensional").forGetter(PBEffectGenerate2D::getGenerate2D))
+                    .apply(instance, PBEffectGenerate2D::new));
     public final Generate2D generate2D;
     public PBEffectGenerate2D(int time, double range, int passes, int unifiedSeed, Generate2D generate2D) {
         super(time, range, passes, unifiedSeed);

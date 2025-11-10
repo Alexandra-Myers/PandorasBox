@@ -8,47 +8,57 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "convert_effect": {
+    "chance_for_more_effects": 0.1,
+    "generate_effect": {
+      "biome": "minecraft:frozen_peaks",
+      "exclusions": [],
       "mappers": [
         {
           "targets": [
             "minecraft:water"
           ],
           "to_replace": "minecraft:ice",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "block": "minecraft:snow",
-          "type": "pandorasbox:cover"
+          "mapper_type": "pandorasbox:cover",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
             "#minecraft:fire"
           ],
           "to_replace": "minecraft:air",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "fluid_target": "minecraft:lava",
           "to_replace": "minecraft:ice",
-          "type": "pandorasbox:chill_lava"
+          "mapper_type": "pandorasbox:chill_lava",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
             "minecraft:magma_block"
           ],
           "to_replace": "minecraft:ice",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
             "minecraft:lava"
           ],
           "to_replace": "minecraft:packed_ice",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
-          "type": "pandorasbox:convert_ice"
+          "mapper_type": "pandorasbox:convert_ice",
+          "type": "pandorasbox:direct"
         }
       ],
       "generators": [],
@@ -59,11 +69,9 @@
           "type": "pandorasbox:spawn_random"
         }
       ],
-      "biome": "minecraft:frozen_peaks",
-      "exclusions": []
+      "type": "pandorasbox:prepare_gen_convert"
     },
-    "chance_for_more_effects": 0.1,
-    "type": "pandorasbox:convert_generic"
+    "type": "pandorasbox:generate"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

@@ -55,7 +55,7 @@ public class PBEffectEntityBased extends PBEffectNormal {
             double strength = (range - dist) / range;
 
             if (strength > 0.0) {
-                effect.affectEntity(level, entity, random, entityLivingBase, newRatio, prevRatio, strength);
+                effect.affectEntity(level, entity, effectCenter, random, entityLivingBase, newRatio, prevRatio, strength);
             }
         }
     }

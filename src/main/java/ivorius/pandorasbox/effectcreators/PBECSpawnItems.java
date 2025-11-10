@@ -81,7 +81,7 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
                 List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, optional);
 
                 if (enchantments.isEmpty()) {
-                    enchantments = EnchantmentHelper.selectEnchantment(random, new ItemStack(Items.IRON_AXE), enchantLevel, optional);
+                    enchantments = EnchantmentHelper.selectEnchantment(random, new ItemStack(Items.BOOK), enchantLevel, optional);
                 }
 
                 if (!enchantments.isEmpty()) {
@@ -111,7 +111,7 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
         int ticksPerItem = this.ticksPerItem.getValue(random);
         boolean isFood = this.canBeFood.getValue(random);
 
-        ItemStack[] stacks = getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, items), number, random.nextInt(3) != 0, true, 0, false, isFood);
+        ItemStack[] stacks = getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, BuiltInRegistries.BLOCK, items), number, random.nextInt(3) != 0, true, 0, false, isFood);
         return constructEffect(random, stacks, number * ticksPerItem + 1, valueThrow.orElse(null), valueSpawn.orElse(null), spawnsFromEffectCenter);
     }
 

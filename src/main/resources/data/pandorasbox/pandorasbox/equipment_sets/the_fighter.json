@@ -1,0 +1,40 @@
+{
+  "weight": 0.1,
+  "items": [
+    {
+      "id": "minecraft:diamond_helmet",
+      "count": 1
+    },
+    {
+      "id": "minecraft:iron_chestplate",
+      "count": 1
+    },
+    {
+      "id": "minecraft:iron_leggings",
+      "count": 1
+    },
+    {
+      "id": "minecraft:iron_boots",
+      "count": 1
+    },
+    {
+      "id": "minecraft:trident",
+      "count": 1
+    },
+    {
+      "id": "minecraft:mace",
+      "count": 1
+    },
+    {
+      "id": "minecraft:iron_axe",
+      "count": 1
+    },
+    {
+      "id": "minecraft:cooked_beef",
+      "count": 8
+    }
+  ],
+  "name": {
+    "translate": "pandora_equipment_set.pandorasbox.the_fighter"
+  }
+}

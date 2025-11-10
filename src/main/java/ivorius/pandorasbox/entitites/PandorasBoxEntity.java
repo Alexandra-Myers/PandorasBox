@@ -11,6 +11,7 @@ import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
 import ivorius.pandorasbox.init.DataSerializerInit;
+import ivorius.pandorasbox.init.Init;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -263,7 +264,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         setEffectTicksExisted(0);
         setBoxWaitingTime(random.nextInt(40));
 
-        entityData.set(DATA_EFFECT_ID, ensureNotNull(PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true)));
+        entityData.set(DATA_EFFECT_ID, ensureNotNull(PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true, Optional.empty(), Init.EFFECT_HOLDER_REGISTRY_KEY)));
     }
 
     public void setRenderItem(ItemStack renderItem) {
@@ -310,7 +311,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
 
     public PBEffect ensureNotNull(PBEffect input) {
         while (input == null) {
-            input = PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true);
+            input = PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true, Optional.empty(), Init.EFFECT_HOLDER_REGISTRY_KEY);
         }
         return input;
     }

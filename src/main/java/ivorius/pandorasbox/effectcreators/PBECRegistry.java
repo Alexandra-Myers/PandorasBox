@@ -14,7 +14,10 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.EntityInit;
 import ivorius.pandorasbox.init.Init;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.player.Player;
@@ -41,37 +44,8 @@ public class PBECRegistry {
         return null;
     }
 
-    public static PBEffect createRandomEffect(Level world, RandomSource random, double x, double y, double z, boolean multi) {
-        Registry<EffectHolder> effectHolders = world.registryAccess().lookupOrThrow(Init.EFFECT_HOLDER_REGISTRY_KEY);
-        List<EffectHolder> fixedChanceHolders = effectHolders.stream().filter(effectHolder -> effectHolder.fixedChance() != -1).toList();
-        List<EffectHolder> positiveEffects = effectHolders.stream().filter(effectHolder -> !fixedChanceHolders.contains(effectHolder) && effectHolder.isGood()).toList();
-        List<EffectHolder> negativeEffects = effectHolders.stream().filter(effectHolder -> !fixedChanceHolders.contains(effectHolder) && !effectHolder.isGood()).toList();
-        float currentMinChance = 1.0f;
-        ArrayList<PBEffect> effects = new ArrayList<>();
-
-        do {
-            PBEffectCreator creator = null;
-            boolean bl = world.getDifficulty().equals(Difficulty.PEACEFUL);
-
-            for (EffectHolder fixedChanceCreator : fixedChanceHolders) {
-                if (random.nextDouble() < fixedChanceCreator.fixedChance()) {
-                    if (fixedChanceCreator.canBeGoodOrBad() && !fixedChanceCreator.isGood() && bl)
-                        continue;
-                    creator = fixedChanceCreator.effectCreator;
-                    break;
-                }
-            }
-
-            if (creator == null)
-                creator = randomEffectCreatorOfType(random, random.nextFloat() < PandorasBox.CONFIG.goodEffectChance.get() || bl ? positiveEffects : negativeEffects);
-
-            PBEffect effect = constructEffectSafe(creator, world, x, y, z, random);
-
-            if (effect != null)
-                effects.add(effect);
-
-            currentMinChance = Math.min(currentMinChance, creator.chanceForMoreEffects(world, x, y, z, random));
-        } while (effects.isEmpty() || random.nextFloat() < newEffectChance(currentMinChance) && effects.size() < PandorasBox.CONFIG.maxEffectsPerBox.get() && multi);
+    public static PBEffect createRandomEffect(Level world, RandomSource random, double x, double y, double z, boolean multi, Optional<HolderSet<EffectHolder>> selection, ResourceKey<? extends Registry<EffectHolder>> registryKey) {
+        List<PBEffect> effects = createRandomEffects(world, random, x, y, z, multi, selection, registryKey);
 
         if (effects.size() == 1)
             return effects.getFirst();
@@ -86,6 +60,41 @@ public class PBECRegistry {
         }
     }
 
+    public static List<PBEffect> createRandomEffects(Level world, RandomSource random, double x, double y, double z, boolean multi, Optional<HolderSet<EffectHolder>> selection, ResourceKey<? extends Registry<EffectHolder>> registryKey) {
+        HolderSet<EffectHolder> holders = selection.filter(set -> set.size() > 0).orElseGet(() -> HolderSet.direct(world.registryAccess().lookupOrThrow(registryKey).listElements().toList()));
+        boolean isPeaceful = world.getDifficulty().equals(Difficulty.PEACEFUL);
+        List<EffectHolder> fixedChanceHolders = holders.stream().map(Holder::value).filter(effectHolder -> effectHolder.fixedChance() != -1).toList();
+        List<EffectHolder> positiveEffects = holders.stream().map(Holder::value).filter(effectHolder -> !fixedChanceHolders.contains(effectHolder) && effectHolder.isGood()).toList();
+        List<EffectHolder> negativeEffects = holders.stream().map(Holder::value).filter(effectHolder -> !fixedChanceHolders.contains(effectHolder) && !effectHolder.isGood()).toList();
+        float currentMinChance = 1.0f;
+        ArrayList<PBEffect> effects = new ArrayList<>();
+
+        do {
+            PBEffectCreator creator = null;
+
+            for (EffectHolder fixedChanceCreator : fixedChanceHolders) {
+                if (random.nextDouble() < fixedChanceCreator.fixedChance()) {
+                    if (fixedChanceCreator.canBeGoodOrBad() && !fixedChanceCreator.isGood() && isPeaceful)
+                        continue;
+                    creator = fixedChanceCreator.effectCreator;
+                    break;
+                }
+            }
+
+            if (creator == null)
+                creator = randomEffectCreatorOfType(random, isPeaceful || random.nextFloat() < PandorasBox.CONFIG.goodEffectChance.get() ? positiveEffects : negativeEffects);
+
+            PBEffect effect = constructEffectSafe(creator, world, x, y, z, random);
+
+            if (effect != null)
+                effects.add(effect);
+
+            currentMinChance = Math.min(currentMinChance, creator.chanceForMoreEffects(world, x, y, z, random));
+        } while (effects.isEmpty() || multi && random.nextFloat() < newEffectChance(currentMinChance) && effects.size() < PandorasBox.CONFIG.maxEffectsPerBox.get());
+
+        return effects;
+    }
+
     private static double newEffectChance(double effectFactor) {
         double intensity = PandorasBox.CONFIG.boxIntensity.get();
         return intensity == 0 ? 0 : Math.pow(effectFactor, 1.0 / intensity);
@@ -95,12 +104,12 @@ public class PBECRegistry {
         return creator.constructEffect(world, x, y, z, random);
     }
 
-    public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, ItemStack heldItem, Optional<ItemStack> renderItem, boolean multi, Player player, BlockPos pos, boolean floatAway) {
-        PBEffect effect = createRandomEffect(world, random, pos.getX(), pos.getY() + 1.2, pos.getZ(), multi);
+    public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, ItemStack heldItem, Optional<ItemStack> renderItem, boolean multi, Player player, BlockPos pos, boolean floatAway, HolderSet<EffectHolder> holders) {
+        PBEffect effect = createRandomEffect(world, random, pos.getX(), pos.getY() + 1.2, pos.getZ(), multi, Optional.of(holders), Init.EFFECT_HOLDER_REGISTRY_KEY);
         return spawnPandorasBox(world, effect, heldItem, renderItem, player, pos, floatAway, true);
     }
     public static PandorasBoxEntity spawnPandorasBox(Level world, RandomSource random, Optional<ItemStack> renderItem, boolean multi, Player player) {
-        PBEffect effect = createRandomEffect(world, random, player.getX(), player.getY() + 1.2, player.getZ(), multi);
+        PBEffect effect = createRandomEffect(world, random, player.getX(), player.getY() + 1.2, player.getZ(), multi, Optional.empty(), Init.EFFECT_HOLDER_REGISTRY_KEY);
         return spawnPandorasBox(world, effect, ItemStack.EMPTY, renderItem, player, null, true, true);
     }
 

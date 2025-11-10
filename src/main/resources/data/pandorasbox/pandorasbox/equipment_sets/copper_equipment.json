@@ -1,0 +1,44 @@
+{
+  "weight": 8.0,
+  "items": [
+    {
+      "id": "minecraft:copper_helmet",
+      "count": 1
+    },
+    {
+      "id": "minecraft:copper_chestplate",
+      "count": 1
+    },
+    {
+      "id": "minecraft:copper_leggings",
+      "count": 1
+    },
+    {
+      "id": "minecraft:copper_boots",
+      "count": 1
+    },
+    {
+      "id": "minecraft:copper_sword",
+      "count": 1
+    },
+    {
+      "id": "minecraft:copper_pickaxe",
+      "count": 1
+    },
+    {
+      "id": "minecraft:copper_shovel",
+      "count": 1
+    },
+    {
+      "id": "minecraft:copper_axe",
+      "count": 1
+    },
+    {
+      "id": "minecraft:copper_hoe",
+      "count": 1
+    }
+  ],
+  "name": {
+    "translate": "pandora_equipment_set.pandorasbox.copper_equipment"
+  }
+}
