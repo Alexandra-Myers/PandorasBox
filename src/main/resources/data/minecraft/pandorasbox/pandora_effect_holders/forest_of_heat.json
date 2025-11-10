@@ -8,12 +8,16 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "chance_to_discard_netherrack": {
-      "value": 0.0,
-      "type": "minecraft:constant"
+    "chance_for_more_effects": 0.1,
+    "generate_effect": {
+      "chance_to_discard_netherrack": {
+        "value": 0.0,
+        "type": "minecraft:constant"
+      },
+      "biome": "crimson_forest",
+      "type": "pandorasbox:prepare_gen_convert_to_nether"
     },
-    "biome": "crimson_forest",
-    "type": "pandorasbox:convert_to_nether"
+    "type": "pandorasbox:generate"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

@@ -516,6 +516,11 @@
           "max": 30,
           "type": "minecraft:linear"
         },
+        "number": {
+          "min": 5,
+          "max": 9,
+          "type": "minecraft:linear"
+        },
         "spawns_from_effect_center": {
           "guaranteed": false,
           "type": "minecraft:constant"

@@ -19,12 +19,8 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -38,7 +34,6 @@ import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.TeleportRandomlyConsumeEffect;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.Block;
@@ -48,7 +43,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public class PandorasBoxHelper {
     public static final List<Property<?>> validProperties = List.of(BlockStateProperties.HALF, BlockStateProperties.RAIL_SHAPE, BlockStateProperties.LEVEL_HONEY, BlockStateProperties.SLAB_TYPE, BlockStateProperties.WATERLOGGED,
@@ -62,8 +56,6 @@ public class PandorasBoxHelper {
 
     public static EitherArrayList<WeightedBlock, WeightedTag<Block>> blocks = new EitherArrayList<>();
 
-    public static EitherArrayList<RandomizedItemStack, RandomizedItemTag> items = new EitherArrayList<>();
-    public static BiMap<Identifier, EquipmentSet> registeredSets = HashBiMap.create();
     public static Hashtable<Item, Hashtable<Integer, ItemStack>> equipmentForLevels = new Hashtable<>();
 
     public static List<WeightedPotion> buffs = new ArrayList<>();
@@ -88,7 +80,6 @@ public class PandorasBoxHelper {
     }
 
     public static void addTag(RandomizedItemTag randomizedItemTag) {
-        items.add(Either.right(randomizedItemTag));
         blocksAndItems.add(Either.right(randomizedItemTag));
     }
 
@@ -104,26 +95,6 @@ public class PandorasBoxHelper {
         for (TagKey<Item> tagKey : tags) {
             addTag(new RandomizedItemTag(Either.left(tagKey), new WeightedWithRandomCount(min, max, weight)));
         }
-    }
-
-    public static void addEquipmentSet(Identifier id, double weight, Object... items) {
-        addEquipmentSet(id, weight, DataComponentPatch.EMPTY, items);
-    }
-
-    public static void addEquipmentSet(Identifier id, double weight, DataComponentPatch forAll, Object... items) {
-        ItemStack[] set = new ItemStack[items.length];
-
-        for (int i = 0; i < set.length; i++) {
-            if (items[i] instanceof ItemLike item) {
-                set[i] = new ItemStack(item);
-            } else if (items[i] instanceof ItemStack itemStack) {
-                set[i] = itemStack;
-            } else continue;
-            set[i].applyComponents(forAll);
-        }
-
-        EquipmentSet formedSet = new EquipmentSet(weight, set, Component.translatable("pandora_equipment_set." + id.getNamespace() + '.' + (id.getPath().endsWith("_wool") ? "redstoners_dream" : id.getPath())));
-        registeredSets.put(id, formedSet);
     }
 
     @SafeVarargs
@@ -162,32 +133,12 @@ public class PandorasBoxHelper {
         for (Block block : BuiltInRegistries.BLOCK) randomizableBlockProperties.putAll(block, block.defaultBlockState().getProperties().stream().filter(validProperties::contains).toList());
     }
 
-    public static void preInit() {
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "leather_equipment"), 10.0, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.WOODEN_SWORD, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, Items.WOODEN_AXE, Items.WOODEN_HOE, Items.WOODEN_SPEAR);
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "copper_equipment"), 8.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.COPPER_SWORD, Items.COPPER_PICKAXE, Items.COPPER_SHOVEL, Items.COPPER_AXE, Items.COPPER_HOE, Items.COPPER_SPEAR);
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "iron_equipment"), 6.0, Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.IRON_HOE, Items.IRON_SPEAR);
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "golden_equipment"), 4.0, Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLDEN_AXE, Items.GOLDEN_HOE, Items.GOLDEN_SPEAR);
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "diamond_equipment"), 2.0, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, Items.DIAMOND_AXE, Items.DIAMOND_HOE, Items.DIAMOND_SPEAR);
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "netherite_equipment"), 1.0, Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS, Items.NETHERITE_SWORD, Items.NETHERITE_PICKAXE, Items.NETHERITE_SHOVEL, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.NETHERITE_SPEAR);
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "bowmaster"), 6.0, Items.CROSSBOW, Items.BOW, new ItemStack(Items.ARROW, 64), Items.IRON_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.LEATHER_BOOTS, Items.IRON_AXE, new ItemStack(Items.APPLE, 8));
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "midgame_miner"), 6.0, Items.IRON_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.COPPER_BOOTS, Items.DIAMOND_PICKAXE, Items.IRON_SHOVEL, Items.IRON_AXE, Items.STONE_SWORD, new ItemStack(Items.BREAD, 8), new ItemStack(Items.TORCH, 32));
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "early_miner"), 3.0, Items.COPPER_HELMET, Items.COPPER_CHESTPLATE, Items.COPPER_LEGGINGS, Items.IRON_BOOTS, Items.SHIELD, Items.COPPER_SWORD, Items.IRON_PICKAXE, Items.IRON_AXE, Items.COPPER_SHOVEL, Items.COPPER_HOE, new ItemStack(Items.COAL, 36), new ItemStack(Items.TORCH, 64), new ItemStack(Items.BREAD, 48));
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "farmers_dream"), 8.0, Items.LEATHER_HELMET, Items.IRON_HOE, new ItemStack(Items.WHEAT_SEEDS, 32), new ItemStack(Items.PUMPKIN_SEEDS, 4), new ItemStack(Items.MELON_SEEDS, 4), new ItemStack(Items.BLUE_DYE, 8), new ItemStack(Items.DIRT, 32), Items.WATER_BUCKET, Items.WATER_BUCKET);
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "glass_cannon"), 6.0, Items.IRON_HELMET, Items.DIAMOND_AXE, new ItemStack(Items.COOKED_BEEF, 16));
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "underseas_explorer"), 6.0, Items.TURTLE_HELMET, Items.IRON_BOOTS, Items.TRIDENT, Items.IRON_SWORD, new ItemStack(Items.BREAD, 48));
-        addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "the_fighter"), 0.1, Items.DIAMOND_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.TRIDENT, Items.MACE, Items.IRON_AXE, new ItemStack(Items.COOKED_BEEF, 8));
-
-        for(Holder<Block> block : Stream.of(Blocks.WHITE_WOOL, Blocks.ORANGE_WOOL, Blocks.MAGENTA_WOOL, Blocks.LIGHT_BLUE_WOOL, Blocks.YELLOW_WOOL, Blocks.LIME_WOOL, Blocks.PINK_WOOL, Blocks.GRAY_WOOL, Blocks.LIGHT_GRAY_WOOL, Blocks.CYAN_WOOL, Blocks.PURPLE_WOOL, Blocks.BLUE_WOOL, Blocks.BROWN_WOOL, Blocks.GREEN_WOOL, Blocks.RED_WOOL, Blocks.BLACK_WOOL).map(Block::builtInRegistryHolder).toList())
-            addEquipmentSet(Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "redstoners_dream_" + block.unwrapKey().map(ResourceKey::identifier).map(Identifier::getPath).orElse("white_wool")), 1.2, new ItemStack(Items.REDSTONE, 64), new ItemStack(block.value(), 16), new ItemStack(block.value(), 16), new ItemStack(block.value(), 16), new ItemStack(Blocks.REDSTONE_BLOCK, 8), new ItemStack(Blocks.REDSTONE_TORCH, 8));
-    }
-
     public static void initialize() {
         cachedBlockLists.clear();
         cachedRandomizedStackLists.clear();
         blocks.clear();
         randomizableBlockProperties.clear();
         blocksAndItems.clear();
-        items.clear();
         equipmentForLevels.clear();
         buffs.clear();
         debuffs.clear();
@@ -309,7 +260,6 @@ public class PandorasBoxHelper {
         if (cachedRandomizedStackLists.containsKey(selection)) return cachedRandomizedStackLists.get(selection);
         Map<Holder<Item>, RandomizedItemStack> select = new HashMap<>();
         Consumer<RandomizedItemStack> consumer = randomizedItemStack -> {
-            if (randomizedItemStack.max() > randomizedItemStack.itemStack().getMaxStackSize()) randomizedItemStack.itemStack().set(DataComponents.MAX_STACK_SIZE, randomizedItemStack.max());
             if (!select.containsKey(randomizedItemStack.itemStack().getItemHolder())) select.put(randomizedItemStack.itemStack().getItemHolder(), randomizedItemStack);
         };
         selection.leftSide().forEach(consumer);

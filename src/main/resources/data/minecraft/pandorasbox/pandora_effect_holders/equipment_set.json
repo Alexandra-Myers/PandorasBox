@@ -3,37 +3,7 @@
     "translate": "effect_holder.pandorasbox.equipment_set"
   },
   "effect_creator": {
-    "sets": [
-      "pandorasbox:leather_equipment",
-      "pandorasbox:copper_equipment",
-      "pandorasbox:iron_equipment",
-      "pandorasbox:golden_equipment",
-      "pandorasbox:diamond_equipment",
-      "pandorasbox:netherite_equipment",
-      "pandorasbox:bowmaster",
-      "pandorasbox:midgame_miner",
-      "pandorasbox:early_miner",
-      "pandorasbox:farmers_dream",
-      "pandorasbox:glass_cannon",
-      "pandorasbox:underseas_explorer",
-      "pandorasbox:the_fighter",
-      "pandorasbox:redstoners_dream_white_wool",
-      "pandorasbox:redstoners_dream_orange_wool",
-      "pandorasbox:redstoners_dream_magenta_wool",
-      "pandorasbox:redstoners_dream_light_blue_wool",
-      "pandorasbox:redstoners_dream_yellow_wool",
-      "pandorasbox:redstoners_dream_lime_wool",
-      "pandorasbox:redstoners_dream_pink_wool",
-      "pandorasbox:redstoners_dream_gray_wool",
-      "pandorasbox:redstoners_dream_light_gray_wool",
-      "pandorasbox:redstoners_dream_cyan_wool",
-      "pandorasbox:redstoners_dream_purple_wool",
-      "pandorasbox:redstoners_dream_blue_wool",
-      "pandorasbox:redstoners_dream_brown_wool",
-      "pandorasbox:redstoners_dream_green_wool",
-      "pandorasbox:redstoners_dream_red_wool",
-      "pandorasbox:redstoners_dream_black_wool"
-    ],
+    "equipment_sets": "#pandorasbox:default_sets",
     "value_throw": {
       "throw_strength_horizontal": {
         "min": 0.05,

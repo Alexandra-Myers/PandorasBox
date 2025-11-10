@@ -23,7 +23,7 @@ public class PBEffectRendererMulti extends PBEffectRenderer<PBEffectMulti, Multi
     public void renderBox(PandorasBoxRenderer renderer, PandorasBoxRenderState renderState, MultiEffectRenderState effectRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, float height, float timePassed) {
         Arrays.stream(effectRenderState.effects).toList().forEach(pandoraEffectRenderState -> {
             PBEffectRenderer renderer1 = PBEffectRenderingRegistry.rendererForEffect(pandoraEffectRenderState);
-            renderer1.renderBox(renderer, renderState, pandoraEffectRenderState, poseStack, submitNodeCollector, packedLightIn, height, ((pandoraEffectRenderState.effectTicksExisted + renderState.partialTicks) % pandoraEffectRenderState.maxTicksAlive) / pandoraEffectRenderState.maxTicksAlive);
+            renderer1.renderBox(renderer, renderState, pandoraEffectRenderState, poseStack, submitNodeCollector, packedLightIn, height, PandorasBoxRenderer.calculateProgress(renderState, pandoraEffectRenderState));
         });
     }
 

@@ -8,12 +8,13 @@
           "type": "minecraft:linear"
         },
         "chance_for_more_effects": 0.1,
-        "convert_effect": {
+        "generate_effect": {
           "biome": "minecraft:badlands",
           "exclusions": [],
           "mappers": [
             {
-              "type": "pandorasbox:dryness"
+              "mapper_type": "pandorasbox:dryness",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -31,7 +32,8 @@
                 "minecraft:mushroom_stem"
               ],
               "to_replace": "minecraft:air",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -49,7 +51,8 @@
                 "minecraft:firefly_bush"
               ],
               "to_replace": "minecraft:dead_bush",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -59,7 +62,8 @@
                 "minecraft:cake"
               ],
               "to_replace": "minecraft:dirt",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -72,7 +76,8 @@
                 "minecraft:end_stone"
               ],
               "to_replace": "minecraft:stone",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -80,13 +85,15 @@
                 "#minecraft:sand"
               ],
               "to_replace": "minecraft:sand",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             }
           ],
           "generators": [],
-          "spawners": []
+          "spawners": [],
+          "type": "pandorasbox:prepare_gen_convert"
         },
-        "type": "pandorasbox:convert_generic"
+        "type": "pandorasbox:generate"
       },
       {
         "range": {

@@ -8,21 +8,25 @@
       "max": 120.0,
       "type": "minecraft:linear"
     },
-    "source_blocks": [
-      "minecraft:water",
-      "minecraft:lava"
-    ],
-    "destination_blocks": [
-      {
-        "weight": 100.0,
-        "block": "minecraft:air"
-      }
-    ],
-    "take_random_nearby_blocks": {
-      "guaranteed": false,
-      "type": "minecraft:constant"
+    "chance_for_more_effects": 0.1,
+    "generate_effect": {
+      "source_blocks": [
+        "minecraft:water",
+        "minecraft:lava"
+      ],
+      "destination_blocks": [
+        {
+          "weight": 100.0,
+          "block": "minecraft:air"
+        }
+      ],
+      "take_random_nearby_blocks": {
+        "guaranteed": false,
+        "type": "minecraft:constant"
+      },
+      "type": "pandorasbox:prepare_gen_replace"
     },
-    "type": "pandorasbox:replace_blocks"
+    "type": "pandorasbox:generate"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

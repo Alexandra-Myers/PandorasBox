@@ -81,7 +81,7 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
                 List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, optional);
 
                 if (enchantments.isEmpty()) {
-                    enchantments = EnchantmentHelper.selectEnchantment(random, new ItemStack(Items.IRON_AXE), enchantLevel, optional);
+                    enchantments = EnchantmentHelper.selectEnchantment(random, new ItemStack(Items.BOOK), enchantLevel, optional);
                 }
 
                 if (!enchantments.isEmpty()) {

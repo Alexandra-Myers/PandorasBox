@@ -66,7 +66,7 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
         poseStack.mulPose(YP.rotationDegrees(-renderState.yRot));
 
         PandoraEffectRenderState pandoraEffectRenderState = renderState.pandoraEffectRenderState;
-        float timePassed = ((pandoraEffectRenderState.effectTicksExisted + renderState.partialTicks) % pandoraEffectRenderState.maxTicksAlive) / pandoraEffectRenderState.maxTicksAlive;
+        float timePassed = calculateProgress(renderState, pandoraEffectRenderState);
 
         float boxScale = renderState.boxScale;
         if (boxScale < 1.0f)
@@ -116,6 +116,12 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
     @Override
     public PandorasBoxModel getModel() {
         return model;
+    }
+
+    public static float calculateProgress(PandorasBoxRenderState renderState, PandoraEffectRenderState pandoraEffectRenderState) {
+        if (pandoraEffectRenderState.effectTicksExisted == -1) return 0;
+        int animTicks = Math.max(pandoraEffectRenderState.maxTicksAlive, 20);
+        return ((pandoraEffectRenderState.effectTicksExisted + renderState.partialTicks) % animTicks) / animTicks;
     }
 
     @Override

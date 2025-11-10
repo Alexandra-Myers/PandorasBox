@@ -41,10 +41,10 @@ public record GenerateHFT(TagKey<Block> blocks, Integer[] groundMetas, IValue co
     public void finalGenerate(ServerLevel serverLevel, BlockPos pos, BlockState blockState, RandomSource random, PandorasBoxEntity entity, Vec3 effectCenter, int pass, int unifiedSeed, double range) {
         HolderSet.Named<Block> terracotta = BuiltInRegistries.BLOCK.getOrThrow(blocks);
         Block placeBlock = terracotta.get(groundMetas[random.nextInt(groundMetas.length)] % terracotta.size()).value();
-        if (random.nextInt(256) == 0) {
+        if (random.nextInt(512) == 0) {
             BlockPos down = pos.below();
             BlockState state = serverLevel.getBlockState(down);
-            boolean isSoil = state.getBlock() == placeBlock;
+            boolean isSoil = state.is(blocks);
             if (!isSoil) return;
 
             Optional<Registry<ConfiguredFeature<?, ?>>> registry = serverLevel.registryAccess().lookup(Registries.CONFIGURED_FEATURE);

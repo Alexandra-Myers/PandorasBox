@@ -42,7 +42,7 @@ public class PBEffectRendererMeltdown extends PBEffectRenderer<PBEffectMeltdown,
         }
         Arrays.stream(effectRenderState.effects).toList().forEach(pandoraEffectRenderState -> {
             PBEffectRenderer renderer1 = PBEffectRenderingRegistry.rendererForEffect(pandoraEffectRenderState);
-            renderer1.renderBox(renderer, renderState, pandoraEffectRenderState, poseStack, submitNodeCollector, packedLightIn, height, ((pandoraEffectRenderState.effectTicksExisted + renderState.partialTicks) % pandoraEffectRenderState.maxTicksAlive) / pandoraEffectRenderState.maxTicksAlive);
+            renderer1.renderBox(renderer, renderState, pandoraEffectRenderState, poseStack, submitNodeCollector, packedLightIn, height, PandorasBoxRenderer.calculateProgress(renderState, pandoraEffectRenderState));
         });
         if (!renderState.renderItem.isEmpty()) return;
         submitNodeCollector.submitModel(renderer.model, renderState, poseStack, RenderTypes.entityTranslucent(getTextureForProgress(timePassed)), packedLightIn, OverlayTexture.NO_OVERLAY, renderState.outlineColor, null);

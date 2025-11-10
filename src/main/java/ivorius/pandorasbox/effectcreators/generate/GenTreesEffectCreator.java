@@ -17,13 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static net.minecraft.data.worldgen.features.TreeFeatures.*;
-import static net.minecraft.data.worldgen.features.TreeFeatures.BIRCH;
-import static net.minecraft.data.worldgen.features.TreeFeatures.DARK_OAK;
-import static net.minecraft.data.worldgen.features.TreeFeatures.JUNGLE_TREE;
-import static net.minecraft.data.worldgen.features.TreeFeatures.MEGA_JUNGLE_TREE;
-import static net.minecraft.data.worldgen.features.TreeFeatures.SPRUCE;
-
 public record GenTreesEffectCreator(DValue chancePerBlock, ZValue requiresSolidGround, IValue possibleTreeFlags, List<ResourceKey<ConfiguredFeature<?, ?>>> features) implements GenerateEffectCreator {
     public static final MapCodec<GenTreesEffectCreator> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(DValue.CODEC.fieldOf("chance_per_block").forGetter(GenTreesEffectCreator::chancePerBlock),

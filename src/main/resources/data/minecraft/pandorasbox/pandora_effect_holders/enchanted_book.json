@@ -34,7 +34,7 @@
       "type": "minecraft:linear"
     },
     "enchantment_level": {
-      "min_value": 1,
+      "min_value": 5,
       "max_value": 30,
       "base": 10.0,
       "type": "minecraft:exponential"

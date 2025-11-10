@@ -8,7 +8,7 @@
           "type": "minecraft:linear"
         },
         "chance_for_more_effects": 0.1,
-        "convert_effect": {
+        "generate_effect": {
           "biome": "minecraft:desert",
           "exclusions": [],
           "mappers": [
@@ -18,7 +18,8 @@
                 "minecraft:fern"
               ],
               "to_replace": "minecraft:short_dry_grass",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -26,7 +27,8 @@
                 "minecraft:large_fern"
               ],
               "to_replace": "minecraft:tall_dry_grass",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -41,7 +43,8 @@
                 "#minecraft:logs"
               ],
               "to_replace": "minecraft:air",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -55,7 +58,8 @@
               "under_block": "minecraft:sand",
               "discard_surface_chance": 0.0,
               "max_blocks_beneath_surface": 3,
-              "type": "pandorasbox:convert_surface"
+              "mapper_type": "pandorasbox:convert_surface",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -71,14 +75,16 @@
                 "minecraft:end_stone"
               ],
               "to_replace": "minecraft:sandstone",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
                 "#minecraft:ice"
               ],
               "to_replace": "minecraft:water",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             }
           ],
           "generators": [
@@ -95,7 +101,8 @@
               ],
               "placed": "minecraft:sand",
               "force": false,
-              "type": "pandorasbox:generate_feature"
+              "generator_type": "pandorasbox:generate_feature",
+              "type": "pandorasbox:direct"
             },
             {
               "base_chance": 0.05,
@@ -114,7 +121,8 @@
               ],
               "placed": "minecraft:sand",
               "force": false,
-              "type": "pandorasbox:generate_feature"
+              "generator_type": "pandorasbox:generate_feature",
+              "type": "pandorasbox:direct"
             }
           ],
           "spawners": [
@@ -143,9 +151,10 @@
               "chance": 0.0011111111,
               "type": "pandorasbox:spawn_random"
             }
-          ]
+          ],
+          "type": "pandorasbox:prepare_gen_convert"
         },
-        "type": "pandorasbox:convert_generic"
+        "type": "pandorasbox:generate"
       },
       {
         "range": {

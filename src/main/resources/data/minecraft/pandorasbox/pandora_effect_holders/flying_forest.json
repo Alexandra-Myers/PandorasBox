@@ -8,36 +8,50 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "chance_per_block": {
-      "min": 3.0517578125E-3,
-      "max": 0.4629629664123058,
-      "type": "minecraft:linear"
-    },
-    "requires_solid_ground": {
-      "guaranteed": false,
-      "type": "minecraft:constant"
-    },
-    "possible_tree_flags": {
-      "min_flags": 1,
-      "flags": [
-        0,
-        1,
-        2,
-        5,
-        6,
-        7
+    "chance_for_more_effects": 0.15,
+    "generate_effect": {
+      "chance_per_block": {
+        "min": 0.0030517578125,
+        "max": 0.4629629664123058,
+        "type": "minecraft:linear"
+      },
+      "requires_solid_ground": {
+        "guaranteed": false,
+        "type": "minecraft:constant"
+      },
+      "possible_tree_flags": {
+        "min_flags": 1,
+        "flags": [
+          0,
+          1,
+          2,
+          5,
+          6,
+          7
+        ],
+        "chances": [
+          1.0,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "type": "minecraft:flags"
+      },
+      "tree_features": [
+        "minecraft:oak",
+        "minecraft:fancy_oak",
+        "minecraft:jungle_tree",
+        "minecraft:mega_jungle_tree",
+        "minecraft:jungle_bush",
+        "minecraft:dark_oak",
+        "minecraft:spruce",
+        "minecraft:birch"
       ],
-      "chances": [
-        1.0,
-        0.5,
-        0.5,
-        0.5,
-        0.5,
-        0.5
-      ],
-      "type": "minecraft:flags"
+      "type": "pandorasbox:prepare_gen_trees"
     },
-    "type": "pandorasbox:gen_trees"
+    "type": "pandorasbox:generate"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

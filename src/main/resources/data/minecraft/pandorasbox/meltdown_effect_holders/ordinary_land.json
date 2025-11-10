@@ -6,7 +6,7 @@
       "type": "minecraft:linear"
     },
     "chance_for_more_effects": 0.1,
-    "convert_effect": {
+    "generate_effect": {
       "biome": "minecraft:sunflower_plains",
       "exclusions": [],
       "mappers": [
@@ -24,7 +24,8 @@
             "minecraft:mushroom_stem"
           ],
           "to_replace": "minecraft:air",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
@@ -43,7 +44,8 @@
           "under_block": "minecraft:dirt",
           "discard_surface_chance": 0.0,
           "max_blocks_beneath_surface": 3,
-          "type": "pandorasbox:convert_surface"
+          "mapper_type": "pandorasbox:convert_surface",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
@@ -59,7 +61,8 @@
             "minecraft:end_stone"
           ],
           "to_replace": "minecraft:stone",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
@@ -68,7 +71,8 @@
             "minecraft:ice"
           ],
           "to_replace": "minecraft:water",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         }
       ],
       "generators": [
@@ -113,7 +117,8 @@
           ],
           "placed": "minecraft:grass_block",
           "force": true,
-          "type": "pandorasbox:generate_feature"
+          "generator_type": "pandorasbox:generate_feature",
+          "type": "pandorasbox:direct"
         }
       ],
       "spawners": [
@@ -137,9 +142,10 @@
           "chance": 0.0011111111,
           "type": "pandorasbox:spawn_random"
         }
-      ]
+      ],
+      "type": "pandorasbox:prepare_gen_convert"
     },
-    "type": "pandorasbox:convert_generic"
+    "type": "pandorasbox:generate"
   },
   "positive": true,
   "type": "minecraft:positive_or_negative"

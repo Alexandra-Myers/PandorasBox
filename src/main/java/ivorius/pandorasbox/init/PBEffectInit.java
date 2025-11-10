@@ -94,12 +94,6 @@ public class PBEffectInit {
         registerBoxEffectCreatorType(PBECBombentities.CODEC, "apply_bomberman");
         registerBoxEffectCreatorType(PBECBombpack.CODEC, "apply_bombpack");
         registerBoxEffectCreatorType(PBECBuffEntities.CODEC, "apply_mob_effects");
-        registerBoxEffectCreatorType(PBECConvertGeneric.CODEC, "convert_generic");
-        registerBoxEffectCreatorType(PBECConvertToCity.CODEC, "convert_to_city");
-        registerBoxEffectCreatorType(PBECConvertToFarm.CODEC, "convert_to_farm");
-        registerBoxEffectCreatorType(PBECConvertToHFT.CODEC, "convert_to_happy_fun_times");
-        registerBoxEffectCreatorType(PBECConvertToNether.CODEC, "convert_to_nether");
-        registerBoxEffectCreatorType(PBECConvertToRainbowCloth.CODEC, "convert_to_rainbow_cloth");
         registerBoxEffectCreatorType(PBECCover.CODEC, "cover_blocks");
         registerBoxEffectCreatorType(PBECCreateVoid.CODEC, "create_void");
         registerBoxEffectCreatorType(PBECCreativeTowers.CODEC, "create_creative_towers");
@@ -109,15 +103,10 @@ public class PBEffectInit {
         registerBoxEffectCreatorType(PBECExplosion.CODEC, "box_explosion");
         registerBoxEffectCreatorType(PBECFakeDeath.CODEC, "fake_death");
         registerBoxEffectCreatorType(PBECGenerate.CODEC, "generate");
-        registerBoxEffectCreatorType(PBECGenTrees.CODEC, "gen_trees");
-        registerBoxEffectCreatorType(PBECGenTreesOdd.CODEC, "gen_trees_odd");
         registerBoxEffectCreatorType(PBECHeightNoise.CODEC, "height_noise");
-        registerBoxEffectCreatorType(PBECLavaCage.CODEC, "lava_cage");
         registerBoxEffectCreatorType(PBECMeltdown.CODEC, "meltdown");
         registerBoxEffectCreatorType(PBECMulti.CODEC, "multi");
-        registerBoxEffectCreatorType(PBECPool.CODEC, "create_pool");
         registerBoxEffectCreatorType(PBECRandomShapes.CODEC, "create_random_shapes");
-        registerBoxEffectCreatorType(PBECReplace.CODEC, "replace_blocks");
         registerBoxEffectCreatorType(PBECRuinedPortal.CODEC, "ruined_portal");
         registerBoxEffectCreatorType(PBECSetTime.CODEC, "set_time");
         registerBoxEffectCreatorType(PBECSetWeather.CODEC, "set_weather");
@@ -135,7 +124,6 @@ public class PBEffectInit {
         registerBoxEffectCreatorType(PBECTargets.CODEC, "create_targets");
         registerBoxEffectCreatorType(PBECTeleportEntities.CODEC, "teleport_entities");
         registerBoxEffectCreatorType(PBECThrowItems.CODEC, "throw_items");
-        registerBoxEffectCreatorType(PBECTransform.CODEC, "transform_blocks");
         registerBoxEffectCreatorType(PBECWorldSnake.CODEC, "world_snake");
         registerGenerateEffectCreatorType(SimpleConvertEffectCreator.CODEC, "prepare_gen_convert");
         registerGenerateEffectCreatorType(NetherConvertEffectCreator.CODEC, "prepare_gen_convert_to_nether");

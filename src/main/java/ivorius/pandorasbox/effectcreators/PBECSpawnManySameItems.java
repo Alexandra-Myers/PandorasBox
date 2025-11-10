@@ -27,9 +27,10 @@ import java.util.Optional;
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECSpawnManySameItems(IValue ticksPerStack, ZValue spawnsFromEffectCenter, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) implements PBEffectCreator {
+public record PBECSpawnManySameItems(IValue ticksPerStack, IValue number, ZValue spawnsFromEffectCenter, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items, Optional<ValueThrow> valueThrow, Optional<ValueSpawn> valueSpawn) implements PBEffectCreator {
     public static final MapCodec<PBECSpawnManySameItems> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(IValue.CODEC.fieldOf("ticks_per_stack").forGetter(PBECSpawnManySameItems::ticksPerStack),
+                            IValue.CODEC.fieldOf("number").forGetter(PBECSpawnManySameItems::number),
                             ZValue.CODEC.fieldOf("spawns_from_effect_center").forGetter(PBECSpawnManySameItems::spawnsFromEffectCenter),
                             RandomizedItemStack.LIST_CODEC.fieldOf("items").forGetter(PBECSpawnManySameItems::items),
                             ValueThrow.CODEC.optionalFieldOf("value_throw").forGetter(PBECSpawnManySameItems::valueThrow),
@@ -39,7 +40,7 @@ public record PBECSpawnManySameItems(IValue ticksPerStack, ZValue spawnsFromEffe
     @Override
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int ticksPerStack = this.ticksPerStack.getValue(random);
-        int number = random.nextInt(5) + 5;
+        int number = this.number.getValue(random);
 
         ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, BuiltInRegistries.BLOCK, items), number, true, true, 0, false, false);
         return PBECSpawnItems.constructEffect(random, stacks, number * ticksPerStack + 1, valueThrow.orElse(null), valueSpawn.orElse(null), spawnsFromEffectCenter);

@@ -11,6 +11,8 @@ import ivorius.pandorasbox.utils.*;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,11 +37,11 @@ import java.util.List;
 
 import static ivorius.pandorasbox.effects.PBEffect.*;
 
-public record CityMapper(Either<Block, TagKey<Block>>[] targets, List<EntityType<?>> spawnerEntities, List<EquipmentSet> equipmentSets, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items) implements BlockMapper {
+public record CityMapper(Either<Block, TagKey<Block>>[] targets, List<EntityType<?>> spawnerEntities, HolderSet<@NotNull EquipmentSet> equipmentSets, EitherArrayList<RandomizedItemStack, RandomizedItemTag> items) implements BlockMapper {
     public static final MapCodec<CityMapper> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(PBNBTHelper.arrayCodec(Codec.either(BuiltInRegistries.BLOCK.byNameCodec(), TagKey.hashedCodec(Registries.BLOCK)), () -> (Either<Block, TagKey<Block>>[]) new Either[0]).fieldOf("targets").forGetter(CityMapper::targets),
                             BuiltInRegistries.ENTITY_TYPE.byNameCodec().listOf().fieldOf("spawner_entities").forGetter(CityMapper::spawnerEntities),
-                            EquipmentSet.INDIRECT_CODEC.listOf().fieldOf("equipment_sets").forGetter(CityMapper::equipmentSets),
+                            EquipmentSet.INDIRECT_CODEC.fieldOf("equipment_sets").forGetter(CityMapper::equipmentSets),
                             RandomizedItemStack.LIST_CODEC.fieldOf("items").forGetter(CityMapper::items))
                     .apply(instance, CityMapper::new));
 
@@ -196,7 +198,7 @@ public record CityMapper(Either<Block, TagKey<Block>>[] targets, List<EntityType
                             chestBlockEntity.setItem(slot, stack);
                         }
                     } else {
-                        EquipmentSet set = WeightedSelector.selectItem(world.random, equipmentSets);
+                        EquipmentSet set = WeightedSelector.selectItem(world.random, equipmentSets.stream().map(Holder::value).toList());
                         ItemStack[] itemSet = set.items();
                         ItemStack[] chestContent = new ItemStack[itemSet.length];
                         for (int i = 0; i < itemSet.length; i++) {

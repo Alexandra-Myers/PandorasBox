@@ -8,7 +8,7 @@
           "type": "minecraft:linear"
         },
         "chance_for_more_effects": 0.1,
-        "convert_effect": {
+        "generate_effect": {
           "biome": "minecraft:flower_forest",
           "exclusions": [],
           "mappers": [
@@ -26,7 +26,8 @@
                 "minecraft:mushroom_stem"
               ],
               "to_replace": "minecraft:air",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -45,7 +46,8 @@
               "under_block": "minecraft:dirt",
               "discard_surface_chance": 0.0,
               "max_blocks_beneath_surface": 3,
-              "type": "pandorasbox:convert_surface"
+              "mapper_type": "pandorasbox:convert_surface",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -61,7 +63,8 @@
                 "minecraft:end_stone"
               ],
               "to_replace": "minecraft:stone",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -70,12 +73,14 @@
                 "minecraft:ice"
               ],
               "to_replace": "minecraft:water",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             }
           ],
           "generators": [
             {
-              "type": "pandorasbox:generate_homo"
+              "generator_type": "pandorasbox:generate_homo",
+              "type": "pandorasbox:direct"
             }
           ],
           "spawners": [
@@ -84,9 +89,10 @@
               "chance": 0.0025,
               "type": "pandorasbox:spawn_random"
             }
-          ]
+          ],
+          "type": "pandorasbox:prepare_gen_convert"
         },
-        "type": "pandorasbox:convert_generic"
+        "type": "pandorasbox:generate"
       },
       {
         "groups": {

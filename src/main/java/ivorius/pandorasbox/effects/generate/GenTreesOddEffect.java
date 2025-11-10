@@ -1,6 +1,5 @@
 package ivorius.pandorasbox.effects.generate;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.extension.TreeFeatureExtensions;
@@ -22,12 +21,10 @@ import java.util.Optional;
 
 public record GenTreesOddEffect(boolean requiresSolidGround, double chancePerBlock, int generatorFlags, Block trunkBlock, Block leavesBlock, List<ResourceKey<ConfiguredFeature<?, ?>>> generators) implements GenerateByGeneratorEffect<ResourceKey<ConfiguredFeature<?, ?>>> {
     public static final MapCodec<GenTreesOddEffect> CODEC = RecordCodecBuilder.mapCodec(aInstance ->
-            aInstance.group(Codec.BOOL.fieldOf("requires_solid_ground").forGetter(GenTreesOddEffect::requiresSolidGround),
-                            Codec.DOUBLE.fieldOf("chance_per_block").forGetter(GenTreesOddEffect::chancePerBlock),
-                            Codec.INT.fieldOf("generator_flags").forGetter(GenTreesOddEffect::generatorFlags),
-                            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("trunk").forGetter(GenTreesOddEffect::trunkBlock),
+            GenerateByGeneratorEffect.captureFieldsForCodec(aInstance)
+                    .and(aInstance.group(BuiltInRegistries.BLOCK.byNameCodec().fieldOf("trunk").forGetter(GenTreesOddEffect::trunkBlock),
                             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("leaves").forGetter(GenTreesOddEffect::leavesBlock),
-                            ResourceKey.codec(Registries.CONFIGURED_FEATURE).listOf().fieldOf("features").forGetter(GenTreesOddEffect::generators))
+                            ResourceKey.codec(Registries.CONFIGURED_FEATURE).listOf().fieldOf("features").forGetter(GenTreesOddEffect::generators)))
                     .apply(aInstance, GenTreesOddEffect::new));
     @Override
     public @Nullable ResourceKey<Biome> biome() {

@@ -1,6 +1,7 @@
 package ivorius.pandorasbox.effects.generate;
 
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -16,7 +17,9 @@ import java.util.List;
 import java.util.Optional;
 
 public record GenTreesEffect(boolean requiresSolidGround, double chancePerBlock, int generatorFlags, List<ResourceKey<ConfiguredFeature<?, ?>>> generators) implements GenerateByGeneratorEffect<ResourceKey<ConfiguredFeature<?, ?>>> {
-    public static final MapCodec<GenTreesEffect> CODEC = GenerateByGeneratorEffect.prepareCodec(instance -> ResourceKey.codec(Registries.CONFIGURED_FEATURE).listOf().fieldOf("features").forGetter(GenTreesEffect::generators), GenTreesEffect::new);
+    public static final MapCodec<GenTreesEffect> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            GenerateByGeneratorEffect.captureFieldsForCodec(instance).and(ResourceKey.codec(Registries.CONFIGURED_FEATURE).listOf().fieldOf("features").forGetter(GenTreesEffect::generators))
+                    .apply(instance, GenTreesEffect::new));
     @Override
     public @Nullable ResourceKey<Biome> biome() {
         return null;

@@ -6,7 +6,7 @@
       "type": "minecraft:linear"
     },
     "chance_for_more_effects": 0.1,
-    "convert_effect": {
+    "generate_effect": {
       "biome": "minecraft:end_barrens",
       "exclusions": [],
       "mappers": [
@@ -33,7 +33,8 @@
             "#minecraft:logs"
           ],
           "to_replace": "minecraft:obsidian",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
@@ -41,11 +42,13 @@
             "minecraft:red_mushroom"
           ],
           "to_replace": "minecraft:air",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "to_replace": "minecraft:end_stone",
-          "type": "pandorasbox:convert_all"
+          "mapper_type": "pandorasbox:convert_all",
+          "type": "pandorasbox:direct"
         }
       ],
       "generators": [
@@ -64,7 +67,8 @@
           ],
           "placed": "minecraft:end_stone",
           "force": false,
-          "type": "pandorasbox:generate_feature"
+          "generator_type": "pandorasbox:generate_feature",
+          "type": "pandorasbox:direct"
         }
       ],
       "spawners": [
@@ -73,9 +77,10 @@
           "chance": 0.0025,
           "type": "pandorasbox:spawn_random"
         }
-      ]
+      ],
+      "type": "pandorasbox:prepare_gen_convert"
     },
-    "type": "pandorasbox:convert_generic"
+    "type": "pandorasbox:generate"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

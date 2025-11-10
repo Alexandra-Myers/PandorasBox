@@ -8,12 +8,13 @@
           "type": "minecraft:linear"
         },
         "chance_for_more_effects": 0.1,
-        "convert_effect": {
+        "generate_effect": {
           "biome": "minecraft:soul_sand_valley",
           "exclusions": [],
           "mappers": [
             {
-              "type": "pandorasbox:halloween"
+              "mapper_type": "pandorasbox:halloween",
+              "type": "pandorasbox:direct"
             }
           ],
           "generators": [],
@@ -33,9 +34,10 @@
               "chance": 0.0025,
               "type": "pandorasbox:spawn_random"
             }
-          ]
+          ],
+          "type": "pandorasbox:prepare_gen_convert"
         },
-        "type": "pandorasbox:convert_generic"
+        "type": "pandorasbox:generate"
       },
       {
         "time": {

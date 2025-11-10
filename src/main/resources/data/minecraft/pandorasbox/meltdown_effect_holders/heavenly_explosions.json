@@ -8,7 +8,7 @@
           "type": "minecraft:linear"
         },
         "chance_for_more_effects": 0.1,
-        "convert_effect": {
+        "generate_effect": {
           "biome": "minecraft:lush_caves",
           "exclusions": [],
           "mappers": [
@@ -28,7 +28,8 @@
                 "minecraft:firefly_bush"
               ],
               "to_replace": "minecraft:air",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -43,7 +44,8 @@
                 "#c:sandstone/blocks",
                 "minecraft:end_stone"
               ],
-              "type": "pandorasbox:heavenly"
+              "mapper_type": "pandorasbox:heavenly",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -52,7 +54,8 @@
                 "minecraft:ice"
               ],
               "to_replace": "minecraft:water",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             }
           ],
           "generators": [],
@@ -62,9 +65,10 @@
               "chance": 0.0025,
               "type": "pandorasbox:spawn_random"
             }
-          ]
+          ],
+          "type": "pandorasbox:prepare_gen_convert"
         },
-        "type": "pandorasbox:convert_generic"
+        "type": "pandorasbox:generate"
       },
       {
         "ticks_per_item": {
@@ -76,37 +80,7 @@
           "guaranteed": true,
           "type": "minecraft:constant"
         },
-        "sets": [
-          "pandorasbox:leather_equipment",
-          "pandorasbox:copper_equipment",
-          "pandorasbox:iron_equipment",
-          "pandorasbox:golden_equipment",
-          "pandorasbox:diamond_equipment",
-          "pandorasbox:netherite_equipment",
-          "pandorasbox:bowmaster",
-          "pandorasbox:midgame_miner",
-          "pandorasbox:early_miner",
-          "pandorasbox:farmers_dream",
-          "pandorasbox:glass_cannon",
-          "pandorasbox:underseas_explorer",
-          "pandorasbox:the_fighter",
-          "pandorasbox:redstoners_dream_white_wool",
-          "pandorasbox:redstoners_dream_orange_wool",
-          "pandorasbox:redstoners_dream_magenta_wool",
-          "pandorasbox:redstoners_dream_light_blue_wool",
-          "pandorasbox:redstoners_dream_yellow_wool",
-          "pandorasbox:redstoners_dream_lime_wool",
-          "pandorasbox:redstoners_dream_pink_wool",
-          "pandorasbox:redstoners_dream_gray_wool",
-          "pandorasbox:redstoners_dream_light_gray_wool",
-          "pandorasbox:redstoners_dream_cyan_wool",
-          "pandorasbox:redstoners_dream_purple_wool",
-          "pandorasbox:redstoners_dream_blue_wool",
-          "pandorasbox:redstoners_dream_brown_wool",
-          "pandorasbox:redstoners_dream_green_wool",
-          "pandorasbox:redstoners_dream_red_wool",
-          "pandorasbox:redstoners_dream_black_wool"
-        ],
+        "equipment_sets": "#pandorasbox:default_sets",
         "value_throw": {
           "throw_strength_horizontal": {
             "min": 0.05,

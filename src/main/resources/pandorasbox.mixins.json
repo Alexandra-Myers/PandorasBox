@@ -9,6 +9,7 @@
     "TreeFeatureMixin"
   ],
   "client": [
+    "client.GameRendererMixin",
     "client.GuiMixin",
     "client.KeyboardInputMixin",
     "client.MinecraftMixin",

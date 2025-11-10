@@ -5,13 +5,17 @@
       "max": 15.0,
       "type": "minecraft:linear"
     },
-    "chance_to_discard_netherrack": {
-      "min": 0.0,
-      "max": 0.3,
-      "type": "minecraft:linear"
+    "chance_for_more_effects": 0.1,
+    "generate_effect": {
+      "chance_to_discard_netherrack": {
+        "min": 0.0,
+        "max": 0.3,
+        "type": "minecraft:linear"
+      },
+      "biome": "nether_wastes",
+      "type": "pandorasbox:prepare_gen_convert_to_nether"
     },
-    "biome": "nether_wastes",
-    "type": "pandorasbox:convert_to_nether"
+    "type": "pandorasbox:generate"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"
