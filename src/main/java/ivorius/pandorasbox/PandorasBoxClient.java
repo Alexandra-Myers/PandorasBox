@@ -19,6 +19,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.entity.GiantMobRenderer;
 
 public class PandorasBoxClient implements ClientModInitializer {
     public static Overlay cached = null;
@@ -27,6 +28,7 @@ public class PandorasBoxClient implements ClientModInitializer {
      */
     @Override
     public void onInitializeClient() {
+        EntityRendererRegistry.register(EntityInit.GIANT, context -> new GiantMobRenderer(context, 6.0F));
         EntityRendererRegistry.register(EntityInit.BOX, PandorasBoxRenderer::new);
 
         EntityModelLayerRegistry.registerModelLayer(PandorasBoxModel.LAYER_LOCATION, PandorasBoxModel::createBodyLayer);
