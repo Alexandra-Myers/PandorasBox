@@ -1,0 +1,27 @@
+{
+  "effect_creator": {
+    "time": {
+      "min": 10,
+      "max": 150,
+      "type": "minecraft:linear"
+    },
+    "number": {
+      "min": 6,
+      "max": 20,
+      "type": "minecraft:linear"
+    },
+    "range": {
+      "min": 10.0,
+      "max": 20.0,
+      "type": "minecraft:linear"
+    },
+    "explosion_strength": {
+      "min": 3.0,
+      "max": 5.0,
+      "type": "minecraft:linear"
+    },
+    "type": "pandorasbox:spawn_explosions"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

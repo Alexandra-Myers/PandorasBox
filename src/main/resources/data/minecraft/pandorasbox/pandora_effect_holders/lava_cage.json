@@ -3,33 +3,47 @@
     "translate": "effect_holder.pandorasbox.lava_cage"
   },
   "effect_creator": {
-    "cage_blocks": [
-      {
-        "weight": 100.0,
-        "block": "minecraft:iron_bars"
-      },
-      {
-        "weight": 50.0,
-        "block": "minecraft:black_stained_glass_pane"
-      }
-    ],
-    "floor_blocks": [
-      {
-        "weight": 70.0,
-        "tag": "#c:obsidians/normal"
-      },
-      {
-        "weight": 10.0,
-        "block": "minecraft:bedrock"
-      }
-    ],
     "range": {
       "min": 15.0,
       "max": 40.0,
       "type": "minecraft:linear"
     },
-    "lava_block": "minecraft:lava",
-    "type": "pandorasbox:lava_cage"
+    "chance_for_more_effects": 0.1,
+    "generate_effect": {
+      "lava_block": "minecraft:lava",
+      "cage_blocks": [
+        {
+          "weight": 100.0,
+          "block": "minecraft:iron_bars"
+        },
+        {
+          "weight": 50.0,
+          "block": "minecraft:black_stained_glass_pane"
+        }
+      ],
+      "floor_blocks": [
+        {
+          "weight": 70.0,
+          "tag": "#c:obsidians/normal"
+        },
+        {
+          "weight": 10.0,
+          "block": "minecraft:bedrock"
+        }
+      ],
+      "height_offset": {
+        "min": 2,
+        "max": 11,
+        "type": "minecraft:linear"
+      },
+      "wall_dist": {
+        "min": 2,
+        "max": 6,
+        "type": "minecraft:linear"
+      },
+      "type": "pandorasbox:prepare_gen_lava_cages"
+    },
+    "type": "pandorasbox:generate"
   },
   "positive": false,
   "type": "minecraft:positive_or_negative"

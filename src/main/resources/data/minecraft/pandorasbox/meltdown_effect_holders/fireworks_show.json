@@ -1,0 +1,51 @@
+{
+  "effect_creator": {
+    "time": {
+      "min": 10,
+      "max": 100,
+      "type": "minecraft:linear"
+    },
+    "number": {
+      "min": 10,
+      "max": 30,
+      "type": "minecraft:linear"
+    },
+    "spawn_from_effect_center": {
+      "guaranteed": true,
+      "type": "minecraft:constant"
+    },
+    "entities": [
+      {
+        "entity": "minecraft:pbspecial_fireworks",
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 100.0
+      }
+    ],
+    "value_throw": {
+      "throw_strength_horizontal": {
+        "min": 0.02,
+        "max": 0.06,
+        "type": "minecraft:linear"
+      },
+      "throw_strength_vertical": {
+        "value": 0.01,
+        "type": "minecraft:constant"
+      }
+    },
+    "value_spawn": {
+      "spawn_range": {
+        "min": 2.0,
+        "max": 20.0,
+        "type": "minecraft:linear"
+      },
+      "spawn_shift": {
+        "value": 0.0,
+        "type": "minecraft:constant"
+      }
+    },
+    "type": "pandorasbox:spawn_entities"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

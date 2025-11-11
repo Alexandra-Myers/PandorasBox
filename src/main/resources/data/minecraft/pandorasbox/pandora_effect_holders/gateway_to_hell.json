@@ -5,6 +5,16 @@
   "effect_creator": {
     "effects": [
       {
+        "range_horizontal": {
+          "min": 5,
+          "max": 15,
+          "type": "minecraft:linear"
+        },
+        "range_vertical": {
+          "min": 5,
+          "max": 10,
+          "type": "minecraft:linear"
+        },
         "range_starting_y": {
           "min": 2,
           "max": 5,
@@ -178,16 +188,6 @@
             "weight": 20.0
           }
         ],
-        "range_horizontal": {
-          "min": 5,
-          "max": 15,
-          "type": "minecraft:linear"
-        },
-        "range_vertical": {
-          "min": 5,
-          "max": 10,
-          "type": "minecraft:linear"
-        },
         "type": "pandorasbox:ruined_portal"
       },
       {
@@ -196,13 +196,17 @@
           "max": 40.0,
           "type": "minecraft:linear"
         },
-        "chance_to_discard_netherrack": {
-          "min": 0.01,
-          "max": 0.15,
-          "type": "minecraft:gaussian"
+        "chance_for_more_effects": 0.1,
+        "generate_effect": {
+          "chance_to_discard_netherrack": {
+            "min": 0.01,
+            "max": 0.15,
+            "type": "minecraft:gaussian"
+          },
+          "biome": "nether_wastes",
+          "type": "pandorasbox:prepare_gen_convert_to_nether"
         },
-        "biome": "nether_wastes",
-        "type": "pandorasbox:convert_to_nether"
+        "type": "pandorasbox:generate"
       },
       {
         "range": {
@@ -210,14 +214,18 @@
           "max": 10.0,
           "type": "minecraft:linear"
         },
-        "block": "minecraft:lava",
-        "platform_blocks": [
-          {
-            "weight": 1.0,
-            "block": "minecraft:air"
-          }
-        ],
-        "type": "pandorasbox:create_pool"
+        "chance_for_more_effects": 0.1,
+        "generate_effect": {
+          "block": "minecraft:lava",
+          "platform_blocks": [
+            {
+              "weight": 1.0,
+              "block": "minecraft:air"
+            }
+          ],
+          "type": "pandorasbox:prepare_gen_pool"
+        },
+        "type": "pandorasbox:generate"
       }
     ],
     "delays": [

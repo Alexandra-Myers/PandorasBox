@@ -8,26 +8,40 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "chance_per_block": {
-      "min": 0.015625,
-      "max": 0.1111111119389534,
-      "type": "minecraft:linear"
-    },
-    "possible_tree_flags": {
-      "min_flags": 1,
-      "flags": [
-        4,
-        3,
-        5
+    "chance_for_more_effects": 0.15,
+    "generate_effect": {
+      "chance_per_block": {
+        "min": 0.015625,
+        "max": 0.1111111119389534,
+        "type": "minecraft:linear"
+      },
+      "possible_tree_flags": {
+        "min_flags": 1,
+        "flags": [
+          4,
+          3,
+          5
+        ],
+        "chances": [
+          0.7,
+          0.7,
+          0.7
+        ],
+        "type": "minecraft:flags"
+      },
+      "tree_features": [
+        "minecraft:oak",
+        "minecraft:fancy_oak",
+        "minecraft:jungle_tree",
+        "minecraft:mega_jungle_tree",
+        "minecraft:jungle_bush",
+        "minecraft:dark_oak",
+        "minecraft:spruce",
+        "minecraft:birch"
       ],
-      "chances": [
-        0.7,
-        0.7,
-        0.7
-      ],
-      "type": "minecraft:flags"
+      "type": "pandorasbox:prepare_gen_trees"
     },
-    "type": "pandorasbox:gen_trees"
+    "type": "pandorasbox:generate"
   },
   "positive": true,
   "type": "minecraft:positive_or_negative"

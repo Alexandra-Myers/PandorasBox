@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:prismarine_shard",
+    "minecraft:ominous_bottle",
+    "#c:music_discs",
+    "#c:gems/diamond",
+    "#c:gems/emerald",
+    "#c:ingots/gold",
+    "#c:foods/golden",
+    "#c:ender_pearls",
+    "#c:gems/prismarine"
+  ]
+}

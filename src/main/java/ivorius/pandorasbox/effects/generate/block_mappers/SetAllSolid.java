@@ -22,9 +22,6 @@ public record SetAllSolid(Block toReplace, Optional<BlockMapper> otherwise) impl
             instance.group(BuiltInRegistries.BLOCK.byNameCodec().fieldOf("to_replace").forGetter(SetAllSolid::toReplace),
                             BlockMapper.CODEC.optionalFieldOf("otherwise").forGetter(SetAllSolid::otherwise))
                     .apply(instance, SetAllSolid::new));
-    public SetAllSolid(Block toReplace) {
-        this(toReplace, Optional.empty());
-    }
 
     @Override
     public boolean matches(ServerLevel serverLevel, PandorasBoxEntity entity, BlockPos blockPos, BlockState state, RandomSource random) {

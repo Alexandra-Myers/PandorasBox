@@ -5,10 +5,8 @@
 
 package ivorius.pandorasbox.effects;
 
-import com.mojang.datafixers.kinds.App;
-import com.mojang.datafixers.util.Function5;
+import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.math.IvMathHelper;
@@ -16,8 +14,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.function.Function;
 
 /**
  * Created by lukas on 31.03.14.
@@ -66,13 +62,10 @@ public abstract class PBEffectRangeBased extends PBEffectNormal {
     }
 
     public abstract void generateInRange(Level level, PandorasBoxEntity entity, RandomSource random, Vec3 effectCenter, double prevRange, double newRange, int pass);
-    public static <T extends PBEffectRangeBased, T2> MapCodec<T> produceCodec(Function<RecordCodecBuilder.Instance<T>, App<RecordCodecBuilder.Mu<T>, T2>> function, Function5<Integer, Double, Integer, Integer, T2, T> constructor) {
-        return RecordCodecBuilder.mapCodec(instance ->
-                instance.group(base(),
-                                Codec.DOUBLE.fieldOf("range").forGetter(PBEffectRangeBased::getRange),
-                                Codec.INT.fieldOf("passes").forGetter(PBEffectRangeBased::getPasses),
-                                Codec.INT.fieldOf("unified_seed").forGetter(PBEffectRangeBased::getUnifiedSeed),
-                                function.apply(instance))
-                        .apply(instance, constructor));
+    public static <T extends PBEffectRangeBased> Products.P4<RecordCodecBuilder.Mu<T>, Integer, Double, Integer, Integer> baseFields(RecordCodecBuilder.Instance<T> instance) {
+        return instance.group(base(),
+                Codec.DOUBLE.fieldOf("range").forGetter(PBEffectRangeBased::getRange),
+                Codec.INT.fieldOf("passes").forGetter(PBEffectRangeBased::getPasses),
+                Codec.INT.fieldOf("unified_seed").forGetter(PBEffectRangeBased::getUnifiedSeed));
     }
 }

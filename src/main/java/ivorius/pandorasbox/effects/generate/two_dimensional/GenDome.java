@@ -23,7 +23,7 @@ public record GenDome(Block block, Optional<Block> fillBlock) implements Generat
                     .apply(instance, GenDome::new));
     @Override
     public void generateOnSurface(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, BlockPos pos, double distance, double range, int pass, int unifiedSeed) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             int domeHeightY = Mth.ceil(range);
 
             for (int y = -domeHeightY; y <= domeHeightY; y++) {

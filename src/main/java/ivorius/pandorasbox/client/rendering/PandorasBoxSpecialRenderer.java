@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.*;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.Set;
@@ -23,27 +24,27 @@ public class PandorasBoxSpecialRenderer implements NoDataSpecialModelRenderer {
 	}
 
 	@Override
-	public void render(ItemDisplayContext itemDisplayContext, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, boolean bl) {
-		this.renderer.renderItem(poseStack, multiBufferSource, i, j);
-	}
-
-	@Override
 	public void getExtents(Set<Vector3f> set) {
 		this.renderer.getExtents(set);
 	}
 
-	@Environment(EnvType.CLIENT)
+    @Override
+    public void render(ItemDisplayContext itemDisplayContext, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn, int overlayTexture, boolean hasFoil) {
+        this.renderer.renderItem(poseStack, multiBufferSource, packedLightIn, overlayTexture, hasFoil);
+    }
+
+    @Environment(EnvType.CLIENT)
 	public record Unbaked() implements SpecialModelRenderer.Unbaked {
 		public static final MapCodec<PandorasBoxSpecialRenderer.Unbaked> MAP_CODEC = MapCodec.unit(new Unbaked());
 
-		@Override
+        @Override
+        public @Nullable SpecialModelRenderer<?> bake(EntityModelSet entityModelSet) {
+            return new PandorasBoxSpecialRenderer(new PandorasBoxBlockEntityRenderer(entityModelSet));
+        }
+
+        @Override
 		public MapCodec<PandorasBoxSpecialRenderer.Unbaked> type() {
 			return MAP_CODEC;
-		}
-
-		@Override
-		public SpecialModelRenderer<?> bake(EntityModelSet entityModelSet) {
-			return new PandorasBoxSpecialRenderer(new PandorasBoxBlockEntityRenderer(entityModelSet));
 		}
 	}
 }

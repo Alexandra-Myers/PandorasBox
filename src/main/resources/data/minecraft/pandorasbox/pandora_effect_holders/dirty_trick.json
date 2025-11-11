@@ -7,6 +7,26 @@
       {
         "items": [
           {
+            "tag": "#minecraft:planks",
+            "weight": 30.0
+          },
+          {
+            "tag": "#minecraft:wool",
+            "weight": 30.0
+          },
+          {
+            "tag": "#minecraft:leaves",
+            "weight": 30.0
+          },
+          {
+            "tag": "#minecraft:logs",
+            "weight": 30.0
+          },
+          {
+            "tag": "#minecraft:stone_bricks",
+            "weight": 30.0
+          },
+          {
             "stack": {
               "id": "minecraft:prismarine"
             },
@@ -111,56 +131,136 @@
             "weight": 10.0
           },
           {
-            "stack": {
-              "id": "minecraft:lodestone"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 0.2
+            "tag": "#c:cobblestones",
+            "weight": 10.0
           },
           {
-            "stack": {
-              "id": "minecraft:iron_block"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 0.3
+            "tag": "#minecraft:nylium",
+            "weight": 10.0
           },
           {
-            "stack": {
-              "id": "minecraft:tnt"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 2.0
+            "tag": "#pandorasbox:all_terracotta",
+            "weight": 10.0
           },
           {
-            "stack": {
-              "id": "minecraft:glowstone"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 2.0
+            "tag": "#c:player_workstations/crafting_tables",
+            "weight": 10.0
           },
           {
-            "stack": {
-              "id": "minecraft:shroomlight"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 2.0
+            "tag": "#c:player_workstations/furnaces",
+            "weight": 10.0
           },
           {
-            "stack": {
-              "id": "minecraft:sponge"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 2.0
+            "tag": "#minecraft:base_stone_nether",
+            "weight": 10.0
+          },
+          {
+            "tag": "#minecraft:dirt",
+            "weight": 10.0
+          },
+          {
+            "tag": "#minecraft:slabs",
+            "weight": 10.0
+          },
+          {
+            "tag": "#minecraft:stairs",
+            "weight": 10.0
+          },
+          {
+            "tag": "#minecraft:sand",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:stones",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:wither_summon_base_blocks",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:ores/quartz",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:coal_ores",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:copper_ores",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:lapis_ores",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:redstone_ores",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:iron_ores",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:snow",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:chests",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:barrels",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:sandstone/blocks",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:villager_job_sites",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:rails",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:concretes",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:concrete_powder",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:saplings",
+            "weight": 8.0
+          },
+          {
+            "tag": "#minecraft:flower_pots",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:glass_blocks",
+            "weight": 8.0
+          },
+          {
+            "tag": "#c:glass_panes",
+            "weight": 8.0
           },
           {
             "stack": {
               "id": "minecraft:dragon_egg"
+            },
+            "min_count": 1,
+            "max_count": 64,
+            "weight": 5.0
+          },
+          {
+            "stack": {
+              "id": "minecraft:note_block"
             },
             "min_count": 1,
             "max_count": 64,
@@ -223,831 +323,24 @@
             "weight": 5.0
           },
           {
-            "stack": {
-              "id": "minecraft:clay_ball"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:fishing_rod"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:flint"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:egg"
-            },
-            "min_count": 1,
-            "max_count": 16,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:paper"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:torch"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:soul_torch"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 10.0
-          },
-          {
-            "tag": "#minecraft:coals",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:ingots/copper",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:crops",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:fertilizers",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:buckets/empty",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:dusts/redstone",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:rods/wooden",
-            "weight": 10.0
-          },
-          {
-            "tag": "#minecraft:villager_plantable_seeds",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:bricks",
-            "weight": 10.0
-          },
-          {
-            "tag": "#pandorasbox:pandoras_box_misc",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:nuggets/gold",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:tools/fishing_rod",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:foods/raw_meat",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:foods/raw_fish",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:foods/cooked_meat",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:foods/cooked_fish",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:foods/bread",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:foods/cookie",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:foods/berry",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:foods/pie",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:foods/food_poisoning",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:foods/candy",
-            "weight": 10.0
-          },
-          {
-            "tag": "#c:foods/edible_when_placed",
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:honeycomb"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:mushroom_stew"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:apple"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:rabbit_foot"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:rabbit_hide"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:rabbit_stew"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:honey_bottle"
-            },
-            "min_count": 1,
-            "max_count": 16,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:painting"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 8.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:flower_pot"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 8.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:minecart"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 8.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:cauldron"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 8.0
-          },
-          {
-            "tag": "#minecraft:boats",
-            "weight": 8.0
-          },
-          {
-            "tag": "#minecraft:beds",
-            "weight": 8.0
-          },
-          {
-            "tag": "#c:leathers",
-            "weight": 8.0
-          },
-          {
-            "tag": "#c:buckets/milk",
-            "weight": 8.0
-          },
-          {
-            "tag": "#c:buckets/lava",
-            "weight": 8.0
-          },
-          {
-            "tag": "#c:buckets/water",
-            "weight": 8.0
-          },
-          {
-            "tag": "#c:tools/brush",
-            "weight": 8.0
-          },
-          {
-            "tag": "#c:tools/igniter",
-            "weight": 8.0
-          },
-          {
-            "tag": "#c:foods/soup",
-            "weight": 8.0
-          },
-          {
-            "tag": "#c:slime_balls",
-            "weight": 8.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:name_tag"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 8.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:nautilus_shell"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 8.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:ink_sac"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 8.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:glow_ink_sac"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 8.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:armadillo_scute"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 8.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:lantern"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 8.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:soul_lantern"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 8.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:spyglass"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 8.0
-          },
-          {
-            "tag": "#c:ingots/iron",
-            "weight": 6.0
-          },
-          {
-            "tag": "#c:nuggets/iron",
-            "weight": 6.0
-          },
-          {
-            "tag": "#c:dusts/glowstone",
-            "weight": 6.0
-          },
-          {
-            "tag": "#c:gems/amethyst",
-            "weight": 6.0
-          },
-          {
-            "tag": "#c:rods",
-            "weight": 6.0
-          },
-          {
-            "tag": "#minecraft:brewing_fuel",
-            "weight": 6.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:wind_charge"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 6.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:clock"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 6.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:ghast_tear"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 6.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:ender_eye"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 6.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:glistering_melon_slice"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 6.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:fermented_spider_eye"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 6.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:magma_cream"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 6.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_carrot"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 6.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:turtle_scute"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 6.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:phantom_membrane"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 6.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:leather_helmet"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:leather_chestplate"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:leather_leggings"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:leather_boots"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:wooden_sword"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:wooden_pickaxe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:wooden_shovel"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:wooden_axe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:wooden_hoe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_helmet"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_chestplate"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_leggings"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_boots"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_sword"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_pickaxe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_shovel"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_axe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_hoe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:turtle_helmet"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:iron_helmet"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:iron_chestplate"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:iron_leggings"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:iron_boots"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:iron_sword"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:iron_pickaxe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:iron_shovel"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:iron_axe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:iron_hoe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:compass"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:lead"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:chorus_fruit"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:heart_of_the_sea"
-            },
-            "min_count": 1,
-            "max_count": 64,
-            "weight": 4.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:shield"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 3.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:wolf_armor"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 3.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:leather_horse_armor"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 3.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:iron_horse_armor"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 3.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_horse_armor"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 3.0
-          },
-          {
-            "tag": "#c:chests",
-            "max_count": 1,
+            "tag": "#c:storage_blocks/wheat",
             "weight": 5.0
           },
           {
-            "tag": "#c:barrels",
-            "max_count": 1,
+            "tag": "#c:storage_blocks/dried_kelp",
             "weight": 5.0
           },
           {
-            "tag": "#minecraft:anvil",
-            "max_count": 1,
-            "weight": 2.0
+            "tag": "#c:obsidians/normal",
+            "weight": 5.0
+          },
+          {
+            "tag": "#c:obsidians/crying",
+            "weight": 5.0
           },
           {
             "stack": {
-              "id": "minecraft:nether_star"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 2.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:beacon"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 2.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:dispenser"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 2.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:jukebox"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 2.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:enchanting_table"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 2.0
-          },
-          {
-            "tag": "#c:music_discs",
-            "weight": 2.0
-          },
-          {
-            "tag": "#c:gems/diamond",
-            "weight": 2.0
-          },
-          {
-            "tag": "#c:gems/emerald",
-            "weight": 2.0
-          },
-          {
-            "tag": "#c:ingots/gold",
-            "weight": 2.0
-          },
-          {
-            "tag": "#c:foods/golden",
-            "weight": 2.0
-          },
-          {
-            "tag": "#c:ender_pearls",
-            "weight": 2.0
-          },
-          {
-            "tag": "#c:gems/prismarine",
-            "weight": 2.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:prismarine_shard"
+              "id": "minecraft:lodestone"
             },
             "min_count": 1,
             "max_count": 64,
@@ -1055,7 +348,7 @@
           },
           {
             "stack": {
-              "id": "minecraft:ominous_bottle"
+              "id": "minecraft:tnt"
             },
             "min_count": 1,
             "max_count": 64,
@@ -1063,208 +356,147 @@
           },
           {
             "stack": {
-              "id": "minecraft:netherite_scrap"
-            },
-            "min_count": 1,
-            "max_count": 5,
-            "weight": 0.5
-          },
-          {
-            "stack": {
-              "id": "minecraft:disc_fragment_5"
-            },
-            "min_count": 1,
-            "max_count": 5,
-            "weight": 0.5
-          },
-          {
-            "stack": {
-              "id": "minecraft:echo_shard"
-            },
-            "min_count": 1,
-            "max_count": 5,
-            "weight": 0.5
-          },
-          {
-            "stack": {
-              "id": "minecraft:recovery_compass"
-            },
-            "min_count": 1,
-            "max_count": 5,
-            "weight": 0.5
-          },
-          {
-            "stack": {
-              "id": "minecraft:elytra"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 1.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:dragon_breath"
+              "id": "minecraft:glowstone"
             },
             "min_count": 1,
             "max_count": 64,
-            "weight": 1.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:diamond_horse_armor"
-            },
-            "min_count": 1,
-            "max_count": 1,
             "weight": 2.0
           },
           {
             "stack": {
-              "id": "minecraft:diamond_helmet"
+              "id": "minecraft:shroomlight"
             },
             "min_count": 1,
-            "max_count": 1,
+            "max_count": 64,
             "weight": 2.0
           },
           {
             "stack": {
-              "id": "minecraft:diamond_chestplate"
+              "id": "minecraft:sponge"
             },
             "min_count": 1,
-            "max_count": 1,
+            "max_count": 64,
             "weight": 2.0
           },
           {
-            "stack": {
-              "id": "minecraft:diamond_leggings"
-            },
-            "min_count": 1,
-            "max_count": 1,
+            "tag": "#c:storage_blocks/coal",
             "weight": 2.0
           },
           {
-            "stack": {
-              "id": "minecraft:diamond_boots"
-            },
-            "min_count": 1,
-            "max_count": 1,
+            "tag": "#c:storage_blocks/copper",
             "weight": 2.0
           },
           {
-            "stack": {
-              "id": "minecraft:diamond_sword"
-            },
-            "min_count": 1,
-            "max_count": 1,
+            "tag": "#c:storage_blocks/lapis",
             "weight": 2.0
           },
           {
-            "stack": {
-              "id": "minecraft:diamond_pickaxe"
-            },
-            "min_count": 1,
-            "max_count": 1,
+            "tag": "#c:storage_blocks/redstone",
             "weight": 2.0
           },
           {
-            "stack": {
-              "id": "minecraft:diamond_shovel"
-            },
-            "min_count": 1,
-            "max_count": 1,
+            "tag": "#c:storage_blocks/slime",
             "weight": 2.0
           },
           {
-            "stack": {
-              "id": "minecraft:diamond_axe"
-            },
-            "min_count": 1,
-            "max_count": 1,
+            "tag": "#c:storage_blocks/resin",
             "weight": 2.0
           },
           {
-            "stack": {
-              "id": "minecraft:diamond_hoe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 2.0
+            "tag": "#c:ores/netherite_scrap",
+            "weight": 0.5
           },
           {
-            "stack": {
-              "id": "minecraft:netherite_helmet"
-            },
-            "min_count": 1,
-            "max_count": 1,
+            "tag": "#minecraft:diamond_ores",
+            "weight": 0.5
+          },
+          {
+            "tag": "#minecraft:emerald_ores",
+            "weight": 0.5
+          },
+          {
+            "tag": "#minecraft:gold_ores",
+            "weight": 0.5
+          },
+          {
+            "tag": "#c:storage_blocks/netherite",
             "weight": 0.2
           },
           {
-            "stack": {
-              "id": "minecraft:netherite_chestplate"
-            },
-            "min_count": 1,
-            "max_count": 1,
+            "tag": "#c:storage_blocks/diamond",
             "weight": 0.2
           },
           {
-            "stack": {
-              "id": "minecraft:netherite_leggings"
-            },
-            "min_count": 1,
-            "max_count": 1,
+            "tag": "#c:storage_blocks/emerald",
             "weight": 0.2
           },
           {
-            "stack": {
-              "id": "minecraft:netherite_boots"
-            },
-            "min_count": 1,
-            "max_count": 1,
+            "tag": "#c:storage_blocks/gold",
             "weight": 0.2
           },
           {
-            "stack": {
-              "id": "minecraft:netherite_sword"
-            },
-            "min_count": 1,
-            "max_count": 1,
+            "tag": "#c:storage_blocks/iron",
             "weight": 0.2
           },
           {
-            "stack": {
-              "id": "minecraft:netherite_pickaxe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 0.2
-          },
-          {
-            "stack": {
-              "id": "minecraft:netherite_shovel"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 0.2
-          },
-          {
-            "stack": {
-              "id": "minecraft:netherite_axe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 0.2
-          },
-          {
-            "stack": {
-              "id": "minecraft:netherite_hoe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 0.2
+            "tag": "#pandorasbox:pandoras_items_misc_common",
+            "weight": 10.0
           },
           {
             "tag": "#c:dyes",
             "max_count": 1,
             "weight": 10.0
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_misc_uncommon",
+            "weight": 8.0
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_misc_rare",
+            "weight": 6.0
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_equipment_common",
+            "weight": 4.0
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_misc_very_rare",
+            "weight": 4.0
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_equipment_uncommon",
+            "weight": 3.0
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_singles_very_rare",
+            "max_count": 1,
+            "weight": 5.0
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_singles_epic",
+            "max_count": 1,
+            "weight": 2.0
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_misc_epic",
+            "weight": 2.0
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_legendary",
+            "max_count": 5,
+            "weight": 0.5
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_dragon",
+            "weight": 1.0
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_equipment_rare",
+            "weight": 2.0
+          },
+          {
+            "tag": "#pandorasbox:pandoras_items_equipment_very_rare",
+            "weight": 0.2
           }
         ],
         "value_throw": {
@@ -1282,6 +514,11 @@
         "ticks_per_stack": {
           "min": 10,
           "max": 30,
+          "type": "minecraft:linear"
+        },
+        "number": {
+          "min": 5,
+          "max": 9,
           "type": "minecraft:linear"
         },
         "spawns_from_effect_center": {

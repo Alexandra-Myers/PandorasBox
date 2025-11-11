@@ -28,7 +28,8 @@ public record RangeTaggedMapper(TagKey<Block> tagKey, Integer[] tagMetas, double
                     .apply(instance, RangeTaggedMapper::new));
     @Override
     public boolean matches(ServerLevel serverLevel, PandorasBoxEntity entity, BlockPos blockPos, BlockState state, RandomSource random) {
-        return serverLevel.loadedAndEntityCanStandOn(blockPos, entity) && serverLevel.getBlockState(blockPos.above()).isAir();
+        BlockState blockAboveState = serverLevel.getBlockState(blockPos.above());
+        return serverLevel.loadedAndEntityCanStandOn(blockPos, entity) && (blockAboveState.isAir() || blockAboveState.canBeReplaced() || !blockAboveState.isRedstoneConductor(serverLevel, blockPos.above()) || serverLevel.getBlockState(blockPos).canBeReplaced());
     }
 
     @Override

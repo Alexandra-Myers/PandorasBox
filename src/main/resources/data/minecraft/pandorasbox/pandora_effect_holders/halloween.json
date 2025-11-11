@@ -10,10 +10,14 @@
           "max": 80.0,
           "type": "minecraft:linear"
         },
-        "convert_effect": {
+        "chance_for_more_effects": 0.1,
+        "generate_effect": {
+          "biome": "minecraft:soul_sand_valley",
+          "exclusions": [],
           "mappers": [
             {
-              "type": "pandorasbox:halloween"
+              "mapper_type": "pandorasbox:halloween",
+              "type": "pandorasbox:direct"
             }
           ],
           "generators": [],
@@ -34,11 +38,9 @@
               "type": "pandorasbox:spawn_random"
             }
           ],
-          "biome": "minecraft:soul_sand_valley",
-          "exclusions": []
+          "type": "pandorasbox:prepare_gen_convert"
         },
-        "chance_for_more_effects": 0.1,
-        "type": "pandorasbox:convert_generic"
+        "type": "pandorasbox:generate"
       },
       {
         "time": {

@@ -2,8 +2,8 @@ package ivorius.pandorasbox.effects.generate;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.PandoraBlockTags;
 import net.atlas.atlascore.util.ArrayListExtensions;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
@@ -62,7 +62,7 @@ public enum NetherBiome implements StringRepresentable {
                     setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.SAND))) {
                     setBlockSafe(world, pos, Blocks.SOUL_SAND.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
+                } else if (isBlockAnyOf(block, Either.right(PandoraBlockTags.ALL_TERRACOTTA), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
                 } else if (world.getBlockState(pos).isAir()) {
                     if (random.nextInt(25) == 0) {
@@ -98,20 +98,20 @@ public enum NetherBiome implements StringRepresentable {
                     }
                 }
             } else {
-                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                ArrayListExtensions<Entity[]> entities = new ArrayListExtensions<>();
                 entities.addAll(
-                        lazilySpawnEntity(world, entity, random, "piglin", 1.0f / (30 * 30), pos),
-                        lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos),
-                        lazilySpawnEntity(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos),
-                        lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (20 * 20), pos));
+                        lazilyCreateEntities(world, entity, random, "piglin", 1.0f / (30 * 30), pos),
+                        lazilyCreateEntities(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos),
+                        lazilyCreateEntities(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos),
+                        lazilyCreateEntities(world, entity, random, "hoglin", 1.0f / (20 * 20), pos));
 
-                for (Entity entity1 : entities) {
-                    canSpawnEntity(world, pos, entity1);
+                for (Entity[] entity1 : entities) {
+                    canSpawnEntities(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
-                    lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
-                    lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
                 }
             }
         }
@@ -141,7 +141,7 @@ public enum NetherBiome implements StringRepresentable {
                     setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.GOLD_ORES))) {
                     setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(BlockTags.DIRT))) {
+                } else if (isBlockAnyOf(block, Either.right(PandoraBlockTags.ALL_TERRACOTTA), Either.right(BlockTags.DIRT))) {
                     setBlockSafe(world, pos, Blocks.SOUL_SOIL.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
@@ -163,18 +163,18 @@ public enum NetherBiome implements StringRepresentable {
                     }
                 }
             } else {
-                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                ArrayListExtensions<Entity[]> entities = new ArrayListExtensions<>();
                 entities.addAll(
-                        lazilySpawnEntity(world, entity, random, "skeleton", 1.0f / (15 * 15), pos),
-                        lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos));
+                        lazilyCreateEntities(world, entity, random, "skeleton", 1.0f / (15 * 15), pos),
+                        lazilyCreateEntities(world, entity, random, "zombified_piglin", 1.0f / (15 * 15), pos));
 
-                for (Entity entity1 : entities) {
-                    canSpawnEntity(world, pos, entity1);
+                for (Entity entity1[] : entities) {
+                    canSpawnEntities(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
-                    lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
-                    lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
                 }
             }
 //TODO - Somehow make this performance not atrocious?
@@ -227,7 +227,7 @@ public enum NetherBiome implements StringRepresentable {
                     setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.GOLD_ORES))) {
                     setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(BlockTags.DIRT))) {
+                } else if (isBlockAnyOf(block, Either.right(PandoraBlockTags.ALL_TERRACOTTA), Either.right(BlockTags.DIRT))) {
                     setBlockSafe(world, pos, Blocks.BASALT.defaultBlockState());
                 }  else if (isBlockAnyOf(block, Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
@@ -265,17 +265,17 @@ public enum NetherBiome implements StringRepresentable {
                     }
                 }
             } else {
-                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                ArrayListExtensions<Entity[]> entities = new ArrayListExtensions<>();
                 entities.addAll(
-                        lazilySpawnEntity(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos));
+                        lazilyCreateEntities(world, entity, random, "magma_cube", 1.0f / (15 * 15), pos));
 
-                for (Entity entity1 : entities) {
-                    canSpawnEntity(world, pos, entity1);
+                for (Entity[] entity1 : entities) {
+                    canSpawnEntities(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
-                    lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
-                    lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
                 }
             }
         }
@@ -306,7 +306,7 @@ public enum NetherBiome implements StringRepresentable {
                     setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.GOLD_ORES))) {
                     setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
+                } else if (isBlockAnyOf(block, Either.right(PandoraBlockTags.ALL_TERRACOTTA), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     if (random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir())
                         setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
                     else
@@ -352,19 +352,19 @@ public enum NetherBiome implements StringRepresentable {
                     }
                 }
             } else {
-                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                ArrayListExtensions<Entity[]> entities = new ArrayListExtensions<>();
                 entities.addAll(
-                        lazilySpawnEntity(world, entity, random, "piglin", 1.0f / (10 * 10), pos),
-                        lazilySpawnEntity(world, entity, random, "zombified_piglin", 1.0f / (25 * 25), pos),
-                        lazilySpawnEntity(world, entity, random, "hoglin", 1.0f / (10 * 10), pos));
+                        lazilyCreateEntities(world, entity, random, "piglin", 1.0f / (10 * 10), pos),
+                        lazilyCreateEntities(world, entity, random, "zombified_piglin", 1.0f / (25 * 25), pos),
+                        lazilyCreateEntities(world, entity, random, "hoglin", 1.0f / (10 * 10), pos));
 
-                for (Entity entity1 : entities) {
-                    canSpawnEntity(world, pos, entity1);
+                for (Entity[] entity1 : entities) {
+                    canSpawnEntities(world, pos, entity1);
                 }
 
                 if (canSpawnFlyingEntity(world, blockState, pos)) {
-                    lazilySpawnFlyingEntity(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
-                    lazilySpawnFlyingEntity(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "ghast", 1.0f / (50 * 50 * 50), pos);
+                    lazilySpawnFlyingEntities(world, entity, random, "blaze", 1.0f / (50 * 50 * 50), pos);
                 }
             }
         }
@@ -395,7 +395,7 @@ public enum NetherBiome implements StringRepresentable {
                     setBlockSafe(world, pos, Blocks.NETHER_QUARTZ_ORE.defaultBlockState());
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.GOLD_ORES))) {
                     setBlockSafe(world, pos, Blocks.NETHER_GOLD_ORE.defaultBlockState());
-                } else if (isBlockAnyOf(block, Either.right(PandorasBox.ALL_TERRACOTTA), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
+                } else if (isBlockAnyOf(block, Either.right(PandoraBlockTags.ALL_TERRACOTTA), Either.right(BlockTags.SAND), Either.right(ConventionalBlockTags.STONES), Either.right(ConventionalBlockTags.COBBLESTONES), Either.right(BlockTags.DIRT), Either.right(ConventionalBlockTags.SANDSTONE_BLOCKS), Either.left(Blocks.END_STONE))) {
                     if (random.nextDouble() < 0.2 || !world.getBlockState(pos.above()).isAir())
                         setBlockSafe(world, pos, Blocks.NETHERRACK.defaultBlockState());
                     else
@@ -441,12 +441,12 @@ public enum NetherBiome implements StringRepresentable {
                     }
                 }
             } else {
-                ArrayListExtensions<Entity> entities = new ArrayListExtensions<>();
+                ArrayListExtensions<Entity[]> entities = new ArrayListExtensions<>();
                 entities.addAll(
-                        lazilySpawnEntity(world, entity, random, "enderman", 1.0f / (15 * 15), pos));
+                        lazilyCreateEntities(world, entity, random, "enderman", 1.0f / (15 * 15), pos));
 
-                for (Entity entity1 : entities) {
-                    canSpawnEntity(world, pos, entity1);
+                for (Entity[] entity1 : entities) {
+                    canSpawnEntities(world, pos, entity1);
                 }
             }
         }

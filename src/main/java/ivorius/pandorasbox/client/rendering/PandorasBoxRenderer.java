@@ -11,7 +11,7 @@ import com.mojang.math.Axis;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderer;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderingRegistry;
-import ivorius.pandorasbox.effects.PBEffect;
+import ivorius.pandorasbox.client.rendering.effects.renderstate.PandoraEffectRenderState;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -47,8 +48,8 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
     public PandorasBoxRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager);
 
-        model = new PandorasBoxModel(renderManager.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
-        shadowRadius = 0.6F;
+        this.model = new PandorasBoxModel(renderManager.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
+        this.shadowRadius = 0.6F;
         this.itemModelResolver = renderManager.getItemModelResolver();
     }
 
@@ -63,40 +64,35 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
         poseStack.pushPose();
         poseStack.mulPose(YP.rotationDegrees(-renderState.yRot));
 
-        PBEffect effect = renderState.pbEffect;
-        float progress = Mth.clamp((renderState.effectTicksExisted + renderState.partialTicks) / effect.getMaxTicksAlive(), 0, 1);
+        PandoraEffectRenderState pandoraEffectRenderState = renderState.pandoraEffectRenderState;
+        float timePassed = calculateProgress(renderState, pandoraEffectRenderState);
 
         float boxScale = renderState.boxScale;
         if (boxScale < 1.0f)
             poseStack.scale(boxScale, boxScale, boxScale);
-        float height = 0.0625F * Mth.sin((float) (progress * 4 * Math.PI));
+        float height = 0.0625F * Mth.sin((float) (timePassed * 4 * Math.PI));
 
         int packedOverlay = OverlayTexture.NO_OVERLAY;
         height += renderState.renderItem.isEmpty() ? 1 : -0.25F;
         poseStack.translate(0, 0.5F + height, 0);
-        if (renderState.renderItem.isEmpty()) {
-            poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
-            model.setupAnim(renderState);
-        } else {
-            poseStack.mulPose(YP.rotation((float) (progress * 4 * Math.PI)));
-            poseStack.mulPose(Axis.XP.rotationDegrees(renderState.xRot));
-        }
+        if (renderState.renderItem.isEmpty()) poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
+        else poseStack.mulPose(YP.rotation((float) (timePassed * 4 * Math.PI)));
         boolean visible = !renderState.isInvisible;
         boolean visibleToPlayer = !visible && !renderState.invisibleToPlayer;
         RenderType renderType = getRenderType(visible, visibleToPlayer);
         if (renderType != null) {
-            VertexConsumer consumer = multiBufferSource.getBuffer(renderType);
-            if (renderState.renderItem.isEmpty()) model.renderToBuffer(poseStack, consumer, packedLightIn, packedOverlay, 0xFFFFFFFF);
-            else renderState.renderItem.render(poseStack, multiBufferSource, packedLightIn, packedOverlay);
-            if (!effect.isDone(renderState.effectTicksExisted) && renderState.boxDeathTicks < 0) {
+            if (renderState.renderItem.isEmpty()) {
+                this.model.setupAnim(renderState);
+                VertexConsumer buffer = ItemRenderer.getFoilBuffer(multiBufferSource, renderType, false, renderState.hasFoil);
+                this.model.renderToBuffer(poseStack, buffer, packedLightIn, packedOverlay, 0xFFFFFFFF);
+            } else renderState.renderItem.render(poseStack, multiBufferSource, packedLightIn, packedOverlay);
+            if (pandoraEffectRenderState.shouldRender(renderState.boxDeathTicks)) {
                 List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> layers = new ArrayList<>();
-                PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForEffect(effect);
-                if (renderer != null) {
-                    renderer.renderBox(this, renderState, effect, renderState.partialTicks, poseStack, multiBufferSource, consumer, packedLightIn, height);
-                    List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> renderLayers = renderer.getLayers(this, renderState, effect, model, renderState.partialTicks);
-                    if (renderLayers != null) {
-                        layers.addAll(renderLayers);
-                    }
+                PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForEffect(pandoraEffectRenderState);
+                renderer.renderBox(this, renderState, pandoraEffectRenderState, poseStack, multiBufferSource, packedLightIn, height, timePassed);
+                List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> renderLayers = renderer.getLayers(this, renderState, pandoraEffectRenderState, model);
+                if (renderLayers != null) {
+                    layers.addAll(renderLayers);
                 }
 
                 for (RenderLayer<PandorasBoxRenderState, PandorasBoxModel> renderLayer : layers) {
@@ -107,6 +103,7 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
 
         poseStack.popPose();
     }
+
     @Nullable
     protected RenderType getRenderType(boolean visible, boolean visibleToPlayer) {
         ResourceLocation resourceLocation = this.texture;
@@ -123,6 +120,12 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
         return model;
     }
 
+    public static float calculateProgress(PandorasBoxRenderState renderState, PandoraEffectRenderState pandoraEffectRenderState) {
+        if (pandoraEffectRenderState.effectTicksExisted == -1) return 0;
+        int animTicks = Math.max(pandoraEffectRenderState.maxTicksAlive, 20);
+        return ((pandoraEffectRenderState.effectTicksExisted + renderState.partialTicks) % animTicks) / animTicks;
+    }
+
     @Override
     public void extractRenderState(PandorasBoxEntity entity, PandorasBoxRenderState entityRenderState, float partialTicks) {
         super.extractRenderState(entity, entityRenderState, partialTicks);
@@ -130,11 +133,14 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
         entityRenderState.yRot = entity.getYRot();
         entityRenderState.boxScale = entity.getCurrentScale();
         entityRenderState.partialTicks = partialTicks;
-        entityRenderState.effectTicksExisted = entity.getEffectTicksExisted();
         entityRenderState.entityTickCount = entity.tickCount;
         entityRenderState.boxDeathTicks = entity.getDeathTicks();
-        entityRenderState.pbEffect = entity.getBoxEffect();
         this.itemModelResolver.updateForNonLiving(entityRenderState.renderItem, entity.getRenderItem(), ItemDisplayContext.GROUND, entity);
         entityRenderState.invisibleToPlayer = entity.isInvisibleTo(Minecraft.getInstance().player);
+        entityRenderState.hasFoil = entity.hasFoil;
+        PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForID(entity.getBoxEffect().rendererResourceLocationForEffect());
+        PandoraEffectRenderState renderState = renderer.createRenderState();
+        renderer.extractRenderState(entityRenderState, renderState, entity.getBoxEffect(), entity.getEffectTicksExisted());
+        entityRenderState.pandoraEffectRenderState = renderState;
     }
 }

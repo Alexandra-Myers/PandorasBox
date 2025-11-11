@@ -11,6 +11,7 @@ import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
 import ivorius.pandorasbox.init.DataSerializerInit;
+import ivorius.pandorasbox.init.Init;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -44,6 +45,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
     private static final EntityDataAccessor<Integer> EFFECT_TICKS_EXISTED = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
     protected boolean canGenerateMoreEffectsAfterwards;
     protected boolean floatUp;
+    public boolean hasFoil;
     private static final EntityDataAccessor<Float> FLOAT_PROGRESS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> SCALE_PROGRESS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<PBEffect> DATA_EFFECT_ID = SynchedEntityData.defineId(PandorasBoxEntity.class, DataSerializerInit.PBEFFECTSERIALIZER);
@@ -54,14 +56,16 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
 
     public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> p_i50172_1_, Level p_i50172_2_) {
         super(p_i50172_1_, p_i50172_2_);
-        canGenerateMoreEffectsAfterwards = true;
-        floatUp = false;
+        this.canGenerateMoreEffectsAfterwards = true;
+        this.floatUp = false;
+        this.hasFoil = false;
     }
 
-    public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> entityType, Level level, boolean canGenerateMoreEffectsAfterwards, boolean floatUp) {
+    public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> entityType, Level level, boolean canGenerateMoreEffectsAfterwards, boolean floatUp, boolean hasFoil) {
         super(entityType, level);
         this.canGenerateMoreEffectsAfterwards = canGenerateMoreEffectsAfterwards;
         this.floatUp = floatUp;
+        this.hasFoil = hasFoil;
     }
 
     @Override
@@ -139,11 +143,11 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
             PBEffect effect = getBoxEffect();
 
             if (effect == null) {
-                if (!level.isClientSide)
+                if (!level.isClientSide())
                     remove(RemovalReason.DISCARDED);
             } else {
                 if (effect.isDone(effectTicksExisted)) {
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide()) {
                         boolean isCompletelyDone = true;
 
                         if (canGenerateMoreEffectsAfterwards && effect.canGenerateMoreEffectsAfterwards(this))
@@ -231,10 +235,10 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
                         level.addParticle(ParticleTypes.PORTAL, getX() + xP, yCenter + yP, getZ() + zP, xDir, yDir, zDir);
                     }
                 }
-
-                effectTicksExisted++;
-                setEffectTicksExisted(effectTicksExisted);
             }
+
+            effectTicksExisted++;
+            setEffectTicksExisted(effectTicksExisted);
         } else {
             timeBoxWaiting--;
             setBoxWaitingTime(timeBoxWaiting);
@@ -242,7 +246,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
 
         int deathTicks = getDeathTicks();
         if (deathTicks >= 0) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 if (deathTicks >= 30)
                     remove(RemovalReason.DISCARDED);
             } else {
@@ -263,7 +267,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         setEffectTicksExisted(0);
         setBoxWaitingTime(random.nextInt(40));
 
-        entityData.set(DATA_EFFECT_ID, ensureNotNull(PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true)));
+        entityData.set(DATA_EFFECT_ID, ensureNotNull(PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true, Optional.empty(), Init.EFFECT_HOLDER_REGISTRY_KEY)));
     }
 
     public void setRenderItem(ItemStack renderItem) {
@@ -310,7 +314,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
 
     public PBEffect ensureNotNull(PBEffect input) {
         while (input == null) {
-            input = PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true);
+            input = PBECRegistry.createRandomEffect(level(), random, effectCenter.x, effectCenter.y, effectCenter.z, true, Optional.empty(), Init.EFFECT_HOLDER_REGISTRY_KEY);
         }
         return input;
     }
@@ -332,7 +336,9 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
 
     @Override
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
-        int data = canGenerateMoreEffectsAfterwards ? 1 : 0;
+        int data = hasFoil ? 1 : 0;
+        data <<= 1;
+        data |= canGenerateMoreEffectsAfterwards ? 1 : 0;
         data <<= 1;
         data |= floatUp ? 1 : 0;
         return new ClientboundAddEntityPacket(this, serverEntity, data);
@@ -341,8 +347,9 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
     @Override
     public void recreateFromPacket(ClientboundAddEntityPacket clientboundAddEntityPacket) {
         super.recreateFromPacket(clientboundAddEntityPacket);
-        canGenerateMoreEffectsAfterwards = (clientboundAddEntityPacket.getData() >> 1) == 1;
-        floatUp = ((clientboundAddEntityPacket.getData() << 31) >>> 31) == 1;
+        hasFoil = (clientboundAddEntityPacket.getData() & 4) == 4;
+        canGenerateMoreEffectsAfterwards = (clientboundAddEntityPacket.getData() & 2) == 2;
+        floatUp = (clientboundAddEntityPacket.getData() & 1) == 1;
     }
 
     @Override
@@ -380,6 +387,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         canGenerateMoreEffectsAfterwards = valueInput.getBooleanOr("canGenerateMoreEffectsAfterwards", false);
         setFloatProgress(valueInput.getFloatOr("floatAwayProgress", 0.0F));
         floatUp = valueInput.getBooleanOr("floatUp", false);
+        hasFoil = valueInput.getBooleanOr("hasFoil", false);
         setScale(valueInput.getFloatOr("scaleInProgress", 0.0F));
         Optional<ItemStack> renderItem = valueInput.read("renderItem", ItemStack.CODEC);
         renderItem.ifPresent(this::setRenderItem);
@@ -409,6 +417,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         valueOutput.putBoolean("canGenerateMoreEffectsAfterwards", canGenerateMoreEffectsAfterwards);
         valueOutput.putFloat("floatAwayProgress", getFloatProgress());
         valueOutput.putBoolean("floatUp", floatUp);
+        valueOutput.putBoolean("hasFoil", hasFoil);
         valueOutput.putFloat("scaleInProgress", getCurrentScale());
         if (!getRenderItem().isEmpty()) valueOutput.store("renderItem", ItemStack.CODEC, getRenderItem());
 

@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.generate.GenerateEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.*;
@@ -28,7 +29,10 @@ import java.util.List;
  * Created by lukas on 30.03.14.
  */
 public class PBEffectGenerate extends PBEffectRangeBased {
-    public static final MapCodec<PBEffectGenerate> CODEC = produceCodec(instance -> GenerateEffect.CODEC.fieldOf("effect").forGetter(PBEffectGenerate::getGenerateEffect), PBEffectGenerate::new);
+    public static final MapCodec<PBEffectGenerate> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            PBEffectRangeBased.baseFields(instance)
+                    .and(GenerateEffect.CODEC.fieldOf("effect").forGetter(PBEffectGenerate::getGenerateEffect))
+                    .apply(instance, PBEffectGenerate::new));
     public final GenerateEffect generateEffect;
 
     public PBEffectGenerate(int time, double range, int passes, int unifiedSeed, GenerateEffect generateEffect) {

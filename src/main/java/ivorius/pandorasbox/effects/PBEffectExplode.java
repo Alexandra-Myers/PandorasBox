@@ -3,7 +3,9 @@ package ivorius.pandorasbox.effects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * Created by lukas on 05.12.14.
  */
 public class PBEffectExplode extends PBEffectNormal {
+    public static final ResourceLocation EXPLODE = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "render_explode");
     public static final MapCodec<PBEffectExplode> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(base(),
                             Codec.FLOAT.fieldOf("explosion_radius").forGetter(PBEffectExplode::getExplosionRadius),
@@ -51,12 +54,17 @@ public class PBEffectExplode extends PBEffectNormal {
     public void finalizeEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random) {
         super.finalizeEffect(level, entity, effectCenter, random);
 
-        if (!level.isClientSide)
+        if (!level.isClientSide())
             level.explode(entity, entity.getX(), entity.getY(), entity.getZ(), explosionRadius, burning, interaction);
     }
 
     @Override
     public @NotNull MapCodec<? extends PBEffect> codec() {
         return CODEC;
+    }
+
+    @Override
+    public ResourceLocation rendererResourceLocationForEffect() {
+        return EXPLODE;
     }
 }

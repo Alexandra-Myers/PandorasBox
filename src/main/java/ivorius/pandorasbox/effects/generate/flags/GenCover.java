@@ -56,7 +56,7 @@ public record GenCover(int[] flags, boolean overSurface, Block[] blocks) impleme
 
     @Override
     public void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, int pass, int unifiedSeed, BlockPos pos, double range, boolean flag) {
-        if (flag && !world.isClientSide) {
+        if (flag && !world.isClientSide()) {
             Block newBlock = blocks[random.nextInt(blocks.length)];
             setBlockUnsafeSrc(world, pos, PandorasBoxHelper.getRandomBlockState(random, newBlock, unifiedSeed));
         }

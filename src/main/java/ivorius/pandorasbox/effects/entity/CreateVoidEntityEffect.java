@@ -8,6 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import static ivorius.pandorasbox.effects.PBEffect.setBlockToAirSafe;
@@ -16,7 +17,7 @@ public record CreateVoidEntityEffect() implements EntityEffect {
     public static final MapCodec<CreateVoidEntityEffect> CODEC = MapCodec.unit(CreateVoidEntityEffect::new);
 
     @Override
-    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
+    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
         if (entity instanceof Player) {
             int baseY = Mth.floor(entity.getY());
             int baseX = Mth.floor(entity.getX());

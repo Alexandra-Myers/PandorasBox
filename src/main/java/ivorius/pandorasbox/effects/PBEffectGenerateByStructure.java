@@ -26,7 +26,7 @@ public abstract class PBEffectGenerateByStructure<T extends Structure> extends P
 
     @Override
     public void doEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             for (T structure : structures) {
                 float newStructureRatio = getStructureRatio(newRatio, structure);
                 float prevStructureRatio = getStructureRatio(prevRatio, structure);

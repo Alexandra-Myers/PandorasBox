@@ -1,6 +1,8 @@
 package ivorius.pandorasbox.client.rendering.effects;
 
+import ivorius.pandorasbox.client.rendering.effects.renderstate.PandoraEffectRenderState;
 import ivorius.pandorasbox.effects.PBEffect;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,21 +11,20 @@ import java.util.Map;
  * Created by lukas on 05.12.14.
  */
 public class PBEffectRenderingRegistry {
-    private static final Map<Class, PBEffectRenderer> renderers = new HashMap<>();
+    private static final PBEffectRenderer<PBEffect, PandoraEffectRenderState> DEFAULT = new PBEffectRenderer<>();
+    private static final Map<ResourceLocation, PBEffectRenderer<?, ?>> renderers = new HashMap<>();
 
-    public static <E extends PBEffect> void registerRenderer(Class clazz, PBEffectRenderer<E> renderer) {
-        renderers.put(clazz, renderer);
+    public static <PE extends PBEffect, PERS extends PandoraEffectRenderState> void registerRenderer(ResourceLocation resourceLocation, PBEffectRenderer<PE, PERS> renderer) {
+        renderers.put(resourceLocation, renderer);
     }
 
-    public static PBEffectRenderer rendererForEffect(PBEffect effect) {
-        Class currClass = effect.getClass();
-
-        do {
-            PBEffectRenderer renderer = renderers.get(currClass);
-            if (renderer != null)
-                return renderer;
-        } while ((currClass = currClass.getSuperclass()) != null);
-
-        return null;
+    public static PBEffectRenderer<?, ?> rendererForEffect(PandoraEffectRenderState renderState) {
+        return rendererForID(renderState.renderer);
+    }
+    public static PBEffectRenderer<?, ?> rendererForID(ResourceLocation resourceLocation) {
+        PBEffectRenderer<?, ?> renderer = renderers.get(resourceLocation);
+        if (renderer != null)
+            return renderer;
+        return DEFAULT;
     }
 }

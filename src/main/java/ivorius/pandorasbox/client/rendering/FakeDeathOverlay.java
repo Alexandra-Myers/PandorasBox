@@ -36,10 +36,6 @@ public class FakeDeathOverlay extends Overlay {
     }
 
     public void tick() {
-        if (minecraft.player != null) {
-            minecraft.player.hurtDuration = 10;
-            minecraft.player.hurtTime = minecraft.player.hurtDuration;
-        }
         screen.tick();
     }
 
@@ -49,11 +45,12 @@ public class FakeDeathOverlay extends Overlay {
         if (minecraft.screen != null) minecraft.screen.render(guiGraphics, i, j, f);
         screen.render(guiGraphics, i, j, f);
         if (progress >= 0.7) {
-            guiGraphics.drawCenteredString(screen.getFont(), Component.translatable("text.pandorasbox.fake", minecraft.getGameProfile().getName()), screen.width / 2, 85, 16777215);
+            guiGraphics.drawCenteredString(screen.getFont(), Component.translatable("text.pandorasbox.fake", minecraft.getGameProfile().getName()), screen.width / 2, 85, -1);
         }
         if (progress >= 1) {
             if (wasMouseReleased) minecraft.mouseHandler.grabMouse();
             screen.removed();
+            if (minecraft.player != null) minecraft.player.deathTime = 0;
             minecraft.setOverlay(null);
         }
     }

@@ -32,7 +32,7 @@ public record WeightedEntity(String entityID, WeightedWithRandomCount count) imp
             "pbspecial_wolf_tamed",
             "pbspecial_experience"
     };
-    public static final Codec<String> ID_CODEC = ResourceLocation.CODEC.validate(resourceLocation -> BuiltInRegistries.ENTITY_TYPE.containsKey(resourceLocation) || Arrays.asList(PB_SPECIAL_LOCS).contains(resourceLocation.getPath()) ? DataResult.success(resourceLocation) : DataResult.error(() -> "Unknown registry key in " + Registries.ENTITY_TYPE + "found, and was not a pbspecial entity! Input: " + resourceLocation)).xmap(ResourceLocation::toString, ResourceLocation::tryParse);
+    public static final Codec<String> ID_CODEC = ResourceLocation.CODEC.validate(resourceLocation -> BuiltInRegistries.ENTITY_TYPE.containsKey(resourceLocation) || Arrays.asList(PB_SPECIAL_LOCS).contains(resourceLocation.getPath()) ? DataResult.success(resourceLocation) : DataResult.error(() -> "Unknown registry key in " + Registries.ENTITY_TYPE + " found, and was not a pbspecial entity! Input: " + resourceLocation)).xmap(ResourceLocation::toString, ResourceLocation::tryParse);
     public static final Codec<WeightedEntity> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(ID_CODEC.fieldOf("entity").forGetter(WeightedEntity::entityID),
                             WeightedWithRandomCount.CODEC_FORCE.forGetter(WeightedEntity::count))

@@ -10,6 +10,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -21,7 +22,7 @@ public record ThrowItemsEntityEffect(double chancePerItem, double itemDeletionCh
                             PBNBTHelper.arrayCodec(ItemStack.CODEC, () -> new ItemStack[0]).fieldOf("smuggled_in_items").forGetter(ThrowItemsEntityEffect::smuggledInItems))
                     .apply(instance, ThrowItemsEntityEffect::new));
     @Override
-    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
+    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
         if (entity instanceof Player player) {
             Random itemRandom = new Random(entity.getId());
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {

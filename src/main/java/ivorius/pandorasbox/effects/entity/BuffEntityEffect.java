@@ -9,6 +9,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import static ivorius.pandorasbox.effects.PBEffect.combinedEffectDuration;
@@ -16,7 +17,7 @@ import static ivorius.pandorasbox.effects.PBEffect.combinedEffectDuration;
 public record BuffEntityEffect(MobEffectInstance[] effects) implements EntityEffect {
     public static final MapCodec<BuffEntityEffect> CODEC = PBNBTHelper.arrayCodec(MobEffectInstance.CODEC, () -> new MobEffectInstance[0]).fieldOf("effects").xmap(BuffEntityEffect::new, BuffEntityEffect::effects);
     @Override
-    public void affectEntity(Level level, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
+    public void affectEntity(Level level, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
         MobEffectInstance[] effectsAdj = new MobEffectInstance[effects.length];
         for (int i = 0; i < effects.length; i++) {
             MobEffectInstance effect = effects[i];
@@ -33,7 +34,7 @@ public record BuffEntityEffect(MobEffectInstance[] effects) implements EntityEff
     }
 
     @Override
-    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
+    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
 
     }
 

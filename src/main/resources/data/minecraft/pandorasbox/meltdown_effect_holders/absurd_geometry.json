@@ -1,0 +1,139 @@
+{
+  "effect_creator": {
+    "effects": [
+      {
+        "range": {
+          "min": 10.0,
+          "max": 15.0,
+          "type": "minecraft:linear"
+        },
+        "chance_for_more_effects": 0.1,
+        "generate_effect": {
+          "biome": "minecraft:badlands",
+          "exclusions": [],
+          "mappers": [
+            {
+              "mapper_type": "pandorasbox:dryness",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "minecraft:ice",
+                "minecraft:water",
+                "minecraft:lava",
+                "#minecraft:snow",
+                "#minecraft:logs",
+                "#minecraft:leaves",
+                "minecraft:vine",
+                "minecraft:brown_mushroom",
+                "minecraft:red_mushroom",
+                "minecraft:brown_mushroom_block",
+                "minecraft:red_mushroom_block",
+                "minecraft:mushroom_stem"
+              ],
+              "to_replace": "minecraft:air",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "#minecraft:flowers",
+                "minecraft:short_grass",
+                "minecraft:tall_grass",
+                "minecraft:fern",
+                "minecraft:large_fern",
+                "minecraft:seagrass",
+                "minecraft:tall_seagrass",
+                "minecraft:short_dry_grass",
+                "minecraft:tall_dry_grass",
+                "minecraft:dead_bush",
+                "minecraft:bush",
+                "minecraft:firefly_bush"
+              ],
+              "to_replace": "minecraft:dead_bush",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "#minecraft:nylium",
+                "#minecraft:dirt",
+                "#minecraft:wool",
+                "minecraft:cake"
+              ],
+              "to_replace": "minecraft:dirt",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "#pandorasbox:all_terracotta",
+                "#c:stones",
+                "#c:cobblestones",
+                "#minecraft:base_stone_nether",
+                "#minecraft:wither_summon_base_blocks",
+                "#c:sandstone/blocks",
+                "minecraft:end_stone"
+              ],
+              "to_replace": "minecraft:stone",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            },
+            {
+              "targets": [
+                "#minecraft:wither_summon_base_blocks",
+                "#minecraft:sand"
+              ],
+              "to_replace": "minecraft:sand",
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
+            }
+          ],
+          "generators": [],
+          "spawners": [],
+          "type": "pandorasbox:prepare_gen_convert"
+        },
+        "type": "pandorasbox:generate"
+      },
+      {
+        "range": {
+          "min": 10.0,
+          "max": 20.0,
+          "type": "minecraft:linear"
+        },
+        "size": {
+          "min": 2.0,
+          "max": 5.0,
+          "type": "minecraft:linear"
+        },
+        "number": {
+          "min": 8,
+          "max": 13,
+          "type": "minecraft:linear"
+        },
+        "blocks": [
+          {
+            "weight": 1.0,
+            "tag": "#c:stones"
+          },
+          {
+            "weight": 5.0,
+            "tag": "#c:cobblestones"
+          }
+        ],
+        "same_block_setup": {
+          "guaranteed": true,
+          "type": "minecraft:constant"
+        },
+        "type": "pandorasbox:create_random_shapes"
+      }
+    ],
+    "delays": [
+      0,
+      0
+    ],
+    "type": "pandorasbox:multi"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

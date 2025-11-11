@@ -8,17 +8,30 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "rainbow_complexity": {
-      "min": 2,
-      "max": 10,
-      "type": "minecraft:linear"
+    "chance_for_more_effects": 0.1,
+    "generate_effect": {
+      "exclusions": [],
+      "mappers": [
+        {
+          "tag": "minecraft:wool",
+          "complexity": {
+            "min": 2,
+            "max": 10,
+            "type": "minecraft:linear"
+          },
+          "ring_size": {
+            "min": 0.2,
+            "max": 4.0,
+            "type": "minecraft:linear"
+          },
+          "type": "pandorasbox:prepare_convert_ranged"
+        }
+      ],
+      "generators": [],
+      "spawners": [],
+      "type": "pandorasbox:prepare_gen_convert"
     },
-    "ring_size": {
-      "min": 0.2,
-      "max": 4.0,
-      "type": "minecraft:linear"
-    },
-    "type": "pandorasbox:convert_to_rainbow_cloth"
+    "type": "pandorasbox:generate"
   },
   "positive": true,
   "type": "minecraft:positive_or_negative"
