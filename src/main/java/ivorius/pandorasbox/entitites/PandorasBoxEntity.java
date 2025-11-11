@@ -45,6 +45,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
     private static final EntityDataAccessor<Integer> EFFECT_TICKS_EXISTED = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
     protected boolean canGenerateMoreEffectsAfterwards;
     protected boolean floatUp;
+    public boolean hasFoil;
     private static final EntityDataAccessor<Float> FLOAT_PROGRESS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> SCALE_PROGRESS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<PBEffect> DATA_EFFECT_ID = SynchedEntityData.defineId(PandorasBoxEntity.class, DataSerializerInit.PBEFFECTSERIALIZER);
@@ -55,14 +56,16 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
 
     public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> p_i50172_1_, Level p_i50172_2_) {
         super(p_i50172_1_, p_i50172_2_);
-        canGenerateMoreEffectsAfterwards = true;
-        floatUp = false;
+        this.canGenerateMoreEffectsAfterwards = true;
+        this.floatUp = false;
+        this.hasFoil = false;
     }
 
-    public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> entityType, Level level, boolean canGenerateMoreEffectsAfterwards, boolean floatUp) {
+    public PandorasBoxEntity(EntityType<? extends PandorasBoxEntity> entityType, Level level, boolean canGenerateMoreEffectsAfterwards, boolean floatUp, boolean hasFoil) {
         super(entityType, level);
         this.canGenerateMoreEffectsAfterwards = canGenerateMoreEffectsAfterwards;
         this.floatUp = floatUp;
+        this.hasFoil = hasFoil;
     }
 
     @Override
@@ -333,7 +336,9 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
 
     @Override
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
-        int data = canGenerateMoreEffectsAfterwards ? 1 : 0;
+        int data = hasFoil ? 1 : 0;
+        data <<= 1;
+        data |= canGenerateMoreEffectsAfterwards ? 1 : 0;
         data <<= 1;
         data |= floatUp ? 1 : 0;
         return new ClientboundAddEntityPacket(this, serverEntity, data);
@@ -342,8 +347,9 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
     @Override
     public void recreateFromPacket(ClientboundAddEntityPacket clientboundAddEntityPacket) {
         super.recreateFromPacket(clientboundAddEntityPacket);
-        canGenerateMoreEffectsAfterwards = (clientboundAddEntityPacket.getData() >> 1) == 1;
-        floatUp = ((clientboundAddEntityPacket.getData() << 31) >>> 31) == 1;
+        hasFoil = (clientboundAddEntityPacket.getData() & 4) == 4;
+        canGenerateMoreEffectsAfterwards = (clientboundAddEntityPacket.getData() & 2) == 2;
+        floatUp = (clientboundAddEntityPacket.getData() & 1) == 1;
     }
 
     @Override
@@ -381,6 +387,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         canGenerateMoreEffectsAfterwards = valueInput.getBooleanOr("canGenerateMoreEffectsAfterwards", false);
         setFloatProgress(valueInput.getFloatOr("floatAwayProgress", 0.0F));
         floatUp = valueInput.getBooleanOr("floatUp", false);
+        hasFoil = valueInput.getBooleanOr("hasFoil", false);
         setScale(valueInput.getFloatOr("scaleInProgress", 0.0F));
         Optional<ItemStack> renderItem = valueInput.read("renderItem", ItemStack.CODEC);
         renderItem.ifPresent(this::setRenderItem);
@@ -410,6 +417,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         valueOutput.putBoolean("canGenerateMoreEffectsAfterwards", canGenerateMoreEffectsAfterwards);
         valueOutput.putFloat("floatAwayProgress", getFloatProgress());
         valueOutput.putBoolean("floatUp", floatUp);
+        valueOutput.putBoolean("hasFoil", hasFoil);
         valueOutput.putFloat("scaleInProgress", getCurrentScale());
         if (!getRenderItem().isEmpty()) valueOutput.store("renderItem", ItemStack.CODEC, getRenderItem());
 

@@ -28,8 +28,8 @@ public class PandorasBoxSpecialRenderer implements NoDataSpecialModelRenderer {
 	}
 
 	@Override
-	public void submit(ItemDisplayContext itemDisplayContext, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, int overlayTexture, boolean bl, int outlineColor) {
-		this.renderer.renderItem(poseStack, submitNodeCollector, packedLightIn, overlayTexture, outlineColor);
+	public void submit(ItemDisplayContext itemDisplayContext, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, int overlayTexture, boolean hasFoil, int outlineColor) {
+		this.renderer.renderItem(poseStack, submitNodeCollector, packedLightIn, overlayTexture, outlineColor, hasFoil);
 	}
 
 	@Environment(EnvType.CLIENT)

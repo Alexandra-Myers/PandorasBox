@@ -11,6 +11,7 @@ public class PandorasBoxRenderState extends EntityRenderState {
     public float partialTicks;
     public int entityTickCount;
     public int boxDeathTicks;
+    public boolean hasFoil;
     public boolean invisibleToPlayer;
     public PandoraEffectRenderState pandoraEffectRenderState;
     public ItemStackRenderState renderItem = new ItemStackRenderState();

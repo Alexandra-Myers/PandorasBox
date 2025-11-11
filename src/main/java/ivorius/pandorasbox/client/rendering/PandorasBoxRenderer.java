@@ -81,8 +81,10 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
         boolean visibleToPlayer = !visible && !renderState.invisibleToPlayer;
         RenderType renderType = getRenderType(visible, visibleToPlayer);
         if (renderType != null) {
-            if (renderState.renderItem.isEmpty()) submitNodeCollector.submitModel(model, renderState, poseStack, renderType, packedLightIn, packedOverlay, renderState.outlineColor, null);
-            else renderState.renderItem.submit(poseStack, submitNodeCollector, packedLightIn, packedOverlay, renderState.outlineColor);
+            if (renderState.renderItem.isEmpty()) {
+                this.model.setupAnim(renderState);
+                submitNodeCollector.submitModelPart(model.root(), poseStack, renderType, packedLightIn, packedOverlay, null, false, renderState.hasFoil, -1, null, renderState.outlineColor);
+            } else renderState.renderItem.submit(poseStack, submitNodeCollector, packedLightIn, packedOverlay, renderState.outlineColor);
             if (pandoraEffectRenderState.shouldRender(renderState.boxDeathTicks)) {
                 List<RenderLayer<PandorasBoxRenderState, PandorasBoxModel>> layers = new ArrayList<>();
                 PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForEffect(pandoraEffectRenderState);
@@ -134,6 +136,7 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity, Pando
         entityRenderState.boxDeathTicks = entity.getDeathTicks();
         this.itemModelResolver.updateForNonLiving(entityRenderState.renderItem, entity.getRenderItem(), ItemDisplayContext.GROUND, entity);
         entityRenderState.invisibleToPlayer = entity.isInvisibleTo(Minecraft.getInstance().player);
+        entityRenderState.hasFoil = entity.hasFoil;
         PBEffectRenderer renderer = PBEffectRenderingRegistry.rendererForID(entity.getBoxEffect().rendererResourceLocationForEffect());
         PandoraEffectRenderState renderState = renderer.createRenderState();
         renderer.extractRenderState(entityRenderState, renderState, entity.getBoxEffect(), entity.getEffectTicksExisted());

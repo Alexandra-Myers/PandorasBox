@@ -28,16 +28,17 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
     public PandorasBoxBlockEntityRenderer(EntityModelSet entityModelSet) {
         this.model = new PandorasBoxModel(entityModelSet.bakeLayer(PandorasBoxModel.LAYER_LOCATION));
     }
-    public void render(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, float yRot, int packedLightIn, int overlayTexture, int outlineColor, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+    public void render(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, float yRot, int packedLightIn, int overlayTexture, int outlineColor, boolean hasFoil, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         poseStack.pushPose();
         poseStack.translate(0.5f, 1.5f, 0.5f);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        submitNodeCollector.submitModel(model, PandorasBoxRenderState.BLOCK_ENTITY_STATE, poseStack, RenderType.entityCutoutNoCull(PANDORAS_BOX), packedLightIn, overlayTexture, outlineColor, crumblingOverlay);
+        this.model.setupAnim(PandorasBoxRenderState.BLOCK_ENTITY_STATE);
+        submitNodeCollector.submitModelPart(this.model.root(), poseStack, RenderType.entityCutoutNoCull(PANDORAS_BOX), packedLightIn, overlayTexture, null, false, hasFoil, -1, crumblingOverlay, outlineColor);
         poseStack.popPose();
     }
-    public void renderItem(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, int overlayTexture, int outlineColor) {
-        render(poseStack, submitNodeCollector, 0, packedLightIn, overlayTexture, outlineColor, null);
+    public void renderItem(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLightIn, int overlayTexture, int outlineColor, boolean hasFoil) {
+        render(poseStack, submitNodeCollector, 0, packedLightIn, overlayTexture, outlineColor, hasFoil, null);
     }
 
     public void getExtents(Set<Vector3f> set) {
@@ -55,12 +56,13 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
 
     @Override
     public void submit(PandorasBoxBlockEntityRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
-        render(poseStack, submitNodeCollector, renderState.rotationYaw, renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0, renderState.breakProgress);
+        render(poseStack, submitNodeCollector, renderState.rotationYaw, renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0, renderState.hasFoil, renderState.breakProgress);
     }
 
     @Override
     public void extractRenderState(PandorasBoxBlockEntity blockEntity, PandorasBoxBlockEntityRenderState blockEntityRenderState, float f, Vec3 vec3, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, blockEntityRenderState, f, vec3, crumblingOverlay);
         blockEntityRenderState.rotationYaw = blockEntity.getRotationYaw();
+        blockEntityRenderState.hasFoil = !blockEntity.getEnchantments().isEmpty();
     }
 }
