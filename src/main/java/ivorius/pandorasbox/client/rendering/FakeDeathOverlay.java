@@ -44,7 +44,7 @@ public class FakeDeathOverlay extends Overlay {
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
         float progress = (Util.getMillis() - startMillis) / 10000.0F;
-        if (minecraft.screen != null) minecraft.screen.render(guiGraphics, i, j, f);
+        if (minecraft.screen != null) minecraft.screen.renderWithTooltipAndSubtitles(guiGraphics, i, j, f);
         screen.renderWithTooltipAndSubtitles(guiGraphics, i, j, f);
         if (progress >= 0.7) {
             visitText(guiGraphics.textRenderer(GuiGraphics.HoveredTextEffects.TOOLTIP_AND_CURSOR));
