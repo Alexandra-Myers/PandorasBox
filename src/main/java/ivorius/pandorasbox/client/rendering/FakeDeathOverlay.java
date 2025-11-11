@@ -45,7 +45,7 @@ public class FakeDeathOverlay extends Overlay {
         if (minecraft.screen != null) minecraft.screen.render(guiGraphics, i, j, f);
         screen.renderWithTooltipAndSubtitles(guiGraphics, i, j, f);
         if (progress >= 0.7) {
-            guiGraphics.drawCenteredString(screen.getFont(), Component.translatable("text.pandorasbox.fake", minecraft.getGameProfile().name()), screen.width / 2, 85, 16777215);
+            guiGraphics.drawCenteredString(screen.getFont(), Component.translatable("text.pandorasbox.fake", minecraft.getGameProfile().name()), screen.width / 2, 85, -1);
         }
         if (progress >= 1) {
             if (wasMouseReleased) minecraft.mouseHandler.grabMouse();
