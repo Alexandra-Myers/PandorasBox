@@ -120,7 +120,7 @@ public class PBECRegistry {
 
     public static PandorasBoxEntity spawnPandorasBox(Level world, PBEffect effect, ItemStack heldItem, Optional<ItemStack> renderItem, Player player, BlockPos pos, boolean floatAway, boolean canGenerateMoreEffectsAfterwards) {
         if (effect != null && !world.isClientSide()) {
-            PandorasBoxEntity pandorasBox = new PandorasBoxEntity(EntityInit.BOX, world, canGenerateMoreEffectsAfterwards, !floatAway);
+            PandorasBoxEntity pandorasBox = new PandorasBoxEntity(EntityInit.BOX, world, canGenerateMoreEffectsAfterwards, !floatAway, heldItem.hasFoil());
 
             if(pos == null) {
                 pos = BlockPos.containing(

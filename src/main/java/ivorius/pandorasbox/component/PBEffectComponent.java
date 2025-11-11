@@ -74,4 +74,19 @@ public record PBEffectComponent(HolderSet<EffectHolder> holders, HolderSet<Effec
             }
         }
     }
+
+    public boolean isEmpty() {
+        return this.equals(DEFAULT);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof PBEffectComponent that)) return false;
+        return selectsRandom() == that.selectsRandom() && Objects.equals(renderItem(), that.renderItem()) && Objects.equals(holders(), that.holders()) && Objects.equals(randomSelection(), that.randomSelection());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(holders(), randomSelection(), renderItem(), selectsRandom());
+    }
 }
