@@ -58,7 +58,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                             Codec.INT.fieldOf("buff_level").forGetter(SpawnEntityIDListEffect::buffLevel),
                             EntitySpawnConfiguration.MAP_CODEC.forGetter(SpawnEntityIDListEffect::entitySpawnConfiguration))
                     .apply(instance, SpawnEntityIDListEffect::new));
-    public static final EquipmentSlot[] VALID_ITEM_SLOTS = new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND};
+    public static final EquipmentSlot[] VALID_ITEM_SLOTS = new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
     @Override
     public Entity spawnEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, int number, double x, double y, double z) {
         if(world.isClientSide()) return null;
@@ -122,7 +122,9 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                         if (slot.equals(EquipmentSlot.HEAD) && random.nextFloat() < 0.2f / equipLevel)
                             stack = new ItemStack(random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.CARVED_PUMPKIN);
                         else {
-                            Item item = Mob.getEquipmentForSlot(slot, Math.min(itemLevel, 5));
+                            Item item = Mob.getEquipmentForSlot(slot, Math.min(itemLevel, 4));
+
+                            if (slot == EquipmentSlot.OFFHAND && item == null) item = Items.SHIELD;
 
                             if (item != null) stack = new ItemStack(item);
                             else System.err.println("Pandora's Box: Item not found for slot '" + slot + "', level '" + itemLevel + "'");
@@ -181,7 +183,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
 
     public static Entity createEntity(ServerLevel serverLevel, PandorasBoxEntity pbEntity, RandomSource random, ResourceLocation asID, String trunkEntityID, double x, double y, double z) {
         try {
-            if ("pbspecial_colorful_sheep".equals(trunkEntityID)){
+            if ("pbspecial_colorful_sheep".equals(trunkEntityID)) {
                 Sheep sheep = EntityType.SHEEP.create(serverLevel, EntitySpawnReason.COMMAND);
 
                 assert sheep != null;
@@ -191,7 +193,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 sheep.setColor(DyeColor.byId(random.nextInt(16)));
 
                 return sheep;
-            } else if ("pbspecial_hogfather".equals(trunkEntityID)){
+            } else if ("pbspecial_hogfather".equals(trunkEntityID)) {
                 Zombie santa = EntityType.ZOMBIE.create(serverLevel, EntitySpawnReason.COMMAND);
                 ItemStack helmet = new ItemStack(Items.LEATHER_HELMET);
                 helmet.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
