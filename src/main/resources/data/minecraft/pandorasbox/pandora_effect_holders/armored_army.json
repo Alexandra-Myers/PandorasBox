@@ -21,6 +21,12 @@
         "min_count": 5,
         "max_count": 10,
         "weight": 40.0
+      },
+      {
+        "entity": "pandorasbox:giant",
+        "min_count": 1,
+        "max_count": 3,
+        "weight": 20.0
       }
     ],
     "value_throw": {
