@@ -17,6 +17,12 @@
         "weight": 80.0
       },
       {
+        "entity": "minecraft:pbspecial_skeleton_horseman",
+        "min_count": 4,
+        "max_count": 6,
+        "weight": 60.0
+      },
+      {
         "entity": "minecraft:wither_skeleton",
         "min_count": 5,
         "max_count": 10,

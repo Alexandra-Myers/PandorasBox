@@ -24,6 +24,7 @@ public record WeightedEntity(String entityID, WeightedWithRandomCount count) imp
             "pbspecial_hogfather",
             "pbspecial_angry_wolf",
             "pbspecial_charged_creeper",
+            "pbspecial_skeleton_horseman",
             "pbspecial_fireworks",
             "pbspecial_tnt",
             "pbspecial_invisible_tnt",
