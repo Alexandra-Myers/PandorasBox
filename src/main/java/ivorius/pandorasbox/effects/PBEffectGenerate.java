@@ -47,8 +47,8 @@ public class PBEffectGenerate extends PBEffectRangeBased {
     public void changeBiome(ResourceKey<Biome> biomeResourceKey, int baseX, int baseY, int baseZ, ServerLevel serverLevel, List<ChunkAccess> chunks) {
         double range = this.range + (passes - 1) * 5.0;
         for (ChunkAccess chunkAccess : chunks) {
-            Registry<Biome> biomeRegistry = serverLevel.registryAccess().lookupOrThrow(Registries.BIOME);
-            Holder<Biome> biome = biomeRegistry.getOrThrow(biomeResourceKey);
+            Registry<Biome> biomeRegistry = serverLevel.registryAccess().registryOrThrow(Registries.BIOME);
+            Holder<Biome> biome = biomeRegistry.getHolderOrThrow(biomeResourceKey);
             chunkAccess.fillBiomesFromNoise((i, j, k, sampler) -> {
                 int l = QuartPos.toBlock(i);
                 int m = QuartPos.toBlock(j);
@@ -62,7 +62,7 @@ public class PBEffectGenerate extends PBEffectRangeBased {
                 if (dist <= range) return biome;
                 else return holder2;
             }, serverLevel.getChunkSource().randomState().sampler());
-            chunkAccess.markUnsaved();
+            chunkAccess.setUnsaved(true);
         }
 
         serverLevel.getChunkSource().chunkMap.resendBiomesForChunks(chunks);

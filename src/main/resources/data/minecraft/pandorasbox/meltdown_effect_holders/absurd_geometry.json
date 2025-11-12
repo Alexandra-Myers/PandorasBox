@@ -44,11 +44,7 @@
                 "minecraft:large_fern",
                 "minecraft:seagrass",
                 "minecraft:tall_seagrass",
-                "minecraft:short_dry_grass",
-                "minecraft:tall_dry_grass",
-                "minecraft:dead_bush",
-                "minecraft:bush",
-                "minecraft:firefly_bush"
+                "minecraft:dead_bush"
               ],
               "to_replace": "minecraft:dead_bush",
               "mapper_type": "pandorasbox:convert_simple",

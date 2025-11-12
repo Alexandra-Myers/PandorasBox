@@ -1,12 +1,12 @@
 package ivorius.pandorasbox.entitites;
 
-import com.google.common.annotations.VisibleForTesting;
 import ivorius.pandorasbox.entitites.goals.GiantAttackGoal;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -33,8 +33,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
@@ -70,17 +68,17 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput valueOutput) {
-        super.addAdditionalSaveData(valueOutput);
-        this.addPersistentAngerSaveData(valueOutput);
-        valueOutput.putBoolean("isOnRampage", isOnRampage);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        this.addPersistentAngerSaveData(compound);
+        compound.putBoolean("isOnRampage", isOnRampage);
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput valueInput) {
-        super.readAdditionalSaveData(valueInput);
-        this.readPersistentAngerSaveData(this.level(), valueInput);
-        this.isOnRampage = valueInput.getBooleanOr("isOnRampage", false);
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        this.readPersistentAngerSaveData(this.level(), compound);
+        this.isOnRampage = compound.getBoolean("isOnRampage");
     }
 
     public static AttributeSupplier.Builder createGiantAttributes() {
@@ -88,15 +86,14 @@ public class FunctionalGiant extends Giant implements NeutralMob {
                 .add(Attributes.MAX_HEALTH, 100.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.35)
                 .add(Attributes.ATTACK_DAMAGE, 6.0)
-                .add(Attributes.CAMERA_DISTANCE, 16.0)
                 .add(Attributes.FOLLOW_RANGE, 35.0)
                 .add(Attributes.ARMOR, 8.0);
     }
 
     @Override
-    public boolean isAngryAt(LivingEntity livingEntity, ServerLevel serverLevel) {
+    public boolean isAngryAt(LivingEntity livingEntity) {
         if (this.isOnRampage && (livingEntity instanceof AbstractVillager || livingEntity instanceof Player || livingEntity instanceof IronGolem)) return true;
-        return NeutralMob.super.isAngryAt(livingEntity, serverLevel);
+        return NeutralMob.super.isAngryAt(livingEntity);
     }
 
     @Override
@@ -132,30 +129,9 @@ public class FunctionalGiant extends Giant implements NeutralMob {
         super.aiStep();
     }
     @Override
-    protected void customServerAiStep(ServerLevel serverLevel) {
-        this.updatePersistentAnger(serverLevel, true);
-        super.customServerAiStep(serverLevel);
-    }
-
-    @VisibleForTesting
-    public boolean convertVillagerToZombieVillager(ServerLevel serverLevel, Villager villager) {
-        ZombieVillager zombieVillager = villager.convertTo(
-                EntityType.ZOMBIE_VILLAGER,
-                ConversionParams.single(villager, true, true),
-                zombieVillagerx -> {
-                    zombieVillagerx.finalizeSpawn(
-                            serverLevel, serverLevel.getCurrentDifficultyAt(zombieVillagerx.blockPosition()), EntitySpawnReason.CONVERSION, new Zombie.ZombieGroupData(false, true)
-                    );
-                    zombieVillagerx.setVillagerData(villager.getVillagerData());
-                    zombieVillagerx.setGossips(villager.getGossips().copy());
-                    zombieVillagerx.setTradeOffers(villager.getOffers().copy());
-                    zombieVillagerx.setVillagerXp(villager.getVillagerXp());
-                    if (!this.isSilent()) {
-                        serverLevel.levelEvent(null, 1026, this.blockPosition(), 0);
-                    }
-                }
-        );
-        return zombieVillager != null;
+    protected void customServerAiStep() {
+        this.updatePersistentAnger((ServerLevel) this.level(), true);
+        super.customServerAiStep();
     }
 
     protected boolean isSunSensitive() {
@@ -163,8 +139,8 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     }
 
     @Override
-    public boolean doHurtTarget(ServerLevel serverLevel, Entity entity) {
-        boolean didHurtTarget = super.doHurtTarget(serverLevel, entity);
+    public boolean doHurtTarget(Entity entity) {
+        boolean didHurtTarget = super.doHurtTarget(entity);
         if (didHurtTarget) {
             float effectiveDifficulty = this.level().getCurrentDifficultyAt(this.blockPosition()).getEffectiveDifficulty();
             if (this.getMainHandItem().isEmpty() && this.isOnFire() && this.random.nextFloat() < effectiveDifficulty * 0.3F) {
@@ -220,7 +196,19 @@ public class FunctionalGiant extends Giant implements NeutralMob {
                 return success;
             }
 
-            if (this.convertVillagerToZombieVillager(serverLevel, villager)) {
+            ZombieVillager zombieVillager = villager.convertTo(EntityType.ZOMBIE_VILLAGER, false);
+            if (zombieVillager != null) {
+                zombieVillager.finalizeSpawn(
+                        serverLevel, serverLevel.getCurrentDifficultyAt(zombieVillager.blockPosition()), MobSpawnType.CONVERSION, new Zombie.ZombieGroupData(false, true)
+                );
+                zombieVillager.setVillagerData(villager.getVillagerData());
+                zombieVillager.setGossips(villager.getGossips().store(NbtOps.INSTANCE));
+                zombieVillager.setTradeOffers(villager.getOffers().copy());
+                zombieVillager.setVillagerXp(villager.getVillagerXp());
+                if (!this.isSilent()) {
+                    serverLevel.levelEvent(null, 1026, this.blockPosition(), 0);
+                }
+
                 success = false;
             }
         }
@@ -230,21 +218,21 @@ public class FunctionalGiant extends Giant implements NeutralMob {
 
     @Override
     public boolean canHoldItem(ItemStack itemStack) {
-        return (!itemStack.is(ItemTags.EGGS) || !this.isBaby() || !this.isPassenger()) && super.canHoldItem(itemStack);
+        return (!itemStack.is(Items.EGG) || !this.isBaby() || !this.isPassenger()) && super.canHoldItem(itemStack);
     }
 
     @Override
-    public boolean wantsToPickUp(ServerLevel serverLevel, ItemStack itemStack) {
-        return !itemStack.is(Items.GLOW_INK_SAC) && super.wantsToPickUp(serverLevel, itemStack);
+    public boolean wantsToPickUp(ItemStack itemStack) {
+        return !itemStack.is(Items.GLOW_INK_SAC) && super.wantsToPickUp(itemStack);
     }
 
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(
-            ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, EntitySpawnReason entitySpawnReason, @Nullable SpawnGroupData spawnGroupData
+            ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, MobSpawnType mobSpawnType, @Nullable SpawnGroupData spawnGroupData
     ) {
         RandomSource randomSource = serverLevelAccessor.getRandom();
-        spawnGroupData = super.finalizeSpawn(serverLevelAccessor, difficultyInstance, entitySpawnReason, spawnGroupData);
+        spawnGroupData = super.finalizeSpawn(serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData);
         float difficultySpecialMult = difficultyInstance.getSpecialMultiplier();
         this.setCanPickUpLoot(randomSource.nextFloat() < 0.55F * difficultySpecialMult);
 
@@ -277,7 +265,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
             ItemStack itemStack = this.getSkull();
             if (!itemStack.isEmpty()) {
                 creeper.increaseDroppedSkulls();
-                this.spawnAtLocation(serverLevel, itemStack);
+                this.spawnAtLocation(itemStack);
             }
         }
     }
@@ -317,7 +305,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     }
 
     @Override
-    public boolean isPreventingPlayerRest(ServerLevel serverLevel, Player player) {
-        return this.isAngryAt(player, serverLevel);
+    public boolean isPreventingPlayerRest(Player player) {
+        return this.isAngryAt(player);
     }
 }

@@ -12,7 +12,6 @@ import ivorius.pandorasbox.init.BlockEntityInit;
 import ivorius.pandorasbox.init.ItemInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -49,8 +48,8 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(DIRECTION, Direction.NORTH).setValue(WATERLOGGED, false));
     }
-    public PandorasBoxBlock(ResourceKey<Block> resourceKey) {
-        this(Block.Properties.of().setId(resourceKey).mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(0.5f));
+    public PandorasBoxBlock() {
+        this(Block.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(0.5f));
     }
 
     public @NotNull BlockState rotate(BlockState p_185499_1_, Rotation p_185499_2_) {

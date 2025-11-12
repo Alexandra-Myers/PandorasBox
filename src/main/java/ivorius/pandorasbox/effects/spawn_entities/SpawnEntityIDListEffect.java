@@ -24,8 +24,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Parrot;
-import net.minecraft.world.entity.animal.sheep.Sheep;
-import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Zombie;
@@ -102,7 +102,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             }
         }
 
-        if (livingEntity.level() instanceof ServerLevel serverLevel && equipLevel > 0) {
+        if (livingEntity.level() instanceof ServerLevel && equipLevel > 0) {
             float itemChancePerSlot = 1.0f - (0.5f / equipLevel);
             float upgradeChancePerSlot = 1.0f - (1.0f / equipLevel);
 
@@ -132,7 +132,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                     }
                     if (!stack.isEmpty()) {
                         if (livingEntity instanceof Mob mob) {
-                            mob.equipItemIfPossible(serverLevel, stack);
+                            mob.equipItemIfPossible(stack);
                             mob.setDropChance(slot, 0.085F);
                         } else livingEntity.setItemSlot(slot, stack);
                     }
@@ -184,7 +184,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
     public static Entity createEntity(ServerLevel serverLevel, PandorasBoxEntity pbEntity, RandomSource random, ResourceLocation asID, String trunkEntityID, double x, double y, double z) {
         try {
             if ("pbspecial_colorful_sheep".equals(trunkEntityID)) {
-                Sheep sheep = EntityType.SHEEP.create(serverLevel, EntitySpawnReason.COMMAND);
+                Sheep sheep = EntityType.SHEEP.create(serverLevel);
 
                 assert sheep != null;
                 if (random.nextInt(32 * 32) == 0) sheep.setCustomName(Component.literal("jeb_"));
@@ -194,15 +194,15 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
 
                 return sheep;
             } else if ("pbspecial_hogfather".equals(trunkEntityID)) {
-                Zombie santa = EntityType.ZOMBIE.create(serverLevel, EntitySpawnReason.COMMAND);
+                Zombie santa = EntityType.ZOMBIE.create(serverLevel);
                 ItemStack helmet = new ItemStack(Items.LEATHER_HELMET);
-                helmet.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
+                helmet.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
                 ItemStack chestPlate = new ItemStack(Items.LEATHER_CHESTPLATE);
-                chestPlate.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
+                chestPlate.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
                 ItemStack leggings = new ItemStack(Items.LEATHER_LEGGINGS);
-                leggings.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
+                leggings.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
                 ItemStack boots = new ItemStack(Items.LEATHER_BOOTS);
-                boots.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
+                boots.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
 
                 assert santa != null;
                 moveTo(santa, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
@@ -220,7 +220,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 return new ExperienceOrb(serverLevel, x, y, z, 10);
             } else if ("pbspecial_wolf_tamed".equals(trunkEntityID)) {
                 Player owner = getPlayer(serverLevel, pbEntity);
-                Wolf wolf = EntityType.WOLF.create(serverLevel, EntitySpawnReason.COMMAND);
+                Wolf wolf = EntityType.WOLF.create(serverLevel);
 
                 assert wolf != null;
                 moveTo(wolf, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
@@ -238,7 +238,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             } else if ("pbspecial_cat_tamed".equals(trunkEntityID)) {
                 Player owner = getPlayer(serverLevel, pbEntity);
 
-                Cat cat = EntityType.CAT.create(serverLevel, EntitySpawnReason.COMMAND);
+                Cat cat = EntityType.CAT.create(serverLevel);
 
                 assert cat != null;
                 moveTo(cat, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
@@ -253,7 +253,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             } else if ("pbspecial_parrot_tamed".equals(trunkEntityID)) {
                 Player owner = getPlayer(serverLevel, pbEntity);
 
-                Parrot parrot = EntityType.PARROT.create(serverLevel, EntitySpawnReason.COMMAND);
+                Parrot parrot = EntityType.PARROT.create(serverLevel);
 
                 assert parrot != null;
                 moveTo(parrot, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
@@ -282,7 +282,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
 
                 return new FireworkRocketEntity(serverLevel, x, y, z,stack);
             } else if ("pbspecial_angry_wolf".equals(trunkEntityID)) {
-                Wolf wolf = EntityType.WOLF.create(serverLevel, EntitySpawnReason.COMMAND);
+                Wolf wolf = EntityType.WOLF.create(serverLevel);
                 assert wolf != null;
                 wolf.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
                 moveTo(wolf, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
@@ -290,15 +290,15 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
 
                 return wolf;
             } else if ("pbspecial_charged_creeper".equals(trunkEntityID)) {
-                Creeper creeper = EntityType.CREEPER.create(serverLevel, EntitySpawnReason.COMMAND);
+                Creeper creeper = EntityType.CREEPER.create(serverLevel);
                 assert creeper != null;
                 creeper.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
                 moveTo(creeper, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
                 creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
                 return creeper;
             }
-            EntityType<?> entity = BuiltInRegistries.ENTITY_TYPE.getValue(asID);
-            Entity entity1 = entity.create(serverLevel, EntitySpawnReason.COMMAND);
+            EntityType<?> entity = BuiltInRegistries.ENTITY_TYPE.get(asID);
+            Entity entity1 = entity.create(serverLevel);
             assert entity1 != null;
             moveTo(entity1, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
             Player owner = getPlayer(serverLevel, pbEntity);
@@ -320,8 +320,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
     }
 
     public static void moveTo(Entity entity, Vec3 pos, float yRot, float xRot) {
-        entity.setPos(pos);
-        entity.forceSetRotation(yRot, xRot);
+        entity.moveTo(pos, yRot, xRot);
     }
 
     public static Fireworks createRandomFirework(RandomSource random) {

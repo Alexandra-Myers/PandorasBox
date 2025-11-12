@@ -12,33 +12,39 @@ import ivorius.pandorasbox.effects.PBEffect;
 import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
 import ivorius.pandorasbox.init.DataSerializerInit;
 import ivorius.pandorasbox.init.Init;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.ServerEntity;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 30.03.14.
  */
 public class PandorasBoxEntity extends Entity implements OwnableEntity {
+    public static final Codec<Optional<ItemStack>> RENDER_ITEM_CODEC = ItemStack.CODEC.optionalFieldOf("renderItem").codec();
+    public static final Codec<Optional<Vec3>> EFFECT_CENTER_CODEC = Vec3.CODEC.optionalFieldOf("effectCenter").codec();
     public static final float BOX_UPSCALE_SPEED = 0.02f;
     private static final EntityDataAccessor<Integer> BOX_DEATH_TICKS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> BOX_WAITING_TIME = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.INT);
@@ -49,7 +55,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
     private static final EntityDataAccessor<Float> FLOAT_PROGRESS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> SCALE_PROGRESS = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<PBEffect> DATA_EFFECT_ID = SynchedEntityData.defineId(PandorasBoxEntity.class, DataSerializerInit.PBEFFECTSERIALIZER);
-    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DATA_OWNER_UUID = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
+    private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<ItemStack> DATA_RENDER_ITEM = SynchedEntityData.defineId(PandorasBoxEntity.class, EntityDataSerializers.ITEM_STACK);
 
     protected Vec3 effectCenter = new Vec3(0, 0, 0);
@@ -278,13 +284,26 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         return entityData.get(DATA_RENDER_ITEM);
     }
 
-    public void setOwner(@Nullable LivingEntity entity) {
-        entityData.set(DATA_OWNER_UUID, Optional.ofNullable(entity).map(EntityReference::new));
+    public void setOwnerUUID(UUID uuid) {
+        if (uuid == null) return;
+        entityData.set(DATA_OWNER_UUID, Optional.of(uuid));
     }
 
-    @Override
-    public @Nullable EntityReference<LivingEntity> getOwnerReference() {
-        return entityData.get(DATA_OWNER_UUID).orElse(null);
+    public UUID getOwnerUUID() {
+        if (entityData.get(DATA_OWNER_UUID).isEmpty())
+            return null;
+        return entityData.get(DATA_OWNER_UUID).get();
+    }
+
+    public void setBoxOwner(Player player) {
+        if (player == null) return;
+        entityData.set(DATA_OWNER_UUID, Optional.of(player.getUUID()));
+    }
+
+    public Player getBoxOwner() {
+        if (entityData.get(DATA_OWNER_UUID).isEmpty())
+            return null;
+        return level().getPlayerByUUID(entityData.get(DATA_OWNER_UUID).get());
     }
 
     public void startFadingOut() {
@@ -357,70 +376,86 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float f) {
+    public boolean hurt(DamageSource damageSource, float amount) {
         return false;
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput valueInput) {
-        readBoxData(valueInput);
+    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+        readBoxData(compoundTag);
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput valueOutput) {
-        writeBoxData(valueOutput);
+    protected void addAdditionalSaveData(CompoundTag compoundTag) {
+        writeBoxData(compoundTag);
     }
 
-    public void readBoxData(ValueInput valueInput) {
-        setBoxEffect(valueInput.read("boxEffect", PBEffect.CODEC.orElseGet(pbEffectError -> {
-            PandorasBox.logger.error("Failed to parse box, using fallback. Error: " + pbEffectError);
-        }, () -> new PBEffectDuplicateBox(PBEffectDuplicateBox.MODE_BOX_IN_BOX))).get());
-        EntityReference<LivingEntity> entityReference = EntityReference.readWithOldOwnerConversion(valueInput, "ownerUUID", this.level());
-        if (entityReference != null) {
-            this.entityData.set(DATA_OWNER_UUID, Optional.of(entityReference));
-        } else {
-            this.entityData.set(DATA_OWNER_UUID, Optional.empty());
-        }
+    public void readBoxData(CompoundTag compound) {
+        setBoxEffect(loadEffect(compound.get("boxEffect"), registryAccess()));
+        if (compound.contains("ownerUUID"))
+            setOwnerUUID(compound.getUUID("ownerUUID"));
 
-        setEffectTicksExisted(valueInput.getIntOr("effectTicksExisted", 0));
-        setBoxWaitingTime(valueInput.getIntOr("timeBoxWaiting", 0));
-        canGenerateMoreEffectsAfterwards = valueInput.getBooleanOr("canGenerateMoreEffectsAfterwards", false);
-        setFloatProgress(valueInput.getFloatOr("floatAwayProgress", 0.0F));
-        floatUp = valueInput.getBooleanOr("floatUp", false);
-        hasFoil = valueInput.getBooleanOr("hasFoil", false);
-        setScale(valueInput.getFloatOr("scaleInProgress", 0.0F));
-        Optional<ItemStack> renderItem = valueInput.read("renderItem", ItemStack.CODEC);
+        setEffectTicksExisted(compound.getInt("effectTicksExisted"));
+        setBoxWaitingTime(compound.getInt("timeBoxWaiting"));
+        canGenerateMoreEffectsAfterwards = compound.getBoolean("canGenerateMoreEffectsAfterwards");
+        setFloatProgress(compound.getFloat("floatAwayProgress"));
+        floatUp = compound.getBoolean("floatUp");
+        hasFoil = compound.getBoolean("hasFoil");
+        setScale(compound.getFloat("scaleInProgress"));
+        RegistryOps<Tag> registryOps = registryAccess().createSerializationContext(NbtOps.INSTANCE);
+        Optional<ItemStack> renderItem = RENDER_ITEM_CODEC.parse(registryOps, compound).getOrThrow();
         renderItem.ifPresent(this::setRenderItem);
 
         AtomicBoolean wasError = new AtomicBoolean(false);
-        Vec3 effectCenter = valueInput.read("effectCenter", Vec3.CODEC).orElseGet(() -> {
+        Vec3 effectCenter = EFFECT_CENTER_CODEC.parse(registryOps, compound).getOrThrow().orElseGet(() -> {
             wasError.set(true);
             return new Vec3(getX(), getY(), getZ());
         });
         if (wasError.get()) {
-            Optional<Double> x = valueInput.read("effectCenterX", Codec.DOUBLE);
-            Optional<Double> y = valueInput.read("effectCenterY", Codec.DOUBLE);
-            Optional<Double> z = valueInput.read("effectCenterZ", Codec.DOUBLE);
+            Optional<Double> x = readOptionalField("effectCenterX", compound);
+            Optional<Double> y = readOptionalField("effectCenterY", compound);
+            Optional<Double> z = readOptionalField("effectCenterZ", compound);
             if (x.isPresent() && y.isPresent() && z.isPresent()) effectCenter = new Vec3(x.get(), y.get(), z.get());
         }
 
         setEffectCenter(effectCenter);
     }
 
-    public void writeBoxData(ValueOutput valueOutput) {
-        valueOutput.storeNullable("boxEffect", PBEffect.CODEC, getBoxEffect());
-        EntityReference<LivingEntity> entityReference = this.getOwnerReference();
-        if (entityReference != null) entityReference.store(valueOutput, "ownerUUID");
+    public void writeBoxData(CompoundTag compound) {
+        compound.put("boxEffect", writeEffect(getBoxEffect(), registryAccess()));
+        UUID uuid = getOwnerUUID();
+        if (uuid != null)
+            compound.putUUID("ownerUUID", uuid);
 
-        valueOutput.putInt("effectTicksExisted", getEffectTicksExisted());
-        valueOutput.putInt("timeBoxWaiting", getBoxWaitingTime());
-        valueOutput.putBoolean("canGenerateMoreEffectsAfterwards", canGenerateMoreEffectsAfterwards);
-        valueOutput.putFloat("floatAwayProgress", getFloatProgress());
-        valueOutput.putBoolean("floatUp", floatUp);
-        valueOutput.putBoolean("hasFoil", hasFoil);
-        valueOutput.putFloat("scaleInProgress", getCurrentScale());
-        if (!getRenderItem().isEmpty()) valueOutput.store("renderItem", ItemStack.CODEC, getRenderItem());
+        compound.putInt("effectTicksExisted", getEffectTicksExisted());
+        compound.putInt("timeBoxWaiting", getBoxWaitingTime());
+        compound.putBoolean("canGenerateMoreEffectsAfterwards", canGenerateMoreEffectsAfterwards);
+        compound.putFloat("floatAwayProgress", getFloatProgress());
+        compound.putBoolean("floatUp", floatUp);
+        compound.putBoolean("hasFoil", hasFoil);
+        compound.putFloat("scaleInProgress", getCurrentScale());
+        RegistryOps<Tag> registryOps = registryAccess().createSerializationContext(NbtOps.INSTANCE);
+        if (!getRenderItem().isEmpty()) {
+            Tag renderItem = ItemStack.CODEC.encodeStart(registryOps, getRenderItem()).getOrThrow();
+            compound.put("renderItem", renderItem);
+        }
 
-        valueOutput.store("effectCenter", Vec3.CODEC, effectCenter);
+        Tag effectCenter = Vec3.CODEC.encodeStart(registryOps, this.effectCenter).getOrThrow();
+        compound.put("effectCenter", effectCenter);
+    }
+
+    public Optional<Double> readOptionalField(String name, CompoundTag tag) {
+        return tag.contains(name) ? Optional.of(tag.getDouble(name)) : Optional.empty();
+    }
+    public static Tag writeEffect(PBEffect effect, RegistryAccess registryAccess) {
+        if (effect != null) return PBEffect.CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, registryAccess), effect).getOrThrow();
+        return new CompoundTag();
+    }
+
+    public static PBEffect loadEffect(Tag tag, RegistryAccess registryAccess) {
+        return PBEffect.CODEC.parse(RegistryOps.create(NbtOps.INSTANCE, registryAccess), tag).mapOrElse(Function.identity(), pbEffectError -> {
+            PandorasBox.logger.error("Failed to parse box, using fallback. Error: " + pbEffectError);
+            return new PBEffectDuplicateBox(PBEffectDuplicateBox.MODE_BOX_IN_BOX);
+        });
     }
 }

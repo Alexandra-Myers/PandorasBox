@@ -32,8 +32,8 @@ public class IvRenderHelper {
         Vector3f vector3f3 = new Vector3f();
         Vector3f vector3f4 = new Vector3f();
         Quaternionf quaternionf = new Quaternionf();
-        pose.translate(0.0F, height + 0.1F, 0.0F);
-        pose.scale(scale, scale, scale);
+        poseStack.translate(0.0F, height + 0.1F, 0.0F);
+        poseStack.scale(scale, scale, scale);
 
         for (int n = 0; n < number; n++) {
             float xLogFunc = (((float) n / number * 28493.0f + ticks) / 10.0f) % 20.0f;
@@ -50,7 +50,7 @@ public class IvRenderHelper {
                                 randomSource.nextFloat() * (float) (Math.PI * 2),
                                 randomSource.nextFloat() * (float) (Math.PI * 2) + progress * (float) (Math.PI / 2)
                         );
-                pose.pose().mul(quaternionf);
+                poseStack.mulPose(quaternionf);
                 float h = randomSource.nextFloat() * 20.0F + 5.0F + g * 10.0F;
                 float m = randomSource.nextFloat() * 2.0F + 1.0F + g * 2.0F;
                 vector3f2.set(-width * m, h, -0.5F * m);

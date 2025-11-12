@@ -31,7 +31,7 @@ public record RandomTaggedMapperCreator(Optional<Either<Block, TagKey<Block>>[]>
     public BlockMapper constructBlockMapper(Level world, double x, double y, double z, RandomSource random) {
         Integer[] metaTypes = new Integer[variantCount.getValue(random)];
         for (int i = 0; i < metaTypes.length; i++) {
-            metaTypes[i] = random.nextInt(BuiltInRegistries.BLOCK.get(toReplace).map(HolderSet.ListBacked::size).orElse(32));
+            metaTypes[i] = random.nextInt(BuiltInRegistries.BLOCK.getTag(toReplace).map(HolderSet.ListBacked::size).orElse(32));
         }
         return new RandomTaggedMapper(Optional.empty(), toReplace, metaTypes);
     }

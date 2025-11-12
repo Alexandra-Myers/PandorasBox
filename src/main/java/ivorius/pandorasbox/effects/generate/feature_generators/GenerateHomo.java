@@ -32,15 +32,15 @@ public record GenerateHomo() implements FeatureGenerator {
             boolean isSoil = state.getBlock() == Blocks.GRASS_BLOCK;
             if (!isSoil) return;
 
-            Optional<Registry<ConfiguredFeature<?, ?>>> registry = serverLevel.registryAccess().lookup(Registries.CONFIGURED_FEATURE);
+            Optional<Registry<ConfiguredFeature<?, ?>>> registry = serverLevel.registryAccess().registry(Registries.CONFIGURED_FEATURE);
             ConfiguredFeature<?, ?> tree;
 
             if (registry.isEmpty()) return;
-            tree = registry.get().getValueOrThrow(FeatureInit.RAINBOWS);
+            tree = registry.get().getOrThrow(FeatureInit.RAINBOWS);
             tree.place(serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos);
         } else if (blockState.isAir() && Blocks.POPPY.defaultBlockState().canSurvive(serverLevel, pos)) {
             if (random.nextInt(3 * 3) == 0) {
-                HolderSet.Named<Block> flowers = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.SMALL_FLOWERS);
+                HolderSet.Named<Block> flowers = BuiltInRegistries.BLOCK.getTag(BlockTags.SMALL_FLOWERS).orElseThrow();
                 int flowerIndex = random.nextInt(flowers.size());
 
                 setBlockSafe(serverLevel, pos, flowers.get(flowerIndex).value().defaultBlockState());

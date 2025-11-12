@@ -35,7 +35,7 @@ public record RangeTaggedMapper(TagKey<Block> tagKey, Integer[] tagMetas, double
     @Override
     public void convertBlock(ServerLevel serverLevel, BlockPos blockPos, BlockState state, RandomSource random, PandorasBoxEntity entity, Vec3 effectCenter, int pass, int unifiedSeed, double range) {
         double dist = Mth.sqrt((float) effectCenter.distanceToSqr(new Vec3(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5)));
-        HolderSet.Named<Block> tag = BuiltInRegistries.BLOCK.getOrThrow(tagKey);
+        HolderSet.Named<Block> tag = BuiltInRegistries.BLOCK.getTag(tagKey).orElseThrow();
         setBlockSafe(serverLevel, blockPos, tag.get(tagMetas[Mth.floor(dist / ringSize) % tagMetas.length]).value().defaultBlockState());
     }
 

@@ -34,7 +34,7 @@ public record FakeDeathEffect() implements EntityEffect {
                     entity.setPose(Pose.DYING);
                 } else {
                     float health = entity.getHealth();
-                    entity.kill(serverLevel);
+                    entity.kill();
                     entity.setHealth(health);
                 }
                 entity.hurtMarked = true;

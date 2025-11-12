@@ -37,7 +37,7 @@ public record CityMapperCreator(Either<Block, TagKey<Block>>[] targets, List<Wei
         WeightedEntity[] entitySelection = PandorasBoxHelper.getRandomEntityList(random, spawnerEntities);
         List<EntityType<?>> entities = new ArrayList<>();
         for (WeightedEntity entity : entitySelection) {
-            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.tryParse(entity.entityID()));
+            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.tryParse(entity.entityID()));
             entities.add(type);
         }
 

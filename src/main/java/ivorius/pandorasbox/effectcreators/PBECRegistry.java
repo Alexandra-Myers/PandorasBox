@@ -61,7 +61,7 @@ public class PBECRegistry {
     }
 
     public static List<PBEffect> createRandomEffects(Level world, RandomSource random, double x, double y, double z, boolean multi, Optional<HolderSet<EffectHolder>> selection, ResourceKey<? extends Registry<EffectHolder>> registryKey) {
-        HolderSet<EffectHolder> holders = selection.filter(set -> set.size() > 0).orElseGet(() -> HolderSet.direct(world.registryAccess().lookupOrThrow(registryKey).listElements().toList()));
+        HolderSet<EffectHolder> holders = selection.filter(set -> set.size() > 0).orElseGet(() -> HolderSet.direct(world.registryAccess().registryOrThrow(registryKey).holders().toList()));
         boolean isPeaceful = world.getDifficulty().equals(Difficulty.PEACEFUL);
         List<EffectHolder> fixedChanceHolders = holders.stream().map(Holder::value).filter(effectHolder -> effectHolder.fixedChance() != -1).toList();
         List<EffectHolder> positiveEffects = holders.stream().map(Holder::value).filter(effectHolder -> !fixedChanceHolders.contains(effectHolder) && effectHolder.isGood()).toList();
@@ -138,7 +138,7 @@ public class PBECRegistry {
 
             pandorasBox.setBoxEffect(effect);
             pandorasBox.setBoxWaitingTime(40);
-            SpawnEntityIDListEffect.moveTo(pandorasBox, new Vec3(pos), player.getYRot() + 180.0f, 0.0f);
+            SpawnEntityIDListEffect.moveTo(pandorasBox, Vec3.atBottomCenterOf(pos), player.getYRot() + 180.0f, 0.0f);
             if (renderItem.isPresent()) {
                 ItemStack chosen = heldItem.copyWithCount(1);
                 if (!renderItem.get().isEmpty()) chosen = renderItem.get();
@@ -147,7 +147,7 @@ public class PBECRegistry {
 
             pandorasBox.beginFloating();
 
-            pandorasBox.setOwner(player);
+            pandorasBox.setBoxOwner(player);
 
             world.addFreshEntity(pandorasBox);
 

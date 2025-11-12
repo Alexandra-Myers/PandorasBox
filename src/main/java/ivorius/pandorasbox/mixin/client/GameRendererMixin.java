@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class GameRendererMixin {
     @Shadow
     @Final
-    private Minecraft minecraft;
+    Minecraft minecraft;
 
     @ModifyExpressionValue(method = "bobHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isDeadOrDying()Z"))
     public boolean modifyDeathCheck(boolean original) {

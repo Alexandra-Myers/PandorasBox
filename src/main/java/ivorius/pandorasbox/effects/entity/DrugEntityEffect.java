@@ -13,12 +13,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public record DrugEntityEffect(List<DrugInfluence> drugs) implements EntityEffect {
-    public static final MapCodec<DrugEntityEffect> CODEC = DrugInfluence.LIST_CODEC.fieldOf("drugs").xmap(DrugEntityEffect::new, DrugEntityEffect::drugs);
+    public static final MapCodec<DrugEntityEffect> CODEC = DrugInfluence.CODEC.listOf().fieldOf("drugs").xmap(DrugEntityEffect::new, DrugEntityEffect::drugs);
     @Override
     public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
         for (DrugInfluence effect : drugs) {
-            float prevStrength = (float) (prevRatio * strength * effect.getTargetInfluence());
-            float newStrength = (float) (newRatio * strength * effect.getTargetInfluence());
+            float prevStrength = (float) (prevRatio * strength * effect.target());
+            float newStrength = (float) (newRatio * strength * effect.target());
             float drugStrength = newStrength - prevStrength;
 
             if (drugStrength > 0)

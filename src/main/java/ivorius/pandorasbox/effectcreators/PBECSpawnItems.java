@@ -74,7 +74,7 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
             if (wrcc.max() > stack.getMaxStackSize()) stack.set(DataComponents.MAX_STACK_SIZE, wrcc.max());
             if (isFood) PandorasBoxHelper.createRandomFoodProperties(stack, random);
             stack.setCount(wrcc.min() + random.nextInt(wrcc.max() - wrcc.min() + 1));
-            Registry<Enchantment> enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+            Registry<Enchantment> enchantmentRegistry = registryAccess.registryOrThrow(Registries.ENCHANTMENT);
 
             Stream<Holder<Enchantment>> optional = enchantmentRegistry.stream().map(enchantmentRegistry::wrapAsHolder);
             if (enchantLevel > 0) {
@@ -86,7 +86,7 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
 
                 if (!enchantments.isEmpty()) {
                     for (EnchantmentInstance enchantment : enchantments) {
-                        stack.enchant(enchantment.enchantment(), enchantment.level());
+                        stack.enchant(enchantment.enchantment, enchantment.level);
                     }
                 }
             }

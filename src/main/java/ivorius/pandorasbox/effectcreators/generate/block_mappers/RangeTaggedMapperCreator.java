@@ -29,7 +29,7 @@ public record RangeTaggedMapperCreator(TagKey<Block> tagKey, IValue complexity, 
 
         Integer[] metas = new Integer[complexity];
         for (int i = 0; i < metas.length; i++)
-            metas[i] = random.nextInt(BuiltInRegistries.BLOCK.get(tagKey).map(HolderSet.ListBacked::size).orElse(16));
+            metas[i] = random.nextInt(BuiltInRegistries.BLOCK.getTag(tagKey).map(HolderSet.ListBacked::size).orElse(16));
         return new RangeTaggedMapper(tagKey, metas, ringSize);
     }
 

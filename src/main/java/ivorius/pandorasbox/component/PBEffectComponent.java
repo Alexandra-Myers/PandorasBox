@@ -12,7 +12,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -24,20 +23,22 @@ import net.minecraft.world.level.Level;
 import java.util.*;
 import java.util.function.Consumer;
 
-public record PBEffectComponent(HolderSet<EffectHolder> holders, HolderSet<EffectHolder> randomSelection, Optional<ItemStack> renderItem, boolean selectsRandom) implements TooltipProvider {
-    public static final PBEffectComponent DEFAULT = new PBEffectComponent(HolderSet.empty(), HolderSet.empty(), Optional.empty(), true);
+public record PBEffectComponent(HolderSet<EffectHolder> holders, HolderSet<EffectHolder> randomSelection, Optional<ItemStack> renderItem, boolean selectsRandom, boolean showInTooltip) implements TooltipProvider {
+    public static final PBEffectComponent DEFAULT = new PBEffectComponent(HolderSet.empty(), HolderSet.empty(), Optional.empty(), true, false);
     public static final Codec<PBEffectComponent> FULL_CODEC = RecordCodecBuilder.create(instance ->
             instance.group(EffectHolder.CODEC.optionalFieldOf("effect_holders", HolderSet.empty()).forGetter(PBEffectComponent::holders),
                             EffectHolder.CODEC.optionalFieldOf("random_selection", HolderSet.empty()).forGetter(PBEffectComponent::randomSelection),
                             ItemStack.OPTIONAL_CODEC.optionalFieldOf("render_item").forGetter(PBEffectComponent::renderItem),
-                            Codec.BOOL.optionalFieldOf("selects_random", false).forGetter(PBEffectComponent::selectsRandom))
+                            Codec.BOOL.optionalFieldOf("selects_random", false).forGetter(PBEffectComponent::selectsRandom),
+                            Codec.BOOL.optionalFieldOf("show_in_tooltip", true).forGetter(PBEffectComponent::showInTooltip))
                     .apply(instance, PBEffectComponent::new));
-    public static final Codec<PBEffectComponent> CODEC = Codec.withAlternative(FULL_CODEC, EffectHolder.CODEC.orElse(HolderSet.empty()).xmap(holders -> new PBEffectComponent(holders, HolderSet.empty(), Optional.empty(), holders.size() == 0), PBEffectComponent::holders));
-    public PBEffectComponent(HolderSet<EffectHolder> holders, HolderSet<EffectHolder> randomSelection, Optional<ItemStack> renderItem, boolean selectsRandom) {
+    public static final Codec<PBEffectComponent> CODEC = Codec.withAlternative(FULL_CODEC, EffectHolder.CODEC.orElse(HolderSet.empty()).xmap(holders -> new PBEffectComponent(holders, HolderSet.empty(), Optional.empty(), holders.size() == 0, true), PBEffectComponent::holders));
+    public PBEffectComponent(HolderSet<EffectHolder> holders, HolderSet<EffectHolder> randomSelection, Optional<ItemStack> renderItem, boolean selectsRandom, boolean showInTooltip) {
         this.holders = holders;
         this.randomSelection = randomSelection;
         this.renderItem = renderItem;
         this.selectsRandom = selectsRandom || holders.size() == 0 || randomSelection.size() > 0;
+        this.showInTooltip = showInTooltip;
     }
 
     public PandorasBoxEntity createEffect(Level level, Player player, BlockPos pos, boolean floatAway, ItemStack heldStack) {
@@ -55,22 +56,24 @@ public record PBEffectComponent(HolderSet<EffectHolder> holders, HolderSet<Effec
     }
 
     @Override
-    public void addToTooltip(Item.TooltipContext tooltipContext, Consumer<Component> consumer, TooltipFlag tooltipFlag, DataComponentGetter dataComponentGetter) {
-        if (selectsRandom) {
-            consumer.accept(Component.translatable("component.pandora_effects.random").withStyle(ChatFormatting.BLUE));
-            consumer.accept(Component.empty());
-        }
-        if (randomSelection.size() > 0) {
-            consumer.accept(Component.translatable("component.pandora_effects.random_selection").withStyle(ChatFormatting.BLUE));
-            for (Holder<EffectHolder> holder : randomSelection) {
-                consumer.accept(Component.literal(" - ").append(holder.value().component()).withStyle(ChatFormatting.GRAY));
+    public void addToTooltip(Item.TooltipContext tooltipContext, Consumer<Component> consumer, TooltipFlag tooltipFlag) {
+        if (showInTooltip) {
+            if (selectsRandom) {
+                consumer.accept(Component.translatable("component.pandora_effects.random").withStyle(ChatFormatting.BLUE));
+                consumer.accept(Component.empty());
             }
-            consumer.accept(Component.empty());
-        }
-        if (holders.size() > 0) {
-            consumer.accept(Component.translatable("component.pandora_effects.holders").withStyle(ChatFormatting.BLUE));
-            for (Holder<EffectHolder> holder : holders) {
-                consumer.accept(Component.literal(" - ").append(holder.value().component()).withStyle(ChatFormatting.GRAY));
+            if (randomSelection.size() > 0) {
+                consumer.accept(Component.translatable("component.pandora_effects.random_selection").withStyle(ChatFormatting.BLUE));
+                for (Holder<EffectHolder> holder : randomSelection) {
+                    consumer.accept(Component.literal(" - ").append(holder.value().component()).withStyle(ChatFormatting.GRAY));
+                }
+                consumer.accept(Component.empty());
+            }
+            if (holders.size() > 0) {
+                consumer.accept(Component.translatable("component.pandora_effects.holders").withStyle(ChatFormatting.BLUE));
+                for (Holder<EffectHolder> holder : holders) {
+                    consumer.accept(Component.literal(" - ").append(holder.value().component()).withStyle(ChatFormatting.GRAY));
+                }
             }
         }
     }

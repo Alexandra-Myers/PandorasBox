@@ -33,7 +33,7 @@ public interface TreeFeatureExtensions<FC extends FeatureConfiguration> extends 
 
     @Override
     default boolean pandorasBox$placeWithRestrictedColors(FeaturePlaceContext<@NotNull FC> featurePlaceContext, IValue possibleColors, BlockState soil) {
-        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getOrThrow(BlockTags.WOOL);
+        HolderSet.Named<Block> blocks = BuiltInRegistries.BLOCK.getTag(BlockTags.WOOL).orElseThrow();
         if (blocks.size() == 0) return false;
         int[] indexes = new int[possibleColors.getValue(featurePlaceContext.random())];
         for (int i = 0; i < indexes.length; i++) {

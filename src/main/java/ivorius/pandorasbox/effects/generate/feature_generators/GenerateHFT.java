@@ -39,7 +39,7 @@ public record GenerateHFT(TagKey<Block> blocks, Integer[] groundMetas, IValue co
                     .apply(instance, GenerateHFT::new));
     @Override
     public void finalGenerate(ServerLevel serverLevel, BlockPos pos, BlockState blockState, RandomSource random, PandorasBoxEntity entity, Vec3 effectCenter, int pass, int unifiedSeed, double range) {
-        HolderSet.Named<Block> terracotta = BuiltInRegistries.BLOCK.getOrThrow(blocks);
+        HolderSet.Named<Block> terracotta = BuiltInRegistries.BLOCK.getTag(blocks).orElseThrow();
         Block placeBlock = terracotta.get(groundMetas[random.nextInt(groundMetas.length)] % terracotta.size()).value();
         if (random.nextInt(512) == 0) {
             BlockPos down = pos.below();
@@ -47,18 +47,18 @@ public record GenerateHFT(TagKey<Block> blocks, Integer[] groundMetas, IValue co
             boolean isSoil = state.is(blocks);
             if (!isSoil) return;
 
-            Optional<Registry<ConfiguredFeature<?, ?>>> registry = serverLevel.registryAccess().lookup(Registries.CONFIGURED_FEATURE);
+            Optional<Registry<ConfiguredFeature<?, ?>>> registry = serverLevel.registryAccess().registry(Registries.CONFIGURED_FEATURE);
             ConfiguredFeature<?, ?> tree;
 
             if (random.nextFloat() > 0.5) {
                 if (registry.isEmpty()) return;
-                tree = registry.get().getValueOrThrow(FeatureInit.LOLLIPOPS);
+                tree = registry.get().getOrThrow(FeatureInit.LOLLIPOPS);
             } else if (random.nextFloat() > 0.4) {
                 if (registry.isEmpty()) return;
-                tree = registry.get().getValueOrThrow(TreeFeatures.FANCY_OAK);
+                tree = registry.get().getOrThrow(TreeFeatures.FANCY_OAK);
             } else {
                 if (registry.isEmpty()) return;
-                tree = registry.get().getValueOrThrow(FeatureInit.RAINBOWS);
+                tree = registry.get().getOrThrow(FeatureInit.RAINBOWS);
             }
             RestrictedColorFeature.placeWithRestrictedColors(tree, serverLevel, serverLevel.getChunkSource().getGenerator(), random, pos, colorVariantCount, placeBlock.defaultBlockState());
         } else if (random.nextInt(5 * 5) == 0) {

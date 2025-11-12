@@ -25,7 +25,7 @@ public record HFTGeneratorCreator(TagKey<Block> blocks, IValue variantCount, IVa
     public FeatureGenerator constructFeatureGenerator(Level world, double x, double y, double z, RandomSource random) {
         Integer[] metaTypes = new Integer[variantCount.getValue(random)];
         for (int i = 0; i < metaTypes.length; i++) {
-            metaTypes[i] = random.nextInt(BuiltInRegistries.BLOCK.get(blocks).map(HolderSet.ListBacked::size).orElse(32));
+            metaTypes[i] = random.nextInt(BuiltInRegistries.BLOCK.getTag(blocks).map(HolderSet.ListBacked::size).orElse(32));
         }
         return new GenerateHFT(blocks, metaTypes, colorVariantCount);
     }

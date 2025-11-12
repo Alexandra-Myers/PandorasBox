@@ -24,11 +24,7 @@
                 "minecraft:tall_grass",
                 "minecraft:fern",
                 "minecraft:large_fern",
-                "minecraft:short_dry_grass",
-                "minecraft:tall_dry_grass",
-                "minecraft:dead_bush",
-                "minecraft:bush",
-                "minecraft:firefly_bush"
+                "minecraft:dead_bush"
               ],
               "to_replace": "minecraft:air",
               "mapper_type": "pandorasbox:convert_simple",

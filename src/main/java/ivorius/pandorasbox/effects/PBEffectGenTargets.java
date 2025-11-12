@@ -108,7 +108,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure<StructureTar
 
                 if (dist < newRange) {
                     if (dist >= prevRange) {
-                        HolderSet.Named<Block> terracottas = BuiltInRegistries.BLOCK.getOrThrow(PandoraBlockTags.ALL_TERRACOTTA);
+                        HolderSet.Named<Block> terracottas = BuiltInRegistries.BLOCK.getTag(PandoraBlockTags.ALL_TERRACOTTA).orElseThrow();
                         Vec3i offset = structure.pos.offset(xP, 0, zP);
                         setBlockSafe(level, new BlockPos(offset), terracottas.get(structure.getColors()[Mth.floor(dist)]).value().defaultBlockState());
 

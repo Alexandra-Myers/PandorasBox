@@ -9,6 +9,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class PandoraItemTags {
+    public static final TagKey<Item> PIE_FOODS = registerC(Registries.ITEM, "foods/pie");
+    public static final TagKey<Item> BREWING_FUEL = registerVanilla(Registries.ITEM, "brewing_fuel");
     public static final TagKey<Item> PANDORA_ITEMS_MISC_COMMON = register(Registries.ITEM, "pandoras_items_misc_common");
     public static final TagKey<Item> PANDORA_ITEMS_MISC_UNCOMMON = register(Registries.ITEM, "pandoras_items_misc_uncommon");
     public static final TagKey<Item> PANDORA_ITEMS_MISC_RARE = register(Registries.ITEM, "pandoras_items_misc_rare");
@@ -25,5 +27,13 @@ public class PandoraItemTags {
 
     public static <T> TagKey<T> register(ResourceKey<? extends Registry<T>> owner, String tagId) {
         return TagKey.create(owner, ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, tagId));
+    }
+
+    public static <T> TagKey<T> registerC(ResourceKey<? extends Registry<T>> owner, String tagId) {
+        return TagKey.create(owner, ResourceLocation.fromNamespaceAndPath("c", tagId));
+    }
+
+    public static <T> TagKey<T> registerVanilla(ResourceKey<? extends Registry<T>> owner, String tagId) {
+        return TagKey.create(owner, ResourceLocation.withDefaultNamespace(tagId));
     }
 }

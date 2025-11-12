@@ -11,12 +11,11 @@
   ],
   "client": [
     "client.GameRendererMixin",
-    "client.GiantMobRendererMixin",
+    "client.GiantZombieModelMixin",
     "client.GuiMixin",
     "client.KeyboardInputMixin",
     "client.MinecraftMixin",
-    "client.RendererMixin",
-    "client.SpecialModelRenderersMixin"
+    "client.RendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

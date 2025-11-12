@@ -22,7 +22,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -76,8 +75,8 @@ public abstract class PBEffect {
     }
 
     public static Player getPlayer(Level level, PandorasBoxEntity box) {
-        EntityReference<LivingEntity> ownerReference = box.getOwnerReference();
-        return ownerReference == null || !(box.getOwner() instanceof Player player) ? getRandomNearbyPlayer(level, box) : player;
+        Player player = box.getBoxOwner();
+        return player == null ? getRandomNearbyPlayer(level, box) : player;
     }
 
     @SafeVarargs
@@ -140,7 +139,7 @@ public abstract class PBEffect {
         if (level.isClientSide())
             return false;
 
-        return !(block.getLightBlock() > 0 || level.getBlockState(pos.below()).getLightBlock() > 0 || level.getBlockState(pos.below(2)).getLightBlock() > 0);
+        return !(block.getLightBlock(level, pos) > 0 || level.getBlockState(pos.below()).getLightBlock(level, pos.below()) > 0 || level.getBlockState(pos.below(2)).getLightBlock(level, pos.below(2)) > 0);
     }
 
     public static void combinedEffectDuration(LivingEntity entity, MobEffectInstance[] mobEffects) {

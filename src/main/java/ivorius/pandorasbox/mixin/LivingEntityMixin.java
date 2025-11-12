@@ -24,8 +24,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class LivingEntityMixin extends Entity {
     @Shadow public abstract boolean hasEffect(Holder<MobEffect> holder);
 
-    @Shadow public abstract boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float f);
-
     @Shadow @Nullable public abstract MobEffectInstance getEffect(Holder<MobEffect> holder);
 
     public LivingEntityMixin(EntityType<?> entityType, Level level) {
@@ -49,7 +47,7 @@ public abstract class LivingEntityMixin extends Entity {
         double causalYDiff = causingOriginalBox.maxY - causingOriginalBox.minY;
         AABB flattened = new AABB(causingOriginalBox.getMinPosition(), causingOriginalBox.getMaxPosition().subtract(0, causalYDiff * 0.9, 0));
         if (flattened.intersects(thisOriginalBox.getMinPosition().add(0, thisYDiff * 0.9, 0), causingOriginalBox.getMaxPosition())) {
-            if (level() instanceof ServerLevel serverLevel) hurtServer(serverLevel, damageSources().cramming(), 0.2F * amplifier);
+            hurt(damageSources().cramming(), 0.2F * amplifier);
             return true;
         }
         return false;

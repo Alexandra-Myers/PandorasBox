@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
 import ivorius.pandorasbox.init.Init;
+import ivorius.pandorasbox.utils.LateBoundIdMapper;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.network.chat.Component;
@@ -11,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 
 public abstract class EffectHolder {
-    public static final ExtraCodecs.LateBoundIdMapper<ResourceLocation, DualMapCodec<? extends EffectHolder>> HOLDER_MAPPER = new ExtraCodecs.LateBoundIdMapper<>();
+    public static final LateBoundIdMapper<ResourceLocation, DualMapCodec<? extends EffectHolder>> HOLDER_MAPPER = new LateBoundIdMapper<>();
     public static final Codec<EffectHolder> DIRECT_CODEC = HOLDER_MAPPER.codec(ResourceLocation.CODEC)
             .dispatch(EffectHolder::codec, mapCodec -> mapCodec.withTooltip);
     public static final Codec<EffectHolder> DIRECT_CODEC_NO_TOOLTIP = HOLDER_MAPPER.codec(ResourceLocation.CODEC)

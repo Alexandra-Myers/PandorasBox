@@ -14,24 +14,6 @@
           "mappers": [
             {
               "targets": [
-                "minecraft:short_grass",
-                "minecraft:fern"
-              ],
-              "to_replace": "minecraft:short_dry_grass",
-              "mapper_type": "pandorasbox:convert_simple",
-              "type": "pandorasbox:direct"
-            },
-            {
-              "targets": [
-                "minecraft:tall_grass",
-                "minecraft:large_fern"
-              ],
-              "to_replace": "minecraft:tall_dry_grass",
-              "mapper_type": "pandorasbox:convert_simple",
-              "type": "pandorasbox:direct"
-            },
-            {
-              "targets": [
                 "#minecraft:leaves",
                 "#minecraft:flowers",
                 "minecraft:vine",
@@ -40,7 +22,11 @@
                 "minecraft:red_mushroom",
                 "minecraft:red_mushroom_block",
                 "minecraft:mushroom_stem",
-                "#minecraft:logs"
+                "#minecraft:logs",
+                "minecraft:short_grass",
+                "minecraft:fern",
+                "minecraft:tall_grass",
+                "minecraft:large_fern"
               ],
               "to_replace": "minecraft:air",
               "mapper_type": "pandorasbox:convert_simple",
@@ -113,10 +99,6 @@
                 {
                   "weight": 1.0,
                   "key": "minecraft:patch_dead_bush"
-                },
-                {
-                  "weight": 1.0,
-                  "key": "minecraft:patch_dry_grass"
                 }
               ],
               "placed": "minecraft:sand",

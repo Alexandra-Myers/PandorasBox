@@ -10,17 +10,17 @@ import ivorius.pandorasbox.init.BlockEntityInit;
 import ivorius.pandorasbox.init.ComponentInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -45,10 +45,10 @@ public class PandorasBoxBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentGetter dataComponentGetter) {
-        super.applyImplicitComponents(dataComponentGetter);
-        setEnchantments(dataComponentGetter.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY));
-        setEffectComponent(dataComponentGetter.getOrDefault(ComponentInit.EFFECT_COMPONENT, PBEffectComponent.DEFAULT));
+    protected void applyImplicitComponents(DataComponentInput componentInput) {
+        super.applyImplicitComponents(componentInput);
+        setEnchantments(componentInput.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY));
+        setEffectComponent(componentInput.getOrDefault(ComponentInit.EFFECT_COMPONENT, PBEffectComponent.DEFAULT));
     }
 
     @Override
@@ -59,19 +59,25 @@ public class PandorasBoxBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(ValueOutput valueOutput) {
-        valueOutput.putFloat("boxRotationYaw", rotationYaw);
-        valueOutput.store("enchantments", ItemEnchantments.CODEC, enchantments);
-        valueOutput.store("effect_holders", PBEffectComponent.CODEC, effectComponent);
-        super.saveAdditional(valueOutput);
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        compoundTag.putFloat("boxRotationYaw", rotationYaw);
+        RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
+        Tag enchantments = ItemEnchantments.CODEC.encodeStart(registryOps, this.enchantments).getOrThrow();
+        Tag effectComponent = PBEffectComponent.CODEC.encodeStart(registryOps, this.effectComponent).getOrThrow();
+        compoundTag.put("enchantments", enchantments);
+        compoundTag.put("effect_holders", effectComponent);
+        super.saveAdditional(compoundTag, provider);
     }
 
     @Override
-    public void loadAdditional(ValueInput valueInput) {
-        rotationYaw = valueInput.getFloatOr("boxRotationYaw", 0);
-        enchantments = valueInput.read("enchantments", ItemEnchantments.CODEC).orElse(ItemEnchantments.EMPTY);
-        effectComponent = valueInput.read("effect_holders", PBEffectComponent.CODEC).orElse(PBEffectComponent.DEFAULT);
-        super.loadAdditional(valueInput);
+    public void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        rotationYaw = compoundTag.getFloat("boxRotationYaw");
+        Tag readEnchantments = compoundTag.get("enchantments");
+        Tag readEffectComponent = compoundTag.get("effect_holders");
+        RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
+        enchantments = ItemEnchantments.CODEC.orElse(ItemEnchantments.EMPTY).parse(registryOps, readEnchantments).getOrThrow();
+        effectComponent = PBEffectComponent.CODEC.orElse(PBEffectComponent.DEFAULT).parse(registryOps, readEffectComponent).getOrThrow();
+        super.loadAdditional(compoundTag, provider);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ivorius.pandorasbox.effectcreators;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
@@ -7,7 +8,6 @@ import ivorius.pandorasbox.effects.PBEffectEntityBased;
 import ivorius.pandorasbox.effects.entity.FakeDeathEffect;
 import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,7 @@ public record PBECFakeDeath(IValue time, DValue range, float chanceForMoreEffect
     public static final MapCodec<PBECFakeDeath> CODEC = RecordCodecBuilder.mapCodec(instance ->
         instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECFakeDeath::time),
                         DValue.CODEC.fieldOf("range").forGetter(PBECFakeDeath::range),
-                        ExtraCodecs.floatRange(0, 1).fieldOf("chance_for_more_effects").forGetter(PBECFakeDeath::chanceForMoreEffects))
+                        Codec.floatRange(0, 1).fieldOf("chance_for_more_effects").forGetter(PBECFakeDeath::chanceForMoreEffects))
                 .apply(instance, PBECFakeDeath::new));
 
     @Override

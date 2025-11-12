@@ -46,9 +46,9 @@ public class LollipopFeature extends Feature<@NotNull LollipopConfiguration> imp
         int posY = position.getY();
         int posZ = position.getZ();
 
-        if (posY >= world.getMinY() && posY + size + 1 <= world.getMaxY()) {
+        if (posY >= world.getMinBuildHeight() && posY + size + 1 <= world.getMaxBuildHeight()) {
             for (int i = posY; i <= posY + 1 + size; ++i) {
-                inWorldHeight &= i >= world.getMinY() && i < world.getMaxY();
+                inWorldHeight &= i >= world.getMinBuildHeight() && i < world.getMaxBuildHeight();
             }
 
             if (!inWorldHeight) {
@@ -56,7 +56,7 @@ public class LollipopFeature extends Feature<@NotNull LollipopConfiguration> imp
             } else {
                 boolean rotated = rand.nextBoolean();
 
-                if (posY < world.getMaxY() - size) {
+                if (posY < world.getMaxBuildHeight() - size) {
                     int height;
 
                     for (int shift = -1; shift <= 1; shift++) {

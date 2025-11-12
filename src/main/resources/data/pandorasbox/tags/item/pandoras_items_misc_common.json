@@ -23,7 +23,7 @@
     "minecraft:string",
     "minecraft:snowball",
     "minecraft:sugar",
-    "#minecraft:eggs",
+    "minecraft:egg",
     "#minecraft:coals",
     "#c:ingots/copper",
     "#c:crops",
