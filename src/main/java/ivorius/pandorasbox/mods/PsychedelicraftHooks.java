@@ -10,6 +10,7 @@ import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.psychedelicraft.entity.drug.DrugProperties;
 import ivorius.psychedelicraft.entity.drug.DrugType;
 import ivorius.psychedelicraft.entity.drug.influence.DrugInfluence;
+import ivorius.psychedelicraft.entity.drug.influence.DrugInfluenceInstance;
 import net.atlas.atlascore.util.Codecs;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
@@ -26,7 +27,7 @@ public class PsychedelicraftHooks {
     }
     public static void addDrugValue(LivingEntity livingEntity, DrugInfluence drug, float drugStrength) {
         Optional<DrugProperties> properties = DrugProperties.of(livingEntity);
-        properties.ifPresent(drugProperties -> drug.addToDrug(drugProperties, drugStrength));
+        properties.ifPresent(drugProperties -> drugProperties.addToDrug(drug.drugType(), drugStrength, new DrugInfluenceInstance(drug)));
     }
     public record WeightedDrugType(double weight, float minAddValue, float maxAddValue, Holder<DrugType<?>> drugTypeHolder) implements WeightedSelector.Item {
         public static final Codec<WeightedDrugType> DRUG_TYPE_CODEC = RecordCodecBuilder.<WeightedDrugType>create(instance ->
