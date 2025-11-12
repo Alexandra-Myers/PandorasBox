@@ -10,9 +10,9 @@ import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
-import java.util.Set;
+import java.util.function.Consumer;
 
 @Environment(EnvType.CLIENT)
 public class PandorasBoxSpecialRenderer implements NoDataSpecialModelRenderer {
@@ -23,7 +23,7 @@ public class PandorasBoxSpecialRenderer implements NoDataSpecialModelRenderer {
 	}
 
 	@Override
-	public void getExtents(Set<Vector3f> set) {
+	public void getExtents(Consumer<Vector3fc> set) {
 		this.renderer.getExtents(set);
 	}
 

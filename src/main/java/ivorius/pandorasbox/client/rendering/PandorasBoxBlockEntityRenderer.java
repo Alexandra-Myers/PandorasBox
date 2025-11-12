@@ -15,9 +15,9 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<PandorasBoxBlockEntity, PandorasBoxBlockEntityRenderState> {
     public static final Identifier PANDORAS_BOX = Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
@@ -41,7 +41,7 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
         render(poseStack, submitNodeCollector, 0, packedLightIn, overlayTexture, outlineColor, hasFoil, null);
     }
 
-    public void getExtents(Set<Vector3f> set) {
+    public void getExtents(Consumer<Vector3fc> set) {
         PoseStack poseStack = new PoseStack();
         poseStack.translate(0.5F, 1.5F, 0.5F);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0f));

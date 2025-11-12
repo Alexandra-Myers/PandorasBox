@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntLists;
 import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.PandorasBoxHelper;
+import ivorius.pandorasbox.effectcreators.PBECSpawnItems;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.random.PandorasBoxEntityNamer;
 import ivorius.pandorasbox.utils.PBNBTHelper;
@@ -18,12 +19,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Parrot;
+import net.minecraft.world.entity.animal.horse.SkeletonHorse;
 import net.minecraft.world.entity.animal.horse.ZombieHorse;
 import net.minecraft.world.entity.animal.nautilus.ZombieNautilus;
 import net.minecraft.world.entity.animal.sheep.Sheep;
@@ -31,6 +34,7 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
@@ -108,12 +112,17 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
         if (livingEntity.level() instanceof ServerLevel serverLevel && equipLevel > 0) {
             float itemChancePerSlot = 1.0f - (0.5f / equipLevel);
             float upgradeChancePerSlot = 1.0f - (1.0f / equipLevel);
+            float enchantChancePerSlot = 1.0f - (2.0f / equipLevel);
 
             for (EquipmentSlot slot : VALID_ITEM_SLOTS) {
                 if (random.nextFloat() < itemChancePerSlot) {
                     int itemLevel = 0;
+                    int enchantLevel = 0;
                     while (random.nextFloat() < upgradeChancePerSlot && itemLevel < equipLevel) {
                         itemLevel++;
+                    }
+                    while (random.nextFloat() < enchantChancePerSlot && enchantLevel < equipLevel * 3) {
+                        enchantLevel += 3;
                     }
 
                     ItemStack stack = ItemStack.EMPTY;
@@ -134,6 +143,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                         }
                     }
                     if (!stack.isEmpty()) {
+                        if (enchantLevel > 0) PBECSpawnItems.enchantItemStack(serverLevel.registryAccess(), enchantLevel, random, stack);
                         if (livingEntity instanceof Mob mob) {
                             mob.equipItemIfPossible(serverLevel, stack);
                             mob.setDropChance(slot, 0.085F);
@@ -215,6 +225,21 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             nautilus.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
             nautilus.setItemSlot(EquipmentSlot.BODY, new ItemStack(Items.NETHERITE_NAUTILUS_ARMOR));
             return new Entity[] {jockey, nautilus};
+        } else if ("pbspecial_skeleton_horseman".equals(trunkEntityID)) {
+            Skeleton skeleton = EntityType.SKELETON.create(serverLevel, EntitySpawnReason.COMMAND);
+            assert skeleton != null;
+            moveTo(skeleton, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
+            skeleton.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+            ItemStack stack = new ItemStack(Items.IRON_HELMET);
+            PBECSpawnItems.enchantItemStack(serverLevel.registryAccess(), 10 + random.nextInt(10), random, stack);
+            skeleton.setItemSlot(EquipmentSlot.HEAD, stack);
+            PBECSpawnItems.enchantItemStack(serverLevel.registryAccess(), 15 + random.nextInt(10), random, skeleton.getItemInHand(InteractionHand.MAIN_HAND));
+
+            SkeletonHorse horse = EntityType.SKELETON_HORSE.create(serverLevel, EntitySpawnReason.COMMAND);
+            assert horse != null;
+            moveTo(horse, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
+            horse.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+            return new Entity[] {skeleton, horse};
         } else return new Entity[] {createEntity(serverLevel, pbEntity, random, asID, trunkEntityID, x, y, z)};
     }
 
