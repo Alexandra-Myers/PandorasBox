@@ -59,6 +59,7 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity> imple
         super.render(entity, entityYaw, partialTicks, poseStack, multiBufferSource, packedLightIn);
         poseStack.pushPose();
         poseStack.mulPose(YP.rotationDegrees(-entityYaw));
+        entity.setXRot((float) (entity.getRatioBoxOpen(partialTicks) * 2F / 3F * Math.PI));
 
         PBEffectRenderer effectRenderer = PBEffectRenderingRegistry.rendererForID(entity.getBoxEffect().rendererResourceLocationForEffect());
         PandoraEffectRenderState pandoraEffectRenderState = effectRenderer.createRenderState();
