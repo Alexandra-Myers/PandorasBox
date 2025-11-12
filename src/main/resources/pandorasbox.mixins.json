@@ -11,6 +11,7 @@
   ],
   "client": [
     "client.GameRendererMixin",
+    "client.GiantMobRendererMixin",
     "client.GuiMixin",
     "client.KeyboardInputMixin",
     "client.MinecraftMixin",
