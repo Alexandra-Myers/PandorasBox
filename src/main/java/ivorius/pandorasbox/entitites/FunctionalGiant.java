@@ -179,9 +179,11 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     protected void populateDefaultEquipmentSlots(RandomSource randomSource, DifficultyInstance difficultyInstance) {
         super.populateDefaultEquipmentSlots(randomSource, difficultyInstance);
         if (randomSource.nextFloat() < (this.level().getDifficulty() == Difficulty.HARD ? 0.05F : 0.01F)) {
-            int i = randomSource.nextInt(3);
+            int i = randomSource.nextInt(6);
             if (i == 0) {
                 this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+            } else if (i == 1) {
+                this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SPEAR));
             } else {
                 this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SHOVEL));
             }
