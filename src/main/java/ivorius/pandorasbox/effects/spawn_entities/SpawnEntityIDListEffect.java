@@ -131,7 +131,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                         if (slot.equals(EquipmentSlot.HEAD) && random.nextFloat() < 0.2f / equipLevel)
                             stack = new ItemStack(random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.CARVED_PUMPKIN);
                         else {
-                            Item item = Mob.getEquipmentForSlot(slot, Math.min(itemLevel, 4));
+                            Item item = Mob.getEquipmentForSlot(slot, Math.min(itemLevel, 5));
 
                             if (slot == EquipmentSlot.OFFHAND && item == null) item = Items.SHIELD;
 
