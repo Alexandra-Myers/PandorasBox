@@ -5,7 +5,6 @@
 
 package ivorius.pandorasbox.effectcreators;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.PBEffect;
@@ -15,6 +14,7 @@ import ivorius.pandorasbox.random.DValue;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.pandorasbox.weighted.WeightedPotion;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.level.Level;
@@ -31,7 +31,7 @@ public record PBECBuffEntities(IValue time, IValue number, DValue range, float c
             instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECBuffEntities::time),
                             IValue.CODEC.fieldOf("number").forGetter(PBECBuffEntities::number),
                             DValue.CODEC.fieldOf("range").forGetter(PBECBuffEntities::range),
-                            Codec.floatRange(0, 1).fieldOf("chance_for_more_effects").forGetter(PBECBuffEntities::chanceForMoreEffects),
+                            ExtraCodecs.floatRange(0, 1).fieldOf("chance_for_more_effects").forGetter(PBECBuffEntities::chanceForMoreEffects),
                             WeightedPotion.CODEC.listOf().fieldOf("mob_effects").forGetter(PBECBuffEntities::applicablePotions))
                     .apply(instance, PBECBuffEntities::new));
 

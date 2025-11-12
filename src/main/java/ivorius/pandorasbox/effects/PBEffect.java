@@ -8,6 +8,7 @@ package ivorius.pandorasbox.effects;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
@@ -16,10 +17,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -35,6 +38,7 @@ import java.util.List;
  * Created by lukas on 30.03.14.
  */
 public abstract class PBEffect {
+    public static final ResourceLocation DEFAULT = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "render_default");
     public static final Codec<PBEffect> CODEC = Init.BOX_EFFECT_TYPE_REGISTRY.byNameCodec()
             .dispatch(PBEffect::codec, mapCodec -> mapCodec);
     public static final StreamCodec<RegistryFriendlyByteBuf, PBEffect> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
@@ -72,8 +76,8 @@ public abstract class PBEffect {
     }
 
     public static Player getPlayer(Level level, PandorasBoxEntity box) {
-        Player player = box.getBoxOwner();
-        return player == null ? getRandomNearbyPlayer(level, box) : player;
+        EntityReference<LivingEntity> ownerReference = box.getOwnerReference();
+        return ownerReference == null || !(box.getOwner() instanceof Player player) ? getRandomNearbyPlayer(level, box) : player;
     }
 
     @SafeVarargs
@@ -88,40 +92,55 @@ public abstract class PBEffect {
         return false;
     }
 
-    public static Entity lazilySpawnEntity(Level level, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos) {
+    public static Entity[] lazilyCreateEntities(Level level, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos) {
         if (random.nextFloat() < chance && !level.isClientSide()) {
             return SpawnEntityIDListEffect.createEntity(level, box, random, entityID, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         }
 
-        return null;
+        return new Entity[0];
     }
-    public static Entity lazilySpawnFlyingEntity(Level level, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos) {
-        Entity entity =  lazilySpawnEntity(level, box, random, entityID, chance, pos);
-        if(entity != null)
-            level.addFreshEntity(entity);
-        return entity;
+    public static Entity[] lazilySpawnFlyingEntities(Level level, PandorasBoxEntity box, RandomSource random, String entityID, float chance, BlockPos pos) {
+        Entity[] entities = lazilyCreateEntities(level, box, random, entityID, chance, pos);
+        Entity previousEntity = null;
+        for (Entity newEntity : entities) {
+            if (newEntity != null) {
+                level.addFreshEntity(newEntity);
+                if (previousEntity != null) previousEntity.startRiding(newEntity, true);
+                previousEntity = newEntity;
+            }
+        }
+        return entities;
     }
 
-    public static boolean canSpawnEntity(Level level, BlockState block, BlockPos pos, Entity entity) {
-        if(entity == null) return false;
+    public static boolean canSpawnEntities(Level level, BlockPos pos, Entity[] entities) {
         if (level.isClientSide())
             return false;
+        boolean success = false;
+        Entity previousEntity = null;
+        for (Entity newEntity : entities) {
+            if (newEntity != null) {
+                if (newEntity.isInWall()) {
+                    success = false;
+                    break;
+                }
 
-        if (block.getLightBlock(level, pos) > 0)
-            return false;
-        if(level.loadedAndEntityCanStandOn(pos.below(), entity) && !level.isClientSide()) {
-            level.addFreshEntity(entity);
-            return true;
+                if (level.loadedAndEntityCanStandOn(pos.below(), newEntity) && !level.isClientSide()) {
+                    level.addFreshEntity(newEntity);
+                    if (previousEntity != null) previousEntity.startRiding(newEntity, true);
+                    previousEntity = newEntity;
+                    success = true;
+                }
+            }
         }
 
-        return false;
+        return success;
     }
 
     public static boolean canSpawnFlyingEntity(Level level, BlockState block, BlockPos pos) {
         if (level.isClientSide())
             return false;
 
-        return !(block.getLightBlock(level, pos) > 0 || level.getBlockState(pos.below()).getLightBlock(level, pos) > 0 || level.getBlockState(pos.below(2)).getLightBlock(level, pos) > 0);
+        return !(block.getLightBlock() > 0 || level.getBlockState(pos.below()).getLightBlock() > 0 || level.getBlockState(pos.below(2)).getLightBlock() > 0);
     }
 
     public static void combinedEffectDuration(LivingEntity entity, MobEffectInstance[] mobEffects) {
@@ -151,5 +170,11 @@ public abstract class PBEffect {
 
     public abstract int getTicksExistedForEffect(PBEffect identityEffect, int ticksAlive);
 
+    public abstract int getMaxTicksAlive();
+
     public abstract @NotNull MapCodec<? extends PBEffect> codec();
+
+    public ResourceLocation rendererResourceLocationForEffect() {
+        return DEFAULT;
+    }
 }

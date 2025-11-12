@@ -8,12 +8,58 @@
       "max": 15.0,
       "type": "minecraft:linear"
     },
-    "crop_chance": {
-      "min": 0.01,
-      "max": 0.5,
-      "type": "minecraft:linear"
+    "chance_for_more_effects": 0.1,
+    "generate_effect": {
+      "biome": "minecraft:plains",
+      "exclusions": [],
+      "mappers": [
+        {
+          "crop_chance": {
+            "crop_chance": {
+              "min": 0.01,
+              "max": 0.5,
+              "type": "minecraft:linear"
+            }
+          },
+          "type": "pandorasbox:prepare_create_farm"
+        }
+      ],
+      "generators": [],
+      "spawners": [
+        {
+          "entity_id": "minecraft:horse",
+          "chance": 4.0E-4,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:villager",
+          "chance": 4.0E-4,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:sheep",
+          "chance": 4.0E-4,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:pig",
+          "chance": 4.0E-4,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:cow",
+          "chance": 4.0E-4,
+          "type": "pandorasbox:spawn_random"
+        },
+        {
+          "entity_id": "minecraft:chicken",
+          "chance": 4.0E-4,
+          "type": "pandorasbox:spawn_random"
+        }
+      ],
+      "type": "pandorasbox:prepare_gen_convert"
     },
-    "type": "pandorasbox:convert_to_farm"
+    "type": "pandorasbox:generate"
   },
   "positive": true,
   "type": "minecraft:positive_or_negative"

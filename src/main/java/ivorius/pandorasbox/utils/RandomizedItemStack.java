@@ -3,8 +3,8 @@ package ivorius.pandorasbox.utils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.weighted.WeightedSelector;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Function;
 
@@ -17,7 +17,7 @@ public record RandomizedItemStack(ItemStack itemStack, WeightedWithRandomCount c
                             WeightedWithRandomCount.CODEC_FORCE.forGetter(RandomizedItemStack::count))
                     .apply(instance, RandomizedItemStack::new));
     public static final Codec<EitherArrayList<RandomizedItemStack, RandomizedItemTag>> LIST_CODEC = Codec.either(CODEC, RandomizedItemTag.TAG_MAP_CODEC).listOf().xmap(EitherArrayList::new, Function.identity());
-    public RandomizedItemStack(Item item, int min, int max, double weight) {
+    public RandomizedItemStack(ItemLike item, int min, int max, double weight) {
         this(new ItemStack(item, 1), new WeightedWithRandomCount(min, max, weight));
     }
 

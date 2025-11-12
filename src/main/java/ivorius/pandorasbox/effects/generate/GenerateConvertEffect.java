@@ -19,7 +19,7 @@ import static ivorius.pandorasbox.effects.PBEffect.isBlockAnyOf;
 public interface GenerateConvertEffect extends GenerateEffect {
     @Override
     default void generateOnBlock(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, double ratio, int unifiedSeed) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (pass == 0 && !isBlockAnyOf(level.getBlockState(pos).getBlock(), excludedTargets())) {
                 for (BlockMapper blockMapper : mappers()) {
                     if (!blockMapper.convert(level, entity, effectCenter, random, pass, pos, range, unifiedSeed)) break;

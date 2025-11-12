@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BlockEntityWithoutLevelRenderer.class)
 public class RendererMixin {
     @Unique
-    private final PandorasBoxBlockEntity chest = new PandorasBoxBlockEntity(BlockPos.ZERO, BlockInit.PB.defaultBlockState());
+    private final PandorasBoxBlockEntity pandorasBoxEntity = new PandorasBoxBlockEntity(BlockPos.ZERO, BlockInit.PB.defaultBlockState());
     @Final
     @Shadow
     private BlockEntityRenderDispatcher blockEntityRenderDispatcher;
@@ -36,7 +36,7 @@ public class RendererMixin {
     private EntityModelSet entityModelSet;
 
     @Inject(method = "onResourceManagerReload", at = @At("HEAD"))
-    private void setEntityModelSet(CallbackInfo ci){
+    private void setEntityModelSet(CallbackInfo ci) {
         this.entityModelSet.bakeLayer(PandorasBoxModel.LAYER_LOCATION);
     }
 
@@ -48,7 +48,7 @@ public class RendererMixin {
             BlockState blockstate = block.defaultBlockState();
             BlockEntity blockentity;
             if (blockstate.is(BlockInit.PB)) {
-                blockentity = this.chest;
+                blockentity = this.pandorasBoxEntity;
                 this.blockEntityRenderDispatcher.renderItem(blockentity, poseStack, multiBufferSource, i, j);
             }
         }

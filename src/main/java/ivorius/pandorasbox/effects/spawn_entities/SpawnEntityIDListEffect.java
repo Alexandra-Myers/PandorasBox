@@ -24,8 +24,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Parrot;
-import net.minecraft.world.entity.animal.Sheep;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.sheep.Sheep;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Zombie;
@@ -42,6 +42,7 @@ import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                             Codec.INT.fieldOf("buff_level").forGetter(SpawnEntityIDListEffect::buffLevel),
                             EntitySpawnConfiguration.MAP_CODEC.forGetter(SpawnEntityIDListEffect::entitySpawnConfiguration))
                     .apply(instance, SpawnEntityIDListEffect::new));
+    public static final EquipmentSlot[] VALID_ITEM_SLOTS = new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
     @Override
     public Entity spawnEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, int number, double x, double y, double z) {
         if(world.isClientSide()) return null;
@@ -64,19 +66,21 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
         Entity previousEntity = null;
 
         for (String entityID : entityTower) {
-            Entity newEntity = createEntity(world, pbEntity, random, entityID, x, y, z);
+            Entity[] addedEntities = createEntity(world, pbEntity, random, entityID, x, y, z);
 
-            if (newEntity instanceof LivingEntity) {
-                randomizeEntity(random, pbEntity.getId(), (LivingEntity) newEntity, nameEntities, equipLevel, buffLevel);
+            for (Entity newEntity : addedEntities) {
+                if (newEntity instanceof LivingEntity) {
+                    randomizeEntity(random, pbEntity.getId(), (LivingEntity) newEntity, nameEntities, equipLevel, buffLevel);
+                }
+
+                if (previousEntity != null) {
+                    world.addFreshEntity(previousEntity);
+                    assert newEntity != null;
+                    previousEntity.startRiding(newEntity, true);
+                }
+
+                previousEntity = newEntity;
             }
-
-            if (previousEntity != null) {
-                world.addFreshEntity(previousEntity);
-                assert newEntity != null;
-                previousEntity.startRiding(newEntity, true);
-            }
-
-            previousEntity = newEntity;
         }
 
         if (previousEntity != null) {
@@ -86,69 +90,83 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
         return previousEntity;
     }
 
-    public static void randomizeEntity(RandomSource random, long namingSeed, LivingEntity entityLiving, int nameEntities, int equipLevel, int buffLevel) {
-        if (!entityLiving.hasCustomName()) {
+    public static void randomizeEntity(RandomSource random, long namingSeed, LivingEntity livingEntity, int nameEntities, int equipLevel, int buffLevel) {
+        if (!livingEntity.hasCustomName()) {
             if (nameEntities == 1) {
-                entityLiving.setCustomName(PandorasBoxEntityNamer.getRandomName(random));
-                entityLiving.setCustomNameVisible(true);
+                livingEntity.setCustomName(PandorasBoxEntityNamer.getRandomName(random));
+                livingEntity.setCustomNameVisible(true);
             } else if (nameEntities == 2) {
-                entityLiving.setCustomName(PandorasBoxEntityNamer.getRandomCasualName(random));
+                livingEntity.setCustomName(PandorasBoxEntityNamer.getRandomCasualName(random));
             } else if (nameEntities == 3) {
-                entityLiving.setCustomName(PandorasBoxEntityNamer.getRandomCasualName(RandomSource.create(namingSeed)));
+                livingEntity.setCustomName(PandorasBoxEntityNamer.getRandomCasualName(RandomSource.create(namingSeed)));
             }
         }
 
-        if (equipLevel > 0) {
+        if (livingEntity.level() instanceof ServerLevel serverLevel && equipLevel > 0) {
             float itemChancePerSlot = 1.0f - (0.5f / equipLevel);
             float upgradeChancePerSlot = 1.0f - (1.0f / equipLevel);
 
-            for (int i = 0; i < 5; i++) {
+            for (EquipmentSlot slot : VALID_ITEM_SLOTS) {
                 if (random.nextFloat() < itemChancePerSlot) {
                     int itemLevel = 0;
                     while (random.nextFloat() < upgradeChancePerSlot && itemLevel < equipLevel) {
                         itemLevel++;
                     }
 
-                    if (i == 0) {
-                        ItemStack itemStack = PandorasBoxHelper.getRandomWeaponItemForLevel(random, itemLevel);
-                        if(itemStack == null) itemStack = ItemStack.EMPTY;
+                    ItemStack stack = ItemStack.EMPTY;
 
-                        entityLiving.setItemSlot(EquipmentSlot.MAINHAND, itemStack);
+                    if (slot.equals(EquipmentSlot.MAINHAND)) {
+                        stack = PandorasBoxHelper.getRandomWeaponItemForLevel(random, itemLevel);
+                        if (stack == null) stack = ItemStack.EMPTY;
                     } else {
-                        if (i == 4 && random.nextFloat() < 0.2f / equipLevel)
-                            entityLiving.setItemSlot(EquipmentSlot.HEAD, new ItemStack(random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.CARVED_PUMPKIN));
+                        if (slot.equals(EquipmentSlot.HEAD) && random.nextFloat() < 0.2f / equipLevel)
+                            stack = new ItemStack(random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.CARVED_PUMPKIN);
                         else {
-                            EquipmentSlot slot = i == 1 ? EquipmentSlot.LEGS : i == 2 ? EquipmentSlot.FEET : EquipmentSlot.CHEST;
                             Item item = Mob.getEquipmentForSlot(slot, Math.min(itemLevel, 4));
 
-                            if (item != null) entityLiving.setItemSlot(slot, new ItemStack(item));
+                            if (slot == EquipmentSlot.OFFHAND && item == null) item = Items.SHIELD;
+
+                            if (item != null) stack = new ItemStack(item);
                             else System.err.println("Pandora's Box: Item not found for slot '" + slot + "', level '" + itemLevel + "'");
                         }
+                    }
+                    if (!stack.isEmpty()) {
+                        if (livingEntity instanceof Mob mob) {
+                            mob.equipItemIfPossible(serverLevel, stack);
+                            mob.setDropChance(slot, 0.085F);
+                        } else livingEntity.setItemSlot(slot, stack);
                     }
                 }
             }
         }
 
         if (buffLevel > 0) {
-            AttributeInstance health = entityLiving.getAttribute(Attributes.MAX_HEALTH);
+            AttributeInstance health = livingEntity.getAttribute(Attributes.MAX_HEALTH);
             if (health != null) {
                 double healthMultiplierP = random.nextDouble() * buffLevel * 0.25;
                 health.addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_health"), healthMultiplierP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                livingEntity.setHealth((float) (livingEntity.getHealth() + livingEntity.getHealth() * healthMultiplierP));
             }
 
-            AttributeInstance knockbackResistance = entityLiving.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+            AttributeInstance knockbackResistance = livingEntity.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
             if (knockbackResistance != null) {
                 double knockbackResistanceP = random.nextDouble() * buffLevel * 0.25;
                 knockbackResistance.addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_knockback_resistance"), knockbackResistanceP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
             }
 
-            AttributeInstance movementSpeed = entityLiving.getAttribute(Attributes.MOVEMENT_SPEED);
+            AttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
             if (movementSpeed != null) {
                 double movementSpeedP = random.nextDouble() * buffLevel * 0.08;
                 movementSpeed.addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_speed"), movementSpeedP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
             }
 
-            AttributeInstance attackDamage = entityLiving.getAttribute(Attributes.ATTACK_DAMAGE);
+            AttributeInstance stepHeight = livingEntity.getAttribute(Attributes.STEP_HEIGHT);
+            if (stepHeight != null) {
+                double stepHeightP = random.nextDouble() * buffLevel * 0.5;
+                stepHeight.addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_step_height"), stepHeightP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+            }
+
+            AttributeInstance attackDamage = livingEntity.getAttribute(Attributes.ATTACK_DAMAGE);
             if (attackDamage != null) {
                 double attackDamageP = random.nextDouble() * buffLevel * 0.25;
                 attackDamage.addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_damage"), attackDamageP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
@@ -156,31 +174,39 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
         }
     }
 
-    public static Entity createEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, String entityID, double x, double y, double z) {
+    public static Entity[] createEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, String entityID, double x, double y, double z) {
+        if (!(world instanceof ServerLevel serverLevel)) return null;
+        ResourceLocation asID = ResourceLocation.parse(entityID);
+        String trunkEntityID = asID.getPath();
+        return new Entity[] {createEntity(serverLevel, pbEntity, random, asID, trunkEntityID, x, y, z)};
+    }
+
+    public static Entity createEntity(ServerLevel serverLevel, PandorasBoxEntity pbEntity, RandomSource random, ResourceLocation asID, String trunkEntityID, double x, double y, double z) {
         try {
-            String trunkEntityID = ResourceLocation.parse(entityID).getPath();
-            if ("pbspecial_colorful_sheep".equals(trunkEntityID)){
-                Sheep sheep = EntityType.SHEEP.create(world);
+            if ("pbspecial_colorful_sheep".equals(trunkEntityID)) {
+                Sheep sheep = EntityType.SHEEP.create(serverLevel, EntitySpawnReason.COMMAND);
 
                 assert sheep != null;
-                sheep.setColor(DyeColor.byId(random.nextInt(16)));
                 if (random.nextInt(32 * 32) == 0) sheep.setCustomName(Component.literal("jeb_"));
-                sheep.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                sheep.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), MobSpawnType.COMMAND, null);
+                moveTo(sheep, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
+                sheep.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
+                sheep.setColor(DyeColor.byId(random.nextInt(16)));
 
                 return sheep;
-            } else if ("pbspecial_hogfather".equals(trunkEntityID)){
-                Zombie santa = EntityType.ZOMBIE.create(world);
+            } else if ("pbspecial_hogfather".equals(trunkEntityID)) {
+                Zombie santa = EntityType.ZOMBIE.create(serverLevel, EntitySpawnReason.COMMAND);
                 ItemStack helmet = new ItemStack(Items.LEATHER_HELMET);
-                helmet.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                helmet.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
                 ItemStack chestPlate = new ItemStack(Items.LEATHER_CHESTPLATE);
-                chestPlate.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                chestPlate.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
                 ItemStack leggings = new ItemStack(Items.LEATHER_LEGGINGS);
-                leggings.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                leggings.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
                 ItemStack boots = new ItemStack(Items.LEATHER_BOOTS);
-                boots.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                boots.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000));
 
                 assert santa != null;
+                moveTo(santa, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
+                santa.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
                 santa.setItemSlot(EquipmentSlot.HEAD, helmet);
                 santa.setItemSlot(EquipmentSlot.CHEST, chestPlate);
                 santa.setItemSlot(EquipmentSlot.LEGS, leggings);
@@ -188,19 +214,17 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 santa.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STICK));
 
                 santa.setCustomName(Component.literal("Hogfather"));
-                santa.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                santa.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), MobSpawnType.COMMAND, null);
 
                 return santa;
             } else if ("pbspecial_experience".equals(trunkEntityID)) {
-                return new ExperienceOrb(world, x, y, z, 10);
+                return new ExperienceOrb(serverLevel, x, y, z, 10);
             } else if ("pbspecial_wolf_tamed".equals(trunkEntityID)) {
-                Player owner = getPlayer(world, pbEntity);
-                Wolf wolf = EntityType.WOLF.create(world);
+                Player owner = getPlayer(serverLevel, pbEntity);
+                Wolf wolf = EntityType.WOLF.create(serverLevel, EntitySpawnReason.COMMAND);
 
                 assert wolf != null;
-                wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                wolf.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), MobSpawnType.COMMAND, null);
+                moveTo(wolf, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
+                wolf.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
 
 
                 if (owner != null) {
@@ -212,43 +236,42 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
 
                 return wolf;
             } else if ("pbspecial_cat_tamed".equals(trunkEntityID)) {
-                Player owner = getPlayer(world, pbEntity);
+                Player owner = getPlayer(serverLevel, pbEntity);
 
-                Cat cat = EntityType.CAT.create(world);
+                Cat cat = EntityType.CAT.create(serverLevel, EntitySpawnReason.COMMAND);
 
                 assert cat != null;
-                cat.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                cat.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null);
+                moveTo(cat, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
+                cat.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
 
                 if (owner != null) {
                     cat.tame(owner);
-                    world.broadcastEntityEvent(cat, (byte) 7);
+                    serverLevel.broadcastEntityEvent(cat, (byte) 7);
                 }
 
                 return cat;
             } else if ("pbspecial_parrot_tamed".equals(trunkEntityID)) {
-                Player owner = getPlayer(world, pbEntity);
+                Player owner = getPlayer(serverLevel, pbEntity);
 
-                Parrot parrot = EntityType.PARROT.create(world);
+                Parrot parrot = EntityType.PARROT.create(serverLevel, EntitySpawnReason.COMMAND);
 
                 assert parrot != null;
-                parrot.setVariant(Parrot.Variant.byId(random.nextInt(5)));
-                parrot.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                parrot.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null);
+                moveTo(parrot, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
+                parrot.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
 
                 if (owner != null) {
                     parrot.tame(owner);
-                    world.broadcastEntityEvent(parrot, (byte) 7);
+                    serverLevel.broadcastEntityEvent(parrot, (byte) 7);
                 }
 
                 return parrot;
             } else if (trunkEntityID.startsWith("pbspecial_tnt")) {
-                PrimedTnt primedTnt = new PrimedTnt(world, x, y, z, getPlayer(world, pbEntity));
+                PrimedTnt primedTnt = new PrimedTnt(serverLevel, x, y, z, getPlayer(serverLevel, pbEntity));
                 primedTnt.setFuse(Integer.parseInt(trunkEntityID.substring(13)));
 
                 return primedTnt;
             } else if (trunkEntityID.startsWith("pbspecial_invisible_tnt")) {
-                PrimedTnt primedTnt = new PrimedTnt(world, x, y, z, getPlayer(world, pbEntity));
+                PrimedTnt primedTnt = new PrimedTnt(serverLevel, x, y, z, getPlayer(serverLevel, pbEntity));
                 primedTnt.setFuse(Integer.parseInt(trunkEntityID.substring(23)));
                 primedTnt.setInvisible(true);
 
@@ -257,28 +280,28 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 ItemStack stack = new ItemStack(Items.FIREWORK_ROCKET);
                 stack.set(DataComponents.FIREWORKS, createRandomFirework(random));
 
-                return new FireworkRocketEntity(world, x, y, z,stack);
+                return new FireworkRocketEntity(serverLevel, x, y, z,stack);
             } else if ("pbspecial_angry_wolf".equals(trunkEntityID)) {
-                Wolf wolf = EntityType.WOLF.create(world);
+                Wolf wolf = EntityType.WOLF.create(serverLevel, EntitySpawnReason.COMMAND);
                 assert wolf != null;
-                wolf.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null);
-                wolf.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-                wolf.setTarget(world.getNearestPlayer(x, y, z, 40.0, false));
+                wolf.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                moveTo(wolf, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
+                wolf.setTarget(serverLevel.getNearestPlayer(x, y, z, 40.0, false));
 
                 return wolf;
             } else if ("pbspecial_charged_creeper".equals(trunkEntityID)) {
-                Creeper creeper = EntityType.CREEPER.create(world);
+                Creeper creeper = EntityType.CREEPER.create(serverLevel, EntitySpawnReason.COMMAND);
                 assert creeper != null;
-                creeper.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null);
-                creeper.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
+                creeper.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                moveTo(creeper, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
                 creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
                 return creeper;
             }
-            EntityType<?> entity = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.tryParse(entityID));
-            Entity entity1 = entity.create(world);
+            EntityType<?> entity = BuiltInRegistries.ENTITY_TYPE.getValue(asID);
+            Entity entity1 = entity.create(serverLevel, EntitySpawnReason.COMMAND);
             assert entity1 != null;
-            entity1.moveTo(x, y, z, random.nextFloat() * 360.0f, 0.0f);
-            Player owner = getPlayer(world, pbEntity);
+            moveTo(entity1, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
+            Player owner = getPlayer(serverLevel, pbEntity);
             if (owner != null && entity1.getY() - owner.getY() > entity.clientTrackingRange() * 16)
                 entity1.setPos(entity1.getX(), owner.getY() + entity.clientTrackingRange() * 16 - 1, entity1.getZ());
             if(entity1 instanceof AbstractPiglin piglin)
@@ -286,7 +309,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             if(entity1 instanceof Hoglin hoglin)
                 hoglin.setImmuneToZombification(true);
             if (entity1 instanceof Mob mob)
-                mob.finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.COMMAND, null);
+                mob.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
 
             return entity1;
         } catch (Exception ex) {
@@ -294,6 +317,11 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
         }
 
         return null;
+    }
+
+    public static void moveTo(Entity entity, Vec3 pos, float yRot, float xRot) {
+        entity.setPos(pos);
+        entity.forceSetRotation(yRot, xRot);
     }
 
     public static Fireworks createRandomFirework(RandomSource random) {

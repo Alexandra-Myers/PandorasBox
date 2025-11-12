@@ -39,7 +39,7 @@ public record RandomTaggedMapper(Optional<Either<Block, TagKey<Block>>[]> target
 
     @Override
     public void convertBlock(ServerLevel serverLevel, BlockPos blockPos, BlockState state, RandomSource random, PandorasBoxEntity entity, Vec3 effectCenter, int pass, int unifiedSeed, double range) {
-        HolderSet.Named<Block> terracotta = BuiltInRegistries.BLOCK.getOrCreateTag(toReplace);
+        HolderSet.Named<Block> terracotta = BuiltInRegistries.BLOCK.getOrThrow(toReplace);
         Block placeBlock = terracotta.get(groundMetas[random.nextInt(groundMetas.length)] % terracotta.size()).value();
         setBlockSafe(serverLevel, blockPos, PandorasBoxHelper.getRandomBlockState(random, placeBlock, unifiedSeed));
     }

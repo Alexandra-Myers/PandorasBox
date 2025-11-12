@@ -24,7 +24,7 @@ public record HeavenlyMapper(Either<Block, TagKey<Block>>[] targets) implements 
     public static final MapCodec<HeavenlyMapper> CODEC = PBNBTHelper.arrayCodec(Codec.either(BuiltInRegistries.BLOCK.byNameCodec(), TagKey.hashedCodec(Registries.BLOCK)), () -> (Either<Block, TagKey<Block>>[]) new Either[0]).fieldOf("targets").xmap(HeavenlyMapper::new, HeavenlyMapper::targets);
     @Override
     public boolean matches(ServerLevel serverLevel, PandorasBoxEntity entity, BlockPos blockPos, BlockState state, RandomSource random) {
-        return isBlockAnyOf(state.getBlock(), targets);
+        return targets.length == 0 || isBlockAnyOf(state.getBlock(), targets);
     }
 
     @Override

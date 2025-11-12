@@ -67,7 +67,11 @@ public class PandorasBoxModel extends EntityModel<PandorasBoxEntity> {
 
     @Override
     public void setupAnim(PandorasBoxEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        top.xRot = entity.getXRot();
+        setupAnim(entity.getXRot());
+    }
+
+    public void setupAnim(float xRot) {
+        top.xRot = xRot;
     }
 
     @Override

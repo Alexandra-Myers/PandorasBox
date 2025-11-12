@@ -6,18 +6,10 @@
     "#R#"
   ],
   "key": {
-    "#": {
-      "tag": "minecraft:planks"
-    },
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
-    "O": {
-      "tag": "c:ender_pearls"
-    }
+    "#": "#minecraft:planks",
+    "G": "#c:ingots/gold",
+    "R": "#c:dusts/redstone",
+    "O": "#c:ender_pearls"
   },
   "result": {
     "id": "pandorasbox:pandoras_box"

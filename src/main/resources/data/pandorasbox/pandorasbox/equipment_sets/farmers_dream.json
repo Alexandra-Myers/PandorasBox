@@ -1,0 +1,44 @@
+{
+  "weight": 8.0,
+  "items": [
+    {
+      "id": "minecraft:leather_helmet",
+      "count": 1
+    },
+    {
+      "id": "minecraft:iron_hoe",
+      "count": 1
+    },
+    {
+      "id": "minecraft:wheat_seeds",
+      "count": 32
+    },
+    {
+      "id": "minecraft:pumpkin_seeds",
+      "count": 4
+    },
+    {
+      "id": "minecraft:melon_seeds",
+      "count": 4
+    },
+    {
+      "id": "minecraft:blue_dye",
+      "count": 8
+    },
+    {
+      "id": "minecraft:dirt",
+      "count": 32
+    },
+    {
+      "id": "minecraft:water_bucket",
+      "count": 1
+    },
+    {
+      "id": "minecraft:water_bucket",
+      "count": 1
+    }
+  ],
+  "name": {
+    "translate": "pandora_equipment_set.pandorasbox.farmers_dream"
+  }
+}

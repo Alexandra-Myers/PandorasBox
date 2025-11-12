@@ -34,7 +34,7 @@ public record GenReplaceEffect(Block[] blocks, Block[] blocksToReplace) implemen
                     .apply(instance, GenReplaceEffect::new));
     @Override
     public void generateOnBlock(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, double ratio, int unifiedSeed) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             Block newBlock = blocks[random.nextInt(blocks.length)];
             BlockState prevState = level.getBlockState(pos);
             Block prevBlock = prevState.getBlock();

@@ -39,7 +39,7 @@ public class PBEffectSpawnEntities extends PBEffectNormal {
 
     @Override
     public void doEffect(Level level, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, float prevRatio, float newRatio) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             int prev = getSpawnNumber(prevRatio);
             int toSpawn = getSpawnNumber(newRatio) - prev;
 

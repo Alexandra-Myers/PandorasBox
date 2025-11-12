@@ -1,0 +1,27 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:painting",
+    "minecraft:flower_pot",
+    "minecraft:minecart",
+    "minecraft:cauldron",
+    "minecraft:name_tag",
+    "minecraft:nautilus_shell",
+    "minecraft:ink_sac",
+    "minecraft:glow_ink_sac",
+    "minecraft:armadillo_scute",
+    "minecraft:lantern",
+    "minecraft:soul_lantern",
+    "minecraft:spyglass",
+    "#minecraft:boats",
+    "#minecraft:beds",
+    "#c:leathers",
+    "#c:buckets/milk",
+    "#c:buckets/lava",
+    "#c:buckets/water",
+    "#c:tools/brush",
+    "#c:tools/igniter",
+    "#c:foods/soup",
+    "#c:slime_balls"
+  ]
+}

@@ -27,7 +27,7 @@ public record GenPoolEffect(Block fillBlock, Block platformBlock) implements Gen
                     .apply(instance, GenPoolEffect::new));
     @Override
     public void generateOnBlock(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, double ratio, int unifiedSeed) {
-        if (!level.isClientSide && !level.getBlockState(pos).isAir()) {
+        if (!level.isClientSide() && !level.getBlockState(pos).isAir()) {
             boolean setPlatform = false;
             if (platformBlock != null && !platformBlock.defaultBlockState().isAir()) {
                 List<LivingEntity> livingEntities = level.getEntitiesOfClass(LivingEntity.class, BlockPositions.expandToAABB(pos, 2.5, 2.5, 2.5));

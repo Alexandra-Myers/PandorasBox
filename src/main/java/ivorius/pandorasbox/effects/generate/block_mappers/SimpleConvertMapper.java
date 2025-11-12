@@ -30,8 +30,8 @@ public record SimpleConvertMapper(Either<Block, TagKey<Block>>[] targets, Block 
 
     @Override
     public boolean matches(ServerLevel serverLevel, PandorasBoxEntity entity, BlockPos blockPos, BlockState state, RandomSource random) {
-        if (toReplace == Blocks.AIR) return isBlockAnyOf(state.getBlock(), targets);
-        return isBlockAnyOf(state.getBlock(), targets) && !isBlockAnyOf(state.getBlock(), Either.left(toReplace));
+        if (toReplace == Blocks.AIR) return targets.length == 0 || isBlockAnyOf(state.getBlock(), targets);
+        return (targets.length == 0 || isBlockAnyOf(state.getBlock(), targets)) && !isBlockAnyOf(state.getBlock(), Either.left(toReplace));
     }
 
     @Override

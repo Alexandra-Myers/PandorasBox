@@ -31,7 +31,7 @@ public record PBECDome(IValue time, DValue range, EitherArrayList<WeightedBlock,
     public static final MapCodec<PBECDome> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECDome::time),
                             DValue.CODEC.fieldOf("range").forGetter(PBECDome::range),
-                            WeightedBlock.CODEC.fieldOf("floor_blocks").forGetter(PBECDome::domeBlocks),
+                            WeightedBlock.CODEC.fieldOf("dome_blocks").forGetter(PBECDome::domeBlocks),
                             BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("fill_block").forGetter(PBECDome::fillBlock))
                     .apply(instance, PBECDome::new));
 

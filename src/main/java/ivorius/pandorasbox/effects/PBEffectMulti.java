@@ -8,8 +8,10 @@ package ivorius.pandorasbox.effects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,6 +21,7 @@ import java.util.Arrays;
  * Created by lukas on 31.03.14.
  */
 public class PBEffectMulti extends PBEffect {
+    public static final ResourceLocation MULTI = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "render_multi");
     public static final MapCodec<PBEffectMulti> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(PBNBTHelper.arrayCodec(PBEffect.CODEC, () -> new PBEffect[0]).fieldOf("effects").forGetter(PBEffectMulti::getEffects),
                             PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("delays").forGetter(pbEffectMulti -> Arrays.stream(pbEffectMulti.getDelays()).boxed().toArray(Integer[]::new)))
@@ -82,7 +85,22 @@ public class PBEffectMulti extends PBEffect {
     }
 
     @Override
+    public int getMaxTicksAlive() {
+        int highestLength = 0;
+        for (int i = 0; i < effects.length; i++) {
+            int effectTicks = effects[i].getMaxTicksAlive() + delays[i];
+            if (effectTicks >= highestLength) highestLength = effectTicks;
+        }
+        return highestLength;
+    }
+
+    @Override
     public @NotNull MapCodec<? extends PBEffect> codec() {
         return CODEC;
+    }
+
+    @Override
+    public ResourceLocation rendererResourceLocationForEffect() {
+        return MULTI;
     }
 }

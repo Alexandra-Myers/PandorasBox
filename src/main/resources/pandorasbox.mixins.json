@@ -3,14 +3,20 @@
   "package": "ivorius.pandorasbox.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ItemMixin",
     "ItemStackMixin",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "MobMixin",
+    "TreeFeatureMixin"
   ],
   "client": [
+    "client.GameRendererMixin",
+    "client.GiantMobRendererMixin",
     "client.GuiMixin",
     "client.KeyboardInputMixin",
     "client.MinecraftMixin",
-    "client.RendererMixin"
+    "client.RendererMixin",
+    "client.SpecialModelRenderersMixin"
   ],
   "injectors": {
     "defaultRequire": 1

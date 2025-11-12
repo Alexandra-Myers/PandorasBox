@@ -17,13 +17,13 @@ import java.util.function.Function;
 public interface EntityEffect {
     Codec<EntityEffect> CODEC = Init.ENTITY_EFFECT_TYPE_REGISTRY.byNameCodec()
             .dispatch(EntityEffect::codec, Function.identity());
-    default void affectEntity(Level level, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
-        if (level instanceof ServerLevel serverLevel) affectEntityServer(serverLevel, box, random, entity, newRatio, prevRatio, strength);
-        else if (level instanceof ClientLevel clientLevel) affectEntityClient(clientLevel, box, random, entity, newRatio, prevRatio, strength);
+    default void affectEntity(Level level, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
+        if (level instanceof ServerLevel serverLevel) affectEntityServer(serverLevel, box, effectCenter, random, entity, newRatio, prevRatio, strength);
+        else if (level instanceof ClientLevel clientLevel) affectEntityClient(clientLevel, box, effectCenter, random, entity, newRatio, prevRatio, strength);
     }
-    void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength);
+    void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength);
     @SuppressWarnings("unused")
-    default void affectEntityClient(ClientLevel clientLevel, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
+    default void affectEntityClient(ClientLevel clientLevel, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
 
     }
 

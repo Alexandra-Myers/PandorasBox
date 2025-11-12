@@ -1,0 +1,21 @@
+{
+  "effect_creator": {
+    "time": {
+      "min": 10,
+      "max": 20,
+      "type": "minecraft:linear"
+    },
+    "world_time": {
+      "min": 24000,
+      "max": 72000,
+      "type": "minecraft:linear"
+    },
+    "add": {
+      "guaranteed": false,
+      "type": "minecraft:constant"
+    },
+    "type": "pandorasbox:set_time"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

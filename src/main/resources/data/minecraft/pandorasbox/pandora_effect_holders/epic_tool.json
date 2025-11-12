@@ -34,7 +34,7 @@
       "type": "minecraft:linear"
     },
     "enchantment_level": {
-      "min_value": 1,
+      "min_value": 5,
       "max_value": 30,
       "base": 10.0,
       "type": "minecraft:exponential"
@@ -131,6 +131,30 @@
       {
         "stack": {
           "id": "minecraft:diamond_axe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:iron_hoe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:golden_hoe"
+        },
+        "min_count": 1,
+        "max_count": 1,
+        "weight": 10.0
+      },
+      {
+        "stack": {
+          "id": "minecraft:diamond_hoe"
         },
         "min_count": 1,
         "max_count": 1,

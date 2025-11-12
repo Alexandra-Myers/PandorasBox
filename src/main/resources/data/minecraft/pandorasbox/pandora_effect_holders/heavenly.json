@@ -10,7 +10,10 @@
           "max": 80.0,
           "type": "minecraft:linear"
         },
-        "convert_effect": {
+        "chance_for_more_effects": 0.1,
+        "generate_effect": {
+          "biome": "minecraft:lush_caves",
+          "exclusions": [],
           "mappers": [
             {
               "targets": [
@@ -21,11 +24,15 @@
                 "minecraft:tall_grass",
                 "minecraft:fern",
                 "minecraft:large_fern",
-                "minecraft:seagrass",
-                "minecraft:tall_seagrass"
+                "minecraft:short_dry_grass",
+                "minecraft:tall_dry_grass",
+                "minecraft:dead_bush",
+                "minecraft:bush",
+                "minecraft:firefly_bush"
               ],
               "to_replace": "minecraft:air",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -40,7 +47,8 @@
                 "#c:sandstone/blocks",
                 "minecraft:end_stone"
               ],
-              "type": "pandorasbox:heavenly"
+              "mapper_type": "pandorasbox:heavenly",
+              "type": "pandorasbox:direct"
             },
             {
               "targets": [
@@ -49,7 +57,8 @@
                 "minecraft:ice"
               ],
               "to_replace": "minecraft:water",
-              "type": "pandorasbox:convert_simple"
+              "mapper_type": "pandorasbox:convert_simple",
+              "type": "pandorasbox:direct"
             }
           ],
           "generators": [],
@@ -60,13 +69,21 @@
               "type": "pandorasbox:spawn_random"
             }
           ],
-          "biome": "minecraft:lush_caves",
-          "exclusions": []
+          "type": "pandorasbox:prepare_gen_convert"
         },
-        "chance_for_more_effects": 0.1,
-        "type": "pandorasbox:convert_generic"
+        "type": "pandorasbox:generate"
       },
       {
+        "range": {
+          "min": 20.0,
+          "max": 80.0,
+          "type": "minecraft:linear"
+        },
+        "size": {
+          "min": 2.0,
+          "max": 5.0,
+          "type": "minecraft:linear"
+        },
         "number": {
           "min": 8,
           "max": 10,
@@ -81,16 +98,6 @@
         "same_block_setup": {
           "guaranteed": true,
           "type": "minecraft:constant"
-        },
-        "range": {
-          "min": 20.0,
-          "max": 80.0,
-          "type": "minecraft:linear"
-        },
-        "size": {
-          "min": 2.0,
-          "max": 5.0,
-          "type": "minecraft:linear"
         },
         "type": "pandorasbox:create_random_shapes"
       }

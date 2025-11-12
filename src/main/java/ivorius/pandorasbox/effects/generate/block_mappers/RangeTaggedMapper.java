@@ -28,13 +28,14 @@ public record RangeTaggedMapper(TagKey<Block> tagKey, Integer[] tagMetas, double
                     .apply(instance, RangeTaggedMapper::new));
     @Override
     public boolean matches(ServerLevel serverLevel, PandorasBoxEntity entity, BlockPos blockPos, BlockState state, RandomSource random) {
-        return serverLevel.loadedAndEntityCanStandOn(blockPos, entity) && serverLevel.getBlockState(blockPos.above()).isAir();
+        BlockState blockAboveState = serverLevel.getBlockState(blockPos.above());
+        return serverLevel.loadedAndEntityCanStandOn(blockPos, entity) && (blockAboveState.isAir() || blockAboveState.canBeReplaced() || !blockAboveState.isRedstoneConductor(serverLevel, blockPos.above()) || serverLevel.getBlockState(blockPos).canBeReplaced());
     }
 
     @Override
     public void convertBlock(ServerLevel serverLevel, BlockPos blockPos, BlockState state, RandomSource random, PandorasBoxEntity entity, Vec3 effectCenter, int pass, int unifiedSeed, double range) {
         double dist = Mth.sqrt((float) effectCenter.distanceToSqr(new Vec3(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5)));
-        HolderSet.Named<Block> tag = BuiltInRegistries.BLOCK.getOrCreateTag(tagKey);
+        HolderSet.Named<Block> tag = BuiltInRegistries.BLOCK.getOrThrow(tagKey);
         setBlockSafe(serverLevel, blockPos, tag.get(tagMetas[Mth.floor(dist / ringSize) % tagMetas.length]).value().defaultBlockState());
     }
 

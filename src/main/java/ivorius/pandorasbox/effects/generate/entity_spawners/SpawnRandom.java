@@ -12,8 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import static ivorius.pandorasbox.effects.PBEffect.canSpawnEntity;
-import static ivorius.pandorasbox.effects.PBEffect.lazilySpawnEntity;
+import static ivorius.pandorasbox.effects.PBEffect.canSpawnEntities;
+import static ivorius.pandorasbox.effects.PBEffect.lazilyCreateEntities;
 
 public record SpawnRandom(String entityID, float chance) implements EntitySpawner {
     public static final MapCodec<SpawnRandom> CODEC = RecordCodecBuilder.mapCodec(instance ->
@@ -22,8 +22,8 @@ public record SpawnRandom(String entityID, float chance) implements EntitySpawne
                     .apply(instance, SpawnRandom::new));
     @Override
     public void spawnEntities(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, int unifiedSeed) {
-        Entity generatedEntity = lazilySpawnEntity(level, entity, random, entityID, chance, pos);
-        canSpawnEntity(level, level.getBlockState(pos), pos, generatedEntity);
+        Entity[] generatedEntity = lazilyCreateEntities(level, entity, random, entityID, chance, pos);
+        canSpawnEntities(level, pos, generatedEntity);
     }
 
     @Override

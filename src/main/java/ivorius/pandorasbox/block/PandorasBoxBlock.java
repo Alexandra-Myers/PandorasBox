@@ -7,10 +7,12 @@ package ivorius.pandorasbox.block;
 
 import com.mojang.serialization.MapCodec;
 import ivorius.pandorasbox.component.PBEffectComponent;
+import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.BlockEntityInit;
-import ivorius.pandorasbox.init.ComponentInit;
+import ivorius.pandorasbox.init.ItemInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -47,8 +49,8 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(DIRECTION, Direction.NORTH).setValue(WATERLOGGED, false));
     }
-    public PandorasBoxBlock() {
-        this(Block.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(0.5f));
+    public PandorasBoxBlock(ResourceKey<Block> resourceKey) {
+        this(Block.Properties.of().setId(resourceKey).mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(0.5f));
     }
 
     public @NotNull BlockState rotate(BlockState p_185499_1_, Rotation p_185499_2_) {
@@ -68,8 +70,13 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult rayTraceResult) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         PBEffectComponent effectComponent = PBEffectComponent.DEFAULT;
-        if (blockEntity != null) effectComponent = blockEntity.components().getOrDefault(ComponentInit.EFFECT_COMPONENT, effectComponent);
-        effectComponent.createEffect(level, player, pos, false);
+        ItemStack stack = ItemInit.PBI.getDefaultInstance();
+        if (blockEntity instanceof PandorasBoxBlockEntity pandorasBoxBlockEntity) {
+            effectComponent = pandorasBoxBlockEntity.getEffectComponent();
+            stack.applyComponents(blockEntity.collectComponents());
+        }
+        PandorasBoxEntity result = effectComponent.createEffect(level, player, pos, false, stack);
+        if (result == null) return InteractionResult.PASS;
         level.removeBlock(pos, false);
         level.removeBlockEntity(pos);
 

@@ -1,0 +1,32 @@
+{
+  "weight": 1.2,
+  "items": [
+    {
+      "id": "minecraft:redstone",
+      "count": 64
+    },
+    {
+      "id": "minecraft:green_wool",
+      "count": 16
+    },
+    {
+      "id": "minecraft:green_wool",
+      "count": 16
+    },
+    {
+      "id": "minecraft:green_wool",
+      "count": 16
+    },
+    {
+      "id": "minecraft:redstone_block",
+      "count": 8
+    },
+    {
+      "id": "minecraft:redstone_torch",
+      "count": 8
+    }
+  ],
+  "name": {
+    "translate": "pandora_equipment_set.pandorasbox.redstoners_dream"
+  }
+}

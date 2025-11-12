@@ -71,21 +71,22 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
         for (int i = 0; i < number; i++) {
             RandomizedItemStack wrcc = mixUp ? WeightedSelector.selectItem(random, items) : items.get(i);
             ItemStack stack = wrcc.itemStack().copy();
+            if (wrcc.max() > stack.getMaxStackSize()) stack.set(DataComponents.MAX_STACK_SIZE, wrcc.max());
             if (isFood) PandorasBoxHelper.createRandomFoodProperties(stack, random);
             stack.setCount(wrcc.min() + random.nextInt(wrcc.max() - wrcc.min() + 1));
-            Registry<Enchantment> enchantmentRegistry = registryAccess.registryOrThrow(Registries.ENCHANTMENT);
+            Registry<Enchantment> enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 
             Stream<Holder<Enchantment>> optional = enchantmentRegistry.stream().map(enchantmentRegistry::wrapAsHolder);
             if (enchantLevel > 0) {
                 List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, optional);
 
                 if (enchantments.isEmpty()) {
-                    enchantments = EnchantmentHelper.selectEnchantment(random, new ItemStack(Items.IRON_AXE), enchantLevel, optional);
+                    enchantments = EnchantmentHelper.selectEnchantment(random, new ItemStack(Items.BOOK), enchantLevel, optional);
                 }
 
                 if (!enchantments.isEmpty()) {
                     for (EnchantmentInstance enchantment : enchantments) {
-                        stack.enchant(enchantment.enchantment, enchantment.level);
+                        stack.enchant(enchantment.enchantment(), enchantment.level());
                     }
                 }
             }
@@ -110,7 +111,7 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
         int ticksPerItem = this.ticksPerItem.getValue(random);
         boolean isFood = this.canBeFood.getValue(random);
 
-        ItemStack[] stacks = getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, items), number, random.nextInt(3) != 0, true, 0, false, isFood);
+        ItemStack[] stacks = getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, BuiltInRegistries.BLOCK, items), number, random.nextInt(3) != 0, true, 0, false, isFood);
         return constructEffect(random, stacks, number * ticksPerItem + 1, valueThrow.orElse(null), valueSpawn.orElse(null), spawnsFromEffectCenter);
     }
 

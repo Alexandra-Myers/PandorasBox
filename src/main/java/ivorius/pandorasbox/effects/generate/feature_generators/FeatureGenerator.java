@@ -19,6 +19,8 @@ import static ivorius.pandorasbox.effects.generate.NetherBiome.expFromRatio;
 public interface FeatureGenerator {
     Codec<FeatureGenerator> CODEC = Init.FEATURE_GENERATOR_TYPE_REGISTRY.byNameCodec()
             .dispatch(FeatureGenerator::codec, Function.identity());
+    MapCodec<FeatureGenerator> MAP_CODEC = Init.FEATURE_GENERATOR_TYPE_REGISTRY.byNameCodec()
+            .dispatchMap("generator_type", FeatureGenerator::codec, Function.identity());
     default void generate(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, double ratio, int unifiedSeed) {
         if (world instanceof ServerLevel serverLevel && random.nextDouble() < Math.pow(baseChance(), expFromRatio(ratio))) finalGenerate(serverLevel, pos, serverLevel.getBlockState(pos), random, entity, effectCenter, pass, unifiedSeed, range);
     }

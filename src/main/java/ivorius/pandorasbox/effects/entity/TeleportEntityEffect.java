@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -20,7 +21,7 @@ public record TeleportEntityEffect(double teleportRange, int teleports) implemen
                             Codec.INT.fieldOf("teleports").forGetter(TeleportEntityEffect::teleports))
                     .apply(instance, TeleportEntityEffect::new));
     @Override
-    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
+    public void affectEntityServer(ServerLevel serverLevel, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
         Random entityRandom = new Random(entity.getId());
 
         for (int i = 0; i < teleports; i++) {

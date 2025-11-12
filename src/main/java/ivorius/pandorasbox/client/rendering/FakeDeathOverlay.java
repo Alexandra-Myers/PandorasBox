@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.BufferUploader;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.DeathScreen;
@@ -28,6 +29,7 @@ public class FakeDeathOverlay extends Overlay {
             wasMouseReleased = true;
             minecraft.mouseHandler.releaseMouse();
         }
+        KeyMapping.releaseAll();
 
         BufferUploader.reset();
         screen.init(minecraft, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
@@ -36,10 +38,6 @@ public class FakeDeathOverlay extends Overlay {
     }
 
     public void tick() {
-        if (minecraft.player != null) {
-            minecraft.player.hurtDuration = 10;
-            minecraft.player.hurtTime = minecraft.player.hurtDuration;
-        }
         screen.tick();
     }
 
@@ -54,6 +52,7 @@ public class FakeDeathOverlay extends Overlay {
         if (progress >= 1) {
             if (wasMouseReleased) minecraft.mouseHandler.grabMouse();
             screen.removed();
+            if (minecraft.player != null) minecraft.player.deathTime = 0;
             minecraft.setOverlay(null);
         }
     }

@@ -8,12 +8,18 @@
       "max": 80.0,
       "type": "minecraft:linear"
     },
-    "convert_effect": {
+    "chance_for_more_effects": 0.1,
+    "generate_effect": {
+      "biome": "minecraft:flower_forest",
+      "exclusions": [],
       "mappers": [
         {
           "targets": [
             "#minecraft:snow",
             "#minecraft:fire",
+            "minecraft:short_dry_grass",
+            "minecraft:tall_dry_grass",
+            "minecraft:dead_bush",
             "minecraft:brown_mushroom",
             "minecraft:red_mushroom",
             "minecraft:brown_mushroom_block",
@@ -21,7 +27,8 @@
             "minecraft:mushroom_stem"
           ],
           "to_replace": "minecraft:air",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
@@ -39,7 +46,26 @@
           "surface_block": "minecraft:grass_block",
           "under_block": "minecraft:dirt",
           "discard_surface_chance": 0.0,
-          "type": "pandorasbox:convert_surface"
+          "max_blocks_beneath_surface": 3,
+          "mapper_type": "pandorasbox:convert_surface",
+          "type": "pandorasbox:direct"
+        },
+        {
+          "targets": [
+            "#pandorasbox:all_terracotta",
+            "#c:stones",
+            "#c:cobblestones",
+            "#minecraft:base_stone_nether",
+            "#minecraft:wither_summon_base_blocks",
+            "#minecraft:nylium",
+            "#minecraft:dirt",
+            "#minecraft:sand",
+            "#c:sandstone/blocks",
+            "minecraft:end_stone"
+          ],
+          "to_replace": "minecraft:stone",
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         },
         {
           "targets": [
@@ -48,12 +74,14 @@
             "minecraft:ice"
           ],
           "to_replace": "minecraft:water",
-          "type": "pandorasbox:convert_simple"
+          "mapper_type": "pandorasbox:convert_simple",
+          "type": "pandorasbox:direct"
         }
       ],
       "generators": [
         {
-          "type": "pandorasbox:generate_homo"
+          "generator_type": "pandorasbox:generate_homo",
+          "type": "pandorasbox:direct"
         }
       ],
       "spawners": [
@@ -63,11 +91,9 @@
           "type": "pandorasbox:spawn_random"
         }
       ],
-      "biome": "minecraft:flower_forest",
-      "exclusions": []
+      "type": "pandorasbox:prepare_gen_convert"
     },
-    "chance_for_more_effects": 0.1,
-    "type": "pandorasbox:convert_generic"
+    "type": "pandorasbox:generate"
   },
   "positive": true,
   "type": "minecraft:positive_or_negative"

@@ -6,6 +6,7 @@
 package ivorius.pandorasbox.effects;
 
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.generate.GenerateEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import net.minecraft.core.*;
@@ -28,7 +29,10 @@ import java.util.List;
  * Created by lukas on 30.03.14.
  */
 public class PBEffectGenerate extends PBEffectRangeBased {
-    public static final MapCodec<PBEffectGenerate> CODEC = produceCodec(instance -> GenerateEffect.CODEC.fieldOf("effect").forGetter(PBEffectGenerate::getGenerateEffect), PBEffectGenerate::new);
+    public static final MapCodec<PBEffectGenerate> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            PBEffectRangeBased.baseFields(instance)
+                    .and(GenerateEffect.CODEC.fieldOf("effect").forGetter(PBEffectGenerate::getGenerateEffect))
+                    .apply(instance, PBEffectGenerate::new));
     public final GenerateEffect generateEffect;
 
     public PBEffectGenerate(int time, double range, int passes, int unifiedSeed, GenerateEffect generateEffect) {
@@ -43,8 +47,8 @@ public class PBEffectGenerate extends PBEffectRangeBased {
     public void changeBiome(ResourceKey<Biome> biomeResourceKey, int baseX, int baseY, int baseZ, ServerLevel serverLevel, List<ChunkAccess> chunks) {
         double range = this.range + (passes - 1) * 5.0;
         for (ChunkAccess chunkAccess : chunks) {
-            Registry<Biome> biomeRegistry = serverLevel.registryAccess().registryOrThrow(Registries.BIOME);
-            Holder<Biome> biome = biomeRegistry.getHolderOrThrow(biomeResourceKey);
+            Registry<Biome> biomeRegistry = serverLevel.registryAccess().lookupOrThrow(Registries.BIOME);
+            Holder<Biome> biome = biomeRegistry.getOrThrow(biomeResourceKey);
             chunkAccess.fillBiomesFromNoise((i, j, k, sampler) -> {
                 int l = QuartPos.toBlock(i);
                 int m = QuartPos.toBlock(j);
@@ -58,7 +62,7 @@ public class PBEffectGenerate extends PBEffectRangeBased {
                 if (dist <= range) return biome;
                 else return holder2;
             }, serverLevel.getChunkSource().randomState().sampler());
-            chunkAccess.setUnsaved(true);
+            chunkAccess.markUnsaved();
         }
 
         serverLevel.getChunkSource().chunkMap.resendBiomesForChunks(chunks);
