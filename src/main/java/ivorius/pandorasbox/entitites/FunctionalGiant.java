@@ -49,6 +49,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     private EntityReference<LivingEntity> persistentAngerTarget;
     public FunctionalGiant(EntityType<? extends Giant> entityType, Level level) {
         super(entityType, level);
+        this.xpReward = 15;
     }
 
     @Override
@@ -90,6 +91,11 @@ public class FunctionalGiant extends Giant implements NeutralMob {
                 .add(Attributes.CAMERA_DISTANCE, 16.0)
                 .add(Attributes.FOLLOW_RANGE, 35.0)
                 .add(Attributes.ARMOR, 8.0);
+    }
+
+    @Override
+    public void checkDespawn() {
+        super.checkDespawn();
     }
 
     @Override
