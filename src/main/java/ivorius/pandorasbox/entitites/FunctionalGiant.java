@@ -49,6 +49,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     private UUID persistentAngerTarget;
     public FunctionalGiant(EntityType<? extends Giant> entityType, Level level) {
         super(entityType, level);
+        this.xpReward = 15;
     }
 
     @Override
@@ -100,7 +101,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     @Override
     public void aiStep() {
         if (this.isAlive()) {
-            boolean shouldBurnThisTick = this.isSunSensitive() && this.isSunBurnTick();
+            boolean shouldBurnThisTick = this.isSunBurnTick();
             if (shouldBurnThisTick) {
                 ItemStack itemStack = this.getItemBySlot(EquipmentSlot.HEAD);
                 if (!itemStack.isEmpty()) {
@@ -133,10 +134,6 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     protected void customServerAiStep() {
         this.updatePersistentAnger((ServerLevel) this.level(), true);
         super.customServerAiStep();
-    }
-
-    protected boolean isSunSensitive() {
-        return true;
     }
 
     @Override
