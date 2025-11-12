@@ -1,6 +1,7 @@
 package ivorius.pandorasbox.entitites;
 
 import com.google.common.annotations.VisibleForTesting;
+import ivorius.pandorasbox.entitites.goals.GiantAttackGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -60,7 +61,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     }
 
     protected void addBehaviourGoals() {
-        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0, false));
+        this.goalSelector.addGoal(2, new GiantAttackGoal(this, 1.0, false));
         this.goalSelector.addGoal(3, new MoveThroughVillageGoal(this, 1.0, true, 4, () -> false));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
