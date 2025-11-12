@@ -94,11 +94,6 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     }
 
     @Override
-    public void checkDespawn() {
-        super.checkDespawn();
-    }
-
-    @Override
     public boolean isAngryAt(LivingEntity livingEntity, ServerLevel serverLevel) {
         if (this.isOnRampage && (livingEntity instanceof AbstractVillager || livingEntity instanceof Player || livingEntity instanceof IronGolem)) return true;
         return NeutralMob.super.isAngryAt(livingEntity, serverLevel);
