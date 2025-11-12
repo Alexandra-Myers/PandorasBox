@@ -74,22 +74,7 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
             if (wrcc.max() > stack.getMaxStackSize()) stack.set(DataComponents.MAX_STACK_SIZE, wrcc.max());
             if (isFood) PandorasBoxHelper.createRandomFoodProperties(stack, random);
             stack.setCount(wrcc.min() + random.nextInt(wrcc.max() - wrcc.min() + 1));
-            Registry<Enchantment> enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
-
-            Stream<Holder<Enchantment>> optional = enchantmentRegistry.stream().map(enchantmentRegistry::wrapAsHolder);
-            if (enchantLevel > 0) {
-                List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, optional);
-
-                if (enchantments.isEmpty()) {
-                    enchantments = EnchantmentHelper.selectEnchantment(random, new ItemStack(Items.BOOK), enchantLevel, optional);
-                }
-
-                if (!enchantments.isEmpty()) {
-                    for (EnchantmentInstance enchantment : enchantments) {
-                        stack.enchant(enchantment.enchantment(), enchantment.level());
-                    }
-                }
-            }
+            enchantItemStack(registryAccess, enchantLevel, random, stack);
 
             if (giveNames) {
                 stack.set(DataComponents.ITEM_NAME, PandorasBoxItemNamer.getRandomName(random));
@@ -103,6 +88,25 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
         }
 
         return stacks;
+    }
+
+    public static void enchantItemStack(RegistryAccess registryAccess, int enchantLevel, RandomSource random, ItemStack stack) {
+        Registry<Enchantment> enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+
+        Stream<Holder<Enchantment>> optional = enchantmentRegistry.stream().map(enchantmentRegistry::wrapAsHolder);
+        if (enchantLevel > 0) {
+            List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, optional);
+
+            if (enchantments.isEmpty()) {
+                enchantments = EnchantmentHelper.selectEnchantment(random, new ItemStack(Items.BOOK), enchantLevel, optional);
+            }
+
+            if (!enchantments.isEmpty()) {
+                for (EnchantmentInstance enchantment : enchantments) {
+                    stack.enchant(enchantment.enchantment(), enchantment.level());
+                }
+            }
+        }
     }
 
     @Override

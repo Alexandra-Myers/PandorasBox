@@ -66,7 +66,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
         this.goalSelector.addGoal(2, new FleeSunGoal(this, 1.0));
         this.goalSelector.addGoal(3, new MoveThroughVillageGoal(this, 1.0, true, 4, () -> false));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false, this::isAngryAt));
         this.targetSelector.addGoal(3, new ResetUniversalAngerTargetGoal<>(this, true));
     }
