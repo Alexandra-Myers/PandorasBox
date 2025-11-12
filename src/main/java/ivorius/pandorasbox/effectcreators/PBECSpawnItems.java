@@ -93,7 +93,7 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
     public static void enchantItemStack(RegistryAccess registryAccess, int enchantLevel, RandomSource random, ItemStack stack) {
         Registry<Enchantment> enchantmentRegistry = registryAccess.registryOrThrow(Registries.ENCHANTMENT);
 
-        Stream<Holder<Enchantment>> optional = enchantmentRegistry.stream().map(enchantmentRegistry::wrapAsHolder);
+        Stream<Holder<Enchantment>> optional = enchantmentRegistry.holders().map(enchantmentReference -> enchantmentReference);
         if (enchantLevel > 0) {
             List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, optional);
 
