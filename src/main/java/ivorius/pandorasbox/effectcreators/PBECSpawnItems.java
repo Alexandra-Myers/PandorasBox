@@ -17,7 +17,6 @@ import ivorius.pandorasbox.utils.EitherArrayList;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
 import ivorius.pandorasbox.utils.RandomizedItemTag;
 import ivorius.pandorasbox.weighted.WeightedSelector;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
@@ -34,7 +33,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Created by lukas on 30.03.14.
@@ -93,12 +91,11 @@ public record PBECSpawnItems(IValue number, IValue ticksPerItem, EitherArrayList
     public static void enchantItemStack(RegistryAccess registryAccess, int enchantLevel, RandomSource random, ItemStack stack) {
         Registry<Enchantment> enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 
-        Stream<Holder<Enchantment>> optional = enchantmentRegistry.listElements().map(enchantmentReference -> enchantmentReference);
         if (enchantLevel > 0) {
-            List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, optional);
+            List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, stack, enchantLevel, enchantmentRegistry.listElements().map(enchantmentReference -> enchantmentReference));
 
             if (enchantments.isEmpty()) {
-                enchantments = EnchantmentHelper.selectEnchantment(random, new ItemStack(Items.BOOK), enchantLevel, optional);
+                enchantments = EnchantmentHelper.selectEnchantment(random, new ItemStack(Items.BOOK), enchantLevel, enchantmentRegistry.listElements().map(enchantmentReference -> enchantmentReference));
             }
 
             if (!enchantments.isEmpty()) {
