@@ -18,9 +18,9 @@
       "possible_tree_flags": {
         "min_flags": 1,
         "flags": [
-          4,
+          2,
           3,
-          5
+          4
         ],
         "chances": [
           0.7,
