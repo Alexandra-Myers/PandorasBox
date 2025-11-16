@@ -57,15 +57,15 @@ public class IvRenderHelper {
                 vector3f4.set(0.0F, h, m);
                 int finalAlpha = (int) (alpha * lightAlpha);
                 int weakerAlpha = (int) (finalAlpha * 0.5);
-                addVertex(vertexConsumer, pose, vector3f).color(red, green, blue, finalAlpha);
-                addVertex(vertexConsumer, pose, vector3f2).color(brtRed, brtGreen, brtBlue, weakerAlpha);
-                addVertex(vertexConsumer, pose, vector3f3).color(brtRed, brtGreen, brtBlue, weakerAlpha);
-                addVertex(vertexConsumer, pose, vector3f).color(red, green, blue, finalAlpha);
-                addVertex(vertexConsumer, pose, vector3f3).color(brtRed, brtGreen, brtBlue, weakerAlpha);
-                addVertex(vertexConsumer, pose, vector3f4).color(brtRed, brtGreen, brtBlue, weakerAlpha);
-                addVertex(vertexConsumer, pose, vector3f).color(red, green, blue, finalAlpha);
-                addVertex(vertexConsumer, pose, vector3f4).color(brtRed, brtGreen, brtBlue, weakerAlpha);
-                addVertex(vertexConsumer, pose, vector3f2).color(brtRed, brtGreen, brtBlue, weakerAlpha);
+                addVertex(vertexConsumer, pose, vector3f).color(red, green, blue, finalAlpha).endVertex();
+                addVertex(vertexConsumer, pose, vector3f2).color(brtRed, brtGreen, brtBlue, weakerAlpha).endVertex();
+                addVertex(vertexConsumer, pose, vector3f3).color(brtRed, brtGreen, brtBlue, weakerAlpha).endVertex();
+                addVertex(vertexConsumer, pose, vector3f).color(red, green, blue, finalAlpha).endVertex();
+                addVertex(vertexConsumer, pose, vector3f3).color(brtRed, brtGreen, brtBlue, weakerAlpha).endVertex();
+                addVertex(vertexConsumer, pose, vector3f4).color(brtRed, brtGreen, brtBlue, weakerAlpha).endVertex();
+                addVertex(vertexConsumer, pose, vector3f).color(red, green, blue, finalAlpha).endVertex();
+                addVertex(vertexConsumer, pose, vector3f4).color(brtRed, brtGreen, brtBlue, weakerAlpha).endVertex();
+                addVertex(vertexConsumer, pose, vector3f2).color(brtRed, brtGreen, brtBlue, weakerAlpha).endVertex();
             }
         }
         poseStack.popPose();
