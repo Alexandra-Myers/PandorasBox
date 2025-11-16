@@ -1,10 +1,6 @@
 {
   "values": [
     {
-      "id": "#c:nuggets/copper",
-      "required": false
-    },
-    {
       "id": "#c:nuggets/iron",
       "required": false
     },

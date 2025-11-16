@@ -58,7 +58,7 @@
             {
               "targets": [
                 "#minecraft:flowers",
-                "minecraft:short_grass",
+                "minecraft:grass",
                 "minecraft:tall_grass",
                 "minecraft:fern",
                 "minecraft:large_fern",
@@ -268,12 +268,6 @@
             "entity": "pandorasbox:giant",
             "min_count": 1,
             "max_count": 3,
-            "weight": 4.0
-          },
-          {
-            "entity": "minecraft:breeze",
-            "min_count": 2,
-            "max_count": 5,
             "weight": 4.0
           },
           {

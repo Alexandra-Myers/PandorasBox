@@ -4,9 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "LivingEntityMixin",
-    "MobMixin",
-    "TreeFeatureMixin",
-    "WorldLoaderMixin"
+    "TreeFeatureMixin"
   ],
   "client": [
     "client.GameRendererMixin",

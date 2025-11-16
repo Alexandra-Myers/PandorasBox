@@ -2,10 +2,6 @@
   "values": [
     "#c:chests/wooden",
     "#c:chests/trapped",
-    "#c:chests/ender",
-    {
-      "id": "#minecraft:copper_chests",
-      "required": false
-    }
+    "#c:chests/ender"
   ]
 }

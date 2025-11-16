@@ -159,12 +159,6 @@
         "weight": 4.0
       },
       {
-        "entity": "minecraft:breeze",
-        "min_count": 2,
-        "max_count": 5,
-        "weight": 4.0
-      },
-      {
         "entity": "minecraft:evoker",
         "min_count": 1,
         "max_count": 1,

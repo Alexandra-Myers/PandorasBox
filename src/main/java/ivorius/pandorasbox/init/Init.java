@@ -18,15 +18,12 @@ import ivorius.pandorasbox.effects.generate.two_dimensional.Generate2D;
 import ivorius.pandorasbox.effects.position.PositionEffect;
 import ivorius.pandorasbox.effects.spawn_entities.SpawnEntitiesEffect;
 import ivorius.pandorasbox.utils.EquipmentSet;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.List;
 
 public class Init {
     public static final ResourceKey<Registry<EquipmentSet>> EQUIPMENT_SET_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(PandorasBox.MOD_ID, "equipment_sets"));
@@ -118,10 +115,6 @@ public class Init {
         return Registry.register(BOX_EFFECT_CREATOR_REGISTRY, ResourceKey.create(BOX_EFFECT_CREATOR_REGISTRY_KEY, new ResourceLocation(PandorasBox.MOD_ID, name)), mapCodec);
     }
 
-    public static List<RegistryDataLoader.RegistryData<?>> PANDORA_DYNAMIC_REGISTRIES = List.of(new RegistryDataLoader.RegistryData<>(EQUIPMENT_SET_REGISTRY_KEY, EquipmentSet.CODEC),
-            new RegistryDataLoader.RegistryData<>(EFFECT_HOLDER_REGISTRY_KEY, EffectHolder.DIRECT_CODEC),
-            new RegistryDataLoader.RegistryData<>(MELTDOWN_EFFECT_HOLDER_REGISTRY_KEY, EffectHolder.DIRECT_CODEC_NO_TOOLTIP));
-
     public static void init() {
         DataSerializerInit.registerDataSerializers();
         FeatureInit.registerFeatures();
@@ -130,6 +123,9 @@ public class Init {
         BlockEntityInit.registerBlockEntities();
         EntityInit.registerEntities();
         PBEffectInit.registerPandora();
+        DynamicRegistries.registerSynced(EQUIPMENT_SET_REGISTRY_KEY, EquipmentSet.CODEC);
+        DynamicRegistries.registerSynced(EFFECT_HOLDER_REGISTRY_KEY, EffectHolder.DIRECT_CODEC);
+        DynamicRegistries.registerSynced(MELTDOWN_EFFECT_HOLDER_REGISTRY_KEY, EffectHolder.DIRECT_CODEC_NO_TOOLTIP);
     }
 
 }

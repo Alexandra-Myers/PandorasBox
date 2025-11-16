@@ -7,10 +7,6 @@
     {
       "id": "#c:bricks/nether",
       "required": false
-    },
-    {
-      "id": "#c:bricks/resin",
-      "required": false
     }
   ]
 }
