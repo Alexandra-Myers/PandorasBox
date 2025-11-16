@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
@@ -26,6 +27,8 @@ public record RandomizedItemStack(ItemStack itemStack, WeightedWithRandomCount c
                         return stack;
                     })
     );
+    public static final Codec<ItemStack> OPTIONAL_ITEM_CODEC = ExtraCodecs.optionalEmptyMap(ItemStack.CODEC)
+            .xmap(optional -> (ItemStack)optional.orElse(ItemStack.EMPTY), itemStack -> itemStack.isEmpty() ? Optional.empty() : Optional.of(itemStack));
     public static final Codec<RandomizedItemStack> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(SINGLE_ITEM_CODEC.fieldOf("stack").forGetter(RandomizedItemStack::itemStack),
                             WeightedWithRandomCount.CODEC_FORCE.forGetter(RandomizedItemStack::count))
