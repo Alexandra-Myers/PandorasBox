@@ -31,7 +31,7 @@ public record DryMapper() implements BlockMapper {
     @Override
     public void convertBlock(ServerLevel serverLevel, BlockPos pos, BlockState state, RandomSource random, PandorasBoxEntity entity, Vec3 effectCenter, int pass, int unifiedSeed, double range) {
         Block block = state.getBlock();
-        if (block instanceof BucketPickup bucketPickup && !bucketPickup.pickupBlock(null, serverLevel, pos, state).isEmpty()) return;
+        if (block instanceof BucketPickup bucketPickup && !bucketPickup.pickupBlock(serverLevel, pos, state).isEmpty()) return;
         if (!(state.getBlock() instanceof LiquidBlock)) {
             if (!state.is(Blocks.KELP) && !state.is(Blocks.KELP_PLANT) && !state.is(Blocks.SEAGRASS) && !state.is(Blocks.TALL_SEAGRASS)) return;
 
@@ -45,7 +45,7 @@ public record DryMapper() implements BlockMapper {
                 Block block1 = state1.getBlock();
                 FluidState fluidState = serverLevel.getFluidState(pos1);
                 if (fluidState.is(FluidTags.WATER)) {
-                    if (block1 instanceof BucketPickup bucketPickup && !bucketPickup.pickupBlock(null, serverLevel, pos1, state1).isEmpty())
+                    if (block1 instanceof BucketPickup bucketPickup && !bucketPickup.pickupBlock(serverLevel, pos1, state1).isEmpty())
                         return;
 
                     if (!(state1.getBlock() instanceof LiquidBlock)) {

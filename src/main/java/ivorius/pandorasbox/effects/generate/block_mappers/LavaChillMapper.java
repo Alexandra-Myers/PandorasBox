@@ -15,10 +15,11 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import static ivorius.pandorasbox.effects.PBEffect.setBlockSafe;
+import static net.minecraft.util.ExtraCodecs.validate;
 
 public record LavaChillMapper(Block fluidTarget, Block toReplace) implements BlockMapper {
     public static final MapCodec<LavaChillMapper> CODEC = RecordCodecBuilder.mapCodec(instance ->
-                instance.group(BuiltInRegistries.BLOCK.byNameCodec().validate(block -> block.defaultBlockState().hasProperty(LiquidBlock.LEVEL) ? DataResult.success(block) : DataResult.error(() -> "Not a fluid!")).fieldOf("fluid_target").forGetter(LavaChillMapper::fluidTarget),
+                instance.group(validate(BuiltInRegistries.BLOCK.byNameCodec(), block -> block.defaultBlockState().hasProperty(LiquidBlock.LEVEL) ? DataResult.success(block) : DataResult.error(() -> "Not a fluid!")).fieldOf("fluid_target").forGetter(LavaChillMapper::fluidTarget),
                                 BuiltInRegistries.BLOCK.byNameCodec().fieldOf("to_replace").forGetter(LavaChillMapper::toReplace))
                         .apply(instance, LavaChillMapper::new));
     @Override

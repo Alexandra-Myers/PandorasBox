@@ -43,7 +43,7 @@ public record GenReplaceEffect(Block[] blocks, Block[] blocksToReplace) implemen
                 if (block == Blocks.WATER) {
                     FluidState fluidstate = level.getFluidState(pos);
                     if (fluidstate.is(FluidTags.WATER)) {
-                        if (prevBlock instanceof BucketPickup bucketPickup && !bucketPickup.pickupBlock(null, level, pos, prevState).isEmpty()) continue;
+                        if (prevBlock instanceof BucketPickup bucketPickup && !bucketPickup.pickupBlock(level, pos, prevState).isEmpty()) continue;
 
                         if (!(prevState.getBlock() instanceof LiquidBlock)) {
                             if (!prevState.is(Blocks.KELP) && !prevState.is(Blocks.KELP_PLANT) && !prevState.is(Blocks.SEAGRASS) && !prevState.is(Blocks.TALL_SEAGRASS)) continue;
@@ -58,7 +58,7 @@ public record GenReplaceEffect(Block[] blocks, Block[] blocksToReplace) implemen
                             Block block1 = state1.getBlock();
                             FluidState fluidstate1 = level.getFluidState(pos1);
                             if (fluidstate1.is(FluidTags.WATER)) {
-                                if (block1 instanceof BucketPickup bucketPickup && !bucketPickup.pickupBlock(null, level, pos1, state1).isEmpty())
+                                if (block1 instanceof BucketPickup bucketPickup && !bucketPickup.pickupBlock(level, pos1, state1).isEmpty())
                                     return;
 
                                 if (!(state1.getBlock() instanceof LiquidBlock)) {

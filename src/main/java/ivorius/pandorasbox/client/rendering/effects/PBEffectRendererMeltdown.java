@@ -47,7 +47,7 @@ public class PBEffectRendererMeltdown extends PBEffectRenderer<PBEffectMeltdown,
         });
         if (!pandorasBoxEntity.getRenderItem().isEmpty()) return;
         VertexConsumer newConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTextureForProgress(timePassed)));
-        renderer.model.renderToBuffer(poseStack, newConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        renderer.model.renderToBuffer(poseStack, newConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
     }
 
     @Override

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record SpawnItemStacksEffect(ItemStack[] stacks, EntitySpawnConfiguration entitySpawnConfiguration) implements SpawnEntitiesEffect {
     public static final MapCodec<SpawnItemStacksEffect> CODEC = RecordCodecBuilder.mapCodec(instance ->
-            instance.group(PBNBTHelper.arrayCodec(ItemStack.OPTIONAL_CODEC, () -> new ItemStack[0]).fieldOf("stacks").forGetter(SpawnItemStacksEffect::stacks),
+            instance.group(PBNBTHelper.arrayCodec(ItemStack.CODEC, () -> new ItemStack[0]).fieldOf("stacks").forGetter(SpawnItemStacksEffect::stacks),
                             EntitySpawnConfiguration.MAP_CODEC.forGetter(SpawnItemStacksEffect::entitySpawnConfiguration))
                     .apply(instance, SpawnItemStacksEffect::new));
     @Override

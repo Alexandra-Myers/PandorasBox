@@ -83,7 +83,7 @@ public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity> imple
             if (entity.getRenderItem().isEmpty()) {
                 this.model.setupAnim(entity, 0, 0, partialTicks, 0, 0);
                 VertexConsumer buffer = ItemRenderer.getFoilBuffer(multiBufferSource, renderType, false, entity.hasFoil);
-                this.model.renderToBuffer(poseStack, buffer, packedLightIn, packedOverlay, 0xFFFFFFFF);
+                this.model.renderToBuffer(poseStack, buffer, packedLightIn, packedOverlay, 1, 1, 1, 1);
             } else Minecraft.getInstance().getItemRenderer().renderStatic(entity.getRenderItem(), ItemDisplayContext.FIXED, packedLightIn, packedOverlay, poseStack, multiBufferSource, entity.level(), -1);
             if (pandoraEffectRenderState.shouldRender(entity.getDeathTicks())) {
                 List<RenderLayer<PandorasBoxEntity, PandorasBoxModel>> layers = new ArrayList<>();

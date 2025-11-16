@@ -1,8 +1,11 @@
 package ivorius.pandorasbox.effects.entity;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -15,7 +18,15 @@ import org.jetbrains.annotations.NotNull;
 import static ivorius.pandorasbox.effects.PBEffect.combinedEffectDuration;
 
 public record BuffEntityEffect(MobEffectInstance[] effects) implements EntityEffect {
-    public static final MapCodec<BuffEntityEffect> CODEC = PBNBTHelper.arrayCodec(MobEffectInstance.CODEC, () -> new MobEffectInstance[0]).fieldOf("effects").xmap(BuffEntityEffect::new, BuffEntityEffect::effects);
+    public static final Codec<MobEffectInstance> MOB_EFFECT_INSTANCE_CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(BuiltInRegistries.MOB_EFFECT.byNameCodec().fieldOf("id").forGetter(MobEffectInstance::getEffect),
+                            Codec.intRange(0, 255).optionalFieldOf("amplifier", 0).forGetter(MobEffectInstance::getAmplifier),
+                            Codec.INT.optionalFieldOf("duration", 0).forGetter(MobEffectInstance::getDuration),
+                            Codec.BOOL.optionalFieldOf("ambient", Boolean.FALSE).forGetter(MobEffectInstance::isAmbient),
+                            Codec.BOOL.optionalFieldOf("show_particles", Boolean.TRUE).forGetter(MobEffectInstance::isVisible),
+                            Codec.BOOL.optionalFieldOf("show_icon", Boolean.TRUE).forGetter(MobEffectInstance::showIcon))
+                    .apply(instance, MobEffectInstance::new));
+    public static final MapCodec<BuffEntityEffect> CODEC = PBNBTHelper.arrayCodec(MOB_EFFECT_INSTANCE_CODEC, () -> new MobEffectInstance[0]).fieldOf("effects").xmap(BuffEntityEffect::new, BuffEntityEffect::effects);
     @Override
     public void affectEntity(Level level, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
         MobEffectInstance[] effectsAdj = new MobEffectInstance[effects.length];
