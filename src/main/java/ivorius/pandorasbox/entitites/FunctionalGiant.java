@@ -32,6 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
@@ -39,6 +40,7 @@ import java.time.temporal.ChronoField;
 import java.util.UUID;
 
 public class FunctionalGiant extends Giant implements NeutralMob {
+    private static final double DEFAULT_ATTACK_REACH = Math.sqrt(2.04) - 0.6;
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private static final UniformInt RAMPAGE_UPDATE_TIME = TimeUtil.rangeOfSeconds(10, 15);
     private boolean isOnRampage = false;
@@ -100,6 +102,23 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     @Override
     public MobType getMobType() {
         return MobType.UNDEAD;
+    }
+
+    @Override
+    public boolean isWithinMeleeAttackRange(LivingEntity livingEntity) {
+        return this.getAttackBoundingBox().intersects(livingEntity.getBoundingBox().inflate(livingEntity.getPickRadius()));
+    }
+
+    protected AABB getAttackBoundingBox() {
+        Entity entity = this.getVehicle();
+        AABB finalBoundingBox;
+        if (entity != null) {
+            AABB vehicleBoundingBox = entity.getBoundingBox();
+            AABB selfBoundingBox = this.getBoundingBox();
+            finalBoundingBox = new AABB(Math.min(selfBoundingBox.minX, vehicleBoundingBox.minX), selfBoundingBox.minY, Math.min(selfBoundingBox.minZ, vehicleBoundingBox.minZ), Math.max(selfBoundingBox.maxX, vehicleBoundingBox.maxX), selfBoundingBox.maxY, Math.max(selfBoundingBox.maxZ, vehicleBoundingBox.maxZ));
+        } else finalBoundingBox = this.getBoundingBox();
+
+        return finalBoundingBox.inflate(DEFAULT_ATTACK_REACH, 0.0, DEFAULT_ATTACK_REACH);
     }
 
     @Override

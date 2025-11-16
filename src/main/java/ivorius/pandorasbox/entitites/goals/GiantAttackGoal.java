@@ -1,6 +1,8 @@
 package ivorius.pandorasbox.entitites.goals;
 
 import ivorius.pandorasbox.entitites.FunctionalGiant;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 
 public class GiantAttackGoal extends MeleeAttackGoal {
@@ -12,7 +14,16 @@ public class GiantAttackGoal extends MeleeAttackGoal {
 		this.giant = giant;
 	}
 
-	@Override
+    @Override
+    protected void checkAndPerformAttack(LivingEntity livingEntity, double d) {
+        if (this.giant.isWithinMeleeAttackRange(livingEntity) && this.getTicksUntilNextAttack() <= 0) {
+            this.resetAttackCooldown();
+            this.mob.swing(InteractionHand.MAIN_HAND);
+            this.mob.doHurtTarget(livingEntity);
+        }
+    }
+
+    @Override
 	public void start() {
 		super.start();
 		this.raiseArmTicks = 0;
