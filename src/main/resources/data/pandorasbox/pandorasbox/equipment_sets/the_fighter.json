@@ -3,31 +3,31 @@
   "items": [
     {
       "id": "minecraft:diamond_helmet",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:iron_chestplate",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:iron_leggings",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:iron_boots",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:trident",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:iron_axe",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:cooked_beef",
-      "count": 16
+      "Count": 16
     }
   ],
   "name": {

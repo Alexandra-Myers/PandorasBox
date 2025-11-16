@@ -3,23 +3,23 @@
   "items": [
     {
       "id": "minecraft:turtle_helmet",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:iron_boots",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:trident",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:iron_sword",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:bread",
-      "count": 48
+      "Count": 48
     }
   ],
   "name": {

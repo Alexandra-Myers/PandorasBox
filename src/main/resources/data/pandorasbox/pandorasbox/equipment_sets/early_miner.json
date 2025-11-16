@@ -3,55 +3,55 @@
   "items": [
     {
       "id": "minecraft:leather_helmet",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:leather_chestplate",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:leather_leggings",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:iron_boots",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:shield",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:stone_sword",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:iron_pickaxe",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:iron_axe",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:stone_shovel",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:stone_hoe",
-      "count": 1
+      "Count": 1
     },
     {
       "id": "minecraft:coal",
-      "count": 36
+      "Count": 36
     },
     {
       "id": "minecraft:torch",
-      "count": 64
+      "Count": 64
     },
     {
       "id": "minecraft:bread",
-      "count": 48
+      "Count": 48
     }
   ],
   "name": {
