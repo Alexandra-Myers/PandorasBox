@@ -22,16 +22,17 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Map;
 
 public class PandorasBox implements ModInitializer {
     public static final String MOD_ID = "pandorasbox";
@@ -46,7 +47,6 @@ public class PandorasBox implements ModInitializer {
      */
     @Override
     public void onInitialize() {
-        PayloadTypeRegistry.playS2C().register(ClientboundUpdateFakeDeathPacket.TYPE, ClientboundUpdateFakeDeathPacket.CODEC);
         initConfig();
         IValue.bootstrap();
         DValue.bootstrap();
@@ -58,14 +58,23 @@ public class PandorasBox implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> PandorasBoxHelper.initialize());
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> PandorasBoxHelper.initialize());
         CommandRegistrationCallback.EVENT.register((dispatcher, commandBuildContext, commandSelection) -> PandoraCommand.register(dispatcher, commandBuildContext));
-        LootTableEvents.ALL_LOADED.register((resourceManager, registry) -> CONFIG.tables.get().forEach((extra, bases) -> bases.stream().map(registry::getOptional)
-                .forEach(optional -> optional.ifPresent(table ->
-                        registry.getOptional(extra).ifPresent(extraTable ->
-                                table.pools = Stream.concat(table.pools.stream(), extraTable.pools.stream()).toList())))));
+        LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+            List<ResourceLocation> keysToUse = CONFIG.tables.get().entrySet().stream().filter(entry -> entry.getValue().contains(id)).map(Map.Entry::getKey).toList();
+            if (keysToUse.isEmpty())
+                return;
+
+            keysToUse.forEach(key -> {
+                LootTable table = lootManager.getLootTable(key);
+                logger.info("Original Table: " + id.toString() + " Injected Table: " + key);
+
+                if (table != LootTable.EMPTY) {
+                    tableBuilder.pools(List.of(table.pools));
+                }
+            });
+        });
     }
-    public record ClientboundUpdateFakeDeathPacket() implements CustomPacketPayload {
-        public static final Type<ClientboundUpdateFakeDeathPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MOD_ID, "fake_death_overlay"));
-        public static final StreamCodec<FriendlyByteBuf, ClientboundUpdateFakeDeathPacket> CODEC = CustomPacketPayload.codec(ClientboundUpdateFakeDeathPacket::write, ClientboundUpdateFakeDeathPacket::new);
+    public record ClientboundUpdateFakeDeathPacket() implements FabricPacket {
+        public static final PacketType<ClientboundUpdateFakeDeathPacket> TYPE = PacketType.create(new ResourceLocation(MOD_ID, "fake_death_overlay"), ClientboundUpdateFakeDeathPacket::new);
 
         public ClientboundUpdateFakeDeathPacket(FriendlyByteBuf buf) {
             this();
@@ -74,8 +83,9 @@ public class PandorasBox implements ModInitializer {
         public void write(FriendlyByteBuf buf) {
 
         }
+
         @Override
-        public Type<? extends CustomPacketPayload> type() {
+        public PacketType<?> getType() {
             return TYPE;
         }
     }

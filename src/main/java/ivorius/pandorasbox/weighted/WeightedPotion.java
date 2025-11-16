@@ -37,6 +37,6 @@ public record WeightedPotion(double weight, HolderSet<MobEffect> toApply, IValue
     }
 
     public List<MobEffectInstance> build(RandomSource random) {
-        return toApply.stream().map(mobEffectHolder -> new MobEffectInstance(mobEffectHolder, duration().getValue(random), amplifier().getValue(random), false, false)).toList();
+        return toApply.stream().map(mobEffectHolder -> new MobEffectInstance(mobEffectHolder.value(), duration().getValue(random), amplifier().getValue(random), false, false)).toList();
     }
 }

@@ -19,12 +19,12 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by lukas on 30.03.14.
  */
-public record PBECExplosion(IValue time, DValue explosionRadius, ZValue burning, Level.ExplosionInteraction explosionInteraction) implements PBEffectCreator {
+public record PBECExplosion(IValue time, DValue explosionRadius, ZValue burning, PBEffectExplode.ExplosionInteraction explosionInteraction) implements PBEffectCreator {
     public static final MapCodec<PBECExplosion> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(IValue.CODEC.fieldOf("time").forGetter(PBECExplosion::time),
                             DValue.CODEC.fieldOf("radius").forGetter(PBECExplosion::explosionRadius),
                             ZValue.CODEC.fieldOf("burning").forGetter(PBECExplosion::burning),
-                            Level.ExplosionInteraction.CODEC.fieldOf("explosion_interaction").forGetter(PBECExplosion::explosionInteraction))
+                            PBEffectExplode.ExplosionInteraction.CODEC.fieldOf("explosion_interaction").forGetter(PBECExplosion::explosionInteraction))
                     .apply(instance, PBECExplosion::new));
 
     @Override

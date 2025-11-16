@@ -22,7 +22,7 @@ public record PBECMeltdown(DValue range, IValue maxTicksAlive, HolderSet<EffectH
     public static final MapCodec<PBECMeltdown> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(DValue.CODEC.fieldOf("range").forGetter(PBECMeltdown::range),
                             IValue.CODEC.fieldOf("max_ticks_alive").forGetter(PBECMeltdown::maxTicksAlive),
-                            EffectHolder.MELTDOWN_CODEC.optionalFieldOf("included_meltdown_holders", HolderSet.empty()).forGetter(PBECMeltdown::includedEffectHolders))
+                            EffectHolder.MELTDOWN_CODEC.optionalFieldOf("included_meltdown_holders", HolderSet.direct()).forGetter(PBECMeltdown::includedEffectHolders))
                     .apply(instance, PBECMeltdown::new));
     @Override
     public PBEffect constructEffect(Level level, double x, double y, double z, RandomSource random) {

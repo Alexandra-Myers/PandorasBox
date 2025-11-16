@@ -24,8 +24,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.server.level.ServerEntity;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
@@ -79,6 +79,10 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         return false;
     }
 
+    public RandomSource getRandom() {
+        return random;
+    }
+
     public Vec3 getEffectCenter() {
         return effectCenter;
     }
@@ -120,15 +124,15 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(BOX_DEATH_TICKS, -1);
-        builder.define(BOX_WAITING_TIME, -1);
-        builder.define(EFFECT_TICKS_EXISTED, -1);
-        builder.define(FLOAT_PROGRESS, -1F);
-        builder.define(SCALE_PROGRESS, 1F);
-        builder.define(DATA_EFFECT_ID, new PBEffectDuplicateBox(PBEffectDuplicateBox.MODE_BOX_IN_BOX));
-        builder.define(DATA_OWNER_UUID, Optional.empty());
-        builder.define(DATA_RENDER_ITEM, ItemStack.EMPTY);
+    protected void defineSynchedData() {
+        this.entityData.define(BOX_DEATH_TICKS, -1);
+        this.entityData.define(BOX_WAITING_TIME, -1);
+        this.entityData.define(EFFECT_TICKS_EXISTED, -1);
+        this.entityData.define(FLOAT_PROGRESS, -1F);
+        this.entityData.define(SCALE_PROGRESS, 1F);
+        this.entityData.define(DATA_EFFECT_ID, new PBEffectDuplicateBox(PBEffectDuplicateBox.MODE_BOX_IN_BOX));
+        this.entityData.define(DATA_OWNER_UUID, Optional.empty());
+        this.entityData.define(DATA_RENDER_ITEM, ItemStack.EMPTY);
     }
 
     public int getTicksForEffect(PBEffect identityEffect) {
@@ -354,13 +358,13 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
     }
 
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         int data = hasFoil ? 1 : 0;
         data <<= 1;
         data |= canGenerateMoreEffectsAfterwards ? 1 : 0;
         data <<= 1;
         data |= floatUp ? 1 : 0;
-        return new ClientboundAddEntityPacket(this, serverEntity, data);
+        return new ClientboundAddEntityPacket(this, data);
     }
 
     @Override
@@ -391,7 +395,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
     }
 
     public void readBoxData(CompoundTag compound) {
-        setBoxEffect(loadEffect(compound.get("boxEffect"), registryAccess()));
+        setBoxEffect(loadEffect(compound.get("boxEffect"), level().registryAccess()));
         if (compound.contains("ownerUUID"))
             setOwnerUUID(compound.getUUID("ownerUUID"));
 
@@ -402,12 +406,12 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         floatUp = compound.getBoolean("floatUp");
         hasFoil = compound.getBoolean("hasFoil");
         setScale(compound.getFloat("scaleInProgress"));
-        RegistryOps<Tag> registryOps = registryAccess().createSerializationContext(NbtOps.INSTANCE);
-        Optional<ItemStack> renderItem = RENDER_ITEM_CODEC.parse(registryOps, compound).getOrThrow();
+        RegistryOps<Tag> registryOps = RegistryOps.create(NbtOps.INSTANCE, level().registryAccess());
+        Optional<ItemStack> renderItem = RENDER_ITEM_CODEC.parse(registryOps, compound).getOrThrow(false, str -> {});
         renderItem.ifPresent(this::setRenderItem);
 
         AtomicBoolean wasError = new AtomicBoolean(false);
-        Vec3 effectCenter = EFFECT_CENTER_CODEC.parse(registryOps, compound).getOrThrow().orElseGet(() -> {
+        Vec3 effectCenter = EFFECT_CENTER_CODEC.parse(registryOps, compound).getOrThrow(false, str -> {}).orElseGet(() -> {
             wasError.set(true);
             return new Vec3(getX(), getY(), getZ());
         });
@@ -422,7 +426,7 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
     }
 
     public void writeBoxData(CompoundTag compound) {
-        compound.put("boxEffect", writeEffect(getBoxEffect(), registryAccess()));
+        compound.put("boxEffect", writeEffect(getBoxEffect(), level().registryAccess()));
         UUID uuid = getOwnerUUID();
         if (uuid != null)
             compound.putUUID("ownerUUID", uuid);
@@ -434,13 +438,13 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         compound.putBoolean("floatUp", floatUp);
         compound.putBoolean("hasFoil", hasFoil);
         compound.putFloat("scaleInProgress", getCurrentScale());
-        RegistryOps<Tag> registryOps = registryAccess().createSerializationContext(NbtOps.INSTANCE);
+        RegistryOps<Tag> registryOps = RegistryOps.create(NbtOps.INSTANCE, level().registryAccess());
         if (!getRenderItem().isEmpty()) {
-            Tag renderItem = ItemStack.CODEC.encodeStart(registryOps, getRenderItem()).getOrThrow();
+            Tag renderItem = ItemStack.CODEC.encodeStart(registryOps, getRenderItem()).getOrThrow(false, str -> {});
             compound.put("renderItem", renderItem);
         }
 
-        Tag effectCenter = Vec3.CODEC.encodeStart(registryOps, this.effectCenter).getOrThrow();
+        Tag effectCenter = Vec3.CODEC.encodeStart(registryOps, this.effectCenter).getOrThrow(false, str -> {});
         compound.put("effectCenter", effectCenter);
     }
 
@@ -448,13 +452,13 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         return tag.contains(name) ? Optional.of(tag.getDouble(name)) : Optional.empty();
     }
     public static Tag writeEffect(PBEffect effect, RegistryAccess registryAccess) {
-        if (effect != null) return PBEffect.CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, registryAccess), effect).getOrThrow();
+        if (effect != null) return PBEffect.CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, registryAccess), effect).getOrThrow(false, str -> {});
         return new CompoundTag();
     }
 
     public static PBEffect loadEffect(Tag tag, RegistryAccess registryAccess) {
-        return PBEffect.CODEC.parse(RegistryOps.create(NbtOps.INSTANCE, registryAccess), tag).mapOrElse(Function.identity(), pbEffectError -> {
-            PandorasBox.logger.error("Failed to parse box, using fallback. Error: " + pbEffectError);
+        return PBEffect.CODEC.parse(RegistryOps.create(NbtOps.INSTANCE, registryAccess), tag).get().map(Function.identity(), pbEffectError -> {
+            PandorasBox.logger.error("Failed to parse box, using fallback. Error: " + pbEffectError.message());
             return new PBEffectDuplicateBox(PBEffectDuplicateBox.MODE_BOX_IN_BOX);
         });
     }

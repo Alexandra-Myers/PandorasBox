@@ -22,10 +22,10 @@ public class FeatureInit {
     public static final Feature<@NotNull LollipopConfiguration> RAINBOW = register("rainbow", new RainbowFeature(LollipopConfiguration.CODEC));
     public static final ResourceKey<@NotNull ConfiguredFeature<?, ?>> RAINBOWS = createKey("rainbows");
     private static <C extends FeatureConfiguration> Feature<C> register(String name, Feature<C> feature) {
-        return Registry.register(BuiltInRegistries.FEATURE, ResourceKey.create(BuiltInRegistries.FEATURE.key(), ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, name)), feature);
+        return Registry.register(BuiltInRegistries.FEATURE, ResourceKey.create(BuiltInRegistries.FEATURE.key(), new ResourceLocation(PandorasBox.MOD_ID, name)), feature);
     }
     private static ResourceKey<@NotNull ConfiguredFeature<?, ?>> createKey(String name) {
-        return ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, name));
+        return ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(PandorasBox.MOD_ID, name));
     }
     public static void registerFeatures() {
 

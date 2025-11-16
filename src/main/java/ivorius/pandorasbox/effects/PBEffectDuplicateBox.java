@@ -41,7 +41,7 @@ public class PBEffectDuplicateBox extends PBEffectNormal {
     public PBEffectDuplicateBox(int spawnMode) {
         super(timeNeededForSpawnMode(spawnMode));
         this.spawnMode = spawnMode;
-        this.includedEffectHolders = HolderSet.empty();
+        this.includedEffectHolders = HolderSet.direct();
     }
 
     public PBEffectDuplicateBox(int spawnMode, HolderSet<EffectHolder> includedEffectHolders) {

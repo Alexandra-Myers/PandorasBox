@@ -21,7 +21,7 @@ import java.util.Arrays;
  * Created by lukas on 31.03.14.
  */
 public class PBEffectMulti extends PBEffect {
-    public static final ResourceLocation MULTI = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "render_multi");
+    public static final ResourceLocation MULTI = new ResourceLocation(PandorasBox.MOD_ID, "render_multi");
     public static final MapCodec<PBEffectMulti> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(PBNBTHelper.arrayCodec(PBEffect.CODEC, () -> new PBEffect[0]).fieldOf("effects").forGetter(PBEffectMulti::getEffects),
                             PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("delays").forGetter(pbEffectMulti -> Arrays.stream(pbEffectMulti.getDelays()).boxed().toArray(Integer[]::new)))

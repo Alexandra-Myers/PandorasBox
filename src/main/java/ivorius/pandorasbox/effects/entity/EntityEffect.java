@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 public interface EntityEffect {
     Codec<EntityEffect> CODEC = Init.ENTITY_EFFECT_TYPE_REGISTRY.byNameCodec()
-            .dispatch(EntityEffect::codec, Function.identity());
+            .dispatch(EntityEffect::codec, MapCodec::codec);
     default void affectEntity(Level level, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
         if (level instanceof ServerLevel serverLevel) affectEntityServer(serverLevel, box, effectCenter, random, entity, newRatio, prevRatio, strength);
         else if (level instanceof ClientLevel clientLevel) affectEntityClient(clientLevel, box, effectCenter, random, entity, newRatio, prevRatio, strength);

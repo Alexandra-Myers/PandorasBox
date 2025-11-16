@@ -13,7 +13,7 @@ import java.util.function.Function;
 public class BlockInit {
     public static final PandorasBoxBlock PB = register("pandoras_box", resourceKey -> new PandorasBoxBlock());
     private static <T extends Block> T register(String name, Function<ResourceKey<Block>, T> block) {
-        ResourceKey<Block> blockResourceKey = ResourceKey.create(BuiltInRegistries.BLOCK.key(), ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, name));
+        ResourceKey<Block> blockResourceKey = ResourceKey.create(BuiltInRegistries.BLOCK.key(), new ResourceLocation(PandorasBox.MOD_ID, name));
         return Registry.register(BuiltInRegistries.BLOCK, blockResourceKey, block.apply(blockResourceKey));
     }
     public static void registerBlocks() {

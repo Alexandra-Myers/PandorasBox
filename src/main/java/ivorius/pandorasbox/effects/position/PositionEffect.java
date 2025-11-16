@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 public interface PositionEffect {
     Codec<PositionEffect> CODEC = Init.POSITION_EFFECT_TYPE_REGISTRY.byNameCodec()
-            .dispatch(PositionEffect::codec, Function.identity());
+            .dispatch(PositionEffect::codec, MapCodec::codec);
     void doEffect(ServerLevel serverLevel, PandorasBoxEntity entity, RandomSource random, float newRatio, float prevRatio, double x, double y, double z);
 
     @NotNull MapCodec<? extends PositionEffect> codec();

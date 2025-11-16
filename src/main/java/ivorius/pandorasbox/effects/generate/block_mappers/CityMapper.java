@@ -13,8 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
@@ -189,7 +187,6 @@ public record CityMapper(Either<Block, TagKey<Block>>[] targets, List<EntityType
                         for (int i = 0; i < world.random.nextInt(5) + 2; i++) {
                             RandomizedItemStack chestContent = WeightedSelector.selectItem(world.random, itemSelection);
                             ItemStack stack = chestContent.itemStack().copy();
-                            if (chestContent.max() > stack.getMaxStackSize()) stack.set(DataComponents.MAX_STACK_SIZE, chestContent.max());
                             stack.setCount(chestContent.min() + world.random.nextInt(chestContent.max() - chestContent.min() + 1));
                             int slot = world.random.nextInt(chestBlockEntity.getContainerSize());
                             while (!chestBlockEntity.getItem(slot).isEmpty())
@@ -204,7 +201,7 @@ public record CityMapper(Either<Block, TagKey<Block>>[] targets, List<EntityType
                         for (int i = 0; i < itemSet.length; i++) {
                             chestContent[i] = itemSet[i].copy();
                         }
-                        chestBlockEntity.applyComponents(chestBlockEntity.components(), DataComponentPatch.builder().set(DataComponents.CUSTOM_NAME, set.name()).build());
+                        chestBlockEntity.setCustomName(set.name());
                         for (ItemStack stack : chestContent) {
                             int slot = world.random.nextInt(chestBlockEntity.getContainerSize());
                             while (!chestBlockEntity.getItem(slot).isEmpty())

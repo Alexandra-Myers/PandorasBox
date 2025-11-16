@@ -11,8 +11,7 @@ public class IvRenderHelper {
     public static final float width = 2.5f;
 
     public static void renderLights(float ticks, float scale, float height, int color, float alpha, int number, PoseStack poseStack, MultiBufferSource multiBufferSource) {
-        submitRays(ticks, scale, height, color, alpha, number, poseStack, multiBufferSource, RenderType.dragonRays());
-        submitRays(ticks, scale, height, color, alpha, number, poseStack, multiBufferSource, RenderType.dragonRaysDepth());
+        submitRays(ticks, scale, height, color, alpha, number, poseStack, multiBufferSource, RenderType.lightning());
     }
     private static void submitRays(float ticks, float scale, float height, int color, float alpha, int number, PoseStack poseStack, MultiBufferSource multiBufferSource, RenderType renderType) {
         poseStack.pushPose();
@@ -58,17 +57,21 @@ public class IvRenderHelper {
                 vector3f4.set(0.0F, h, m);
                 int finalAlpha = (int) (alpha * lightAlpha);
                 int weakerAlpha = (int) (finalAlpha * 0.5);
-                vertexConsumer.addVertex(pose, vector3f).setColor(red, green, blue, finalAlpha);
-                vertexConsumer.addVertex(pose, vector3f2).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
-                vertexConsumer.addVertex(pose, vector3f3).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
-                vertexConsumer.addVertex(pose, vector3f).setColor(red, green, blue, finalAlpha);
-                vertexConsumer.addVertex(pose, vector3f3).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
-                vertexConsumer.addVertex(pose, vector3f4).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
-                vertexConsumer.addVertex(pose, vector3f).setColor(red, green, blue, finalAlpha);
-                vertexConsumer.addVertex(pose, vector3f4).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
-                vertexConsumer.addVertex(pose, vector3f2).setColor(brtRed, brtGreen, brtBlue, weakerAlpha);
+                addVertex(vertexConsumer, pose, vector3f).color(red, green, blue, finalAlpha);
+                addVertex(vertexConsumer, pose, vector3f2).color(brtRed, brtGreen, brtBlue, weakerAlpha);
+                addVertex(vertexConsumer, pose, vector3f3).color(brtRed, brtGreen, brtBlue, weakerAlpha);
+                addVertex(vertexConsumer, pose, vector3f).color(red, green, blue, finalAlpha);
+                addVertex(vertexConsumer, pose, vector3f3).color(brtRed, brtGreen, brtBlue, weakerAlpha);
+                addVertex(vertexConsumer, pose, vector3f4).color(brtRed, brtGreen, brtBlue, weakerAlpha);
+                addVertex(vertexConsumer, pose, vector3f).color(red, green, blue, finalAlpha);
+                addVertex(vertexConsumer, pose, vector3f4).color(brtRed, brtGreen, brtBlue, weakerAlpha);
+                addVertex(vertexConsumer, pose, vector3f2).color(brtRed, brtGreen, brtBlue, weakerAlpha);
             }
         }
         poseStack.popPose();
+    }
+
+    public static VertexConsumer addVertex(VertexConsumer vertexConsumer, PoseStack.Pose pose, Vector3f vector3f) {
+        return vertexConsumer.vertex(pose.pose(), vector3f.x, vector3f.y, vector3f.z);
     }
 }

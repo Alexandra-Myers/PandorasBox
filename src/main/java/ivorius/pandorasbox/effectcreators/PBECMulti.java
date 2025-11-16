@@ -16,14 +16,16 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.util.ExtraCodecs.validate;
+
 /**
  * Created by lukas on 30.03.14.
  */
 public record PBECMulti(PBEffectCreator[] effects, Integer[] delays) implements PBEffectCreator {
-    public static final MapCodec<PBECMulti> CODEC = RecordCodecBuilder.<PBECMulti>mapCodec(instance ->
+    public static final MapCodec<PBECMulti> CODEC = validate(RecordCodecBuilder.<PBECMulti>mapCodec(instance ->
             instance.group(PBNBTHelper.arrayCodec(PBEffectCreator.CODEC, () -> new PBEffectCreator[0]).fieldOf("effects").forGetter(PBECMulti::effects),
                             PBNBTHelper.arrayCodec(ExtraCodecs.NON_NEGATIVE_INT, () -> new Integer[0]).fieldOf("delays").forGetter(PBECMulti::delays))
-                    .apply(instance, PBECMulti::new)).validate(pbecMulti -> {
+                    .apply(instance, PBECMulti::new)), pbecMulti -> {
                         if (pbecMulti.effects.length != pbecMulti.delays.length) return DataResult.error(() -> "Misaligned effects and delays in multi-effect creator!");
                         else return DataResult.success(pbecMulti);
     });

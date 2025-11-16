@@ -3,9 +3,9 @@ package ivorius.pandorasbox.effects.generate;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.ConventionalBlockTags;
 import ivorius.pandorasbox.init.PandoraBlockTags;
 import net.atlas.atlascore.util.ArrayListExtensions;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -52,7 +52,7 @@ public enum NetherBiome implements StringRepresentable {
                         blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                     }
                     setBlockSafe(world, pos, blockState2);
-                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Either.left(Blocks.CLAY))) {
                     setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
@@ -133,7 +133,7 @@ public enum NetherBiome implements StringRepresentable {
                         blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                     }
                     setBlockSafe(world, pos, blockState2);
-                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Either.right(BlockTags.SAND), Either.left(Blocks.CLAY))) {
                     setBlockSafe(world, pos, Blocks.SOUL_SAND.defaultBlockState());
@@ -219,7 +219,7 @@ public enum NetherBiome implements StringRepresentable {
                         blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                     }
                     setBlockSafe(world, pos, blockState2);
-                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.FLOWERS), Either.right(BlockTags.LOGS), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Either.left(Blocks.CLAY))) {
                     setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
@@ -298,7 +298,7 @@ public enum NetherBiome implements StringRepresentable {
                         blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                     }
                     setBlockSafe(world, pos, blockState2);
-                } else if (isBlockAnyOf(block, Either.right(BlockTags.LOGS_THAT_BURN), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.LOGS_THAT_BURN), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Either.left(Blocks.CLAY))) {
                     setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());
@@ -387,7 +387,7 @@ public enum NetherBiome implements StringRepresentable {
                         blockState2 = blockState2.setValue(LiquidBlock.LEVEL, integer.get());
                     }
                     setBlockSafe(world, pos, blockState2);
-                } else if (isBlockAnyOf(block, Either.right(BlockTags.LOGS_THAT_BURN), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.SHORT_GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
+                } else if (isBlockAnyOf(block, Either.right(BlockTags.LOGS_THAT_BURN), Either.right(BlockTags.LEAVES), Either.right(BlockTags.SNOW), Either.left(Blocks.GRASS), Either.left(Blocks.TALL_GRASS), Either.left(Blocks.FERN), Either.left(Blocks.LARGE_FERN), Either.left(Blocks.SEAGRASS), Either.left(Blocks.TALL_SEAGRASS), Either.left(Blocks.DEAD_BUSH), Either.left(Blocks.VINE), Either.left(Blocks.BROWN_MUSHROOM), Either.left(Blocks.RED_MUSHROOM), Either.left(Blocks.BROWN_MUSHROOM_BLOCK), Either.left(Blocks.RED_MUSHROOM_BLOCK))) {
                     setBlockToAirSafe(world, pos);
                 } else if (isBlockAnyOf(block, Either.left(Blocks.CLAY))) {
                     setBlockSafe(world, pos, Blocks.MAGMA_BLOCK.defaultBlockState());

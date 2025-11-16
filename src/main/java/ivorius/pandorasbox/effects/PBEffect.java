@@ -14,9 +14,6 @@ import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.Init;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -37,10 +34,9 @@ import java.util.List;
  * Created by lukas on 30.03.14.
  */
 public abstract class PBEffect {
-    public static final ResourceLocation DEFAULT = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "render_default");
+    public static final ResourceLocation DEFAULT = new ResourceLocation(PandorasBox.MOD_ID, "render_default");
     public static final Codec<PBEffect> CODEC = Init.BOX_EFFECT_TYPE_REGISTRY.byNameCodec()
-            .dispatch(PBEffect::codec, mapCodec -> mapCodec);
-    public static final StreamCodec<RegistryFriendlyByteBuf, PBEffect> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
+            .dispatch(PBEffect::codec, MapCodec::codec);
 
     public static boolean setBlockToAirSafe(Level level, BlockPos pos) {
         boolean safeDest = level.getBlockState(pos).isAir() || level.getBlockState(pos).getDestroySpeed(level, pos) >= 0f;

@@ -13,8 +13,9 @@ import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.random.PandorasBoxEntityNamer;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -37,13 +38,7 @@ import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.DyedItemColor;
-import net.minecraft.world.item.component.FireworkExplosion;
-import net.minecraft.world.item.component.Fireworks;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -140,7 +135,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                         }
                     }
                     if (!stack.isEmpty()) {
-                        if (enchantLevel > 0) PBECSpawnItems.enchantItemStack(livingEntity.registryAccess(), enchantLevel, random, stack);
+                        if (enchantLevel > 0) PBECSpawnItems.enchantItemStack(enchantLevel, random, stack);
                         if (livingEntity instanceof Mob mob) {
                             mob.equipItemIfPossible(stack);
                             mob.setDropChance(slot, 0.085F);
@@ -154,54 +149,48 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             AttributeInstance health = livingEntity.getAttribute(Attributes.MAX_HEALTH);
             if (health != null) {
                 double healthMultiplierP = random.nextDouble() * buffLevel * 0.25;
-                health.addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_health"), healthMultiplierP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                health.addPermanentModifier(new AttributeModifier("Zeus's magic", healthMultiplierP, AttributeModifier.Operation.MULTIPLY_BASE));
                 livingEntity.setHealth((float) (livingEntity.getHealth() + livingEntity.getHealth() * healthMultiplierP));
             }
 
             AttributeInstance knockbackResistance = livingEntity.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
             if (knockbackResistance != null) {
                 double knockbackResistanceP = random.nextDouble() * buffLevel * 0.25;
-                knockbackResistance.addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_knockback_resistance"), knockbackResistanceP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                knockbackResistance.addPermanentModifier(new AttributeModifier("Zeus's magic", knockbackResistanceP, AttributeModifier.Operation.MULTIPLY_BASE));
             }
 
             AttributeInstance movementSpeed = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
             if (movementSpeed != null) {
                 double movementSpeedP = random.nextDouble() * buffLevel * 0.08;
-                movementSpeed.addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_speed"), movementSpeedP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-            }
-
-            AttributeInstance stepHeight = livingEntity.getAttribute(Attributes.STEP_HEIGHT);
-            if (stepHeight != null) {
-                double stepHeightP = random.nextDouble() * buffLevel * 0.5;
-                stepHeight.addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_step_height"), stepHeightP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                movementSpeed.addPermanentModifier(new AttributeModifier("Zeus's magic", movementSpeedP, AttributeModifier.Operation.MULTIPLY_BASE));
             }
 
             AttributeInstance attackDamage = livingEntity.getAttribute(Attributes.ATTACK_DAMAGE);
             if (attackDamage != null) {
                 double attackDamageP = random.nextDouble() * buffLevel * 0.25;
-                attackDamage.addPermanentModifier(new AttributeModifier(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "zeus_magic_damage"), attackDamageP, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                attackDamage.addPermanentModifier(new AttributeModifier("Zeus's magic", attackDamageP, AttributeModifier.Operation.MULTIPLY_BASE));
             }
         }
     }
 
     public static Entity[] createEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, String entityID, double x, double y, double z) {
         if (!(world instanceof ServerLevel serverLevel)) return null;
-        ResourceLocation asID = ResourceLocation.parse(entityID);
+        ResourceLocation asID = new ResourceLocation(entityID);
         String trunkEntityID = asID.getPath();
         if ("pbspecial_skeleton_horseman".equals(trunkEntityID)) {
             Skeleton skeleton = EntityType.SKELETON.create(serverLevel);
             assert skeleton != null;
             moveTo(skeleton, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
-            skeleton.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+            skeleton.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
             ItemStack stack = new ItemStack(Items.IRON_HELMET);
-            PBECSpawnItems.enchantItemStack(serverLevel.registryAccess(), 10 + random.nextInt(10), random, stack);
+            PBECSpawnItems.enchantItemStack(10 + random.nextInt(10), random, stack);
             skeleton.setItemSlot(EquipmentSlot.HEAD, stack);
-            PBECSpawnItems.enchantItemStack(serverLevel.registryAccess(), 15 + random.nextInt(10), random, skeleton.getItemInHand(InteractionHand.MAIN_HAND));
+            PBECSpawnItems.enchantItemStack(15 + random.nextInt(10), random, skeleton.getItemInHand(InteractionHand.MAIN_HAND));
 
             SkeletonHorse horse = EntityType.SKELETON_HORSE.create(serverLevel);
             assert horse != null;
             moveTo(horse, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
-            horse.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+            horse.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
             return new Entity[] {skeleton, horse};
         } else return new Entity[] {createEntity(serverLevel, pbEntity, random, asID, trunkEntityID, x, y, z)};
     }
@@ -214,24 +203,24 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 assert sheep != null;
                 if (random.nextInt(32 * 32) == 0) sheep.setCustomName(Component.literal("jeb_"));
                 moveTo(sheep, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
-                sheep.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
+                sheep.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), MobSpawnType.NATURAL, null, null);
                 sheep.setColor(DyeColor.byId(random.nextInt(16)));
 
                 return sheep;
             } else if ("pbspecial_hogfather".equals(trunkEntityID)) {
                 Zombie santa = EntityType.ZOMBIE.create(serverLevel);
                 ItemStack helmet = new ItemStack(Items.LEATHER_HELMET);
-                helmet.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                ((DyeableArmorItem) helmet.getItem()).setColor(helmet, 0xff0000);
                 ItemStack chestPlate = new ItemStack(Items.LEATHER_CHESTPLATE);
-                chestPlate.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                ((DyeableArmorItem) chestPlate.getItem()).setColor(chestPlate, 0xff0000);
                 ItemStack leggings = new ItemStack(Items.LEATHER_LEGGINGS);
-                leggings.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                ((DyeableArmorItem) leggings.getItem()).setColor(leggings, 0xff0000);
                 ItemStack boots = new ItemStack(Items.LEATHER_BOOTS);
-                boots.set(DataComponents.DYED_COLOR, new DyedItemColor(0xff0000, true));
+                ((DyeableArmorItem) boots.getItem()).setColor(boots, 0xff0000);
 
                 assert santa != null;
                 moveTo(santa, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
-                santa.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
+                santa.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), MobSpawnType.NATURAL, null, null);
                 santa.setItemSlot(EquipmentSlot.HEAD, helmet);
                 santa.setItemSlot(EquipmentSlot.CHEST, chestPlate);
                 santa.setItemSlot(EquipmentSlot.LEGS, leggings);
@@ -249,7 +238,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
 
                 assert wolf != null;
                 moveTo(wolf, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
-                wolf.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), null, null);
+                wolf.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), MobSpawnType.NATURAL, null, null);
 
 
                 if (owner != null) {
@@ -267,7 +256,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
 
                 assert cat != null;
                 moveTo(cat, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
-                cat.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                cat.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
 
                 if (owner != null) {
                     cat.tame(owner);
@@ -282,7 +271,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
 
                 assert parrot != null;
                 moveTo(parrot, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
-                parrot.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                parrot.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
 
                 if (owner != null) {
                     parrot.tame(owner);
@@ -303,13 +292,13 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
                 return primedTnt;
             } else if ("pbspecial_fireworks".equals(trunkEntityID)) {
                 ItemStack stack = new ItemStack(Items.FIREWORK_ROCKET);
-                stack.set(DataComponents.FIREWORKS, createRandomFirework(random));
+                stack.addTagElement("Fireworks", createRandomFirework(random));
 
                 return new FireworkRocketEntity(serverLevel, x, y, z,stack);
             } else if ("pbspecial_angry_wolf".equals(trunkEntityID)) {
                 Wolf wolf = EntityType.WOLF.create(serverLevel);
                 assert wolf != null;
-                wolf.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                wolf.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                 moveTo(wolf, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
                 wolf.setTarget(serverLevel.getNearestPlayer(x, y, z, 40.0, false));
 
@@ -317,7 +306,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             } else if ("pbspecial_charged_creeper".equals(trunkEntityID)) {
                 Creeper creeper = EntityType.CREEPER.create(serverLevel);
                 assert creeper != null;
-                creeper.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                creeper.finalizeSpawn(serverLevel, (serverLevel).getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
                 moveTo(creeper, new Vec3(x, y, z), random.nextFloat() * 360.0f, 0.0f);
                 creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
                 return creeper;
@@ -334,7 +323,7 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
             if(entity1 instanceof Hoglin hoglin)
                 hoglin.setImmuneToZombification(true);
             if (entity1 instanceof Mob mob)
-                mob.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), null, null);
+                mob.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(BlockPos.containing(x,y,z)), MobSpawnType.NATURAL, null, null);
 
             return entity1;
         } catch (Exception ex) {
@@ -345,15 +334,18 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
     }
 
     public static void moveTo(Entity entity, Vec3 pos, float yRot, float xRot) {
-        entity.moveTo(pos, yRot, xRot);
+        entity.moveTo(pos.x, pos.y, pos.z, yRot, xRot);
     }
 
-    public static Fireworks createRandomFirework(RandomSource random) {
-        return new Fireworks((random.nextInt(15) != 0) ? 1 : (2 + random.nextInt(2)), createRandomFireworkExplosions(random, (random.nextInt(20)) != 0 ? 1 : (1 + random.nextInt(2))));
+    public static CompoundTag createRandomFirework(RandomSource random) {
+        CompoundTag compound = new CompoundTag();
+        compound.put("Explosions", createRandomFireworkExplosions(random, (random.nextInt(20)) != 0 ? 1 : (1 + random.nextInt(2))));
+        compound.putByte("Flight", (byte) ((random.nextInt(15) != 0) ? 1 : (2 + random.nextInt(2))));
+        return compound;
     }
 
-    public static List<FireworkExplosion> createRandomFireworkExplosions(RandomSource random, int number) {
-        List<FireworkExplosion> list = new ArrayList<>();
+    public static ListTag createRandomFireworkExplosions(RandomSource random, int number) {
+        ListTag list = new ListTag();
 
         for (int i = 0; i < number; i++) {
             list.add(createRandomFireworkExplosion(random));
@@ -362,25 +354,28 @@ public record SpawnEntityIDListEffect(String[][] entityIDs, int nameEntities, in
         return list;
     }
 
-    public static FireworkExplosion createRandomFireworkExplosion(RandomSource random) {
-        FireworkExplosion.Shape fireworkShape = FireworkExplosion.Shape.byId((random.nextInt(10) != 0) ? 0 : (random.nextInt(4) + 1));
+    public static CompoundTag createRandomFireworkExplosion(RandomSource random) {
+        CompoundTag fireworkCompound = new CompoundTag();
 
-        int size = (random.nextInt(15) != 0) ? 1 : (random.nextInt(2) + 2);
-        IntList colors = new IntArrayList(size);
-        for (int i = 0; i < size; i++) {
-            colors.add(i, DyeColor.byId(random.nextInt(16)).getFireworkColor());
+        fireworkCompound.putBoolean("Flicker", random.nextInt(20) == 0);
+        fireworkCompound.putBoolean("Trail", random.nextInt(30) == 0);
+        fireworkCompound.putByte("Type", (byte) ((random.nextInt(10) != 0) ? 0 : (random.nextInt(4) + 1)));
+
+        int[] colors = new int[(random.nextInt(15) != 0) ? 1 : (random.nextInt(2) + 2)];
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = DyeColor.byId(random.nextInt(16)).getFireworkColor();
         }
+        fireworkCompound.putIntArray("Colors", colors);
 
-        IntList fadeColors = IntLists.emptyList();
         if (random.nextInt(25) == 0) {
-            size = random.nextInt(2) + 1;
-            fadeColors = new IntArrayList(size);
-            for (int i = 0; i < size; i++) {
-                fadeColors.add(i, DyeColor.byId(random.nextInt(16)).getFireworkColor());
+            int[] fadeColors = new int[random.nextInt(2) + 1];
+            for (int i = 0; i < fadeColors.length; i++) {
+                fadeColors[i] = DyeColor.byId(random.nextInt(16)).getFireworkColor();
             }
+            fireworkCompound.putIntArray("FadeColors", fadeColors);
         }
 
-        return new FireworkExplosion(fireworkShape, colors, fadeColors, random.nextInt(30) == 0, random.nextInt(20) == 0);
+        return fireworkCompound;
     }
 
     @Override

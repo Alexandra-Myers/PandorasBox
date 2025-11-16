@@ -24,7 +24,7 @@ import java.util.Optional;
  * Created by Alexandra on 18.10.24.
  */
 public final class PBEffectMeltdown extends PBEffect {
-    public static final ResourceLocation MELTDOWN = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "render_meltdown");
+    public static final ResourceLocation MELTDOWN = new ResourceLocation(PandorasBox.MOD_ID, "render_meltdown");
     public static final MapCodec<PBEffectMeltdown> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(PBNBTHelper.arrayCodec(PBEffect.CODEC, () -> new PBEffect[0]).fieldOf("effects").forGetter(PBEffectMeltdown::getEffects),
                             PBNBTHelper.arrayCodec(Vec3.CODEC, () -> new Vec3[0]).fieldOf("effect_centers").forGetter(PBEffectMeltdown::getEffectCenters),

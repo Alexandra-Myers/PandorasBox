@@ -8,26 +8,20 @@ package ivorius.pandorasbox;
 import com.google.common.collect.*;
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import ivorius.pandorasbox.init.MobEffectInit;
-import ivorius.pandorasbox.init.PandoraBlockTags;
-import ivorius.pandorasbox.init.PandoraItemTags;
+import ivorius.pandorasbox.init.*;
+import ivorius.pandorasbox.init.ConventionalBlockTags;
 import ivorius.pandorasbox.random.ILinear;
 import ivorius.pandorasbox.utils.*;
 import ivorius.pandorasbox.weighted.*;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -36,6 +30,8 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -72,7 +68,7 @@ public class PandorasBoxHelper {
             PandorasBoxHelper.blocks.add(Either.left(new WeightedBlock(weight, block)));
 
             Item item = block.asItem();
-            blocksAndItems.add(Either.left(new RandomizedItemStack(item, 1, item.getDefaultMaxStackSize(), weight)));
+            blocksAndItems.add(Either.left(new RandomizedItemStack(item, 1, item.getMaxStackSize(), weight)));
         }
     }
 
@@ -95,16 +91,16 @@ public class PandorasBoxHelper {
     }
 
     @SafeVarargs
-    public static void addPotions(List<WeightedPotion> list, double weight, int minAmplifier, int maxAmplifier, int minDuration, int maxDuration, Holder<MobEffect>... potions) {
-        for (Holder<MobEffect> effect : potions) {
-            list.add(new WeightedPotion(weight, HolderSet.direct(effect), new ILinear(minAmplifier, maxAmplifier), new ILinear(minDuration, maxDuration)));
+    public static void addPotions(List<WeightedPotion> list, double weight, int minAmplifier, int maxAmplifier, int minDuration, int maxDuration, MobEffect... potions) {
+        for (MobEffect effect : potions) {
+            list.add(new WeightedPotion(weight, HolderSet.direct(BuiltInRegistries.MOB_EFFECT.getHolder(BuiltInRegistries.MOB_EFFECT.getResourceKey(effect).orElseThrow()).orElseThrow()), new ILinear(minAmplifier, maxAmplifier), new ILinear(minDuration, maxDuration)));
         }
     }
 
     @SafeVarargs
-    public static void addPotions(List<WeightedPotion> list, double weight, int minAmplifier, int maxAmplifier, int minDuration, int maxDuration, HolderSet<MobEffect>... potions) {
-        for (HolderSet<MobEffect> effect : potions) {
-            list.add(new WeightedPotion(weight, effect, new ILinear(minAmplifier, maxAmplifier), new ILinear(minDuration, maxDuration)));
+    public static void addPotions(List<WeightedPotion> list, double weight, int minAmplifier, int maxAmplifier, int minDuration, int maxDuration, List<MobEffect>... potions) {
+        for (List<MobEffect> effect : potions) {
+            list.add(new WeightedPotion(weight, HolderSet.direct(effect.stream().map(mobEffect -> BuiltInRegistries.MOB_EFFECT.getHolder(BuiltInRegistries.MOB_EFFECT.getResourceKey(mobEffect).orElseThrow()).orElseThrow()).toList()), new ILinear(minAmplifier, maxAmplifier), new ILinear(minDuration, maxDuration)));
         }
     }
 
@@ -144,7 +140,7 @@ public class PandorasBoxHelper {
         addBlocks(15.0, Blocks.PRISMARINE, Blocks.QUARTZ_BLOCK, Blocks.SMOOTH_QUARTZ);
         addBlocks(10.0, Blocks.GRAVEL, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.CLAY, Blocks.POLISHED_DEEPSLATE, Blocks.DEEPSLATE_TILES, Blocks.NETHER_BRICKS, Blocks.BRICKS, Blocks.END_STONE, Blocks.END_STONE_BRICKS);
         addBlockTags(10.0, ConventionalBlockTags.COBBLESTONES, BlockTags.NYLIUM, PandoraBlockTags.ALL_TERRACOTTA, ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES, BlockTags.BASE_STONE_NETHER, BlockTags.DIRT, BlockTags.SLABS, BlockTags.STAIRS);
-        addBlockTags(8.0, BlockTags.SAND, ConventionalBlockTags.STONES, BlockTags.WITHER_SUMMON_BASE_BLOCKS, ConventionalBlockTags.QUARTZ_ORES, BlockTags.COAL_ORES, BlockTags.COPPER_ORES, BlockTags.LAPIS_ORES, BlockTags.REDSTONE_ORES, BlockTags.IRON_ORES, BlockTags.SNOW, ConventionalBlockTags.CHESTS, ConventionalBlockTags.BARRELS, ConventionalBlockTags.SANDSTONE_BLOCKS, ConventionalBlockTags.VILLAGER_JOB_SITES, BlockTags.RAILS, ConventionalBlockTags.CONCRETES, BlockTags.CONCRETE_POWDER, BlockTags.SAPLINGS, BlockTags.FLOWER_POTS, ConventionalBlockTags.GLASS_BLOCKS, ConventionalBlockTags.GLASS_PANES);
+        addBlockTags(8.0, BlockTags.SAND, ConventionalBlockTags.STONES, BlockTags.WITHER_SUMMON_BASE_BLOCKS, ConventionalBlockTags.QUARTZ_ORES, BlockTags.COAL_ORES, BlockTags.COPPER_ORES, BlockTags.LAPIS_ORES, BlockTags.REDSTONE_ORES, BlockTags.IRON_ORES, BlockTags.SNOW, ConventionalBlockTags.CHESTS, ConventionalBlockTags.BARRELS, ConventionalBlockTags.SANDSTONE_BLOCKS, ConventionalBlockTags.VILLAGER_JOB_SITES, BlockTags.RAILS, ConventionalBlockTags.CONCRETES, PandoraBlockTags.CONCRETE_POWDER, BlockTags.SAPLINGS, BlockTags.FLOWER_POTS, ConventionalBlockTags.GLASS_BLOCKS, ConventionalBlockTags.GLASS_PANES);
         addBlocks(5.0, Blocks.DRAGON_EGG, Blocks.NOTE_BLOCK, Blocks.REDSTONE_LAMP, Blocks.SEA_LANTERN, Blocks.SNOW, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.CHISELED_BOOKSHELF);
         addBlockTags(5.0, ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, ConventionalBlockTags.STORAGE_BLOCKS_DRIED_KELP, PandoraBlockTags.NORMAL_OBSIDIANS, PandoraBlockTags.CRYING_OBSIDIANS);
         addBlocks(2.0, Blocks.LODESTONE, Blocks.TNT, Blocks.GLOWSTONE, Blocks.SHROOMLIGHT, Blocks.SPONGE);
@@ -173,13 +169,20 @@ public class PandorasBoxHelper {
         addEquipmentLevelsInOrder(Items.WOODEN_SHOVEL, Items.WOODEN_SHOVEL, Items.GOLDEN_SHOVEL, Items.STONE_SHOVEL, Items.IRON_SHOVEL, Items.DIAMOND_SHOVEL, Items.NETHERITE_SHOVEL);
         addEquipmentLevelsInOrder(Items.WOODEN_HOE, Items.WOODEN_HOE, Items.GOLDEN_HOE, Items.STONE_HOE, Items.IRON_HOE, Items.DIAMOND_HOE, Items.NETHERITE_HOE);
 
-        addPotions(buffs, 5.0, 1, 3, 20 * 30, 20 * 60, HolderSet.direct(MobEffects.HERO_OF_THE_VILLAGE, MobEffects.REGENERATION, MobEffects.TRIAL_OMEN, MobEffects.WEAVING, MobEffects.CONFUSION, MobEffects.BLINDNESS, MobEffects.HUNGER));
-        addPotions(buffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.REGENERATION, MobEffects.MOVEMENT_SPEED, MobEffects.DAMAGE_BOOST, MobEffects.JUMP, MobEffects.DAMAGE_RESISTANCE, MobEffects.WATER_BREATHING, MobEffects.FIRE_RESISTANCE, MobEffects.NIGHT_VISION, MobEffects.INVISIBILITY, MobEffects.ABSORPTION, MobEffects.SLOW_FALLING, MobEffects.DOLPHINS_GRACE, MobEffects.INFESTED, MobEffects.OOZING, MobEffects.WEAVING, MobEffects.WIND_CHARGED);
+        addPotions(buffs, 5.0, 1, 3, 20 * 30, 20 * 60, List.of(MobEffects.HERO_OF_THE_VILLAGE, MobEffects.REGENERATION, MobEffects.CONFUSION, MobEffects.BLINDNESS, MobEffects.HUNGER));
+        addPotions(buffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.REGENERATION, MobEffects.MOVEMENT_SPEED, MobEffects.DAMAGE_BOOST, MobEffects.JUMP, MobEffects.DAMAGE_RESISTANCE, MobEffects.WATER_BREATHING, MobEffects.FIRE_RESISTANCE, MobEffects.NIGHT_VISION, MobEffects.INVISIBILITY, MobEffects.ABSORPTION, MobEffects.SLOW_FALLING, MobEffects.DOLPHINS_GRACE);
         addPotions(debuffs, 10.0, 0, 3, 20 * 60, 20 * 60 * 10, MobEffects.BLINDNESS, MobEffects.CONFUSION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN, MobEffects.WEAKNESS, MobEffects.HUNGER, MobEffects.GLOWING);
         addPotions(debuffs, 10.0, 0, 2, 20 * 30, 20 * 60, MobEffects.WITHER, MobEffects.DARKNESS);
-        addPotions(debuffs, 6.0, 0, 3, 20 * 30, 20 * 45, MobEffectInit.SHRUNK);
 
         addAllRandomizableBlockProperties();
+    }
+
+    public static Vec3 getMinPosition(AABB box) {
+        return new Vec3(box.minX, box.minY, box.minZ);
+    }
+
+    public static Vec3 getMaxPosition(AABB box) {
+        return new Vec3(box.maxX, box.maxY, box.maxZ);
     }
 
     public static int getRandomUnifiedSeed(RandomSource random) {
@@ -193,21 +196,6 @@ public class PandorasBoxHelper {
             if ((i++) == num)
                 return t;
         throw new InternalError();
-    }
-
-    public static void createRandomFoodProperties(ItemStack stack, RandomSource random) {
-        FoodProperties.Builder builder = new FoodProperties.Builder();
-        if (random.nextBoolean()) builder.alwaysEdible();
-        if (random.nextDouble() > 0.7) builder.fast();
-        builder.nutrition(random.nextIntBetweenInclusive(1, 10));
-        builder.saturationModifier((float) (0.9 + (random.nextDouble() - random.nextDouble()) * 0.75));
-        if (random.nextDouble() > 0.95) {
-            List<WeightedPotion>[] posOrNegative = new List[] {buffs, debuffs};
-            double probability = random.nextGaussian();
-            List<MobEffectInstance> effects = WeightedSelector.selectItem(random, posOrNegative[random.nextInt(2)]).build(random);
-            for (MobEffectInstance effect : effects) builder.effect(effect, (float) probability);
-        }
-        stack.set(DataComponents.FOOD, builder.build());
     }
 
     public static BlockState getRandomBlockState(RandomSource rand, Block block, int unified) {
@@ -262,7 +250,6 @@ public class PandorasBoxHelper {
             List<Item> ts = randomizedItemTag.items().map(itemTagKey -> Streams.stream(itemRegistry.getTagOrEmpty(itemTagKey)).map(Holder::value).toList(), blockTagKey -> Streams.stream(blockRegistry.getTagOrEmpty(blockTagKey)).map(blockHolder -> blockHolder.value().asItem()).toList());
             ts.forEach(item -> {
                 ItemStack stack = new ItemStack(item);
-                stack.applyComponents(randomizedItemTag.patch());
                 edit.add(new RandomizedItemStack(stack, randomizedItemTag.count().copyWithMaxCountOverride(stack.getMaxStackSize())));
             });
             return edit;

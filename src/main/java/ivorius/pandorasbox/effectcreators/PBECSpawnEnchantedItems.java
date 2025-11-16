@@ -48,7 +48,7 @@ public record PBECSpawnEnchantedItems(IValue number, IValue ticksPerItem, IValue
         int ticksPerItem = this.ticksPerItem.getValue(random);
         boolean giveNames = this.giveNames.getValue(random);
 
-        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, world.registryAccess(), PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, BuiltInRegistries.BLOCK, items), number, false, true, enchantLevel, giveNames, false);
+        ItemStack[] stacks = PBECSpawnItems.getItemStacks(random, PandorasBoxHelper.assembleRandomisedStacks(BuiltInRegistries.ITEM, BuiltInRegistries.BLOCK, items), number, false, true, enchantLevel, giveNames);
 
         for (ItemStack stack : stacks)
             stack.setCount(1);

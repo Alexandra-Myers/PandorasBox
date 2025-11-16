@@ -12,13 +12,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Function;
-
 public interface BlockMapper {
     Codec<BlockMapper> CODEC = Init.BLOCK_MAPPER_TYPE_REGISTRY.byNameCodec()
-            .dispatch(BlockMapper::codec, Function.identity());
+            .dispatch(BlockMapper::codec, MapCodec::codec);
     MapCodec<BlockMapper> MAP_CODEC = Init.BLOCK_MAPPER_TYPE_REGISTRY.byNameCodec()
-            .dispatchMap("mapper_type", BlockMapper::codec, Function.identity());
+            .dispatchMap("mapper_type", BlockMapper::codec, MapCodec::codec);
     default boolean convert(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, int unifiedSeed) {
         if (world instanceof ServerLevel serverLevel && matches(serverLevel, entity, pos, serverLevel.getBlockState(pos), random)) return convertBlockRet(serverLevel, pos, serverLevel.getBlockState(pos), random, entity, effectCenter, pass, unifiedSeed, range);
         return true;

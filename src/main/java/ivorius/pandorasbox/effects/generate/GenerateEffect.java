@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public interface GenerateEffect {
     Codec<GenerateEffect> CODEC = Init.GENERATE_EFFECT_TYPE_REGISTRY.byNameCodec()
-            .dispatch(GenerateEffect::codec, Function.identity());
+            .dispatch(GenerateEffect::codec, MapCodec::codec);
     void generateOnBlock(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, double ratio, int unifiedSeed);
     @Nullable ResourceKey<Biome> biome();
     @NotNull MapCodec<? extends GenerateEffect> codec();

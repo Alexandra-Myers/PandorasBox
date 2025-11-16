@@ -135,20 +135,6 @@
           "max": 2,
           "type": "minecraft:linear"
         }
-      },
-      {
-        "weight": 6.0,
-        "to_apply": "pandorasbox:shrunk",
-        "duration": {
-          "min": 600,
-          "max": 900,
-          "type": "minecraft:linear"
-        },
-        "amplifier": {
-          "min": 0,
-          "max": 3,
-          "type": "minecraft:linear"
-        }
       }
     ],
     "time": {

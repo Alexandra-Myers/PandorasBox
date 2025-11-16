@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -38,11 +39,11 @@ public class PandorasBoxClient implements ClientModInitializer {
         PBEffectRenderingRegistry.registerRenderer(PBEffectMeltdown.MELTDOWN, new PBEffectRendererMeltdown());
         PBEffectRenderingRegistry.registerRenderer(PBEffectMulti.MULTI, new PBEffectRendererMulti());
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> PandorasBoxHelper.initialize());
-        ClientPlayNetworking.registerGlobalReceiver(PandorasBox.ClientboundUpdateFakeDeathPacket.TYPE, (clientboundUpdateFakeDeathPacket, context) -> {
-            if (context.client().getOverlay() != null) {
-                cached = new FakeDeathOverlay(new DeathScreen(null, context.player().level().getLevelData().isHardcore()));
+        ClientPlayNetworking.registerGlobalReceiver(PandorasBox.ClientboundUpdateFakeDeathPacket.TYPE, (packet, player, responseSender) -> {
+            if (Minecraft.getInstance().getOverlay() != null) {
+                cached = new FakeDeathOverlay(new DeathScreen(null, player.level().getLevelData().isHardcore()));
             } else {
-                context.client().setOverlay(new FakeDeathOverlay(new DeathScreen(null, context.player().level().getLevelData().isHardcore())));
+                Minecraft.getInstance().setOverlay(new FakeDeathOverlay(new DeathScreen(null, player.level().getLevelData().isHardcore())));
             }
         });
     }

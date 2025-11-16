@@ -9,11 +9,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Function;
-
 public interface SpawnEntitiesEffect {
     Codec<SpawnEntitiesEffect> CODEC = Init.SPAWN_ENTITIES_EFFECT_TYPE_REGISTRY.byNameCodec()
-            .dispatch(SpawnEntitiesEffect::codec, Function.identity());
+            .dispatch(SpawnEntitiesEffect::codec, MapCodec::codec);
     Entity spawnEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, int number, double x, double y, double z);
     EntitySpawnConfiguration entitySpawnConfiguration();
     default boolean spawnsFromBox() {

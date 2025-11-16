@@ -9,11 +9,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Function;
-
 public interface GenerateByFlag {
     Codec<GenerateByFlag> CODEC = Init.GEN_FLAGS_EFFECT_TYPE_REGISTRY.byNameCodec()
-            .dispatch(GenerateByFlag::codec, Function.identity());
+            .dispatch(GenerateByFlag::codec, MapCodec::codec);
     boolean hasFlag(Level world, PandorasBoxEntity entity, RandomSource random, BlockPos pos);
     void generateOnBlock(Level world, PandorasBoxEntity entity, RandomSource random, int pass, int unifiedSeed, BlockPos pos, double dist, boolean flag);
     int[] flags();

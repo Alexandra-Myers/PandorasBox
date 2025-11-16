@@ -3,12 +3,12 @@ package ivorius.pandorasbox.effectholder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
+import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
 
 public class FixedChanceEffectHolder extends EffectHolder {
     public static final DualMapCodec<FixedChanceEffectHolder> CODEC = new DualMapCodec<>(RecordCodecBuilder.mapCodec(instance ->
-            instance.group(ComponentSerialization.CODEC.fieldOf("tooltip").forGetter(FixedChanceEffectHolder::component),
+            instance.group(PBNBTHelper.COMPONENT_CODEC.fieldOf("tooltip").forGetter(FixedChanceEffectHolder::component),
                             PBEffectCreator.CODEC.fieldOf("effect_creator").forGetter(FixedChanceEffectHolder::effectCreator),
                             Codec.doubleRange(0, 1).fieldOf("chance").forGetter(FixedChanceEffectHolder::fixedChance))
                     .apply(instance, FixedChanceEffectHolder::new)), RecordCodecBuilder.mapCodec(instance ->

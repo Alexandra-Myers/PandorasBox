@@ -24,7 +24,7 @@ public record PBECDuplicateBox(IValue spawnMode, DValue moreEffectChance, Holder
     public static final MapCodec<PBECDuplicateBox> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(IValue.CODEC.fieldOf("spawn_mode").forGetter(PBECDuplicateBox::spawnMode),
                             DValue.CODEC.fieldOf("more_effect_chance").forGetter(PBECDuplicateBox::moreEffectChance),
-                            EffectHolder.CODEC.optionalFieldOf("included_effect_holders", HolderSet.empty()).forGetter(PBECDuplicateBox::includedEffectHolders))
+                            EffectHolder.CODEC.optionalFieldOf("included_effect_holders", HolderSet.direct()).forGetter(PBECDuplicateBox::includedEffectHolders))
                     .apply(instance, PBECDuplicateBox::new));
     @Override
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {

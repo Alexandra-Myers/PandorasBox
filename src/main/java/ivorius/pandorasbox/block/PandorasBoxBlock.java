@@ -5,13 +5,13 @@
 
 package ivorius.pandorasbox.block;
 
-import com.mojang.serialization.MapCodec;
-import ivorius.pandorasbox.component.PBEffectComponent;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.BlockEntityInit;
 import ivorius.pandorasbox.init.ItemInit;
+import ivorius.pandorasbox.item.PandorasBoxItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +40,6 @@ import org.jetbrains.annotations.NotNull;
  * Created by lukas on 15.04.14.
  */
 public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
-    public static final MapCodec<PandorasBoxBlock> CODEC = simpleCodec(PandorasBoxBlock::new);
     public static final EnumProperty<Direction> DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -66,25 +65,13 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult rayTraceResult) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        PBEffectComponent effectComponent = PBEffectComponent.DEFAULT;
-        ItemStack stack = ItemInit.PBI.getDefaultInstance();
-        if (blockEntity instanceof PandorasBoxBlockEntity pandorasBoxBlockEntity) {
-            effectComponent = pandorasBoxBlockEntity.getEffectComponent();
-            stack.applyComponents(blockEntity.collectComponents());
-        }
-        PandorasBoxEntity result = effectComponent.createEffect(level, player, pos, false, stack);
+    public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+        PandorasBoxEntity result = PandorasBoxItem.createEffect(level, player, pos, false, ItemInit.PBI.getDefaultInstance());
         if (result == null) return InteractionResult.PASS;
         level.removeBlock(pos, false);
         level.removeBlockEntity(pos);
 
         return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

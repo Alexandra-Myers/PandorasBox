@@ -123,7 +123,6 @@
 
   "effect_holder.psychedelicraft.drugs": "Drugged",
 
-  "effect.pandorasbox.shrunk": "Shrunken",
   "tag.item.pandorasbox.pandoras_items_misc_common": "Miscellaneous Box Loot",
 
   "argument.pandora_effect.id.invalid": "Unknown box effect '%s'",

@@ -40,7 +40,7 @@ import static com.mojang.math.Axis.YP;
 @Environment(EnvType.CLIENT)
 public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity> implements RenderLayerParent<PandorasBoxEntity, PandorasBoxModel> {
     public PandorasBoxModel model;
-    public ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
+    public ResourceLocation texture = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
 
     public PandorasBoxRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager);

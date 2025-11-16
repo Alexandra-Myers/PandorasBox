@@ -25,7 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class PandorasBoxModel extends EntityModel<PandorasBoxEntity> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandoras_box"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(PandorasBox.MOD_ID, "pandoras_box"), "main");
     private final ModelPart feet;
     private final ModelPart body;
     private final ModelPart joint;
@@ -75,10 +75,10 @@ public class PandorasBoxModel extends EntityModel<PandorasBoxEntity> {
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int rgba) {
-        feet.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
-        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
-        joint.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
-        top.render(poseStack, vertexConsumer, packedLight, packedOverlay, rgba);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float r, float g, float b, float a) {
+        feet.render(poseStack, vertexConsumer, packedLight, packedOverlay, r, g, b, a);
+        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, r, g, b, a);
+        joint.render(poseStack, vertexConsumer, packedLight, packedOverlay, r, g, b, a);
+        top.render(poseStack, vertexConsumer, packedLight, packedOverlay, r, g, b, a);
     }
 }

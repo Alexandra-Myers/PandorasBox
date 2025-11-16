@@ -34,6 +34,9 @@ repositories {
 	flatDir {
 		dirs 'libs'
 	}
+    maven {
+        url "https://maven.nucleoid.xyz"
+    }
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://maven.terraformersmc.com/releases/" }
 
@@ -58,9 +61,10 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation "maven.modrinth:atlas-core:${project.atlas_core_version}"
-    modCompileOnly "maven.modrinth:psychedelicraft:1.8.9+1.21"
-	modApi "com.terraformersmc:modmenu:11.0.1"
-	modApi "me.shedaniel.cloth:cloth-config-fabric:15.0.127"
+    modImplementation include("xyz.nucleoid:packet-tweaker:$project.packet_tweaker")
+    modCompileOnly "maven.modrinth:psychedelicraft:1.8.9+1.20.1"
+	modApi "com.terraformersmc:modmenu:7.2.2"
+	modApi "me.shedaniel.cloth:cloth-config-fabric:11.0.99"
 
     // Uncomment the following line to enable the deprecated Fabric API modules.
     // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.

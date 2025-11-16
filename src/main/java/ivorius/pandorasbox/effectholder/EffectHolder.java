@@ -9,14 +9,13 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 
 public abstract class EffectHolder {
     public static final LateBoundIdMapper<ResourceLocation, DualMapCodec<? extends EffectHolder>> HOLDER_MAPPER = new LateBoundIdMapper<>();
     public static final Codec<EffectHolder> DIRECT_CODEC = HOLDER_MAPPER.codec(ResourceLocation.CODEC)
-            .dispatch(EffectHolder::codec, mapCodec -> mapCodec.withTooltip);
+            .dispatch(EffectHolder::codec, mapCodec -> mapCodec.withTooltip.codec());
     public static final Codec<EffectHolder> DIRECT_CODEC_NO_TOOLTIP = HOLDER_MAPPER.codec(ResourceLocation.CODEC)
-            .dispatch(EffectHolder::codec, mapCodec -> mapCodec.withoutTooltip);
+            .dispatch(EffectHolder::codec, mapCodec -> mapCodec.withoutTooltip.codec());
     public static final Codec<HolderSet<EffectHolder>> CODEC = RegistryCodecs.homogeneousList(Init.EFFECT_HOLDER_REGISTRY_KEY);
     public static final Codec<HolderSet<EffectHolder>> MELTDOWN_CODEC = RegistryCodecs.homogeneousList(Init.MELTDOWN_EFFECT_HOLDER_REGISTRY_KEY);
     public final PBEffectCreator effectCreator;
@@ -37,9 +36,9 @@ public abstract class EffectHolder {
     }
 
     public static void bootstrap() {
-        HOLDER_MAPPER.put(ResourceLocation.withDefaultNamespace("fixed_chance"), FixedChanceEffectHolder.CODEC);
-        HOLDER_MAPPER.put(ResourceLocation.withDefaultNamespace("fixed_chance_marked"), FixedChancePositiveOrNegativeEffectHolder.CODEC);
-        HOLDER_MAPPER.put(ResourceLocation.withDefaultNamespace("positive_or_negative"), PositiveOrNegativeEffectHolder.CODEC);
+        HOLDER_MAPPER.put(new ResourceLocation("fixed_chance"), FixedChanceEffectHolder.CODEC);
+        HOLDER_MAPPER.put(new ResourceLocation("fixed_chance_marked"), FixedChancePositiveOrNegativeEffectHolder.CODEC);
+        HOLDER_MAPPER.put(new ResourceLocation("positive_or_negative"), PositiveOrNegativeEffectHolder.CODEC);
     }
     public abstract boolean canBeGoodOrBad();
     public abstract boolean isGood();

@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<PandorasBoxBlockEntity> {
-    public static final ResourceLocation PANDORAS_BOX = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
+    public static final ResourceLocation PANDORAS_BOX = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");
     public final PandorasBoxModel model;
     public static final float DEFAULT_X_ROT = (float) (-0.025F * 2F / 3F * Math.PI);
     public PandorasBoxBlockEntityRenderer(BlockEntityRendererProvider.Context berpContext) {
@@ -27,7 +27,7 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
         model.setupAnim(DEFAULT_X_ROT);
         RenderType renderType = RenderType.entityCutoutNoCull(PANDORAS_BOX);
         VertexConsumer buffer = ItemRenderer.getFoilBuffer(multiBufferSource, renderType, false, hasFoil);
-        model.renderToBuffer(poseStack, buffer, packedLightIn, overlayTexture, 0xFFFFFFFF);
+        model.renderToBuffer(poseStack, buffer, packedLightIn, overlayTexture, 1, 1, 1, 1);
         poseStack.popPose();
     }
     public static void renderItem(PoseStack poseStack, MultiBufferSource multiBufferSource, PandorasBoxModel model, int packedLightIn, int overlayTexture, boolean hasFoil) {
@@ -36,6 +36,6 @@ public class PandorasBoxBlockEntityRenderer implements BlockEntityRenderer<Pando
 
     @Override
     public void render(PandorasBoxBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn, int overlayTexture) {
-        render(poseStack, multiBufferSource, model, blockEntity.getRotationYaw(), packedLightIn, overlayTexture, !blockEntity.getEnchantments().isEmpty());
+        render(poseStack, multiBufferSource, model, blockEntity.getRotationYaw(), packedLightIn, overlayTexture, false);
     }
 }

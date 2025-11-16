@@ -3,11 +3,12 @@ package ivorius.pandorasbox.config;
 import com.google.gson.*;
 import com.mojang.serialization.Codec;
 import ivorius.pandorasbox.PandorasBox;
+import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.atlas.atlascore.AtlasCore;
 import net.atlas.atlascore.config.AtlasConfig;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ import java.util.*;
 
 public class PandoraConfig extends AtlasConfig {
 	public static Map<ResourceLocation, List<ResourceLocation>> defaultTables;
-	public static final Codec<Map<ResourceLocation, List<ResourceLocation>>> tableMapCodec = Codec.unboundedMap(ResourceLocation.CODEC, Codec.withAlternative(Codec.list(ResourceLocation.CODEC), ResourceLocation.CODEC, Collections::singletonList));
+	public static final Codec<Map<ResourceLocation, List<ResourceLocation>>> tableMapCodec = Codec.unboundedMap(ResourceLocation.CODEC, PBNBTHelper.withAlternative(Codec.list(ResourceLocation.CODEC), ResourceLocation.CODEC, Collections::singletonList));
 	public TagHolder<Map<ResourceLocation, List<ResourceLocation>>> tables;
 	public DoubleHolder boxLongevity;
 	public DoubleHolder boxIntensity;
@@ -24,7 +25,7 @@ public class PandoraConfig extends AtlasConfig {
 	public IntegerHolder maxEffectsPerBox;
 	private Category balancing;
 	public PandoraConfig() {
-		super(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandoras-box"));
+		super(new ResourceLocation(PandorasBox.MOD_ID, "pandoras-box"));
 		declareDefaultForMod(PandorasBox.MOD_ID);
 	}
 
@@ -33,12 +34,12 @@ public class PandoraConfig extends AtlasConfig {
 
 	}
 
-	@Override
-	public void handleExtraSync(AtlasCore.AtlasConfigPacket atlasConfigPacket, ClientPlayNetworking.Context context) {
+    @Override
+    public void handleExtraSync(AtlasCore.AtlasConfigPacket atlasConfigPacket, LocalPlayer localPlayer, PacketSender packetSender) {
+        
+    }
 
-	}
-
-	@Override
+    @Override
 	public void handleConfigInformation(AtlasCore.ClientInformPacket clientInformPacket, ServerPlayer serverPlayer, PacketSender packetSender) {
 
 	}
@@ -91,22 +92,22 @@ public class PandoraConfig extends AtlasConfig {
 	}
 	static {
 		defaultTables = new HashMap<>();
-		defaultTables.put(ResourceLocation.parse("chests/pandora_inject"), List.of(
-				ResourceLocation.withDefaultNamespace("chests/abandoned_mineshaft"),
-				ResourceLocation.withDefaultNamespace("chests/jungle_temple"),
-				ResourceLocation.withDefaultNamespace("chests/simple_dungeon"),
-				ResourceLocation.withDefaultNamespace("chests/desert_pyramid"),
-				ResourceLocation.withDefaultNamespace("chests/stronghold_corridor"),
-				ResourceLocation.withDefaultNamespace("chests/stronghold_crossing"),
-				ResourceLocation.withDefaultNamespace("chests/stronghold_library"),
-				ResourceLocation.withDefaultNamespace("chests/bastion_bridge"),
-				ResourceLocation.withDefaultNamespace("chests/bastion_hoglin_stable"),
-				ResourceLocation.withDefaultNamespace("chests/bastion_other")
+		defaultTables.put(new ResourceLocation("chests/pandora_inject"), List.of(
+				new ResourceLocation("chests/abandoned_mineshaft"),
+				new ResourceLocation("chests/jungle_temple"),
+				new ResourceLocation("chests/simple_dungeon"),
+				new ResourceLocation("chests/desert_pyramid"),
+				new ResourceLocation("chests/stronghold_corridor"),
+				new ResourceLocation("chests/stronghold_crossing"),
+				new ResourceLocation("chests/stronghold_library"),
+				new ResourceLocation("chests/bastion_bridge"),
+				new ResourceLocation("chests/bastion_hoglin_stable"),
+				new ResourceLocation("chests/bastion_other")
 		));
-		defaultTables.put(ResourceLocation.parse("chests/pandora_inject_common"), List.of(
-				ResourceLocation.withDefaultNamespace("chests/ancient_city"),
-				ResourceLocation.withDefaultNamespace("chests/bastion_treasure"),
-				ResourceLocation.withDefaultNamespace("chests/end_city_treasure")
+		defaultTables.put(new ResourceLocation("chests/pandora_inject_common"), List.of(
+				new ResourceLocation("chests/ancient_city"),
+				new ResourceLocation("chests/bastion_treasure"),
+				new ResourceLocation("chests/end_city_treasure")
 		));
 	}
 }

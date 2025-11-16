@@ -5,6 +5,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
 public class PandoraBlockTags {
+    public static final TagKey<Block> CONCRETE_POWDER = PandoraItemTags.registerVanilla(Registries.BLOCK, "concrete_powder");
     public static final TagKey<Block> OBSIDIANS = PandoraItemTags.registerC(Registries.BLOCK, "obsidians");
     public static final TagKey<Block> NORMAL_OBSIDIANS = PandoraItemTags.registerC(Registries.BLOCK, "obsidians/normal");
     public static final TagKey<Block> CRYING_OBSIDIANS = PandoraItemTags.registerC(Registries.BLOCK, "obsidians/crying");

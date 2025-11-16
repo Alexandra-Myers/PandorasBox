@@ -24,9 +24,9 @@ import java.util.List;
  * Created by Alexandra on 18.10.24.
  */
 public class PBEffectRendererMeltdown extends PBEffectRenderer<PBEffectMeltdown, MeltdownEffectRenderState> {
-    public ResourceLocation meltdownTexture1 = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box_unstable_1.png");
-    public ResourceLocation meltdownTexture2 = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box_unstable_2.png");
-    public ResourceLocation meltdownTexture3 = ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "textures/entity/pandoras_box_unstable_3.png");
+    public ResourceLocation meltdownTexture1 = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box_unstable_1.png");
+    public ResourceLocation meltdownTexture2 = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box_unstable_2.png");
+    public ResourceLocation meltdownTexture3 = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box_unstable_3.png");
 
     @Override
     public void renderBox(PandorasBoxRenderer renderer, PandorasBoxEntity pandorasBoxEntity, MeltdownEffectRenderState effectRenderState, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn, float height, float timePassed, float partialTicks) {

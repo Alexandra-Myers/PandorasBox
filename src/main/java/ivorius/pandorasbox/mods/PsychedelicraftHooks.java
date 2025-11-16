@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.Optional;
 
 import static ivorius.pandorasbox.init.Init.registerEntityEffectType;
+import static net.minecraft.util.ExtraCodecs.validate;
 
 public class PsychedelicraftHooks {
     public static void register() {
@@ -29,12 +30,12 @@ public class PsychedelicraftHooks {
         properties.ifPresent(drugProperties -> drugProperties.addToDrug(drug.drugType(), drugStrength, new DrugInfluenceInstance(drug)));
     }
     public record WeightedDrugType(double weight, float minAddValue, float maxAddValue, Holder<DrugType<?>> drugTypeHolder) implements WeightedSelector.Item {
-        public static final Codec<WeightedDrugType> DRUG_TYPE_CODEC = RecordCodecBuilder.<WeightedDrugType>create(instance ->
+        public static final Codec<WeightedDrugType> DRUG_TYPE_CODEC = validate(RecordCodecBuilder.<WeightedDrugType>create(instance ->
                 instance.group(Codecs.doubleRange(0, Double.MAX_VALUE).fieldOf("weight").forGetter(WeightedDrugType::weight),
                                 Codec.floatRange(0, Float.MAX_VALUE).fieldOf("min_add_value").forGetter(WeightedDrugType::minAddValue),
                                 Codec.floatRange(0, Float.MAX_VALUE).fieldOf("max_add_value").forGetter(WeightedDrugType::maxAddValue),
                                 DrugType.REGISTRY.holderByNameCodec().fieldOf("drug_type").forGetter(WeightedDrugType::drugTypeHolder))
-                        .apply(instance, WeightedDrugType::new)).validate(weightedDrugType -> {
+                        .apply(instance, WeightedDrugType::new)), weightedDrugType -> {
                             if (weightedDrugType.minAddValue > weightedDrugType.maxAddValue) return DataResult.error(() -> "Expected drug's minimum add value to be less than or equal to its maximum!");
                             else return DataResult.success(weightedDrugType);
         });
