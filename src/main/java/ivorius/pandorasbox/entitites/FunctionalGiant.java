@@ -26,7 +26,6 @@ import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -99,6 +98,11 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     }
 
     @Override
+    public MobType getMobType() {
+        return MobType.UNDEAD;
+    }
+
+    @Override
     public void aiStep() {
         if (this.isAlive()) {
             boolean shouldBurnThisTick = this.isSunBurnTick();
@@ -106,10 +110,9 @@ public class FunctionalGiant extends Giant implements NeutralMob {
                 ItemStack itemStack = this.getItemBySlot(EquipmentSlot.HEAD);
                 if (!itemStack.isEmpty()) {
                     if (itemStack.isDamageableItem()) {
-                        Item item = itemStack.getItem();
                         itemStack.setDamageValue(itemStack.getDamageValue() + this.random.nextInt(2));
                         if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
-                            this.onEquippedItemBroken(item, EquipmentSlot.HEAD);
+                            this.broadcastBreakEvent(EquipmentSlot.HEAD);
                             this.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
                         }
                     }
@@ -118,7 +121,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
                 }
 
                 if (shouldBurnThisTick) {
-                    this.igniteForSeconds(8.0F);
+                    this.setSecondsOnFire(8);
                 }
             }
             if (this.rampageTime == 0) {
@@ -142,7 +145,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
         if (didHurtTarget) {
             float effectiveDifficulty = this.level().getCurrentDifficultyAt(this.blockPosition()).getEffectiveDifficulty();
             if (this.getMainHandItem().isEmpty() && this.isOnFire() && this.random.nextFloat() < effectiveDifficulty * 0.3F) {
-                entity.igniteForSeconds(2 * (int)effectiveDifficulty);
+                entity.setSecondsOnFire(2 * (int)effectiveDifficulty);
             }
         }
 
@@ -197,11 +200,11 @@ public class FunctionalGiant extends Giant implements NeutralMob {
             ZombieVillager zombieVillager = villager.convertTo(EntityType.ZOMBIE_VILLAGER, false);
             if (zombieVillager != null) {
                 zombieVillager.finalizeSpawn(
-                        serverLevel, serverLevel.getCurrentDifficultyAt(zombieVillager.blockPosition()), MobSpawnType.CONVERSION, new Zombie.ZombieGroupData(false, true)
+                        serverLevel, serverLevel.getCurrentDifficultyAt(zombieVillager.blockPosition()), MobSpawnType.CONVERSION, new Zombie.ZombieGroupData(false, true), null
                 );
                 zombieVillager.setVillagerData(villager.getVillagerData());
                 zombieVillager.setGossips(villager.getGossips().store(NbtOps.INSTANCE));
-                zombieVillager.setTradeOffers(villager.getOffers().copy());
+                zombieVillager.setTradeOffers(villager.getOffers().createTag());
                 zombieVillager.setVillagerXp(villager.getVillagerXp());
                 if (!this.isSilent()) {
                     serverLevel.levelEvent(null, 1026, this.blockPosition(), 0);
@@ -227,15 +230,15 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(
-            ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, MobSpawnType mobSpawnType, @Nullable SpawnGroupData spawnGroupData
+            ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, MobSpawnType mobSpawnType, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag compoundTag
     ) {
         RandomSource randomSource = serverLevelAccessor.getRandom();
-        spawnGroupData = super.finalizeSpawn(serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData);
+        spawnGroupData = super.finalizeSpawn(serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData, compoundTag);
         float difficultySpecialMult = difficultyInstance.getSpecialMultiplier();
         this.setCanPickUpLoot(randomSource.nextFloat() < 0.55F * difficultySpecialMult);
 
         this.populateDefaultEquipmentSlots(randomSource, difficultyInstance);
-        this.populateDefaultEquipmentEnchantments(serverLevelAccessor, randomSource, difficultyInstance);
+        this.populateDefaultEquipmentEnchantments(randomSource, difficultyInstance);
 
         if (this.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
             LocalDate localDate = LocalDate.now();
@@ -253,12 +256,12 @@ public class FunctionalGiant extends Giant implements NeutralMob {
 
     protected void handleAttributes() {
         this.getAttribute(Attributes.KNOCKBACK_RESISTANCE)
-                .addOrReplacePermanentModifier(new AttributeModifier(RANDOM_SPAWN_BONUS_ID, this.random.nextDouble() * 0.05F, AttributeModifier.Operation.ADD_VALUE));
+                .addPermanentModifier(new AttributeModifier("Random spawn bonus", this.random.nextDouble() * 0.05F, AttributeModifier.Operation.ADDITION));
     }
 
     @Override
-    protected void dropCustomDeathLoot(ServerLevel serverLevel, DamageSource damageSource, boolean bl) {
-        super.dropCustomDeathLoot(serverLevel, damageSource, bl);
+    protected void dropCustomDeathLoot(DamageSource damageSource, int i, boolean bl) {
+        super.dropCustomDeathLoot(damageSource, i, bl);
         if (damageSource.getEntity() instanceof Creeper creeper && creeper.canDropMobsSkull()) {
             ItemStack itemStack = this.getSkull();
             if (!itemStack.isEmpty()) {

@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.utils.PBNBTHelper;
+import ivorius.pandorasbox.utils.RandomizedItemStack;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record SpawnItemStacksEffect(ItemStack[] stacks, EntitySpawnConfiguration entitySpawnConfiguration) implements SpawnEntitiesEffect {
     public static final MapCodec<SpawnItemStacksEffect> CODEC = RecordCodecBuilder.mapCodec(instance ->
-            instance.group(PBNBTHelper.arrayCodec(ItemStack.CODEC, () -> new ItemStack[0]).fieldOf("stacks").forGetter(SpawnItemStacksEffect::stacks),
+            instance.group(PBNBTHelper.arrayCodec(RandomizedItemStack.OPTIONAL_ITEM_CODEC, () -> new ItemStack[0]).fieldOf("stacks").forGetter(SpawnItemStacksEffect::stacks),
                             EntitySpawnConfiguration.MAP_CODEC.forGetter(SpawnItemStacksEffect::entitySpawnConfiguration))
                     .apply(instance, SpawnItemStacksEffect::new));
     @Override

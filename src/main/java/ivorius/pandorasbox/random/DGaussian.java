@@ -12,14 +12,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.util.ExtraCodecs.validate;
+
 /**
  * Created by lukas on 04.04.14.
  */
 public record DGaussian(double min, double max) implements DValue {
-    public static final MapCodec<DGaussian> CODEC = RecordCodecBuilder.<DGaussian>mapCodec(instance ->
+    public static final MapCodec<DGaussian> CODEC = validate(RecordCodecBuilder.<DGaussian>mapCodec(instance ->
             instance.group(Codec.DOUBLE.fieldOf("min").forGetter(DGaussian::min),
                             Codec.DOUBLE.fieldOf("max").forGetter(DGaussian::max))
-                    .apply(instance, DGaussian::new)).validate(dGaussian -> {
+                    .apply(instance, DGaussian::new)), dGaussian -> {
         if (dGaussian.min > dGaussian.max) return DataResult.error(() -> "Constraints for gaussian mismatched, min greater than max!");
         else return DataResult.success(dGaussian);
     });

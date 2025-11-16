@@ -12,15 +12,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.util.ExtraCodecs.validate;
+
 /**
  * Created by lukas on 04.04.14.
  */
 public record DExp(double min, double max, double exp) implements DValue {
-    public static final MapCodec<DExp> CODEC = RecordCodecBuilder.<DExp>mapCodec(instance ->
+    public static final MapCodec<DExp> CODEC = validate(RecordCodecBuilder.<DExp>mapCodec(instance ->
             instance.group(Codec.DOUBLE.fieldOf("min_value").forGetter(DExp::min),
                             Codec.DOUBLE.fieldOf("max_value").forGetter(DExp::max),
                             Codec.DOUBLE.fieldOf("base").forGetter(DExp::exp))
-                    .apply(instance, DExp::new)).validate(dExp -> {
+                    .apply(instance, DExp::new)), dExp -> {
         if (dExp.min > dExp.max) return DataResult.error(() -> "Constraints for exponential random mismatched, min greater than max!");
         else return DataResult.success(dExp);
     });

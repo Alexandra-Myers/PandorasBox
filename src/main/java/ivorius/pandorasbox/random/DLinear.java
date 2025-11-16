@@ -12,14 +12,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.util.ExtraCodecs.validate;
+
 /**
  * Created by lukas on 04.04.14.
  */
 public record DLinear(double min, double max) implements DValue {
-    public static final MapCodec<DLinear> CODEC = RecordCodecBuilder.<DLinear>mapCodec(instance ->
+    public static final MapCodec<DLinear> CODEC = validate(RecordCodecBuilder.<DLinear>mapCodec(instance ->
             instance.group(Codec.DOUBLE.fieldOf("min").forGetter(DLinear::min),
                             Codec.DOUBLE.fieldOf("max").forGetter(DLinear::max))
-                    .apply(instance, DLinear::new)).validate(dLinear -> {
+                    .apply(instance, DLinear::new)), dLinear -> {
         if (dLinear.min > dLinear.max) return DataResult.error(() -> "Constraints for linear random mismatched, min greater than max!");
         else return DataResult.success(dLinear);
     });

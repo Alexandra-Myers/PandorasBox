@@ -13,14 +13,16 @@ import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.util.ExtraCodecs.validate;
+
 /**
  * Created by lukas on 04.04.14.
  */
 public record IWeighted(Integer[] values, Integer[] weights) implements IValue {
-    public static final MapCodec<IWeighted> CODEC = RecordCodecBuilder.<IWeighted>mapCodec(instance ->
+    public static final MapCodec<IWeighted> CODEC = validate(RecordCodecBuilder.<IWeighted>mapCodec(instance ->
             instance.group(PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("values").forGetter(IWeighted::values),
                             PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("weights").forGetter(IWeighted::weights))
-                    .apply(instance, IWeighted::new)).validate(iWeighted -> {
+                    .apply(instance, IWeighted::new)), iWeighted -> {
                         if (iWeighted.values.length != iWeighted.weights.length) return DataResult.error(() -> "Weighted value provided without aligned values and weights!");
                         else return DataResult.success(iWeighted);
     });

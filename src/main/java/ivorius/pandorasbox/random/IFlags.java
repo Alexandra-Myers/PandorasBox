@@ -13,15 +13,17 @@ import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.util.ExtraCodecs.validate;
+
 /**
  * Created by lukas on 04.04.14.
  */
 public record IFlags(int minFlags, Integer[] flags, Double[] chances) implements IValue {
-    public static final MapCodec<IFlags> CODEC = RecordCodecBuilder.<IFlags>mapCodec(instance ->
+    public static final MapCodec<IFlags> CODEC = validate(RecordCodecBuilder.<IFlags>mapCodec(instance ->
             instance.group(Codec.INT.fieldOf("min_flags").forGetter(IFlags::minFlags),
                         PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("flags").forGetter(IFlags::flags),
                         PBNBTHelper.arrayCodec(Codec.DOUBLE, () -> new Double[0]).fieldOf("chances").forGetter(IFlags::chances))
-                    .apply(instance, IFlags::new)).validate(iFlags -> {
+                    .apply(instance, IFlags::new)), iFlags -> {
                         if (iFlags.flags.length != iFlags.chances.length) return DataResult.error(() -> "Misaligned flags and chances!");
                         else return DataResult.success(iFlags);
     });

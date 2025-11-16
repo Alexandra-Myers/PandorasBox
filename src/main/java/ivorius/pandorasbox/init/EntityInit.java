@@ -13,7 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
 public class EntityInit {
-    public static final EntityType<FunctionalGiant> GIANT = register("giant", EntityType.Builder.of(FunctionalGiant::new, MobCategory.MONSTER).sized(3.6F, 12.0F).eyeHeight(10.44F).ridingOffset(-3.75F).clientTrackingRange(10));
+    public static final EntityType<FunctionalGiant> GIANT = register("giant", EntityType.Builder.of(FunctionalGiant::new, MobCategory.MONSTER).sized(3.6F, 12.0F).clientTrackingRange(10));
     public static final EntityType<PandorasBoxEntity> BOX = register("pandoras_box", EntityType.Builder.<PandorasBoxEntity>of(PandorasBoxEntity::new, MobCategory.MISC).fireImmune().noSummon().sized(0.6f, 0.6f));
     private static <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> entityType) {
         ResourceKey<EntityType<?>> resourceKey = ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), new ResourceLocation(PandorasBox.MOD_ID, name));

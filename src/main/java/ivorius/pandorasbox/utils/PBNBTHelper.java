@@ -9,10 +9,7 @@ import com.mojang.serialization.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -53,6 +50,25 @@ public class PBNBTHelper {
     }
     public static <T, AT extends T> Codec<T> withAlternative(Codec<T> defaultCodec, Codec<AT> alternativeCodec) {
         return Codec.either(defaultCodec, alternativeCodec).xmap(tatEither -> tatEither.map(Function.identity(), Function.identity()), Either::left);
+    }
+    public static <A> Codec<Optional<A>> optionalEmptyMap(Codec<A> codec) {
+        return new Codec<>() {
+            @Override
+            public <T> DataResult<Pair<Optional<A>, T>> decode(DynamicOps<T> dynamicOps, T object) {
+                return isEmptyMap(dynamicOps, object)
+                        ? DataResult.success(Pair.of(Optional.empty(), object))
+                        : codec.decode(dynamicOps, object).map(pair -> pair.mapFirst(Optional::of));
+            }
+
+            private static <T> boolean isEmptyMap(DynamicOps<T> dynamicOps, T object) {
+                Optional<MapLike<T>> optional = dynamicOps.getMap(object).result();
+                return optional.isPresent() && ((MapLike) optional.get()).entries().findAny().isEmpty();
+            }
+
+            public <T> DataResult<T> encode(Optional<A> optional, DynamicOps<T> dynamicOps, T object) {
+                return optional.isEmpty() ? DataResult.success(dynamicOps.emptyMap()) : codec.encode((A) optional.get(), dynamicOps, object);
+            }
+        };
     }
     public record AlikeEntry<T>(T newKey, T newValue) implements Map.Entry<T, T> {
         @Override

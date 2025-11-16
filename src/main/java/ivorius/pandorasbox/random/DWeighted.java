@@ -13,14 +13,16 @@ import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.util.ExtraCodecs.validate;
+
 /**
  * Created by lukas on 04.04.14.
  */
 public record DWeighted(Double[] values, Integer[] weights) implements DValue {
-    public static final MapCodec<DWeighted> CODEC = RecordCodecBuilder.<DWeighted>mapCodec(instance ->
+    public static final MapCodec<DWeighted> CODEC = validate(RecordCodecBuilder.<DWeighted>mapCodec(instance ->
             instance.group(PBNBTHelper.arrayCodec(Codec.DOUBLE, () -> new Double[0]).fieldOf("values").forGetter(DWeighted::values),
                             PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("weights").forGetter(DWeighted::weights))
-                    .apply(instance, DWeighted::new)).validate(dWeighted -> {
+                    .apply(instance, DWeighted::new)), dWeighted -> {
         if (dWeighted.values.length != dWeighted.weights.length) return DataResult.error(() -> "Weighted value provided without aligned values and weights!");
         else return DataResult.success(dWeighted);
     });

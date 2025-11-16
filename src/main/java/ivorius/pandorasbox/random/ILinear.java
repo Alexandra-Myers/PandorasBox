@@ -12,14 +12,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.util.ExtraCodecs.validate;
+
 /**
  * Created by lukas on 04.04.14.
  */
 public record ILinear(int min, int max) implements IValue {
-    public static final MapCodec<ILinear> CODEC = RecordCodecBuilder.<ILinear>mapCodec(instance ->
+    public static final MapCodec<ILinear> CODEC = validate(RecordCodecBuilder.<ILinear>mapCodec(instance ->
             instance.group(Codec.INT.fieldOf("min").forGetter(ILinear::min),
                             Codec.INT.fieldOf("max").forGetter(ILinear::max))
-                    .apply(instance, ILinear::new)).validate(iLinear -> {
+                    .apply(instance, ILinear::new)), iLinear -> {
                         if (iLinear.min > iLinear.max) return DataResult.error(() -> "Constraints for linear random mismatched, min greater than max!");
                         else return DataResult.success(iLinear);
     });
