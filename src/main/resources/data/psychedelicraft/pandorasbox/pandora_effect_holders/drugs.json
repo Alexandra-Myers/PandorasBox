@@ -1,11 +1,13 @@
 {
-  "fabric:load_conditions": {
-    "condition": "fabric:registry_contains",
-    "registry": "pandorasbox:pandora_effect_creator_types",
-    "values": [
-      "pandorasbox:drug_entities"
-    ]
-  },
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:registry_contains",
+      "registry": "pandorasbox:pandora_effect_creator_types",
+      "values": [
+        "pandorasbox:drug_entities"
+      ]
+    }
+  ],
   "tooltip": {
     "translate": "effect_holder.psychedelicraft.drugs"
   },

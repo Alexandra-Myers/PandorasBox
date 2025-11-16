@@ -17,6 +17,7 @@ import java.util.function.Supplier;
  * Created by lukas on 03.02.15.
  */
 public class PBNBTHelper {
+    public static final String RESOURCE_CONDITION_FAILED_ERROR = "Parsed object does not match resource conditions... Skipping";
     public static Codec<Component> COMPONENT_CODEC = Codec.of(new Encoder<>() {
         @Override
         public <T> DataResult<T> encode(Component input, DynamicOps<T> ops, T prefix) {
