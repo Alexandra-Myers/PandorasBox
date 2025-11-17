@@ -3,17 +3,13 @@ package ivorius.pandorasbox.effectholder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
-import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.network.chat.Component;
 
 public class PositiveOrNegativeEffectHolder extends EffectHolder {
     public static final DualMapCodec<PositiveOrNegativeEffectHolder> CODEC = new DualMapCodec<>(RecordCodecBuilder.mapCodec(instance ->
-            instance.group(PBNBTHelper.COMPONENT_CODEC.fieldOf("tooltip").forGetter(PositiveOrNegativeEffectHolder::component),
-                            PBEffectCreator.CODEC.fieldOf("effect_creator").forGetter(PositiveOrNegativeEffectHolder::effectCreator),
-                            Codec.BOOL.fieldOf("positive").forGetter(PositiveOrNegativeEffectHolder::isGood))
+            createTooltipCodec(instance).and(Codec.BOOL.fieldOf("positive").forGetter(PositiveOrNegativeEffectHolder::isGood))
                     .apply(instance, PositiveOrNegativeEffectHolder::new)), RecordCodecBuilder.mapCodec(instance ->
-            instance.group(PBEffectCreator.CODEC.fieldOf("effect_creator").forGetter(PositiveOrNegativeEffectHolder::effectCreator),
-                            Codec.BOOL.fieldOf("positive").forGetter(PositiveOrNegativeEffectHolder::isGood))
+            createNoTooltipCodec(instance).and(Codec.BOOL.fieldOf("positive").forGetter(PositiveOrNegativeEffectHolder::isGood))
                     .apply(instance, PositiveOrNegativeEffectHolder::new)));
     public final boolean good;
     public PositiveOrNegativeEffectHolder(Component component, PBEffectCreator effectCreator, boolean good) {

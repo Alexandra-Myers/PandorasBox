@@ -1,10 +1,13 @@
 package ivorius.pandorasbox.effectholder;
 
+import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
 import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.utils.LateBoundIdMapper;
+import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.network.chat.Component;
@@ -40,6 +43,16 @@ public abstract class EffectHolder {
         HOLDER_MAPPER.put(new ResourceLocation("fixed_chance_marked"), FixedChancePositiveOrNegativeEffectHolder.CODEC);
         HOLDER_MAPPER.put(new ResourceLocation("positive_or_negative"), PositiveOrNegativeEffectHolder.CODEC);
     }
+
+    public static <E extends EffectHolder> Products.P2<RecordCodecBuilder.Mu<E>, Component, PBEffectCreator> createTooltipCodec(RecordCodecBuilder.Instance<E> instance) {
+        return instance.group(PBNBTHelper.COMPONENT_CODEC.fieldOf("tooltip").forGetter(EffectHolder::component),
+                PBEffectCreator.CODEC.fieldOf("effect_creator").forGetter(EffectHolder::effectCreator));
+    }
+
+    public static <E extends EffectHolder> Products.P1<RecordCodecBuilder.Mu<E>, PBEffectCreator> createNoTooltipCodec(RecordCodecBuilder.Instance<E> instance) {
+        return instance.group(PBEffectCreator.CODEC.fieldOf("effect_creator").forGetter(EffectHolder::effectCreator));
+    }
+
     public abstract boolean canBeGoodOrBad();
     public abstract boolean isGood();
     public abstract double fixedChance();

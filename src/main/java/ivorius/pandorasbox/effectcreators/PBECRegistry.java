@@ -48,7 +48,7 @@ public class PBECRegistry {
         List<PBEffect> effects = createRandomEffects(world, random, x, y, z, multi, selection, registryKey);
 
         if (effects.size() == 1)
-            return effects.getFirst();
+            return effects.get(0);
         else {
             PBEffect[] effectArray = effects.toArray(new PBEffect[0]);
             int[] delays = new int[effectArray.length];
