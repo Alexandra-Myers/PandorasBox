@@ -24,7 +24,7 @@ public class PBEffectDuplicateBox extends PBEffectNormal {
     public static final int MODE_BOX_IN_BOX = 0;
     public static final MapCodec<PBEffectDuplicateBox> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(Codec.INT.fieldOf("spawn_mode").forGetter(PBEffectDuplicateBox::getSpawnMode),
-                            EffectHolder.CODEC.fieldOf("included_effect_holders").forGetter(PBEffectDuplicateBox::getIncludedEffectHolders))
+                            EffectHolder.CODEC.optionalFieldOf("included_effect_holders", HolderSet.direct()).forGetter(PBEffectDuplicateBox::getIncludedEffectHolders))
                     .apply(instance, PBEffectDuplicateBox::new));
 
     public HolderSet<EffectHolder> includedEffectHolders;

@@ -6,11 +6,14 @@ import ivorius.pandorasbox.effectcreators.PBEffectCreator;
 import net.minecraft.network.chat.Component;
 
 public class FixedChancePositiveOrNegativeEffectHolder extends EffectHolder {
-    public static final DualMapCodec<FixedChancePositiveOrNegativeEffectHolder> CODEC = new DualMapCodec<>(RecordCodecBuilder.mapCodec(instance ->
+    public static final TriMapCodec<FixedChancePositiveOrNegativeEffectHolder> CODEC = new TriMapCodec<>(RecordCodecBuilder.mapCodec(instance ->
             createTooltipCodec(instance).and(instance.group(Codec.doubleRange(0, 1).fieldOf("chance").forGetter(FixedChancePositiveOrNegativeEffectHolder::fixedChance),
                             Codec.BOOL.fieldOf("positive").forGetter(FixedChancePositiveOrNegativeEffectHolder::isGood)))
                     .apply(instance, FixedChancePositiveOrNegativeEffectHolder::new)), RecordCodecBuilder.mapCodec(instance ->
             createNoTooltipCodec(instance).and(instance.group(Codec.doubleRange(0, 1).fieldOf("chance").forGetter(FixedChancePositiveOrNegativeEffectHolder::fixedChance),
+                            Codec.BOOL.fieldOf("positive").forGetter(FixedChancePositiveOrNegativeEffectHolder::isGood)))
+                    .apply(instance, FixedChancePositiveOrNegativeEffectHolder::new)), RecordCodecBuilder.mapCodec(instance ->
+            createNetworkCodec(instance).and(instance.group(Codec.doubleRange(0, 1).fieldOf("chance").forGetter(FixedChancePositiveOrNegativeEffectHolder::fixedChance),
                             Codec.BOOL.fieldOf("positive").forGetter(FixedChancePositiveOrNegativeEffectHolder::isGood)))
                     .apply(instance, FixedChancePositiveOrNegativeEffectHolder::new)));
     public final boolean good;
@@ -23,6 +26,12 @@ public class FixedChancePositiveOrNegativeEffectHolder extends EffectHolder {
 
     public FixedChancePositiveOrNegativeEffectHolder(PBEffectCreator effectCreator, double fixedChance, boolean good) {
         super(effectCreator);
+        this.fixedChance = fixedChance;
+        this.good = good;
+    }
+
+    public FixedChancePositiveOrNegativeEffectHolder(Component component, double fixedChance, boolean good) {
+        super(component);
         this.fixedChance = fixedChance;
         this.good = good;
     }
@@ -43,7 +52,7 @@ public class FixedChancePositiveOrNegativeEffectHolder extends EffectHolder {
     }
 
     @Override
-    public DualMapCodec<? extends EffectHolder> codec() {
+    public TriMapCodec<? extends EffectHolder> codec() {
         return CODEC;
     }
 

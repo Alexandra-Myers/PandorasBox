@@ -456,8 +456,22 @@ public class PandorasBoxEntity extends Entity implements OwnableEntity {
         return new CompoundTag();
     }
 
+    public static Tag writeEffectWithoutRegistries(PBEffect effect, Optional<RegistryAccess> registryAccess) {
+        if (registryAccess.isPresent()) return writeEffect(effect, registryAccess.get());
+        if (effect != null) return PBEffect.CODEC.encodeStart(NbtOps.INSTANCE, effect).getOrThrow(false, str -> {});
+        return new CompoundTag();
+    }
+
     public static PBEffect loadEffect(Tag tag, RegistryAccess registryAccess) {
         return PBEffect.CODEC.parse(RegistryOps.create(NbtOps.INSTANCE, registryAccess), tag).get().map(Function.identity(), pbEffectError -> {
+            PandorasBox.logger.error("Failed to parse box, using fallback. Error: " + pbEffectError.message());
+            return new PBEffectDuplicateBox(PBEffectDuplicateBox.MODE_BOX_IN_BOX);
+        });
+    }
+
+    public static PBEffect loadEffectWithoutRegistries(Tag tag, Optional<RegistryAccess> registryAccess) {
+        if (registryAccess.isPresent()) return loadEffect(tag, registryAccess.get());
+        return PBEffect.CODEC.parse(NbtOps.INSTANCE, tag).get().map(Function.identity(), pbEffectError -> {
             PandorasBox.logger.error("Failed to parse box, using fallback. Error: " + pbEffectError.message());
             return new PBEffectDuplicateBox(PBEffectDuplicateBox.MODE_BOX_IN_BOX);
         });

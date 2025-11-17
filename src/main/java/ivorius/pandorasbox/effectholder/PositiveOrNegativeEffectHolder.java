@@ -6,10 +6,12 @@ import ivorius.pandorasbox.effectcreators.PBEffectCreator;
 import net.minecraft.network.chat.Component;
 
 public class PositiveOrNegativeEffectHolder extends EffectHolder {
-    public static final DualMapCodec<PositiveOrNegativeEffectHolder> CODEC = new DualMapCodec<>(RecordCodecBuilder.mapCodec(instance ->
+    public static final TriMapCodec<PositiveOrNegativeEffectHolder> CODEC = new TriMapCodec<>(RecordCodecBuilder.mapCodec(instance ->
             createTooltipCodec(instance).and(Codec.BOOL.fieldOf("positive").forGetter(PositiveOrNegativeEffectHolder::isGood))
                     .apply(instance, PositiveOrNegativeEffectHolder::new)), RecordCodecBuilder.mapCodec(instance ->
             createNoTooltipCodec(instance).and(Codec.BOOL.fieldOf("positive").forGetter(PositiveOrNegativeEffectHolder::isGood))
+                    .apply(instance, PositiveOrNegativeEffectHolder::new)), RecordCodecBuilder.mapCodec(instance ->
+            createNetworkCodec(instance).and(Codec.BOOL.fieldOf("positive").forGetter(PositiveOrNegativeEffectHolder::isGood))
                     .apply(instance, PositiveOrNegativeEffectHolder::new)));
     public final boolean good;
     public PositiveOrNegativeEffectHolder(Component component, PBEffectCreator effectCreator, boolean good) {
@@ -19,6 +21,11 @@ public class PositiveOrNegativeEffectHolder extends EffectHolder {
 
     public PositiveOrNegativeEffectHolder(PBEffectCreator effectCreator, boolean good) {
         super(effectCreator);
+        this.good = good;
+    }
+
+    public PositiveOrNegativeEffectHolder(Component component, boolean good) {
+        super(component);
         this.good = good;
     }
     @Override
@@ -37,7 +44,7 @@ public class PositiveOrNegativeEffectHolder extends EffectHolder {
     }
 
     @Override
-    public DualMapCodec<? extends EffectHolder> codec() {
+    public TriMapCodec<? extends EffectHolder> codec() {
         return CODEC;
     }
 

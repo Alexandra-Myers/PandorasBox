@@ -39,7 +39,7 @@ public record CityMapper(Either<Block, TagKey<Block>>[] targets, List<EntityType
     public static final MapCodec<CityMapper> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(PBNBTHelper.arrayCodec(Codec.either(BuiltInRegistries.BLOCK.byNameCodec(), TagKey.hashedCodec(Registries.BLOCK)), () -> (Either<Block, TagKey<Block>>[]) new Either[0]).fieldOf("targets").forGetter(CityMapper::targets),
                             BuiltInRegistries.ENTITY_TYPE.byNameCodec().listOf().fieldOf("spawner_entities").forGetter(CityMapper::spawnerEntities),
-                            EquipmentSet.INDIRECT_CODEC.fieldOf("equipment_sets").forGetter(CityMapper::equipmentSets),
+                            EquipmentSet.INDIRECT_CODEC.optionalFieldOf("equipment_sets", HolderSet.direct()).forGetter(CityMapper::equipmentSets),
                             RandomizedItemStack.LIST_CODEC.fieldOf("items").forGetter(CityMapper::items))
                     .apply(instance, CityMapper::new));
 

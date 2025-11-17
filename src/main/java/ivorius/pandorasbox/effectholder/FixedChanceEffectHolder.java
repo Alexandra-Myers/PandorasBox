@@ -6,10 +6,12 @@ import ivorius.pandorasbox.effectcreators.PBEffectCreator;
 import net.minecraft.network.chat.Component;
 
 public class FixedChanceEffectHolder extends EffectHolder {
-    public static final DualMapCodec<FixedChanceEffectHolder> CODEC = new DualMapCodec<>(RecordCodecBuilder.mapCodec(instance ->
+    public static final TriMapCodec<FixedChanceEffectHolder> CODEC = new TriMapCodec<>(RecordCodecBuilder.mapCodec(instance ->
             createTooltipCodec(instance).and(Codec.doubleRange(0, 1).fieldOf("chance").forGetter(FixedChanceEffectHolder::fixedChance))
                     .apply(instance, FixedChanceEffectHolder::new)), RecordCodecBuilder.mapCodec(instance ->
             createNoTooltipCodec(instance).and(Codec.doubleRange(0, 1).fieldOf("chance").forGetter(FixedChanceEffectHolder::fixedChance))
+                    .apply(instance, FixedChanceEffectHolder::new)), RecordCodecBuilder.mapCodec(instance ->
+            createNetworkCodec(instance).and(Codec.doubleRange(0, 1).fieldOf("chance").forGetter(FixedChanceEffectHolder::fixedChance))
                     .apply(instance, FixedChanceEffectHolder::new)));
     public final double fixedChance;
     public FixedChanceEffectHolder(Component component, PBEffectCreator pbEffectCreator, double fixedChance) {
@@ -18,6 +20,10 @@ public class FixedChanceEffectHolder extends EffectHolder {
     }
     public FixedChanceEffectHolder(PBEffectCreator pbEffectCreator, double fixedChance) {
         super(pbEffectCreator);
+        this.fixedChance = fixedChance;
+    }
+    public FixedChanceEffectHolder(Component component, double fixedChance) {
+        super(component);
         this.fixedChance = fixedChance;
     }
 
@@ -37,7 +43,7 @@ public class FixedChanceEffectHolder extends EffectHolder {
     }
 
     @Override
-    public DualMapCodec<?> codec() {
+    public TriMapCodec<?> codec() {
         return CODEC;
     }
 

@@ -4,8 +4,12 @@ import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import ivorius.pandorasbox.effectcreators.PBECDuplicateBox;
 import ivorius.pandorasbox.effectcreators.PBEffectCreator;
+import ivorius.pandorasbox.effects.PBEffectDuplicateBox;
 import ivorius.pandorasbox.init.Init;
+import ivorius.pandorasbox.random.DConstant;
+import ivorius.pandorasbox.random.IConstant;
 import ivorius.pandorasbox.utils.LateBoundIdMapper;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.HolderSet;
@@ -14,11 +18,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class EffectHolder {
-    public static final LateBoundIdMapper<ResourceLocation, DualMapCodec<? extends EffectHolder>> HOLDER_MAPPER = new LateBoundIdMapper<>();
+    public static final LateBoundIdMapper<ResourceLocation, TriMapCodec<? extends EffectHolder>> HOLDER_MAPPER = new LateBoundIdMapper<>();
     public static final Codec<EffectHolder> DIRECT_CODEC = HOLDER_MAPPER.codec(ResourceLocation.CODEC)
             .dispatch(EffectHolder::codec, mapCodec -> mapCodec.withTooltip.codec());
     public static final Codec<EffectHolder> DIRECT_CODEC_NO_TOOLTIP = HOLDER_MAPPER.codec(ResourceLocation.CODEC)
             .dispatch(EffectHolder::codec, mapCodec -> mapCodec.withoutTooltip.codec());
+    public static final Codec<EffectHolder> NETWORK_CODEC = HOLDER_MAPPER.codec(ResourceLocation.CODEC)
+            .dispatch(EffectHolder::codec, mapCodec -> mapCodec.networkCodec.codec());
     public static final Codec<HolderSet<EffectHolder>> CODEC = RegistryCodecs.homogeneousList(Init.EFFECT_HOLDER_REGISTRY_KEY);
     public static final Codec<HolderSet<EffectHolder>> MELTDOWN_CODEC = RegistryCodecs.homogeneousList(Init.MELTDOWN_EFFECT_HOLDER_REGISTRY_KEY);
     public final PBEffectCreator effectCreator;
@@ -38,6 +44,11 @@ public abstract class EffectHolder {
         this.effectCreator = effectCreator;
     }
 
+    protected EffectHolder(Component component) {
+        this.component = component;
+        this.effectCreator = new PBECDuplicateBox(new IConstant(PBEffectDuplicateBox.MODE_BOX_IN_BOX), new DConstant(0), HolderSet.direct());
+    }
+
     public static void bootstrap() {
         HOLDER_MAPPER.put(new ResourceLocation("fixed_chance"), FixedChanceEffectHolder.CODEC);
         HOLDER_MAPPER.put(new ResourceLocation("fixed_chance_marked"), FixedChancePositiveOrNegativeEffectHolder.CODEC);
@@ -53,13 +64,17 @@ public abstract class EffectHolder {
         return instance.group(PBEffectCreator.CODEC.fieldOf("effect_creator").forGetter(EffectHolder::effectCreator));
     }
 
+    public static <E extends EffectHolder> Products.P1<RecordCodecBuilder.Mu<E>, Component> createNetworkCodec(RecordCodecBuilder.Instance<E> instance) {
+        return instance.group(PBNBTHelper.COMPONENT_CODEC.fieldOf("tooltip").forGetter(EffectHolder::component));
+    }
+
     public abstract boolean canBeGoodOrBad();
     public abstract boolean isGood();
     public abstract double fixedChance();
-    public abstract DualMapCodec<?> codec();
+    public abstract TriMapCodec<?> codec();
     public abstract EffectHolder wrapEffectCreator(PBEffectCreator replacementCreator);
 
-    public record DualMapCodec<E extends EffectHolder>(MapCodec<E> withTooltip, MapCodec<E> withoutTooltip) {
+    public record TriMapCodec<E extends EffectHolder>(MapCodec<E> withTooltip, MapCodec<E> withoutTooltip, MapCodec<E> networkCodec) {
 
     }
 }

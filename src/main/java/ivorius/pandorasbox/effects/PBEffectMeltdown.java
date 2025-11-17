@@ -29,7 +29,7 @@ public final class PBEffectMeltdown extends PBEffect {
             instance.group(PBNBTHelper.arrayCodec(PBEffect.CODEC, () -> new PBEffect[0]).fieldOf("effects").forGetter(PBEffectMeltdown::getEffects),
                             PBNBTHelper.arrayCodec(Vec3.CODEC, () -> new Vec3[0]).fieldOf("effect_centers").forGetter(PBEffectMeltdown::getEffectCenters),
                             PBNBTHelper.arrayCodec(Codec.INT, () -> new Integer[0]).fieldOf("effect_start_ticks").forGetter(PBEffectMeltdown::getEffectStartTicks),
-                            EffectHolder.MELTDOWN_CODEC.fieldOf("included_meltdown_holders").forGetter(PBEffectMeltdown::getIncludedEffectHolders),
+                            EffectHolder.MELTDOWN_CODEC.optionalFieldOf("included_meltdown_holders", HolderSet.direct()).forGetter(PBEffectMeltdown::getIncludedEffectHolders),
                             Codec.FLOAT.fieldOf("range").forGetter(PBEffectMeltdown::getRange),
                             Codec.INT.fieldOf("max_ticks_alive").forGetter(PBEffectMeltdown::getMaxTicksAlive))
                     .apply(instance, PBEffectMeltdown::new));

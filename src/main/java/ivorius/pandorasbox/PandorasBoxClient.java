@@ -21,6 +21,7 @@ import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.GiantMobRenderer;
+import net.minecraft.core.RegistryAccess;
 
 public class PandorasBoxClient implements ClientModInitializer {
     public static Overlay cached = null;
@@ -46,5 +47,10 @@ public class PandorasBoxClient implements ClientModInitializer {
                 Minecraft.getInstance().setOverlay(new FakeDeathOverlay(new DeathScreen(null, player.level().getLevelData().isHardcore())));
             }
         });
+    }
+
+    public static RegistryAccess tryGetClientRegistryAccess() {
+        if (Minecraft.getInstance().level == null) return null;
+        return Minecraft.getInstance().level.registryAccess();
     }
 }

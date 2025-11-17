@@ -124,8 +124,8 @@ public class Init {
         EntityInit.registerEntities();
         PBEffectInit.registerPandora();
         DynamicRegistries.registerSynced(EQUIPMENT_SET_REGISTRY_KEY, EquipmentSet.CODEC);
-        DynamicRegistries.registerSynced(EFFECT_HOLDER_REGISTRY_KEY, EffectHolder.DIRECT_CODEC);
-        DynamicRegistries.registerSynced(MELTDOWN_EFFECT_HOLDER_REGISTRY_KEY, EffectHolder.DIRECT_CODEC_NO_TOOLTIP);
+        DynamicRegistries.registerSynced(EFFECT_HOLDER_REGISTRY_KEY, EffectHolder.DIRECT_CODEC, EffectHolder.NETWORK_CODEC);
+        DynamicRegistries.registerSynced(MELTDOWN_EFFECT_HOLDER_REGISTRY_KEY, EffectHolder.DIRECT_CODEC_NO_TOOLTIP, EffectHolder.NETWORK_CODEC);
     }
 
 }
