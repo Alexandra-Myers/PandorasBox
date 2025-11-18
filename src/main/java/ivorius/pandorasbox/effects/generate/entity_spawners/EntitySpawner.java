@@ -11,7 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public interface EntitySpawner {
-    Codec<EntitySpawner> CODEC = Init.ENTITY_SPAWNER_TYPE_REGISTRY.byNameCodec()
+    Codec<EntitySpawner> CODEC = Init.ENTITY_SPAWNER_TYPE_REGISTRY.get().getCodec()
             .dispatch(EntitySpawner::codec, MapCodec::codec);
     void spawnEntities(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, int unifiedSeed);
     @NotNull MapCodec<? extends EntitySpawner> codec();

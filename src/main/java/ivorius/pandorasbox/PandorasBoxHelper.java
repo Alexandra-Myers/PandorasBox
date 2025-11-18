@@ -9,7 +9,6 @@ import com.google.common.collect.*;
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import ivorius.pandorasbox.init.*;
-import ivorius.pandorasbox.init.ConventionalBlockTags;
 import ivorius.pandorasbox.random.ILinear;
 import ivorius.pandorasbox.utils.*;
 import ivorius.pandorasbox.weighted.*;

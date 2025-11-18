@@ -13,10 +13,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
-
 public interface GenerateEffect {
-    Codec<GenerateEffect> CODEC = Init.GENERATE_EFFECT_TYPE_REGISTRY.byNameCodec()
+    Codec<GenerateEffect> CODEC = Init.GENERATE_EFFECT_TYPE_REGISTRY.get().getCodec()
             .dispatch(GenerateEffect::codec, MapCodec::codec);
     void generateOnBlock(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, double ratio, int unifiedSeed);
     @Nullable ResourceKey<Biome> biome();

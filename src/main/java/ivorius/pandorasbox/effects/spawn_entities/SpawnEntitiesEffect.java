@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public interface SpawnEntitiesEffect {
-    Codec<SpawnEntitiesEffect> CODEC = Init.SPAWN_ENTITIES_EFFECT_TYPE_REGISTRY.byNameCodec()
+    Codec<SpawnEntitiesEffect> CODEC = Init.SPAWN_ENTITIES_EFFECT_TYPE_REGISTRY.get().getCodec()
             .dispatch(SpawnEntitiesEffect::codec, MapCodec::codec);
     Entity spawnEntity(Level world, PandorasBoxEntity pbEntity, RandomSource random, int number, double x, double y, double z);
     EntitySpawnConfiguration entitySpawnConfiguration();

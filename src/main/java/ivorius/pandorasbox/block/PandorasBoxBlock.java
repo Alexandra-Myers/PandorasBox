@@ -66,7 +66,7 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        PandorasBoxEntity result = PandorasBoxItem.createEffect(level, player, pos, false, ItemInit.PBI.getDefaultInstance());
+        PandorasBoxEntity result = PandorasBoxItem.createEffect(level, player, pos, false, ItemInit.PBI.get().getDefaultInstance());
         if (result == null) return InteractionResult.PASS;
         level.removeBlock(pos, false);
         level.removeBlockEntity(pos);
@@ -118,6 +118,6 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     @org.jetbrains.annotations.Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos p_153215_, @NotNull BlockState p_153216_) {
-        return BlockEntityInit.BEPB.create(p_153215_, p_153216_);
+        return BlockEntityInit.BEPB.get().create(p_153215_, p_153216_);
     }
 }

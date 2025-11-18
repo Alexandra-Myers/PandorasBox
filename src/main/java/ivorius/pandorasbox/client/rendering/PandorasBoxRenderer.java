@@ -13,8 +13,6 @@ import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderer;
 import ivorius.pandorasbox.client.rendering.effects.PBEffectRenderingRegistry;
 import ivorius.pandorasbox.client.rendering.effects.renderstate.PandoraEffectRenderState;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -27,6 +25,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import static com.mojang.math.Axis.YP;
 /**
  * Created by lukas on 30.03.14.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class PandorasBoxRenderer extends EntityRenderer<PandorasBoxEntity> implements RenderLayerParent<PandorasBoxEntity, PandorasBoxModel> {
     public PandorasBoxModel model;
     public ResourceLocation texture = new ResourceLocation(PandorasBox.MOD_ID, "textures/entity/pandoras_box.png");

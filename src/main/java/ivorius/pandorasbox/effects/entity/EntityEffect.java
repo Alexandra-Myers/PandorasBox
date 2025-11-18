@@ -12,10 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Function;
-
 public interface EntityEffect {
-    Codec<EntityEffect> CODEC = Init.ENTITY_EFFECT_TYPE_REGISTRY.byNameCodec()
+    Codec<EntityEffect> CODEC = Init.ENTITY_EFFECT_TYPE_REGISTRY.get().getCodec()
             .dispatch(EntityEffect::codec, MapCodec::codec);
     default void affectEntity(Level level, PandorasBoxEntity box, Vec3 effectCenter, RandomSource random, LivingEntity entity, double newRatio, double prevRatio, double strength) {
         if (level instanceof ServerLevel serverLevel) affectEntityServer(serverLevel, box, effectCenter, random, entity, newRatio, prevRatio, strength);

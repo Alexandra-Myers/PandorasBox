@@ -1,24 +1,24 @@
 package ivorius.pandorasbox.init;
 
-import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.item.PandorasBoxItem;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
+import static ivorius.pandorasbox.PandorasBox.MOD_ID;
 import static ivorius.pandorasbox.init.BlockInit.PB;
 
 public class ItemInit {
-    public static final PandorasBoxItem PBI = register("pandoras_box", (key) -> new PandorasBoxItem(PB, new Item.Properties()));
-    private static <T extends Item> T register(String name, Function<ResourceKey<Item>, T> item) {
-        ResourceKey<Item> itemResourceKey = ResourceKey.create(BuiltInRegistries.ITEM.key(), new ResourceLocation(PandorasBox.MOD_ID, name));
-        return Registry.register(BuiltInRegistries.ITEM, itemResourceKey, item.apply(itemResourceKey));
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
+    public static final RegistryObject<PandorasBoxItem> PBI = register("pandoras_box", () -> new PandorasBoxItem(PB.get(), new Item.Properties()));
+    private static <T extends Item> RegistryObject<T> register(String name, Supplier<T> item) {
+        return ITEMS.register(name, item);
     }
-    public static void registerItems() {
-
+    public static void registerItems(IEventBus bus) {
+        ITEMS.register(bus);
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public interface FeatureGeneratorCreator {
-    Codec<FeatureGeneratorCreator> CODEC = PBNBTHelper.withAlternative(Init.FEATURE_GENERATOR_CREATOR_TYPE_REGISTRY.byNameCodec()
+    Codec<FeatureGeneratorCreator> CODEC = PBNBTHelper.withAlternative(Init.FEATURE_GENERATOR_CREATOR_TYPE_REGISTRY.get().getCodec()
             .dispatch(FeatureGeneratorCreator::codec, MapCodec::codec), FeatureGenerator.CODEC.xmap(DirectGeneratorCreator::new, DirectGeneratorCreator::featureGenerator));
 
     FeatureGenerator constructFeatureGenerator(Level world, double x, double y, double z, RandomSource random);

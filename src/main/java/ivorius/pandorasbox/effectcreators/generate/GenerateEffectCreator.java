@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public interface GenerateEffectCreator {
-    Codec<GenerateEffectCreator> CODEC = Init.GENERATE_EFFECT_CREATOR_TYPE_REGISTRY.byNameCodec()
+    Codec<GenerateEffectCreator> CODEC = Init.GENERATE_EFFECT_CREATOR_TYPE_REGISTRY.get().getCodec()
             .dispatch(GenerateEffectCreator::codec, MapCodec::codec);
     GenerateEffect constructGenerate(Level world, double x, double y, double z, RandomSource random);
     default int getPasses() {

@@ -12,8 +12,7 @@
     "client.GiantZombieModelMixin",
     "client.GuiMixin",
     "client.KeyboardInputMixin",
-    "client.MinecraftMixin",
-    "client.RendererMixin"
+    "client.MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1

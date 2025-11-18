@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * Created by lukas on 30.03.14.
  */
 public interface PBEffectCreator {
-    Codec<PBEffectCreator> CODEC = Init.BOX_EFFECT_CREATOR_REGISTRY.byNameCodec()
+    Codec<PBEffectCreator> CODEC = Init.BOX_EFFECT_CREATOR_REGISTRY.get().getCodec()
             .dispatch(PBEffectCreator::codec, MapCodec::codec);
     default PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         return new PBEffectDuplicateBox(0);

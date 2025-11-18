@@ -5,7 +5,6 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effectcreators.PBECDrugEntities;
 import ivorius.pandorasbox.effects.entity.DrugEntityEffect;
-import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.weighted.WeightedSelector;
 import ivorius.psychedelicraft.entity.drug.DrugProperties;
 import ivorius.psychedelicraft.entity.drug.DrugType;
@@ -17,13 +16,14 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Optional;
 
+import static ivorius.pandorasbox.init.Init.registerBoxEffectCreatorType;
 import static ivorius.pandorasbox.init.Init.registerEntityEffectType;
 import static net.minecraft.util.ExtraCodecs.validate;
 
 public class PsychedelicraftHooks {
     public static void register() {
-        registerEntityEffectType(DrugEntityEffect.CODEC, "drug_entities");
-        Init.registerBoxEffectCreatorType(PBECDrugEntities.CODEC, "drug_entities");
+        registerEntityEffectType(() -> DrugEntityEffect.CODEC, "drug_entities");
+        registerBoxEffectCreatorType(() -> PBECDrugEntities.CODEC, "drug_entities");
     }
     public static void addDrugValue(LivingEntity livingEntity, DrugInfluence drug, float drugStrength) {
         Optional<DrugProperties> properties = DrugProperties.of(livingEntity);

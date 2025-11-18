@@ -35,7 +35,7 @@ import java.util.List;
  */
 public abstract class PBEffect {
     public static final ResourceLocation DEFAULT = new ResourceLocation(PandorasBox.MOD_ID, "render_default");
-    public static final Codec<PBEffect> CODEC = Init.BOX_EFFECT_TYPE_REGISTRY.byNameCodec()
+    public static final Codec<PBEffect> CODEC = Init.BOX_EFFECT_TYPE_REGISTRY.get().getCodec()
             .dispatch(PBEffect::codec, MapCodec::codec);
 
     public static boolean setBlockToAirSafe(Level level, BlockPos pos) {

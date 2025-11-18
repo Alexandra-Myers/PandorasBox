@@ -8,10 +8,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Function;
-
 public interface PositionEffect {
-    Codec<PositionEffect> CODEC = Init.POSITION_EFFECT_TYPE_REGISTRY.byNameCodec()
+    Codec<PositionEffect> CODEC = Init.POSITION_EFFECT_TYPE_REGISTRY.get().getCodec()
             .dispatch(PositionEffect::codec, MapCodec::codec);
     void doEffect(ServerLevel serverLevel, PandorasBoxEntity entity, RandomSource random, float newRatio, float prevRatio, double x, double y, double z);
 

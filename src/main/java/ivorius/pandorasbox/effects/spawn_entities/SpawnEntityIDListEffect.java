@@ -3,10 +3,6 @@ package ivorius.pandorasbox.effects.spawn_entities;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.ints.IntLists;
-import ivorius.pandorasbox.PandorasBox;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effectcreators.PBECSpawnItems;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
@@ -43,9 +39,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static ivorius.pandorasbox.effects.PBEffect.getPlayer;
 

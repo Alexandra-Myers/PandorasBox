@@ -21,7 +21,7 @@ public class PandorasBoxBlockEntity extends BlockEntity {
     private float rotationYaw;
 
     public PandorasBoxBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
-        super(BlockEntityInit.BEPB, p_155229_, p_155230_);
+        super(BlockEntityInit.BEPB.get(), p_155229_, p_155230_);
     }
 
     public void setRotationYaw(float rotationYaw) {

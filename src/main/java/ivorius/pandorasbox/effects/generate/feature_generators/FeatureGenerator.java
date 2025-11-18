@@ -12,14 +12,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Function;
-
 import static ivorius.pandorasbox.effects.generate.NetherBiome.expFromRatio;
 
 public interface FeatureGenerator {
-    Codec<FeatureGenerator> CODEC = Init.FEATURE_GENERATOR_TYPE_REGISTRY.byNameCodec()
+    Codec<FeatureGenerator> CODEC = Init.FEATURE_GENERATOR_TYPE_REGISTRY.get().getCodec()
             .dispatch(FeatureGenerator::codec, MapCodec::codec);
-    MapCodec<FeatureGenerator> MAP_CODEC = Init.FEATURE_GENERATOR_TYPE_REGISTRY.byNameCodec()
+    MapCodec<FeatureGenerator> MAP_CODEC = Init.FEATURE_GENERATOR_TYPE_REGISTRY.get().getCodec()
             .dispatchMap("generator_type", FeatureGenerator::codec, MapCodec::codec);
     default void generate(Level world, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random, int pass, BlockPos pos, double range, double ratio, int unifiedSeed) {
         if (world instanceof ServerLevel serverLevel && random.nextDouble() < Math.pow(baseChance(), expFromRatio(ratio))) finalGenerate(serverLevel, pos, serverLevel.getBlockState(pos), random, entity, effectCenter, pass, unifiedSeed, range);
