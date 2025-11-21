@@ -206,7 +206,7 @@ public class PandoraShrinePiece extends TemplateStructurePiece {
     }
 
 	private static int getSurfaceY(LevelAccessor level, int x, int z) {
-		return level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x, z) - 1;
+		return level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z) - 1;
 	}
 
     public static class Properties {
@@ -219,9 +219,6 @@ public class PandoraShrinePiece extends TemplateStructurePiece {
         );
         public boolean replaceWithEndStone;
         public boolean overgrown;
-
-        public Properties() {
-        }
 
         public Properties(boolean replaceWithEndStone, boolean overgrown) {
             this.replaceWithEndStone = replaceWithEndStone;
