@@ -135,6 +135,7 @@ public class Init {
     public static void init(IEventBus bus) {
         DataSerializerInit.registerDataSerializers(bus);
         FeatureInit.registerFeatures(bus);
+        StructureInit.registerStructures(bus);
         BlockInit.registerBlocks(bus);
         ItemInit.registerItems(bus);
         BlockEntityInit.registerBlockEntities(bus);

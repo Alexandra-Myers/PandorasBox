@@ -48,6 +48,15 @@ public class PandorasBoxClient {
     @SubscribeEvent
     public static void onCreativeTabBuild(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)) event.accept(ItemInit.PBI);
+        if (event.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)) {
+            event.accept(ItemInit.END_STONE_SLAB);
+            event.accept(ItemInit.END_STONE_STAIRS);
+            event.accept(ItemInit.END_STONE_WALL);
+            event.accept(ItemInit.INFESTED_END_STONE);
+            event.accept(ItemInit.INFESTED_END_STONE_BRICKS);
+            event.accept(ItemInit.CHISELED_END_STONE_BRICKS);
+            event.accept(ItemInit.INFESTED_CHISELED_END_STONE_BRICKS);
+        }
     }
 
     @SubscribeEvent

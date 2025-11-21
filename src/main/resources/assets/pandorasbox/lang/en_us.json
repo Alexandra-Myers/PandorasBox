@@ -2,6 +2,15 @@
   "entity.pandorasbox.pandoras_box": "Pandora's Box",
   "entity.pandorasbox.giant": "Giant",
   "block.pandorasbox.pandoras_box": "Pandora's Box",
+
+  "block.pandorasbox.chiseled_end_stone_bricks": "Chiseled End Stone Bricks",
+  "block.pandorasbox.end_stone_slab": "End Stone Slab",
+  "block.pandorasbox.end_stone_stairs": "End Stone Stairs",
+  "block.pandorasbox.end_stone_wall": "End Stone Wall",
+  "block.pandorasbox.infested_end_stone": "Infested End Stone",
+  "block.pandorasbox.infested_end_stone_bricks": "Infested End Stone Bricks",
+  "block.pandorasbox.infested_chiseled_end_stone_bricks": "Infested Chiseled End Stone Bricks",
+
   "item.pandorasbox.pandoras_box": "Pandora's Box",
 
   "component.pandora_effects.random": "Has Random Effects",
