@@ -9,7 +9,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.PBEffect;
-import ivorius.pandorasbox.effects.PBEffectGenRuinedPortal;
+import ivorius.pandorasbox.effects.PBEffectBuildRuinedPortal;
 import ivorius.pandorasbox.random.IValue;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.utils.RandomizedItemStack;
@@ -46,7 +46,7 @@ public record PBECRuinedPortal(IValue rangeH, IValue rangeY, IValue rangeStartY,
         WeightedBlock[] bricks = WeightedSelector.selectWeightless(random, Arrays.asList(this.brickSet), this.brickSet.length);
         Direction.Axis axis = random.nextBoolean() ? Direction.Axis.X : Direction.Axis.Z;
 
-        return new PBEffectGenRuinedPortal(time, rangeH, rangeY, rangeStartY, PandorasBoxHelper.getRandomUnifiedSeed(random), bricks, loot, axis);
+        return new PBEffectBuildRuinedPortal(time, rangeH, rangeY, rangeStartY, PandorasBoxHelper.getRandomUnifiedSeed(random), bricks, loot, axis);
     }
 
     @Override

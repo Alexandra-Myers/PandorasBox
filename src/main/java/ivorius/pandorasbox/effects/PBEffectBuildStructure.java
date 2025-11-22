@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-public abstract class PBEffectGenStructure extends PBEffectNormal {
+public abstract class PBEffectBuildStructure extends PBEffectNormal {
     public int length;
     public int width;
     public int height;
@@ -17,10 +17,10 @@ public abstract class PBEffectGenStructure extends PBEffectNormal {
     public boolean grounded;
     public BlockPos center = new BlockPos.MutableBlockPos();
 
-    public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed) {
+    public PBEffectBuildStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed) {
         this(maxTicksAlive, maxX, maxZ, maxY, startY, unifiedSeed, true);
     }
-    public PBEffectGenStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed, boolean grounded) {
+    public PBEffectBuildStructure(int maxTicksAlive, int maxX, int maxZ, int maxY, int startY, int unifiedSeed, boolean grounded) {
         super(maxTicksAlive);
         length = maxX;
         width = maxZ;

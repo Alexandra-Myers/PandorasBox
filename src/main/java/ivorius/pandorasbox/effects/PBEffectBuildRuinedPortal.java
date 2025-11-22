@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
-    public static final MapCodec<PBEffectGenRuinedPortal> CODEC = RecordCodecBuilder.mapCodec(instance ->
+public class PBEffectBuildRuinedPortal extends PBEffectBuildStructure {
+    public static final MapCodec<PBEffectBuildRuinedPortal> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(base(),
                             Codec.INT.fieldOf("max_horizontal").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.length),
                             Codec.INT.fieldOf("max_vertical").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.height),
@@ -43,20 +43,20 @@ public class PBEffectGenRuinedPortal extends PBEffectGenStructure {
                             RandomizedItemStack.CODEC.listOf().fieldOf("loot").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.loot),
                             Direction.Axis.CODEC.fieldOf("axis").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.axis),
                             PBNBTHelper.arrayCodec(Codec.BOOL, () -> new Boolean[0]).fieldOf("used_stairs").forGetter(pbEffectGenRuinedPortal -> pbEffectGenRuinedPortal.usedStairsForTop))
-                    .apply(instance, PBEffectGenRuinedPortal::new));
+                    .apply(instance, PBEffectBuildRuinedPortal::new));
     public WeightedBlock[] bricks;
     public List<RandomizedItemStack> loot;
     public Direction.Axis axis;
     public Boolean[] usedStairsForTop = new Boolean[] {false, false};
 
-    public PBEffectGenRuinedPortal(int time, int maxH, int maxY, int startY, int unifiedSeed, WeightedBlock[] brickSet, List<RandomizedItemStack> loot, Direction.Axis axis) {
+    public PBEffectBuildRuinedPortal(int time, int maxH, int maxY, int startY, int unifiedSeed, WeightedBlock[] brickSet, List<RandomizedItemStack> loot, Direction.Axis axis) {
         super(time, maxH, maxH, maxY, startY, unifiedSeed);
 
         this.bricks = brickSet;
         this.loot = loot;
         this.axis = axis;
     }
-    private PBEffectGenRuinedPortal(int time, int maxH, int maxY, int startY, int unifiedSeed, boolean grounded, BlockPos center, BlockPos.MutableBlockPos current, WeightedBlock[] brickSet, List<RandomizedItemStack> loot, Direction.Axis axis, Boolean[] usedStairsForTop) {
+    private PBEffectBuildRuinedPortal(int time, int maxH, int maxY, int startY, int unifiedSeed, boolean grounded, BlockPos center, BlockPos.MutableBlockPos current, WeightedBlock[] brickSet, List<RandomizedItemStack> loot, Direction.Axis axis, Boolean[] usedStairsForTop) {
         super(time, maxH, maxH, maxY, startY, unifiedSeed, grounded);
 
         this.center = center;

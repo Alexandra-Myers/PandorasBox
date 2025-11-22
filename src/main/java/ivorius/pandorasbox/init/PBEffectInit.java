@@ -29,17 +29,18 @@ import static ivorius.pandorasbox.init.Init.*;
 
 public class PBEffectInit {
     static {
+        registerBoxEffectType(() -> PBEffectBuildRuinedPortal.CODEC, "build_ruined_portal");
         registerBoxEffectType(() -> PBEffectDuplicateBox.CODEC, "duplicate_box");
         registerBoxEffectType(() -> PBEffectEntityBased.CODEC, "effect_entities");
         registerBoxEffectType(() -> PBEffectSpawnEntities.CODEC, "effect_spawn_entities");
         registerBoxEffectType(() -> PBEffectPositionBased.CODEC, "effect_position");
         registerBoxEffectType(() -> PBEffectExplode.CODEC, "explode_box");
+        registerBoxEffectType(() -> PBEffectWorldGenStructure.CODEC, "world_gen_structure");
         registerBoxEffectType(() -> PBEffectGenerate.CODEC, "generate");
         registerBoxEffectType(() -> PBEffectGenerate2D.CODEC, "gen_two_dimensional");
         registerBoxEffectType(() -> PBEffectGenerateByFlag.CODEC, "gen_flags");
         registerBoxEffectType(() -> PBEffectGenCreativeTowers.CODEC, "gen_creative_towers");
         registerBoxEffectType(() -> PBEffectGenTargets.CODEC, "gen_targets");
-        registerBoxEffectType(() -> PBEffectGenRuinedPortal.CODEC, "gen_ruined_portal");
         registerBoxEffectType(() -> PBEffectGenShapes.CODEC, "gen_shapes");
         registerBoxEffectType(() -> PBEffectGenWorldSnake.CODEC, "gen_world_snake");
         registerBoxEffectType(() -> PBEffectMeltdown.CODEC, "meltdown");
@@ -121,6 +122,7 @@ public class PBEffectInit {
         registerBoxEffectCreatorType(() -> PBECSpawnLightning.CODEC, "spawn_lightning");
         registerBoxEffectCreatorType(() -> PBECSpawnManySameItems.CODEC, "spawn_many_same_items");
         registerBoxEffectCreatorType(() -> PBECSpawnTNT.CODEC, "spawn_tnt");
+        registerBoxEffectCreatorType(() -> PBECStructure.CODEC, "structure");
         registerBoxEffectCreatorType(() -> PBECTargets.CODEC, "create_targets");
         registerBoxEffectCreatorType(() -> PBECTeleportEntities.CODEC, "teleport_entities");
         registerBoxEffectCreatorType(() -> PBECThrowItems.CODEC, "throw_items");
