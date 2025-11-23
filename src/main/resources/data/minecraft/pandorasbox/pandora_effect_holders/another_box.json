@@ -1,0 +1,30 @@
+{
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.another_box"
+  },
+  "effect_creator": {
+    "structures": [
+      {
+        "structure": "pandorasbox:henge",
+        "weight": 1
+      },
+      {
+        "structure": "pandorasbox:shrine_overworld",
+        "weight": 1
+      },
+      {
+        "structure": "pandorasbox:shrine_end",
+        "weight": 1
+      }
+    ],
+    "blocks_per_tick": {
+      "min": 3,
+      "max": 6,
+      "type": "minecraft:linear"
+    },
+    "chance_for_more_effects": 0,
+    "type": "pandorasbox:structure"
+  },
+  "positive": false,
+  "type": "minecraft:positive_or_negative"
+}

@@ -3,13 +3,13 @@ package ivorius.pandorasbox.worldgen;
 import ivorius.pandorasbox.effectcreators.PBECStructure;
 import net.minecraft.core.*;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
@@ -55,7 +55,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
-public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, List<List<String>> palettesAsStrings, List<Runnable> resetRunners, ServerLevel serverLevel) implements WorldGenLevel {
+public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, List<List<BlockState>> palettes, Deque<Runnable> resetRunners, ServerLevel serverLevel) implements WorldGenLevel {
     @Override
     public long getSeed() {
         return serverLevel.getSeed();
@@ -147,7 +147,7 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     }
 
     @Override
-    public @Nullable MinecraftServer getServer() {
+    public @NotNull MinecraftServer getServer() {
         return serverLevel.getServer();
     }
 
@@ -682,45 +682,46 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     }
 
     @Override
-    public boolean setBlock(@NotNull BlockPos pos, BlockState state, int i, int j) {
-        BlockState originalState = serverLevel.getBlockState(pos);
-        Optional<BlockEntity> originalEntity = Optional.ofNullable(serverLevel.getBlockEntity(pos));
-        boolean result = serverLevel.setBlock(pos, state, i, j);
-        Optional<BlockEntity> blockEntity = Optional.ofNullable(serverLevel.getBlockEntity(pos));
-        String tag = BlockState.CODEC.encodeStart(NbtOps.INSTANCE, state).getOrThrow(false, s -> {}).getAsString();
+    public boolean setBlock(@NotNull BlockPos rawPos, BlockState state, int i, int j) {
+        BlockState originalState = serverLevel.getBlockState(rawPos);
+        boolean result = serverLevel.setBlock(rawPos, state, i, j);
+        BlockPos pos = rawPos.immutable();
         AtomicInteger index = new AtomicInteger();
         AtomicInteger paletteId = new AtomicInteger();
-        if (!palettesAsStrings.isEmpty()) {
-            Optional<Integer> chosen = palettesAsStrings.stream().filter(palette -> {
-                Optional<String> found = palette.stream().filter(s -> Objects.equals(s, tag)).findAny();
+        if (!palettes.isEmpty()) {
+            Optional<Integer> chosen = palettes.stream().filter(palette -> {
+                Optional<BlockState> found = palette.stream().filter(s -> s == state).findAny();
                 index.set(found.map(palette::indexOf).orElse(index.get()));
                 return found.isPresent();
-            }).findFirst().map(palettesAsStrings::indexOf);
+            }).findFirst().map(palettes::indexOf);
             chosen.ifPresentOrElse(paletteId::set, () -> {
-                List<String> palette = palettesAsStrings.get(palettesAsStrings.size() - 1);
+                List<BlockState> palette = palettes.get(palettes.size() - 1);
                 if (palette.size() < 16) {
                     index.set(palette.size());
-                    paletteId.set(palettesAsStrings.size() - 1);
-                    palette.add(tag);
+                    paletteId.set(palettes.size() - 1);
+                    palette.add(state);
                 } else {
                     index.set(0);
-                    paletteId.set(palettesAsStrings.size());
-                    List<String> newList = new ArrayList<>();
-                    newList.add(tag);
-                    palettesAsStrings.add(newList);
+                    paletteId.set(palette.size());
+                    List<BlockState> newList = new ArrayList<>();
+                    newList.add(state);
+                    palettes.add(newList);
                 }
             });
         } else {
-            List<String> newList = new ArrayList<>();
-            newList.add(tag);
-            palettesAsStrings.add(newList);
+            List<BlockState> newList = new ArrayList<>();
+            newList.add(state);
+            palettes.add(newList);
         }
         PBECStructure.BlockUpdateData toUpdate = new PBECStructure.BlockUpdateData(pos, state, paletteId.get(), index.get(), Optional.empty());
         toEmitTo.add(toUpdate);
-        resetRunners.add(() -> {
-            blockEntity.ifPresent(entity -> toUpdate.setTag(entity.saveWithId()));
-            serverLevel.setBlock(pos, originalState, i, j);
-            originalEntity.ifPresent(serverLevel::setBlockEntity);
+        resetRunners.offerFirst(() -> {
+            Optional.ofNullable(serverLevel.getBlockEntity(pos)).ifPresent(entity -> {
+                toUpdate.setTag(entity.saveWithId());
+                entity.setRemoved();
+                Clearable.tryClear(entity);
+            });
+            serverLevel.setBlock(pos, originalState, 3);
         });
         return result;
     }

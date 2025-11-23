@@ -146,7 +146,7 @@ public class PandoraShrinePiece extends TemplateStructurePiece {
 		BlockPos.MutableBlockPos mutableBlockPos = pos.mutable();
 		this.placeMud(level, mutableBlockPos);
 		int position = 8;
-        double baseDistance = centerPos.distSqr(mutableBlockPos);
+        double baseDistance = centerPos.distSqr(mutableBlockPos) / 2;
         double distance = 0;
 
 		while (position > -16 && (random.nextFloat() < 0.5F || distance < maxDist)) {

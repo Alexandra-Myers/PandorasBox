@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public record PBECStructure(float chanceForMoreEffects, IValue blocksPerTick, List<WeightedStructure> structures) implements PBEffectCreator {
     public static final MapCodec<PBECStructure> CODEC = RecordCodecBuilder.mapCodec(instance ->
@@ -38,9 +39,9 @@ public record PBECStructure(float chanceForMoreEffects, IValue blocksPerTick, Li
     @Override
     public PBEffect constructEffect(Level world, double x, double y, double z, RandomSource random) {
         int blocksPerTick = Math.max(1, this.blocksPerTick.getValue(random));
-        List<Runnable> reset = new ArrayList<>();
+        ConcurrentLinkedDeque<Runnable> reset = new ConcurrentLinkedDeque<>();
         List<BlockUpdateData> data = new ArrayList<>();
-        List<List<String>> palettes = new ArrayList<>();
+        List<List<BlockState>> palettes = new ArrayList<>();
         if (world instanceof ServerLevel serverLevel) {
             NosyWorldGenLevel nosyWorldGenLevel = new NosyWorldGenLevel(data, palettes, reset, serverLevel);
             BlockPos pos = BlockPos.containing(x, y, z);
@@ -82,9 +83,11 @@ public record PBECStructure(float chanceForMoreEffects, IValue blocksPerTick, Li
                 tempStructures.remove(structure);
             }
         }
-        reset.forEach(Runnable::run);
-        reset.clear();
-        return PBEffectWorldGenStructure.from(data.size() / blocksPerTick + 20, blocksPerTick, palettes, data);
+        while (!reset.isEmpty()) {
+            Runnable toReset = reset.poll();
+            if (toReset != null) toReset.run();
+        }
+        return new PBEffectWorldGenStructure(data.size() / blocksPerTick + 20, blocksPerTick, palettes, data);
     }
 
     @Override
