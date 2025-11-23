@@ -6,14 +6,22 @@
     "structures": [
       {
         "structure": "minecraft:desert_pyramid",
-        "weight": 1
+        "weight": 2
       },
       {
         "structure": "minecraft:jungle_pyramid",
-        "weight": 1
+        "weight": 2
       },
       {
         "structure": "minecraft:monument",
+        "weight": 2
+      },
+      {
+        "structure": "minecraft:ocean_ruin_cold",
+        "weight": 1
+      },
+      {
+        "structure": "minecraft:ocean_ruin_warm",
         "weight": 1
       }
     ],

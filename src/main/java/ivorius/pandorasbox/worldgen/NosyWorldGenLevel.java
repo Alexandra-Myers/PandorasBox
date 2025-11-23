@@ -77,11 +77,6 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     }
 
     @Override
-    public void addFreshEntityWithPassengers(@NotNull Entity arg) {
-        serverLevel.addFreshEntityWithPassengers(arg);
-    }
-
-    @Override
     public long dayTime() {
         return serverLevel.dayTime();
     }

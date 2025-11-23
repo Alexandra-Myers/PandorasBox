@@ -80,7 +80,7 @@ public class PBEffectWorldGenStructure extends PBEffectNormal {
     @Override
     public void finalizeEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random) {
         super.finalizeEffect(level, entity, effectCenter, random);
-        this.entities(level).forEach(level::addFreshEntity);
+        this.entities(level).forEach(entity1 -> entity1.getSelfAndPassengers().forEach(level::addFreshEntity));
     }
 
     @Override
