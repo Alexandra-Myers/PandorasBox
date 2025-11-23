@@ -35,7 +35,6 @@ public class PBEffectInit {
         registerBoxEffectType(() -> PBEffectSpawnEntities.CODEC, "effect_spawn_entities");
         registerBoxEffectType(() -> PBEffectPositionBased.CODEC, "effect_position");
         registerBoxEffectType(() -> PBEffectExplode.CODEC, "explode_box");
-        registerBoxEffectType(() -> PBEffectWorldGenStructure.CODEC, "world_gen_structure");
         registerBoxEffectType(() -> PBEffectGenerate.CODEC, "generate");
         registerBoxEffectType(() -> PBEffectGenerate2D.CODEC, "gen_two_dimensional");
         registerBoxEffectType(() -> PBEffectGenerateByFlag.CODEC, "gen_flags");
@@ -47,6 +46,7 @@ public class PBEffectInit {
         registerBoxEffectType(() -> PBEffectMulti.CODEC, "multi");
         registerBoxEffectType(() -> PBEffectSetTime.CODEC, "set_time");
         registerBoxEffectType(() -> PBEffectSetWeather.CODEC, "set_weather");
+        registerBoxEffectType(() -> PBEffectWorldGenStructure.CODEC, "world_gen_structure");
         registerEntityEffectType(() -> BombermanEntityEffect.CODEC, "bomberman");
         registerEntityEffectType(() -> BombpackEntityEffect.CODEC, "bombpack");
         registerEntityEffectType(() -> BuffEntityEffect.CODEC, "buff_entities");
