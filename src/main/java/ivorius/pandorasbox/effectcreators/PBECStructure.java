@@ -14,6 +14,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -23,10 +24,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public record PBECStructure(float chanceForMoreEffects, IValue blocksPerTick, List<WeightedStructure> structures) implements PBEffectCreator {
@@ -42,8 +40,9 @@ public record PBECStructure(float chanceForMoreEffects, IValue blocksPerTick, Li
         ConcurrentLinkedDeque<Runnable> reset = new ConcurrentLinkedDeque<>();
         List<BlockUpdateData> data = new ArrayList<>();
         List<List<BlockState>> palettes = new ArrayList<>();
+        List<Entity> entities = new ArrayList<>();
         if (world instanceof ServerLevel serverLevel) {
-            NosyWorldGenLevel nosyWorldGenLevel = new NosyWorldGenLevel(data, palettes, reset, serverLevel);
+            NosyWorldGenLevel nosyWorldGenLevel = new NosyWorldGenLevel(data, palettes, reset, entities, serverLevel);
             BlockPos pos = BlockPos.containing(x, y, z);
             ChunkGenerator generator = serverLevel.getChunkSource().getGenerator();
             List<WeightedStructure> tempStructures = new ArrayList<>(structures);
@@ -87,7 +86,7 @@ public record PBECStructure(float chanceForMoreEffects, IValue blocksPerTick, Li
             Runnable toReset = reset.poll();
             if (toReset != null) toReset.run();
         }
-        return new PBEffectWorldGenStructure(data.size() / blocksPerTick + 20, blocksPerTick, palettes, data);
+        return new PBEffectWorldGenStructure(data.size() / blocksPerTick + 20, blocksPerTick, palettes, data, Collections.emptyList(), entities);
     }
 
     @Override

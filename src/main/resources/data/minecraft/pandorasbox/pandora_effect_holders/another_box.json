@@ -25,6 +25,6 @@
     "chance_for_more_effects": 0,
     "type": "pandorasbox:structure"
   },
-  "positive": false,
-  "type": "minecraft:positive_or_negative"
+  "chance": 0.02,
+  "type": "minecraft:fixed_chance"
 }

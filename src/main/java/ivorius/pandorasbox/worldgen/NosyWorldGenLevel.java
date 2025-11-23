@@ -55,7 +55,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
-public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, List<List<BlockState>> palettes, Deque<Runnable> resetRunners, ServerLevel serverLevel) implements WorldGenLevel {
+public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, List<List<BlockState>> palettes, Deque<Runnable> resetRunners, List<Entity> entities, ServerLevel serverLevel) implements WorldGenLevel {
     @Override
     public long getSeed() {
         return serverLevel.getSeed();
@@ -759,7 +759,7 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
 
     @Override
     public boolean addFreshEntity(@NotNull Entity arg) {
-        return serverLevel.addFreshEntity(arg);
+        return entities.add(arg);
     }
 
     @Override

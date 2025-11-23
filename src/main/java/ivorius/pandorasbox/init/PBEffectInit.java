@@ -29,7 +29,6 @@ import static ivorius.pandorasbox.init.Init.*;
 
 public class PBEffectInit {
     static {
-        registerBoxEffectType(() -> PBEffectBuildRuinedPortal.CODEC, "build_ruined_portal");
         registerBoxEffectType(() -> PBEffectDuplicateBox.CODEC, "duplicate_box");
         registerBoxEffectType(() -> PBEffectEntityBased.CODEC, "effect_entities");
         registerBoxEffectType(() -> PBEffectSpawnEntities.CODEC, "effect_spawn_entities");
@@ -108,7 +107,6 @@ public class PBEffectInit {
         registerBoxEffectCreatorType(() -> PBECMeltdown.CODEC, "meltdown");
         registerBoxEffectCreatorType(() -> PBECMulti.CODEC, "multi");
         registerBoxEffectCreatorType(() -> PBECRandomShapes.CODEC, "create_random_shapes");
-        registerBoxEffectCreatorType(() -> PBECRuinedPortal.CODEC, "ruined_portal");
         registerBoxEffectCreatorType(() -> PBECSetTime.CODEC, "set_time");
         registerBoxEffectCreatorType(() -> PBECSetWeather.CODEC, "set_weather");
         registerBoxEffectCreatorType(() -> PBECSpawnArmy.CODEC, "spawn_army");
