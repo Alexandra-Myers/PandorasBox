@@ -7,7 +7,9 @@
         "element_type": "minecraft:single_pool_element",
         "location": "pandorasbox:henge/henge_with_box",
         "projection": "terrain_matching",
-        "processors": "minecraft:empty"
+        "processors": {
+          "processors": []
+        }
       }
     },
     {
@@ -16,7 +18,9 @@
         "element_type": "minecraft:single_pool_element",
         "location": "pandorasbox:henge/henge_without_box",
         "projection": "terrain_matching",
-        "processors": "minecraft:empty"
+        "processors": {
+          "processors": []
+        }
       }
     }
   ]

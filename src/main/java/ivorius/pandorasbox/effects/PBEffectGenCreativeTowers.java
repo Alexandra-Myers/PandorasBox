@@ -11,6 +11,7 @@ import ivorius.pandorasbox.PandorasBoxHelper;
 import ivorius.pandorasbox.effects.structure.CreativeTowerConfiguration;
 import ivorius.pandorasbox.effects.structure.StructureCreativeTower;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.PBEffectInit;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedBlock;
 import net.minecraft.core.BlockPos;
@@ -66,8 +67,8 @@ public class PBEffectGenCreativeTowers extends PBEffectGenerateByStructure<Struc
     }
 
     @Override
-    public @NotNull MapCodec<? extends PBEffect> codec() {
-        return CODEC;
+    public @NotNull PBEffectType<? extends PBEffect> type() {
+        return PBEffectInit.GEN_CREATIVE_TOWERS;
     }
 
 

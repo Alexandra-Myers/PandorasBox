@@ -31,7 +31,7 @@ public record PBECStructure(float chanceForMoreEffects, IValue blocksPerTick, Li
     public static final MapCodec<PBECStructure> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(Codec.floatRange(0, 1).fieldOf("chance_for_more_effects").forGetter(PBECStructure::chanceForMoreEffects),
                             IValue.CODEC.fieldOf("blocks_per_tick").forGetter(PBECStructure::blocksPerTick),
-                            WeightedStructure.CODEC.listOf().fieldOf("structures").forGetter(PBECStructure::structures))
+                            WeightedStructure.CODEC.listOf().fieldOf("structures").orElseGet(Collections::emptyList).forGetter(PBECStructure::structures))
                     .apply(instance, PBECStructure::new));
 
     @Override

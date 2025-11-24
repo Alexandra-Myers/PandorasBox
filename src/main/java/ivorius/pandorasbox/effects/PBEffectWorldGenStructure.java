@@ -4,6 +4,7 @@ import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effectcreators.PBECStructure;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.PBEffectInit;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -15,6 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PBEffectWorldGenStructure extends PBEffectNormal {
@@ -24,6 +26,10 @@ public class PBEffectWorldGenStructure extends PBEffectNormal {
                             BlockState.CODEC.listOf().listOf().fieldOf("palette").forGetter(pbEffectWorldGenStructure -> pbEffectWorldGenStructure.palettes),
                             PBECStructure.BlockUpdateData.CODEC.listOf().fieldOf("block_updates").forGetter(pbEffectWorldGenStructure -> pbEffectWorldGenStructure.blockUpdates),
                             CompoundTag.CODEC.listOf().fieldOf("entities").forGetter(PBEffectWorldGenStructure::entitiesIntoTags))
+                    .apply(instance, PBEffectWorldGenStructure::new));
+    public static final MapCodec<PBEffectWorldGenStructure> NETWORK_CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(base(),
+                            Codec.INT.fieldOf("blocks_per_tick").forGetter(pbEffectWorldGenStructure -> pbEffectWorldGenStructure.blocksPerTick))
                     .apply(instance, PBEffectWorldGenStructure::new));
     private final int blocksPerTick;
     private final List<List<BlockState>> palettes;
@@ -45,6 +51,10 @@ public class PBEffectWorldGenStructure extends PBEffectNormal {
 
     public PBEffectWorldGenStructure(int maxTicksAlive, int blocksPerTick, List<List<BlockState>> palettes, List<PBECStructure.BlockUpdateData> blockUpdates, List<CompoundTag> entityTags) {
         this(maxTicksAlive, blocksPerTick, palettes, blockUpdates, entityTags, null);
+    }
+
+    public PBEffectWorldGenStructure(int maxTicksAlive, int blocksPerTick) {
+        this(maxTicksAlive, blocksPerTick, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }
 
     public List<Entity> entities(Level level) {
@@ -80,11 +90,12 @@ public class PBEffectWorldGenStructure extends PBEffectNormal {
     @Override
     public void finalizeEffect(Level level, PandorasBoxEntity entity, Vec3 effectCenter, RandomSource random) {
         super.finalizeEffect(level, entity, effectCenter, random);
+        if (level.isClientSide()) return;
         this.entities(level).forEach(entity1 -> entity1.getSelfAndPassengers().forEach(level::addFreshEntity));
     }
 
     @Override
-    public @NotNull MapCodec<? extends PBEffect> codec() {
-        return CODEC;
+    public @NotNull PBEffectType<? extends PBEffect> type() {
+        return PBEffectInit.WORLD_GEN_STRUCTURE;
     }
 }
