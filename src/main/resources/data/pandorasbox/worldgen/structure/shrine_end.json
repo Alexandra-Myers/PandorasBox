@@ -4,11 +4,11 @@
   "templates": [
     {
       "location": "pandorasbox:shrine/shrine",
-      "weight": 1
+      "weight": 2
     },
     {
       "location": "pandorasbox:shrine/shrine_small",
-      "weight": 3
+      "weight": 1
     }
   ],
   "overgrown": {
