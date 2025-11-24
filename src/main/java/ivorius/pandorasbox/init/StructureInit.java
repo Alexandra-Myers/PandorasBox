@@ -18,13 +18,13 @@ public class StructureInit {
     public static final StructureType<PandoraShrineStructure> PANDORA_SHRINE = registerStructure("pandora_shrine", () -> PandoraShrineStructure.CODEC);
     public static final StructureProcessorType<EndStoneReplaceProcessor> END_STONE_REPLACE = registerStructureProcessor("end_stone_replace", () -> EndStoneReplaceProcessor.CODEC);
     private static StructurePieceType registerTemplateStructurePiece(String name, StructurePieceType.StructureTemplateType feature) {
-        return Registry.register(BuiltInRegistries.STRUCTURE_PIECE, new ResourceLocation(PandorasBox.MOD_ID, name), feature);
+        return Registry.register(BuiltInRegistries.STRUCTURE_PIECE, ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, name), feature);
     }
     private static <T extends Structure> StructureType<T> registerStructure(String name, StructureType<T> feature) {
-        return Registry.register(BuiltInRegistries.STRUCTURE_TYPE, new ResourceLocation(PandorasBox.MOD_ID, name), feature);
+        return Registry.register(BuiltInRegistries.STRUCTURE_TYPE, ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, name), feature);
     }
     private static <T extends StructureProcessor> StructureProcessorType<T> registerStructureProcessor(String name, StructureProcessorType<T> feature) {
-        return Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, new ResourceLocation(PandorasBox.MOD_ID, name), feature);
+        return Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, name), feature);
     }
     public static void registerStructures() {
 

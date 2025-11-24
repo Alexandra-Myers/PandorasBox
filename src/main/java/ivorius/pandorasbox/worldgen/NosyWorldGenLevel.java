@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkSource;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -155,11 +155,6 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     @Override
     public @NotNull ChunkSource getChunkSource() {
         return serverLevel.getChunkSource();
-    }
-
-    @Override
-    public @Nullable ChunkAccess getChunk(int i, int j, @NotNull ChunkStatus arg, boolean bl) {
-        return serverLevel.getChunk(i, j, arg, bl);
     }
 
     @Override
@@ -308,8 +303,13 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     }
 
     @Override
-    public @NotNull ChunkAccess getChunk(int i, int j, @NotNull ChunkStatus arg) {
-        return serverLevel.getChunk(i, j, arg);
+    public @NotNull ChunkAccess getChunk(int i, int j, ChunkStatus chunkStatus) {
+        return serverLevel.getChunk(i, j, chunkStatus);
+    }
+
+    @Override
+    public @Nullable ChunkAccess getChunk(int i, int j, ChunkStatus chunkStatus, boolean bl) {
+        return serverLevel.getChunk(i, j, chunkStatus, bl);
     }
 
     @Override
@@ -418,23 +418,28 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     }
 
     @Override
-    public void gameEvent(@NotNull GameEvent arg, @NotNull Vec3 arg2, GameEvent.@NotNull Context arg3) {
-        serverLevel.gameEvent(arg, arg2, arg3);
+    public void gameEvent(Holder<GameEvent> holder, Vec3 vec3, GameEvent.Context context) {
+        serverLevel.gameEvent(holder, vec3, context);
     }
 
     @Override
-    public void gameEvent(@Nullable Entity arg, @NotNull GameEvent arg2, @NotNull Vec3 arg3) {
-        serverLevel.gameEvent(arg, arg2, arg3);
+    public void gameEvent(@Nullable Entity entity, Holder<GameEvent> holder, Vec3 vec3) {
+        serverLevel.gameEvent(entity, holder, vec3);
     }
 
     @Override
-    public void gameEvent(@Nullable Entity arg, @NotNull GameEvent arg2, @NotNull BlockPos arg3) {
-        serverLevel.gameEvent(arg, arg2, arg3);
+    public void gameEvent(@Nullable Entity entity, Holder<GameEvent> holder, BlockPos blockPos) {
+        serverLevel.gameEvent(entity, holder, blockPos);
     }
 
     @Override
-    public void gameEvent(@NotNull GameEvent arg, @NotNull BlockPos arg2, GameEvent.@NotNull Context arg3) {
-        serverLevel.gameEvent(arg, arg2, arg3);
+    public void gameEvent(Holder<GameEvent> holder, BlockPos blockPos, GameEvent.Context context) {
+        serverLevel.gameEvent(holder, blockPos, context);
+    }
+
+    @Override
+    public void gameEvent(ResourceKey<GameEvent> resourceKey, BlockPos blockPos, GameEvent.Context context) {
+        serverLevel.gameEvent(resourceKey, blockPos, context);
     }
 
     @Override
@@ -490,6 +495,11 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     @Override
     public boolean noCollision(@Nullable Entity arg, @NotNull AABB arg2) {
         return serverLevel.noCollision(arg, arg2);
+    }
+
+    @Override
+    public boolean noBlockCollision(@Nullable Entity entity, AABB aABB) {
+        return serverLevel.noBlockCollision(entity, aABB);
     }
 
     @Override
@@ -708,7 +718,7 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
         toEmitTo.add(toUpdate);
         resetRunners.offerFirst(() -> {
             Optional.ofNullable(serverLevel.getBlockEntity(pos)).ifPresent(entity -> {
-                toUpdate.setTag(entity.saveWithId());
+                toUpdate.setTag(entity.saveWithId(serverLevel.registryAccess()));
                 entity.setRemoved();
                 Clearable.tryClear(entity);
             });
