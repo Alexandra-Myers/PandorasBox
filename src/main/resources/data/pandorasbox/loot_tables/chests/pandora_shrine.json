@@ -233,8 +233,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 50,
-                "min": 30
+                "max": 30,
+                "min": 20
               },
               "treasure": true
             }
@@ -263,8 +263,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 50,
-                "min": 30
+                "max": 30,
+                "min": 20
               },
               "treasure": true
             }
@@ -293,8 +293,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 50,
-                "min": 30
+                "max": 30,
+                "min": 20
               },
               "treasure": true
             }
@@ -323,8 +323,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 50,
-                "min": 30
+                "max": 30,
+                "min": 20
               },
               "treasure": true
             }
@@ -353,8 +353,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 50,
-                "min": 30
+                "max": 30,
+                "min": 20
               },
               "treasure": true
             }
@@ -383,8 +383,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 50,
-                "min": 30
+                "max": 30,
+                "min": 20
               },
               "treasure": true
             }
@@ -413,8 +413,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 50,
-                "min": 30
+                "max": 30,
+                "min": 20
               },
               "treasure": true
             }
