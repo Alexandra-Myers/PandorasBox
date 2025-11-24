@@ -1,0 +1,38 @@
+{
+  "tooltip": {
+    "translate": "effect_holder.pandorasbox.misplaced_temple"
+  },
+  "effect_creator": {
+    "structures": [
+      {
+        "structure": "minecraft:desert_pyramid",
+        "weight": 2
+      },
+      {
+        "structure": "minecraft:jungle_pyramid",
+        "weight": 2
+      },
+      {
+        "structure": "minecraft:monument",
+        "weight": 2
+      },
+      {
+        "structure": "minecraft:ocean_ruin_cold",
+        "weight": 1
+      },
+      {
+        "structure": "minecraft:ocean_ruin_warm",
+        "weight": 1
+      }
+    ],
+    "blocks_per_tick": {
+      "min": 15,
+      "max": 20,
+      "type": "minecraft:linear"
+    },
+    "chance_for_more_effects": 0.1,
+    "type": "pandorasbox:structure"
+  },
+  "positive": true,
+  "type": "minecraft:positive_or_negative"
+}

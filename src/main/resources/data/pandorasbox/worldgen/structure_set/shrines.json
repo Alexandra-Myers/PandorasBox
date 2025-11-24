@@ -1,0 +1,18 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 903485945,
+    "separation": 10,
+    "spacing": 30
+  },
+  "structures": [
+    {
+      "structure": "pandorasbox:shrine_overworld",
+      "weight": 1
+    },
+    {
+      "structure": "pandorasbox:shrine_end",
+      "weight": 1
+    }
+  ]
+}
