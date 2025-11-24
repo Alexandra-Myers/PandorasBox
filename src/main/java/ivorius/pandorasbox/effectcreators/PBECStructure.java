@@ -50,7 +50,7 @@ public record PBECStructure(float chanceForMoreEffects, IValue blocksPerTick, Li
             while (!tempStructures.isEmpty()) {
                 WeightedStructure structure = WeightedSelector.selectItem(random, tempStructures);
 
-                StructureStart structureStart = structure.structure().get().generate(world.registryAccess(),
+                StructureStart structureStart = structure.structure().value().generate(world.registryAccess(),
                         generator,
                         generator.getBiomeSource(),
                         serverLevel.getChunkSource().randomState(),

@@ -118,9 +118,9 @@ public class Init {
     public static void init() {
         DataSerializerInit.registerDataSerializers();
         FeatureInit.registerFeatures();
+        StructureInit.registerStructures();
         BlockInit.registerBlocks();
         ItemInit.registerItems();
-        StructureInit.registerStructures();
         BlockEntityInit.registerBlockEntities();
         EntityInit.registerEntities();
         PBEffectInit.registerPandora();
