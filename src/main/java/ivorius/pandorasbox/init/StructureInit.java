@@ -37,5 +37,6 @@ public class StructureInit {
     public static void registerStructures(IEventBus bus) {
         STRUCTURE_TYPES.register(bus);
         STRUCTURE_PIECE_TYPES.register(bus);
+        STRUCTURE_PROCESSOR_TYPES.register(bus);
     }
 }
