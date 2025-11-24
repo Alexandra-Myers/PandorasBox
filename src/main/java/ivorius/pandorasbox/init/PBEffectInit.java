@@ -39,13 +39,13 @@ public class PBEffectInit {
         registerBoxEffectType(PBEffectGenerateByFlag.CODEC, "gen_flags");
         registerBoxEffectType(PBEffectGenCreativeTowers.CODEC, "gen_creative_towers");
         registerBoxEffectType(PBEffectGenTargets.CODEC, "gen_targets");
-        registerBoxEffectType(PBEffectGenRuinedPortal.CODEC, "gen_ruined_portal");
         registerBoxEffectType(PBEffectGenShapes.CODEC, "gen_shapes");
         registerBoxEffectType(PBEffectGenWorldSnake.CODEC, "gen_world_snake");
         registerBoxEffectType(PBEffectMeltdown.CODEC, "meltdown");
         registerBoxEffectType(PBEffectMulti.CODEC, "multi");
         registerBoxEffectType(PBEffectSetTime.CODEC, "set_time");
         registerBoxEffectType(PBEffectSetWeather.CODEC, "set_weather");
+        registerBoxEffectType(PBEffectWorldGenStructure.CODEC, "world_gen_structure");
         registerEntityEffectType(BombermanEntityEffect.CODEC, "bomberman");
         registerEntityEffectType(BombpackEntityEffect.CODEC, "bombpack");
         registerEntityEffectType(BuffEntityEffect.CODEC, "buff_entities");
@@ -107,7 +107,6 @@ public class PBEffectInit {
         registerBoxEffectCreatorType(PBECMeltdown.CODEC, "meltdown");
         registerBoxEffectCreatorType(PBECMulti.CODEC, "multi");
         registerBoxEffectCreatorType(PBECRandomShapes.CODEC, "create_random_shapes");
-        registerBoxEffectCreatorType(PBECRuinedPortal.CODEC, "ruined_portal");
         registerBoxEffectCreatorType(PBECSetTime.CODEC, "set_time");
         registerBoxEffectCreatorType(PBECSetWeather.CODEC, "set_weather");
         registerBoxEffectCreatorType(PBECSpawnArmy.CODEC, "spawn_army");
@@ -121,6 +120,7 @@ public class PBEffectInit {
         registerBoxEffectCreatorType(PBECSpawnLightning.CODEC, "spawn_lightning");
         registerBoxEffectCreatorType(PBECSpawnManySameItems.CODEC, "spawn_many_same_items");
         registerBoxEffectCreatorType(PBECSpawnTNT.CODEC, "spawn_tnt");
+        registerBoxEffectCreatorType(PBECStructure.CODEC, "structure");
         registerBoxEffectCreatorType(PBECTargets.CODEC, "create_targets");
         registerBoxEffectCreatorType(PBECTeleportEntities.CODEC, "teleport_entities");
         registerBoxEffectCreatorType(PBECThrowItems.CODEC, "throw_items");

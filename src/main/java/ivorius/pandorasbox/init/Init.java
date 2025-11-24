@@ -118,6 +118,7 @@ public class Init {
     public static void init() {
         DataSerializerInit.registerDataSerializers();
         FeatureInit.registerFeatures();
+        StructureInit.registerStructures();
         ComponentInit.registerComponents();
         BlockInit.registerBlocks();
         ItemInit.registerItems();
