@@ -11,6 +11,7 @@ import ivorius.pandorasbox.effectcreators.*;
 import ivorius.pandorasbox.effectcreators.generate.*;
 import ivorius.pandorasbox.effectcreators.generate.block_mappers.*;
 import ivorius.pandorasbox.effectholder.EffectHolder;
+import ivorius.pandorasbox.init.EntityInit;
 import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.init.ItemInit;
 import ivorius.pandorasbox.random.DValue;
@@ -27,7 +28,12 @@ import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.apache.logging.log4j.LogManager;
 
@@ -53,8 +59,16 @@ public class PandorasBox implements ModInitializer {
         ZValue.bootstrap();
         EffectHolder.bootstrap();
         Init.init();
-        Event<ItemGroupEvents.ModifyEntries> event = ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS);
-        event.register(entries -> entries.accept(ItemInit.PBI));
+        Event<ItemGroupEvents.ModifyEntries> functionalBlocksModifyEvent = ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS);
+        functionalBlocksModifyEvent.register(entries -> {
+            entries.addAfter(Items.INFESTED_DEEPSLATE, ItemInit.INFESTED_END_STONE, ItemInit.INFESTED_END_STONE_BRICKS, ItemInit.INFESTED_CHISELED_END_STONE_BRICKS);
+            entries.accept(ItemInit.PBI);
+        });
+        Event<ItemGroupEvents.ModifyEntries> buildingBlocksModifyEvent = ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.BUILDING_BLOCKS);
+        buildingBlocksModifyEvent.register(entries -> {
+            entries.addAfter(Items.END_STONE, ItemInit.END_STONE_STAIRS, ItemInit.END_STONE_SLAB, ItemInit.END_STONE_WALL);
+            entries.addAfter(Items.END_STONE_BRICK_WALL, ItemInit.CHISELED_END_STONE_BRICKS);
+        });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> PandorasBoxHelper.initialize());
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> PandorasBoxHelper.initialize());
         CommandRegistrationCallback.EVENT.register((dispatcher, commandBuildContext, commandSelection) -> PandoraCommand.register(dispatcher, commandBuildContext));
@@ -72,6 +86,7 @@ public class PandorasBox implements ModInitializer {
                 }
             });
         });
+        SpawnPlacements.register(EntityInit.GIANT, SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules);
     }
     public record ClientboundUpdateFakeDeathPacket() implements FabricPacket {
         public static final PacketType<ClientboundUpdateFakeDeathPacket> TYPE = PacketType.create(new ResourceLocation(MOD_ID, "fake_death_overlay"), ClientboundUpdateFakeDeathPacket::new);

@@ -120,6 +120,7 @@ public class Init {
         FeatureInit.registerFeatures();
         BlockInit.registerBlocks();
         ItemInit.registerItems();
+        StructureInit.registerStructures();
         BlockEntityInit.registerBlockEntities();
         EntityInit.registerEntities();
         PBEffectInit.registerPandora();
