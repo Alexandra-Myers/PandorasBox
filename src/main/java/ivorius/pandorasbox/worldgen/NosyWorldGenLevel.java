@@ -1,7 +1,6 @@
 package ivorius.pandorasbox.worldgen;
 
 import ivorius.pandorasbox.effectcreators.PBECStructure;
-import ivorius.pandorasbox.effects.PBEffectWorldGenStructure;
 import net.minecraft.core.*;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceKey;
@@ -15,8 +14,6 @@ import net.minecraft.world.Clearable;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
@@ -47,6 +44,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.LevelTickAccess;
+import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraft.world.ticks.TickPriority;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -106,6 +104,16 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     @Override
     public long nextSubTickCount() {
         return serverLevel.nextSubTickCount();
+    }
+
+    @Override
+    public <T> @NotNull ScheduledTick<T> createTick(BlockPos blockPos, T object, int i, TickPriority tickPriority) {
+        return serverLevel.createTick(blockPos, object, i, tickPriority);
+    }
+
+    @Override
+    public <T> @NotNull ScheduledTick<T> createTick(BlockPos blockPos, T object, int i) {
+        return serverLevel.createTick(blockPos, object, i);
     }
 
     @Override
@@ -174,6 +182,11 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     }
 
     @Override
+    public int getHeight(Heightmap.Types types, BlockPos blockPos) {
+        return serverLevel.getHeight(types, blockPos);
+    }
+
+    @Override
     public int getSkyDarken() {
         return serverLevel.getSkyDarken();
     }
@@ -224,8 +237,33 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     }
 
     @Override
+    public int getMinY() {
+        return serverLevel.getMinY();
+    }
+
+    @Override
+    public int getMaxY() {
+        return serverLevel.getMaxY();
+    }
+
+    @Override
     public int getSectionsCount() {
         return serverLevel.getSectionsCount();
+    }
+
+    @Override
+    public int getMinSectionY() {
+        return serverLevel.getMinSectionY();
+    }
+
+    @Override
+    public int getMaxSectionY() {
+        return serverLevel.getMaxSectionY();
+    }
+
+    @Override
+    public boolean isInsideBuildHeight(int i) {
+        return serverLevel.isInsideBuildHeight(i);
     }
 
     @Override
@@ -369,8 +407,33 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     }
 
     @Override
+    public void updateNeighborsAt(BlockPos blockPos, Block block) {
+        serverLevel.updateNeighborsAt(blockPos, block);
+    }
+
+    @Override
+    public void neighborShapeChanged(Direction direction, BlockPos blockPos, BlockPos blockPos2, BlockState blockState, int i, int j) {
+        serverLevel.neighborShapeChanged(direction, blockPos, blockPos2, blockState, i, j);
+    }
+
+    @Override
+    public void playSound(@Nullable Entity entity, BlockPos blockPos, SoundEvent soundEvent, SoundSource soundSource) {
+        serverLevel.playSound(entity, blockPos, soundEvent, soundSource);
+    }
+
+    @Override
+    public void playSound(@Nullable Entity entity, BlockPos blockPos, SoundEvent soundEvent, SoundSource soundSource, float f, float g) {
+        serverLevel.playSound(entity, blockPos, soundEvent, soundSource, f, g);
+    }
+
+    @Override
     public void addParticle(@NotNull ParticleOptions arg, double d, double e, double f, double g, double h, double i) {
         serverLevel.addParticle(arg, d, e, f, g, h, i);
+    }
+
+    @Override
+    public void levelEvent(@Nullable Entity entity, int i, BlockPos blockPos, int j) {
+        serverLevel.levelEvent(entity, i, blockPos, j);
     }
 
     @Override
@@ -459,6 +522,11 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     }
 
     @Override
+    public boolean noCollision(@Nullable Entity entity, AABB aABB, boolean bl) {
+        return serverLevel.noCollision(entity, aABB, bl);
+    }
+
+    @Override
     public boolean noBlockCollision(@Nullable Entity entity, AABB aABB) {
         return serverLevel.noBlockCollision(entity, aABB);
     }
@@ -469,8 +537,23 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
     }
 
     @Override
+    public @NotNull Iterable<VoxelShape> getPreMoveCollisions(@Nullable Entity entity, AABB aABB, Vec3 vec3) {
+        return serverLevel.getPreMoveCollisions(entity, aABB, vec3);
+    }
+
+    @Override
     public @NotNull Iterable<VoxelShape> getBlockCollisions(@Nullable Entity arg, @NotNull AABB arg2) {
         return serverLevel.getBlockCollisions(arg, arg2);
+    }
+
+    @Override
+    public @NotNull Iterable<VoxelShape> getBlockAndLiquidCollisions(@Nullable Entity entity, AABB aABB) {
+        return serverLevel.getBlockAndLiquidCollisions(entity, aABB);
+    }
+
+    @Override
+    public @NotNull BlockHitResult clipIncludingBorder(ClipContext clipContext) {
+        return serverLevel.clipIncludingBorder(clipContext);
     }
 
     @Override
@@ -644,6 +727,7 @@ public record NosyWorldGenLevel(List<PBECStructure.BlockUpdateData> toEmitTo, Li
                     entity.saveWithId(valueOutput);
                     toUpdate.setTag(valueOutput.buildResult());
                 }
+                if (entity instanceof Clearable clearable) clearable.clearContent();
                 entity.setRemoved();
             });
             serverLevel.setBlock(pos, originalState, 3);
