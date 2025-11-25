@@ -1,0 +1,11 @@
+{
+  "values": [
+    "pandorasbox:end_stone_slab",
+    "pandorasbox:end_stone_stairs",
+    "pandorasbox:end_stone_wall",
+    "pandorasbox:chiseled_end_stone_bricks",
+    "pandorasbox:infested_end_stone",
+    "pandorasbox:infested_end_stone_bricks",
+    "pandorasbox:infested_chiseled_end_stone_bricks"
+  ]
+}

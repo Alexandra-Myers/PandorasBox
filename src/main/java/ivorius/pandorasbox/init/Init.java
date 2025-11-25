@@ -30,8 +30,8 @@ public class Init {
     public static final ResourceKey<Registry<EffectHolder>> EFFECT_HOLDER_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandora_effect_holders"));
     public static final ResourceKey<Registry<EffectHolder>> MELTDOWN_EFFECT_HOLDER_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "meltdown_effect_holders"));
 
-    public static final ResourceKey<Registry<MapCodec<? extends PBEffect>>> BOX_EFFECT_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandora_effects"));
-    public static final Registry<MapCodec<? extends PBEffect>> BOX_EFFECT_TYPE_REGISTRY = FabricRegistryBuilder.createDefaulted(BOX_EFFECT_TYPE_REGISTRY_KEY, ResourceLocation.withDefaultNamespace("duplicate_box")).attribute(RegistryAttribute.SYNCED).buildAndRegister();
+    public static final ResourceKey<Registry<PBEffect.PBEffectType<? extends PBEffect>>> BOX_EFFECT_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandora_effects"));
+    public static final Registry<PBEffect.PBEffectType<? extends PBEffect>> BOX_EFFECT_TYPE_REGISTRY = FabricRegistryBuilder.createDefaulted(BOX_EFFECT_TYPE_REGISTRY_KEY, ResourceLocation.withDefaultNamespace("duplicate_box")).attribute(RegistryAttribute.SYNCED).buildAndRegister();
 
     public static final ResourceKey<Registry<MapCodec<? extends EntityEffect>>> ENTITY_EFFECT_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "entity_based_effects"));
     public static final Registry<MapCodec<? extends EntityEffect>> ENTITY_EFFECT_TYPE_REGISTRY = FabricRegistryBuilder.createDefaulted(ENTITY_EFFECT_TYPE_REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "bomberman")).attribute(RegistryAttribute.SYNCED).buildAndRegister();
@@ -72,9 +72,14 @@ public class Init {
     public static final ResourceKey<Registry<MapCodec<? extends PBEffectCreator>>> BOX_EFFECT_CREATOR_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "pandora_effect_creator_types"));
     public static final Registry<MapCodec<? extends PBEffectCreator>> BOX_EFFECT_CREATOR_REGISTRY = FabricRegistryBuilder.createDefaulted(BOX_EFFECT_CREATOR_REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, "duplicate_box")).attribute(RegistryAttribute.SYNCED).buildAndRegister();
 
-    public static MapCodec<? extends PBEffect> registerBoxEffectType(MapCodec<? extends PBEffect> mapCodec, String name) {
+    public static PBEffect.PBEffectType<? extends PBEffect> registerBoxEffectType(PBEffect.PBEffectType<? extends PBEffect> mapCodec, String name) {
         return Registry.register(BOX_EFFECT_TYPE_REGISTRY, ResourceKey.create(BOX_EFFECT_TYPE_REGISTRY_KEY, ResourceLocation.withDefaultNamespace(name)), mapCodec);
     }
+
+    public static PBEffect.PBEffectType<? extends PBEffect> registerSimpleBoxEffectType(MapCodec<? extends PBEffect> mapCodec, String name) {
+        return registerBoxEffectType(new PBEffect.SimpleType<>(mapCodec), name);
+    }
+
     public static MapCodec<? extends EntityEffect> registerEntityEffectType(MapCodec<? extends EntityEffect> mapCodec, String name) {
         return Registry.register(ENTITY_EFFECT_TYPE_REGISTRY, ResourceKey.create(ENTITY_EFFECT_TYPE_REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID, name)), mapCodec);
     }
@@ -118,6 +123,7 @@ public class Init {
     public static void init() {
         DataSerializerInit.registerDataSerializers();
         FeatureInit.registerFeatures();
+        StructureInit.registerStructures();
         ComponentInit.registerComponents();
         BlockInit.registerBlocks();
         ItemInit.registerItems();

@@ -9,6 +9,7 @@ import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.EntityInit;
 import ivorius.pandorasbox.init.Init;
+import ivorius.pandorasbox.init.PBEffectInit;
 import net.minecraft.core.HolderSet;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -83,7 +84,7 @@ public class PBEffectDuplicateBox extends PBEffectNormal {
     }
 
     @Override
-    public @NotNull MapCodec<? extends PBEffect> codec() {
-        return CODEC;
+    public @NotNull PBEffectType<? extends PBEffect> type() {
+        return PBEffectInit.DUPLICATE_BOX;
     }
 }

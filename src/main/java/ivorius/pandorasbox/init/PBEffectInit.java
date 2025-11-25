@@ -28,24 +28,24 @@ import net.fabricmc.loader.api.FabricLoader;
 import static ivorius.pandorasbox.init.Init.*;
 
 public class PBEffectInit {
+    public static final PBEffect.PBEffectType<?> DUPLICATE_BOX = registerSimpleBoxEffectType(PBEffectDuplicateBox.CODEC, "duplicate_box");
+    public static final PBEffect.PBEffectType<?> EFFECT_ENTITIES = registerSimpleBoxEffectType(PBEffectEntityBased.CODEC, "effect_entities");
+    public static final PBEffect.PBEffectType<?> EFFECT_SPAWN_ENITIES = registerSimpleBoxEffectType(PBEffectSpawnEntities.CODEC, "effect_spawn_entities");
+    public static final PBEffect.PBEffectType<?> EFFECT_POSITION = registerSimpleBoxEffectType(PBEffectPositionBased.CODEC, "effect_position");
+    public static final PBEffect.PBEffectType<?> EXPLODE_BOX = registerSimpleBoxEffectType(PBEffectExplode.CODEC, "explode_box");
+    public static final PBEffect.PBEffectType<?> GENERATE = registerSimpleBoxEffectType(PBEffectGenerate.CODEC, "generate");
+    public static final PBEffect.PBEffectType<?> GEN_TWO_DIMENSIONAL = registerSimpleBoxEffectType(PBEffectGenerate2D.CODEC, "gen_two_dimensional");
+    public static final PBEffect.PBEffectType<?> GEN_FLAGS = registerSimpleBoxEffectType(PBEffectGenerateByFlag.CODEC, "gen_flags");
+    public static final PBEffect.PBEffectType<?> GEN_CREATIVE_TOWERS = registerSimpleBoxEffectType(PBEffectGenCreativeTowers.CODEC, "gen_creative_towers");
+    public static final PBEffect.PBEffectType<?> GEN_TARGETS = registerSimpleBoxEffectType(PBEffectGenTargets.CODEC, "gen_targets");
+    public static final PBEffect.PBEffectType<?> GEN_SHAPES = registerSimpleBoxEffectType(PBEffectGenShapes.CODEC, "gen_shapes");
+    public static final PBEffect.PBEffectType<?> GEN_WORLD_SNAKE = registerSimpleBoxEffectType(PBEffectGenWorldSnake.CODEC, "gen_world_snake");
+    public static final PBEffect.PBEffectType<?> MELTDOWN = registerSimpleBoxEffectType(PBEffectMeltdown.CODEC, "meltdown");
+    public static final PBEffect.PBEffectType<?> MULTI = registerSimpleBoxEffectType(PBEffectMulti.CODEC, "multi");
+    public static final PBEffect.PBEffectType<?> SET_TIME = registerSimpleBoxEffectType(PBEffectSetTime.CODEC, "set_time");
+    public static final PBEffect.PBEffectType<?> SET_WEATHER = registerSimpleBoxEffectType(PBEffectSetWeather.CODEC, "set_weather");
+    public static final PBEffect.PBEffectType<?> WORLD_GEN_STRUCTURE = registerBoxEffectType(new PBEffect.DualCodecType<>(PBEffectWorldGenStructure.CODEC, PBEffectWorldGenStructure.NETWORK_CODEC), "world_gen_structure");
     static {
-        registerBoxEffectType(PBEffectDuplicateBox.CODEC, "duplicate_box");
-        registerBoxEffectType(PBEffectEntityBased.CODEC, "effect_entities");
-        registerBoxEffectType(PBEffectSpawnEntities.CODEC, "effect_spawn_entities");
-        registerBoxEffectType(PBEffectPositionBased.CODEC, "effect_position");
-        registerBoxEffectType(PBEffectExplode.CODEC, "explode_box");
-        registerBoxEffectType(PBEffectGenerate.CODEC, "generate");
-        registerBoxEffectType(PBEffectGenerate2D.CODEC, "gen_two_dimensional");
-        registerBoxEffectType(PBEffectGenerateByFlag.CODEC, "gen_flags");
-        registerBoxEffectType(PBEffectGenCreativeTowers.CODEC, "gen_creative_towers");
-        registerBoxEffectType(PBEffectGenTargets.CODEC, "gen_targets");
-        registerBoxEffectType(PBEffectGenRuinedPortal.CODEC, "gen_ruined_portal");
-        registerBoxEffectType(PBEffectGenShapes.CODEC, "gen_shapes");
-        registerBoxEffectType(PBEffectGenWorldSnake.CODEC, "gen_world_snake");
-        registerBoxEffectType(PBEffectMeltdown.CODEC, "meltdown");
-        registerBoxEffectType(PBEffectMulti.CODEC, "multi");
-        registerBoxEffectType(PBEffectSetTime.CODEC, "set_time");
-        registerBoxEffectType(PBEffectSetWeather.CODEC, "set_weather");
         registerEntityEffectType(BombermanEntityEffect.CODEC, "bomberman");
         registerEntityEffectType(BombpackEntityEffect.CODEC, "bombpack");
         registerEntityEffectType(BuffEntityEffect.CODEC, "buff_entities");
@@ -107,7 +107,6 @@ public class PBEffectInit {
         registerBoxEffectCreatorType(PBECMeltdown.CODEC, "meltdown");
         registerBoxEffectCreatorType(PBECMulti.CODEC, "multi");
         registerBoxEffectCreatorType(PBECRandomShapes.CODEC, "create_random_shapes");
-        registerBoxEffectCreatorType(PBECRuinedPortal.CODEC, "ruined_portal");
         registerBoxEffectCreatorType(PBECSetTime.CODEC, "set_time");
         registerBoxEffectCreatorType(PBECSetWeather.CODEC, "set_weather");
         registerBoxEffectCreatorType(PBECSpawnArmy.CODEC, "spawn_army");
@@ -121,6 +120,7 @@ public class PBEffectInit {
         registerBoxEffectCreatorType(PBECSpawnLightning.CODEC, "spawn_lightning");
         registerBoxEffectCreatorType(PBECSpawnManySameItems.CODEC, "spawn_many_same_items");
         registerBoxEffectCreatorType(PBECSpawnTNT.CODEC, "spawn_tnt");
+        registerBoxEffectCreatorType(PBECStructure.CODEC, "structure");
         registerBoxEffectCreatorType(PBECTargets.CODEC, "create_targets");
         registerBoxEffectCreatorType(PBECTeleportEntities.CODEC, "teleport_entities");
         registerBoxEffectCreatorType(PBECThrowItems.CODEC, "throw_items");

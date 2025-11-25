@@ -91,7 +91,7 @@ public class PandoraConfig extends AtlasConfig {
 	}
 	static {
 		defaultTables = new HashMap<>();
-		defaultTables.put(ResourceLocation.parse("chests/pandora_inject"), List.of(
+		defaultTables.put(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID,"chests/pandora_inject"), List.of(
 				ResourceLocation.withDefaultNamespace("chests/abandoned_mineshaft"),
 				ResourceLocation.withDefaultNamespace("chests/jungle_temple"),
 				ResourceLocation.withDefaultNamespace("chests/simple_dungeon"),
@@ -103,7 +103,7 @@ public class PandoraConfig extends AtlasConfig {
 				ResourceLocation.withDefaultNamespace("chests/bastion_hoglin_stable"),
 				ResourceLocation.withDefaultNamespace("chests/bastion_other")
 		));
-		defaultTables.put(ResourceLocation.parse("chests/pandora_inject_common"), List.of(
+		defaultTables.put(ResourceLocation.fromNamespaceAndPath(PandorasBox.MOD_ID,"chests/pandora_inject_common"), List.of(
 				ResourceLocation.withDefaultNamespace("chests/ancient_city"),
 				ResourceLocation.withDefaultNamespace("chests/bastion_treasure"),
 				ResourceLocation.withDefaultNamespace("chests/end_city_treasure")

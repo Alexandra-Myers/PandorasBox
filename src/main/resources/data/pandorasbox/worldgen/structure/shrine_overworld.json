@@ -1,0 +1,22 @@
+{
+  "type": "pandorasbox:pandora_shrine",
+  "biomes": "#pandorasbox:has_structure/pandora_shrine_overworld",
+  "templates": [
+    {
+      "location": "pandorasbox:shrine/shrine",
+      "weight": 1
+    },
+    {
+      "location": "pandorasbox:shrine/shrine_small",
+      "weight": 6
+    }
+  ],
+  "overgrown": {
+    "chance": 0.3,
+    "type": "chance"
+  },
+  "replace_with_end_stone": false,
+  "spawn_overrides": {},
+  "terrain_adaptation": "beard_thin",
+  "step": "surface_structures"
+}

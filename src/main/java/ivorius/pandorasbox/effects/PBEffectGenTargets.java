@@ -12,6 +12,7 @@ import ivorius.pandorasbox.effects.spawn_entities.SpawnEntityIDListEffect;
 import ivorius.pandorasbox.effects.structure.StructureTarget;
 import ivorius.pandorasbox.effects.structure.TargetConfiguration;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.PBEffectInit;
 import ivorius.pandorasbox.init.PandoraBlockTags;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import ivorius.pandorasbox.weighted.WeightedEntity;
@@ -144,7 +145,7 @@ public class PBEffectGenTargets extends PBEffectGenerateByStructure<StructureTar
     }
 
     @Override
-    public @NotNull MapCodec<? extends PBEffect> codec() {
-        return CODEC;
+    public @NotNull PBEffectType<? extends PBEffect> type() {
+        return PBEffectInit.GEN_TARGETS;
     }
 }
