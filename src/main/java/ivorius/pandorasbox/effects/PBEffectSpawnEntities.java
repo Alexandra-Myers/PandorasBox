@@ -10,6 +10,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.spawn_entities.SpawnEntitiesEffect;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.PBEffectInit;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -92,7 +93,7 @@ public class PBEffectSpawnEntities extends PBEffectNormal {
     }
 
     @Override
-    public @NotNull MapCodec<? extends PBEffect> codec() {
-        return CODEC;
+    public @NotNull PBEffectType<? extends PBEffect> type() {
+        return PBEffectInit.EFFECT_SPAWN_ENITIES;
     }
 }
