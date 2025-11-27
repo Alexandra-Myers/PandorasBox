@@ -53,12 +53,12 @@ public class PandorasBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
         this(Block.Properties.of().setId(resourceKey).mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).sound(SoundType.WOOD).strength(0.5f));
     }
 
-    public @NotNull BlockState rotate(BlockState p_185499_1_, Rotation p_185499_2_) {
-        return p_185499_1_.setValue(DIRECTION, p_185499_2_.rotate(p_185499_1_.getValue(DIRECTION)));
+    public @NotNull BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(DIRECTION, rotation.rotate(state.getValue(DIRECTION)));
     }
 
-    public @NotNull BlockState mirror(BlockState p_185471_1_, Mirror p_185471_2_) {
-        return p_185471_1_.rotate(p_185471_2_.getRotation(p_185471_1_.getValue(DIRECTION)));
+    public @NotNull BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(DIRECTION)));
     }
 
     @Override

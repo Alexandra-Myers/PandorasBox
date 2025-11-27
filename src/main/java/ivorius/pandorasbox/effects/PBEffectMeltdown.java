@@ -8,6 +8,7 @@ import ivorius.pandorasbox.effectcreators.PBECRegistry;
 import ivorius.pandorasbox.effectholder.EffectHolder;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
 import ivorius.pandorasbox.init.Init;
+import ivorius.pandorasbox.init.PBEffectInit;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
@@ -258,8 +259,8 @@ public final class PBEffectMeltdown extends PBEffect {
     }
 
     @Override
-    public @NotNull MapCodec<? extends PBEffect> codec() {
-        return CODEC;
+    public @NotNull PBEffectType<? extends PBEffect> type() {
+        return PBEffectInit.MELTDOWN;
     }
 
     @Override

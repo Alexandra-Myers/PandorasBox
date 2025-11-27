@@ -10,6 +10,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import ivorius.pandorasbox.effects.generate.two_dimensional.GenDome;
 import ivorius.pandorasbox.entitites.PandorasBoxEntity;
+import ivorius.pandorasbox.init.PBEffectInit;
 import ivorius.pandorasbox.utils.PBNBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -146,7 +147,7 @@ public class PBEffectGenWorldSnake extends PBEffectNormal {
     }
 
     @Override
-    public @NotNull MapCodec<? extends PBEffect> codec() {
-        return CODEC;
+    public @NotNull PBEffectType<? extends PBEffect> type() {
+        return PBEffectInit.GEN_WORLD_SNAKE;
     }
 }

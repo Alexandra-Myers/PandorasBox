@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 348956785,
+    "separation": 15,
+    "spacing": 20
+  },
+  "structures": [
+    {
+      "structure": "pandorasbox:henge",
+      "weight": 1
+    }
+  ]
+}

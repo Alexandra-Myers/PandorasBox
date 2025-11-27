@@ -40,8 +40,10 @@ import java.util.List;
 public abstract class PBEffect {
     public static final Identifier DEFAULT = Identifier.fromNamespaceAndPath(PandorasBox.MOD_ID, "render_default");
     public static final Codec<PBEffect> CODEC = Init.BOX_EFFECT_TYPE_REGISTRY.byNameCodec()
-            .dispatch(PBEffect::codec, mapCodec -> mapCodec);
-    public static final StreamCodec<RegistryFriendlyByteBuf, PBEffect> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
+            .dispatch(PBEffect::type, PBEffectType::codec);
+    public static final Codec<PBEffect> NETWORK_CODEC = Init.BOX_EFFECT_TYPE_REGISTRY.byNameCodec()
+            .dispatch(PBEffect::type, PBEffectType::networkCodec);
+    public static final StreamCodec<RegistryFriendlyByteBuf, PBEffect> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(NETWORK_CODEC);
 
     public static boolean setBlockToAirSafe(Level level, BlockPos pos) {
         boolean safeDest = level.getBlockState(pos).isAir() || level.getBlockState(pos).getDestroySpeed(level, pos) >= 0f;
@@ -172,9 +174,26 @@ public abstract class PBEffect {
 
     public abstract int getMaxTicksAlive();
 
-    public abstract @NotNull MapCodec<? extends PBEffect> codec();
+    public abstract @NotNull PBEffectType<? extends PBEffect> type();
 
     public Identifier rendererIdentifierForEffect() {
         return DEFAULT;
+    }
+
+    public interface PBEffectType<T extends PBEffect> {
+        @NotNull MapCodec<? extends PBEffect> codec();
+
+        @NotNull MapCodec<? extends PBEffect> networkCodec();
+    }
+
+    public record SimpleType<T extends PBEffect>(MapCodec<? extends PBEffect> codec) implements PBEffectType<T> {
+        @Override
+        public @NotNull MapCodec<? extends PBEffect> networkCodec() {
+            return codec();
+        }
+    }
+
+    public record DualCodecType<T extends PBEffect>(MapCodec<? extends PBEffect> codec, MapCodec<? extends PBEffect> networkCodec) implements PBEffectType<T> {
+
     }
 }

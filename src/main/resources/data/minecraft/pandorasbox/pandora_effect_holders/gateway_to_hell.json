@@ -3,238 +3,44 @@
     "translate": "effect_holder.pandorasbox.gateway_to_hell"
   },
   "effect_creator": {
-    "effects": [
+    "structures": [
       {
-        "range_horizontal": {
-          "min": 5,
-          "max": 15,
-          "type": "minecraft:linear"
-        },
-        "range_vertical": {
-          "min": 5,
-          "max": 10,
-          "type": "minecraft:linear"
-        },
-        "range_starting_y": {
-          "min": 2,
-          "max": 5,
-          "type": "minecraft:linear"
-        },
-        "bricks": [
-          [
-            {
-              "weight": 100.0,
-              "block": "minecraft:stone_bricks"
-            },
-            {
-              "weight": 90.0,
-              "block": "minecraft:cracked_stone_bricks"
-            },
-            {
-              "weight": 10.0,
-              "block": "minecraft:chiseled_stone_bricks"
-            },
-            {
-              "weight": 90.0,
-              "block": "minecraft:stone_brick_slab"
-            },
-            {
-              "weight": 90.0,
-              "block": "minecraft:stone_brick_stairs"
-            }
-          ],
-          [
-            {
-              "weight": 100.0,
-              "block": "minecraft:polished_blackstone_bricks"
-            },
-            {
-              "weight": 90.0,
-              "block": "minecraft:cracked_polished_blackstone_bricks"
-            },
-            {
-              "weight": 10.0,
-              "block": "minecraft:chiseled_polished_blackstone"
-            },
-            {
-              "weight": 90.0,
-              "block": "minecraft:polished_blackstone_brick_slab"
-            },
-            {
-              "weight": 90.0,
-              "block": "minecraft:polished_blackstone_brick_stairs"
-            }
-          ]
-        ],
-        "loot": [
-          {
-            "stack": {
-              "id": "minecraft:gold_nugget"
-            },
-            "min_count": 1,
-            "max_count": 5,
-            "weight": 60.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:iron_nugget"
-            },
-            "min_count": 1,
-            "max_count": 3,
-            "weight": 35.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:flint"
-            },
-            "min_count": 1,
-            "max_count": 3,
-            "weight": 80.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:flint_and_steel"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 20.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:obsidian"
-            },
-            "min_count": 1,
-            "max_count": 3,
-            "weight": 10.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:enchanted_golden_apple"
-            },
-            "min_count": 1,
-            "max_count": 3,
-            "weight": 5.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_axe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 20.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_sword"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 20.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_hoe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 20.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_pickaxe"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 20.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_shovel"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 20.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_helmet"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 20.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_chestplate"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 20.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_leggings"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 20.0
-          },
-          {
-            "stack": {
-              "id": "minecraft:golden_boots"
-            },
-            "min_count": 1,
-            "max_count": 1,
-            "weight": 20.0
-          }
-        ],
-        "type": "pandorasbox:ruined_portal"
+        "structure": "minecraft:ruined_portal",
+        "weight": 1
       },
       {
-        "range": {
-          "min": 20.0,
-          "max": 40.0,
-          "type": "minecraft:linear"
-        },
-        "chance_for_more_effects": 0.1,
-        "generate_effect": {
-          "chance_to_discard_netherrack": {
-            "min": 0.01,
-            "max": 0.15,
-            "type": "minecraft:gaussian"
-          },
-          "biome": "nether_wastes",
-          "type": "pandorasbox:prepare_gen_convert_to_nether"
-        },
-        "type": "pandorasbox:generate"
+        "structure": "minecraft:ruined_portal_desert",
+        "weight": 1
       },
       {
-        "range": {
-          "min": 5.0,
-          "max": 10.0,
-          "type": "minecraft:linear"
-        },
-        "chance_for_more_effects": 0.1,
-        "generate_effect": {
-          "block": "minecraft:lava",
-          "platform_blocks": [
-            {
-              "weight": 1.0,
-              "block": "minecraft:air"
-            }
-          ],
-          "type": "pandorasbox:prepare_gen_pool"
-        },
-        "type": "pandorasbox:generate"
+        "structure": "minecraft:ruined_portal_jungle",
+        "weight": 1
+      },
+      {
+        "structure": "minecraft:ruined_portal_swamp",
+        "weight": 1
+      },
+      {
+        "structure": "minecraft:ruined_portal_mountain",
+        "weight": 1
+      },
+      {
+        "structure": "minecraft:ruined_portal_ocean",
+        "weight": 1
+      },
+      {
+        "structure": "minecraft:ruined_portal_nether",
+        "weight": 6
       }
     ],
-    "delays": [
-      80,
-      30,
-      0
-    ],
-    "type": "pandorasbox:multi"
+    "blocks_per_tick": {
+      "min": 7,
+      "max": 10,
+      "type": "minecraft:linear"
+    },
+    "chance_for_more_effects": 0.1,
+    "type": "pandorasbox:structure"
   },
-  "positive": false,
+  "positive": true,
   "type": "minecraft:positive_or_negative"
 }

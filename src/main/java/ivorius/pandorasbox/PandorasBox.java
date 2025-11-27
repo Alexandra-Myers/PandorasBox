@@ -11,6 +11,7 @@ import ivorius.pandorasbox.effectcreators.*;
 import ivorius.pandorasbox.effectcreators.generate.*;
 import ivorius.pandorasbox.effectcreators.generate.block_mappers.*;
 import ivorius.pandorasbox.effectholder.EffectHolder;
+import ivorius.pandorasbox.init.EntityInit;
 import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.init.ItemInit;
 import ivorius.pandorasbox.random.DValue;
@@ -28,7 +29,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.levelgen.Heightmap;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.stream.Stream;
@@ -53,8 +59,16 @@ public class PandorasBox implements ModInitializer {
         ZValue.bootstrap();
         EffectHolder.bootstrap();
         Init.init();
-        Event<ItemGroupEvents.ModifyEntries> event = ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS);
-        event.register(entries -> entries.accept(ItemInit.PBI));
+        Event<ItemGroupEvents.ModifyEntries> functionalBlocksModifyEvent = ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS);
+        functionalBlocksModifyEvent.register(entries -> {
+            entries.addAfter(Items.INFESTED_DEEPSLATE, ItemInit.INFESTED_END_STONE, ItemInit.INFESTED_END_STONE_BRICKS, ItemInit.INFESTED_CHISELED_END_STONE_BRICKS);
+            entries.accept(ItemInit.PBI);
+        });
+        Event<ItemGroupEvents.ModifyEntries> buildingBlocksModifyEvent = ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.BUILDING_BLOCKS);
+        buildingBlocksModifyEvent.register(entries -> {
+            entries.addAfter(Items.END_STONE, ItemInit.END_STONE_STAIRS, ItemInit.END_STONE_SLAB, ItemInit.END_STONE_WALL);
+            entries.addAfter(Items.END_STONE_BRICK_WALL, ItemInit.CHISELED_END_STONE_BRICKS);
+        });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> PandorasBoxHelper.initialize());
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> PandorasBoxHelper.initialize());
         CommandRegistrationCallback.EVENT.register((dispatcher, commandBuildContext, commandSelection) -> PandoraCommand.register(dispatcher, commandBuildContext));
@@ -62,6 +76,7 @@ public class PandorasBox implements ModInitializer {
                 .forEach(optional -> optional.ifPresent(table ->
                         registry.getOptional(extra).ifPresent(extraTable ->
                                 table.pools = Stream.concat(table.pools.stream(), extraTable.pools.stream()).toList())))));
+        SpawnPlacements.register(EntityInit.GIANT, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules);
     }
     public record ClientboundUpdateFakeDeathPacket() implements CustomPacketPayload {
         public static final Type<ClientboundUpdateFakeDeathPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(MOD_ID, "fake_death_overlay"));
