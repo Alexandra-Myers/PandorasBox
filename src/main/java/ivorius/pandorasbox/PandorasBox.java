@@ -11,6 +11,7 @@ import ivorius.pandorasbox.effectcreators.*;
 import ivorius.pandorasbox.effectcreators.generate.*;
 import ivorius.pandorasbox.effectcreators.generate.block_mappers.*;
 import ivorius.pandorasbox.effectholder.EffectHolder;
+import ivorius.pandorasbox.entitites.FunctionalGiant;
 import ivorius.pandorasbox.init.EntityInit;
 import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.init.ItemInit;
@@ -86,7 +87,7 @@ public class PandorasBox implements ModInitializer {
                 }
             });
         });
-        SpawnPlacements.register(EntityInit.GIANT, SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules);
+        SpawnPlacements.register(EntityInit.GIANT, SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, FunctionalGiant::checkGiantSpawnRules);
     }
     public record ClientboundUpdateFakeDeathPacket() implements FabricPacket {
         public static final PacketType<ClientboundUpdateFakeDeathPacket> TYPE = PacketType.create(new ResourceLocation(MOD_ID, "fake_death_overlay"), ClientboundUpdateFakeDeathPacket::new);
