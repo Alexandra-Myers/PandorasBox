@@ -11,6 +11,7 @@ import ivorius.pandorasbox.effectcreators.*;
 import ivorius.pandorasbox.effectcreators.generate.*;
 import ivorius.pandorasbox.effectcreators.generate.block_mappers.*;
 import ivorius.pandorasbox.effectholder.EffectHolder;
+import ivorius.pandorasbox.entitites.FunctionalGiant;
 import ivorius.pandorasbox.init.EntityInit;
 import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.init.ItemInit;
@@ -76,7 +77,7 @@ public class PandorasBox implements ModInitializer {
                 .forEach(optional -> optional.ifPresent(table ->
                         registry.getOptional(extra).ifPresent(extraTable ->
                                 table.pools = Stream.concat(table.pools.stream(), extraTable.pools.stream()).toList())))));
-        SpawnPlacements.register(EntityInit.GIANT, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules);
+        SpawnPlacements.register(EntityInit.GIANT, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, FunctionalGiant::checkGiantSpawnRules);
     }
     public record ClientboundUpdateFakeDeathPacket() implements CustomPacketPayload {
         public static final Type<ClientboundUpdateFakeDeathPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MOD_ID, "fake_death_overlay"));

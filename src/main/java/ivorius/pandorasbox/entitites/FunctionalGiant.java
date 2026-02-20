@@ -1,12 +1,15 @@
 package ivorius.pandorasbox.entitites;
 
 import ivorius.pandorasbox.entitites.goals.GiantAttackGoal;
+import ivorius.pandorasbox.init.EntityInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -14,6 +17,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -29,11 +33,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.dimension.DimensionType;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
@@ -43,6 +46,11 @@ import java.util.UUID;
 public class FunctionalGiant extends Giant implements NeutralMob {
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private static final UniformInt RAMPAGE_UPDATE_TIME = TimeUtil.rangeOfSeconds(10, 15);
+    private static final ResourceLocation LEADER_GIANT_BONUS_ID = ResourceLocation.withDefaultNamespace("leader_giant_bonus");
+    private static final ResourceLocation REINFORCEMENT_CALLER_CHARGE_ID = ResourceLocation.withDefaultNamespace("reinforcement_caller_charge");
+    private static final AttributeModifier GIANT_REINFORCEMENT_CALLEE_CHARGE = new AttributeModifier(
+            ResourceLocation.withDefaultNamespace("reinforcement_callee_charge"), -0.1F, AttributeModifier.Operation.ADD_VALUE
+    );
     private boolean isOnRampage = false;
     private int rampageTime = 0;
     private int remainingPersistentAngerTime;
@@ -50,7 +58,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     private UUID persistentAngerTarget;
     public FunctionalGiant(EntityType<? extends Giant> entityType, Level level) {
         super(entityType, level);
-        this.xpReward = 15;
+        this.xpReward = 20;
     }
 
     @Override
@@ -75,6 +83,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
         super.addAdditionalSaveData(compound);
         this.addPersistentAngerSaveData(compound);
         compound.putBoolean("isOnRampage", isOnRampage);
+        compound.putInt("xpReward", xpReward);
     }
 
     @Override
@@ -82,21 +91,77 @@ public class FunctionalGiant extends Giant implements NeutralMob {
         super.readAdditionalSaveData(compound);
         this.readPersistentAngerSaveData(this.level(), compound);
         this.isOnRampage = compound.getBoolean("isOnRampage");
+        this.xpReward = compound.getInt("xpReward");
     }
 
     public static AttributeSupplier.Builder createGiantAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 100.0)
                 .add(Attributes.MOVEMENT_SPEED, 0.35)
-                .add(Attributes.ATTACK_DAMAGE, 6.0)
+                .add(Attributes.ATTACK_DAMAGE, 8.0)
+                .add(Attributes.STEP_HEIGHT, 2.5)
                 .add(Attributes.FOLLOW_RANGE, 35.0)
-                .add(Attributes.ARMOR, 8.0);
+                .add(Attributes.ARMOR, 8.0)
+                .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
     }
 
     @Override
     public boolean isAngryAt(LivingEntity livingEntity) {
         if (this.isOnRampage && (livingEntity instanceof AbstractVillager || livingEntity instanceof Player || livingEntity instanceof IronGolem)) return true;
         return NeutralMob.super.isAngryAt(livingEntity);
+    }
+
+    @Override
+    public boolean hurt(DamageSource damageSource, float amount) {
+        if (!super.hurt(damageSource, amount)) {
+            return false;
+        } else if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return false;
+        } else {
+            LivingEntity livingEntity = this.getTarget();
+            if (livingEntity == null && damageSource.getEntity() instanceof LivingEntity) {
+                livingEntity = (LivingEntity)damageSource.getEntity();
+            }
+
+            if (livingEntity != null
+                    && this.level().getDifficulty() == Difficulty.HARD
+                    && (double)this.random.nextFloat() < this.getAttributeValue(Attributes.SPAWN_REINFORCEMENTS_CHANCE)
+                    && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
+                int xPos = Mth.floor(this.getX());
+                int yPos = Mth.floor(this.getY());
+                int zPos = Mth.floor(this.getZ());
+                FunctionalGiant giant = new FunctionalGiant(EntityInit.GIANT, this.level());
+
+                for (int tries = 0; tries < 50; tries++) {
+                    int offsetXPos = xPos + Mth.nextInt(this.random, 7, 50) * Mth.nextInt(this.random, -1, 1);
+                    int offsetYPos = yPos + Mth.nextInt(this.random, 30, 60) * Mth.nextInt(this.random, -1, 1);
+                    int offsetZPos = zPos + Mth.nextInt(this.random, 7, 50) * Mth.nextInt(this.random, -1, 1);
+                    BlockPos blockPos = new BlockPos(offsetXPos, offsetYPos, offsetZPos);
+                    EntityType<?> entityType = giant.getType();
+                    if (SpawnPlacements.isSpawnPositionOk(entityType, this.level(), blockPos)
+                            && SpawnPlacements.checkSpawnRules(entityType, serverLevel, MobSpawnType.REINFORCEMENT, blockPos, this.level().random)) {
+                        giant.setPos(offsetXPos, offsetYPos, offsetZPos);
+                        if (!this.level().hasNearbyAlivePlayer(offsetXPos, offsetYPos, offsetZPos, 7.0)
+                                && this.level().isUnobstructed(giant)
+                                && this.level().noCollision(giant)
+                                && !this.level().containsAnyLiquid(giant.getBoundingBox())) {
+                            giant.setTarget(livingEntity);
+                            giant.finalizeSpawn(serverLevel, this.level().getCurrentDifficultyAt(giant.blockPosition()), MobSpawnType.REINFORCEMENT, null);
+                            serverLevel.addFreshEntityWithPassengers(giant);
+                            AttributeInstance attributeInstance = this.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
+                            AttributeModifier attributeModifier = attributeInstance.getModifier(REINFORCEMENT_CALLER_CHARGE_ID);
+                            double reinforcementCallerAmount = attributeModifier != null ? attributeModifier.amount() : 0.0;
+                            attributeInstance.removeModifier(REINFORCEMENT_CALLER_CHARGE_ID);
+                            attributeInstance.addPermanentModifier(new AttributeModifier(REINFORCEMENT_CALLER_CHARGE_ID, reinforcementCallerAmount - 0.1F, AttributeModifier.Operation.ADD_VALUE));
+                            giant.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE).addPermanentModifier(GIANT_REINFORCEMENT_CALLEE_CHARGE);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
     }
 
     @Override
@@ -177,9 +242,9 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource randomSource, DifficultyInstance difficultyInstance) {
         super.populateDefaultEquipmentSlots(randomSource, difficultyInstance);
-        if (randomSource.nextFloat() < (this.level().getDifficulty() == Difficulty.HARD ? 0.05F : 0.01F)) {
-            int i = randomSource.nextInt(3);
-            if (i == 0) {
+        if (randomSource.nextFloat() < (this.level().getDifficulty() == Difficulty.HARD ? 0.1F : 0.05F)) {
+            int equipment = randomSource.nextInt(3);
+            if (equipment == 0) {
                 this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
             } else {
                 this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SHOVEL));
@@ -248,13 +313,30 @@ public class FunctionalGiant extends Giant implements NeutralMob {
             }
         }
 
-        this.handleAttributes();
+        this.handleAttributes(difficultySpecialMult);
         return spawnGroupData;
     }
 
-    protected void handleAttributes() {
+    protected void handleAttributes(float difficultySpecialMult) {
         this.getAttribute(Attributes.KNOCKBACK_RESISTANCE)
                 .addOrReplacePermanentModifier(new AttributeModifier(RANDOM_SPAWN_BONUS_ID, this.random.nextDouble() * 0.05F, AttributeModifier.Operation.ADD_VALUE));
+        double followRangeBonus = this.random.nextDouble() * 1.5 * difficultySpecialMult;
+        if (followRangeBonus > 1.0) {
+            this.getAttribute(Attributes.FOLLOW_RANGE)
+                    .addOrReplacePermanentModifier(new AttributeModifier(RANDOM_SPAWN_BONUS_ID, followRangeBonus, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        }
+
+        if (this.random.nextFloat() < difficultySpecialMult * 0.05F) {
+            this.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE)
+                    .addOrReplacePermanentModifier(new AttributeModifier(LEADER_GIANT_BONUS_ID, this.random.nextDouble() * 0.25 + 0.25, AttributeModifier.Operation.ADD_VALUE));
+            double healthBonus = this.random.nextDouble() * 3.0 + 1.0;
+            this.getAttribute(Attributes.MAX_HEALTH)
+                    .addOrReplacePermanentModifier(
+                            new AttributeModifier(LEADER_GIANT_BONUS_ID, healthBonus, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                    );
+            this.xpReward += (int) (healthBonus * this.xpReward);
+            this.setHealth(this.getMaxHealth());
+        }
     }
 
     @Override
@@ -311,5 +393,29 @@ public class FunctionalGiant extends Giant implements NeutralMob {
     @Override
     public float getWalkTargetValue(BlockPos arg, LevelReader arg2) {
         return -super.getWalkTargetValue(arg, arg2);
+    }
+
+    public static boolean checkGiantSpawnRules(
+            EntityType<? extends Monster> entityType, ServerLevelAccessor serverLevelAccessor, MobSpawnType mobSpawnType, BlockPos blockPos, RandomSource randomSource
+    ) {
+        return serverLevelAccessor.getDifficulty() != Difficulty.PEACEFUL
+                && isDarkEnoughToSpawn(serverLevelAccessor, blockPos, randomSource)
+                && checkMobSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
+    }
+
+    public static boolean isDarkEnoughToSpawn(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos, RandomSource randomSource) {
+        if (serverLevelAccessor.getBrightness(LightLayer.SKY, blockPos) > randomSource.nextIntBetweenInclusive(8, 20)) {
+            return false;
+        } else {
+            DimensionType dimensionType = serverLevelAccessor.dimensionType();
+            if (serverLevelAccessor.getBrightness(LightLayer.BLOCK, blockPos) > 11) {
+                return false;
+            } else {
+                int brightness = serverLevelAccessor.getLevel().isThundering()
+                        ? serverLevelAccessor.getMaxLocalRawBrightness(blockPos, 15)
+                        : serverLevelAccessor.getMaxLocalRawBrightness(blockPos, 8);
+                return brightness <= dimensionType.monsterSpawnLightTest().sample(randomSource);
+            }
+        }
     }
 }
