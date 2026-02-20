@@ -78,6 +78,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
         super.addAdditionalSaveData(compound);
         this.addPersistentAngerSaveData(compound);
         compound.putBoolean("isOnRampage", isOnRampage);
+        compound.putInt("xpReward", xpReward);
     }
 
     @Override
@@ -85,6 +86,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
         super.readAdditionalSaveData(compound);
         this.readPersistentAngerSaveData(this.level(), compound);
         this.isOnRampage = compound.getBoolean("isOnRampage");
+        this.xpReward = compound.getInt("xpReward");
     }
 
     public static AttributeSupplier.Builder createGiantAttributes() {
