@@ -126,7 +126,7 @@ public class FunctionalGiant extends Giant implements NeutralMob {
             if (livingEntity != null
                     && serverLevel.getDifficulty() == Difficulty.HARD
                     && (double)this.random.nextFloat() < this.getAttributeValue(Attributes.SPAWN_REINFORCEMENTS_CHANCE)
-                    && serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
+                    && serverLevel.isSpawningMonsters()) {
                 int xPos = Mth.floor(this.getX());
                 int yPos = Mth.floor(this.getY());
                 int zPos = Mth.floor(this.getZ());
