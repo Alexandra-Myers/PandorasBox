@@ -8,6 +8,7 @@ package ivorius.pandorasbox;
 import ivorius.pandorasbox.commands.PandoraCommand;
 import ivorius.pandorasbox.config.PandoraConfig;
 import ivorius.pandorasbox.effectholder.EffectHolder;
+import ivorius.pandorasbox.entitites.FunctionalGiant;
 import ivorius.pandorasbox.init.EntityInit;
 import ivorius.pandorasbox.init.Init;
 import ivorius.pandorasbox.random.DValue;
@@ -23,7 +24,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraftforge.api.distmarker.Dist;
@@ -90,7 +90,7 @@ public class PandorasBox {
 
     @SubscribeEvent
     public static void onSpawnPlacement(SpawnPlacementRegisterEvent event) {
-        event.register(EntityInit.GIANT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, SpawnPlacementRegisterEvent.Operation.REPLACE);
+        event.register(EntityInit.GIANT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, FunctionalGiant::checkGiantSpawnRules, SpawnPlacementRegisterEvent.Operation.REPLACE);
     }
 
     public record ClientboundUpdateFakeDeathPacket() implements FabricPacket {
